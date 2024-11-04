@@ -21,6 +21,26 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profil_photo',
+        'lastname',
+        'firstname',
+        'gender',
+        'job_city',
+        'school_city',
+        'state',
+        'birth_date',
+        'marital_status',
+        'graduate',
+        'graduate_type',
+        'graduate_year',
+        'graduate_delivery',
+        'grade',
+        'years_experiences',
+        'contacts',
+        'birth_city',
+        'matricule',
+        'is_ame',
+        'status'
     ];
 
     /**
@@ -31,6 +51,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'password_reset_key',
+        'email_verify_key'
     ];
 
     /**
@@ -44,5 +66,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function classes()
+    {
+
+    }
+
+
+    public function epreuves()
+    {
+        
     }
 }

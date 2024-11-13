@@ -21,12 +21,19 @@ class Epreuve extends Model
         'hidden', 
         'visibity', 
         'school_year', 
-        'notes'
+        'notes',
+        'downloaded',
+        'downloaded_by',
+        'contents_titles',
+        'seen_by',
+        'likes'
     ];
 
     protected $casts = [
         'images' => 'array',
         'filiars_id' => 'array',
+        'downloaded_by' => 'array',
+        'likes' => 'array',
 
     ];
 

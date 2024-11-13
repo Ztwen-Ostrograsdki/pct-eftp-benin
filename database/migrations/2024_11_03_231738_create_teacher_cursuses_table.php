@@ -11,8 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('teacher_cursuses', function (Blueprint $table) {
             $table->id();
+            $table->date('from')->nullable()->default(null);
+            $table->date('to')->nullable()->default(null);
+            $table->json('classes')->nullable()->default(null);
+            $table->json('schools')->nullable()->default(null);
+            $table->string('school_year')->nullable()->default(null);
+            $table->string('duration')->nullable()->default(null);
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

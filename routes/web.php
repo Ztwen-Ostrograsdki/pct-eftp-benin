@@ -1,8 +1,25 @@
 <?php
 
-use App\Livewire\Admin\Dashboard;
+use App\Livewire\Auth\EmailVerificationPage;
+use App\Livewire\Auth\ForgotPasswordPage;
+use App\Livewire\Auth\LoginPage;
+use App\Livewire\Auth\RegisterPage;
+use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\HomePage;
+use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
-Route::get('/administration', Dashboard::class);
+
+Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil');
+
+
+
+Route::middleware(['guest'])->group(function(){
+    Route::get('/connexion', LoginPage::class)->name('login');
+    Route::get('/inscription', RegisterPage::class)->name('register');
+    Route::get('/verification-email/email={email}/{key?}', EmailVerificationPage::class)->name('email.verification');
+    Route::get('/reinitialisation-mot-de-passe/token={token?}/email={email?}', ResetPasswordPage::class)->name('password.reset');
+    Route::get('/reinitialisation-mot-de-passe/par-email/email={email?}/{key?}', ResetPasswordPage::class)->name('password.reset.by.email');
+    Route::get('/mot-de-passe-oublie', ForgotPasswordPage::class)->name('password.forgot');
+});

@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('service_notes', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description')->nullable()->default(null);
+            $table->dateTime('will_closed_at')->nullable()->default(null);
+            $table->json('images')->nullable()->default(null);
+            $table->json('targets')->nullable()->default(null);
+            $table->json('read_by')->nullable()->default(null);
+            $table->string('to')->nullable()->default(null);
+            $table->string('from')->nullable()->default(null);
+            $table->text('content')->nullable()->default(null);
             $table->timestamps();
         });
     }

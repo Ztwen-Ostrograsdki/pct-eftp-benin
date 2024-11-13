@@ -9,7 +9,11 @@ class Book extends Model
 {
     protected $fillable = [
         'name',
+        'title',
         'description',
+        'edition',
+        'edited_at',
+        'edited_home',
         'images',
         'last_edited_year',
         'user_id',
@@ -23,12 +27,15 @@ class Book extends Model
         'in_stock',
         'likes',
         'on_sale',
+        'seen_by',
+        'quantity_bought'
     ];
 
 
     protected $casts = [
         'images' => 'array',
         'likes' => 'array',
+        'seen_by' => 'array',
 
     ];
 

@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
             $table->boolean('on_sale')->nullable()->default(true);
             $table->boolean('is_active')->nullable()->default(true);
-            $table->decimal('price', 15, 2);
+            $table->decimal('price', 15, 2)->nullable()->default(null);
             $table->string('visibity')->nullable()->default('public');
             $table->boolean('hidden')->nullable()->default(false);
             $table->text('description')->nullable()->default(null);
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->json('filiars_id')->nullable()->default(null);
             $table->foreignId('classe_id')->constrained('classes')->cascadeOnDelete();
             $table->json('likes')->nullable()->default(null);
+            $table->unsignedBigInteger('quantity_bought')->nullable()->default(0);
         });
     }
 

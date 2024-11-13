@@ -3,14 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Helpers\TraitsManagers\UserTrait;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, UserTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +23,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'pseudo',
         'email',
         'password',
         'profil_photo',
@@ -26,9 +31,10 @@ class User extends Authenticatable
         'firstname',
         'gender',
         'job_city',
-        'school_city',
+        'school',
         'state',
-        'birth_date',
+        'born_at',
+        'teaching_since',
         'marital_status',
         'graduate',
         'graduate_type',
@@ -40,7 +46,9 @@ class User extends Authenticatable
         'birth_city',
         'matricule',
         'is_ame',
-        'status'
+        'status',
+        'ability',
+        'confirmed_by_admin'
     ];
 
     /**
@@ -78,4 +86,20 @@ class User extends Authenticatable
     {
         
     }
+
+    public function getFilamentName(): string
+    {
+        return $this->pseudo;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->id === 1 ;
+    }
+
+    public function getFilamentAvatarUrl() : ?string
+    {
+        return asset($this->profil_photo);
+    }
+
 }

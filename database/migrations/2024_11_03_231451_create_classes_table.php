@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('classes');
+        Schema::disableForeignKeyConstraints();
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();

@@ -6,12 +6,14 @@ use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\HomePage;
+use App\Livewire\Master\UsersListPage;
 use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
 
-Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil');
+Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil')->middleware(['auth']);
+Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list')->middleware(['auth']);
 
 
 

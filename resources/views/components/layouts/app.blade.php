@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>{{ $title ?? config('app.name') }}</title>
+        <link rel="stylesheet" href="@sweetalert2/themes/dark/dark.css">
+        <link href="{{asset('resources/css/my-css.css')}}" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
         
@@ -22,6 +24,8 @@
         @livewire('partials.footer')
 
         @livewireScripts
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
         @livewireSweetalertScripts
     </body>
 </html>

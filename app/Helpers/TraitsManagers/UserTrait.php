@@ -103,6 +103,16 @@ trait UserTrait{
         return $this->id === 1;
     }
 
+    public function formatString($text)
+    {
+        return $text ? $text : "Non renseigné";
+    }
+
+    public function formatDate($date, $substr = 3, $withTime = false)
+    {
+        return $date ? $this->__getDateAsString($date, $substr, $withTime) : "Non renseigné";
+    }
+
 
 
 

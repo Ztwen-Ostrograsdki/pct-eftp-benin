@@ -1,11 +1,7 @@
-
-/* Importation de Font Awesome */
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-
-/* Importation des styles d'icones */
-@import "~@fortawesome/fontawesome-free/scss/solid";
-@import "~@fortawesome/fontawesome-free/scss/regular";
-@import "~@fortawesome/fontawesome-free/scss/brands";
+@import '@fortawesome/fontawesome-free/css/fontawesome.css';
+@import '@fortawesome/fontawesome-free/css/regular.css';
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/brands.css';
 
 
 @tailwind base;
@@ -30,3 +26,135 @@
   }
 
   
+  .z-table tr.z-table-body:nth-child(odd) {
+    background: #333;
+}
+
+.z-table tr.z-table-body:nth-child(even) {
+  background: #222;
+}
+
+
+
+.z-table {
+    border-collapse: collapse;
+}
+
+.z-table-border th,
+.z-table-border td {
+    border: thin solid white !important;
+}
+.hoverable tr:hover, tr:hover{
+    opacity: 1 !important;
+    background-color: rgba(100, 100, 40, 0.35) !important;
+    cursor: pointer;
+}
+
+
+.text-cursive {
+  font-family: cursive !important;
+}
+
+.z-hover-secondary:hover {
+  background-color: #334 !important;
+  color: #bbb !important;
+}
+
+.z-bg-hover-secondary {
+  background-color: #334 !important;
+  color: #bbb !important;
+}
+
+.bg-hover-secondary {
+  background-color: #334 !important;
+  color: #bbb !important;
+}
+
+.z-bg-secondary-dark {
+  background-color: #334 !important;
+}
+
+.bg-secondary-dark {
+  background-color: #334 !important;
+}
+
+.z-bg-secondary-light-opac {
+  background-color: rgba(10, 10, 40, 0.87) !important;
+}
+
+.z-bg-secondary-light {
+  background-color: rgba(10, 10, 40, 0.97) !important;
+}
+
+.bg-secondary-light {
+  background-color: rgba(10, 10, 50, 0.97) !important;
+}
+
+.bg-secondary-light-opac {
+  background-color: rgba(10, 10, 40, 0.87) !important;
+}
+
+.bg-choosen-marks {
+  background-color: rgba(10, 53, 30, 0.87) !important;
+}
+
+
+.bg-secondary-light-0 {
+  background-color: rgba(30, 15, 45, 0.87) !important;
+}
+
+
+.bg-secondary-light-2 {
+  background-color: rgba(9, 15, 20, 0.9) !important;
+}
+
+
+.bg-secondary-light-3 {
+  background-color: rgba(12, 20, 45, 0.91) !important;
+}
+
+.bg-secondary-light-1 {
+  background-color: rgba(12, 15, 30, 0.92) !important;
+}
+
+.text-light-0 {
+  color: rgba(30, 15, 45, 0.87) !important;
+}
+
+
+.text-light-2 {
+  color: rgba(9, 15, 20, 0.9) !important;
+}
+
+
+.text-light-3 {
+  color: rgba(12, 20, 45, 0.91) !important;
+}
+
+.text-light-1 {
+  color: rgba(12, 15, 30, 0.92) !important;
+}
+
+.text-black-0 {
+  color: black !important;
+}
+
+
+
+
+.z-bg-secondary {
+  background-color: #334 !important;
+}
+.bg-green-y {
+  background-color: greenyellow !important;
+}
+
+
+.border-green-y{
+  border-color: greenyellow !important;
+}
+
+.z-secondary {
+  background-color: #334 !important;
+}
+

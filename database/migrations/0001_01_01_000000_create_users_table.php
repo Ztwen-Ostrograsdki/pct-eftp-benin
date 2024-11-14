@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('pseudo');
+            $table->string('pseudo')->nullable()->default(Str::random(7));
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -23,12 +24,13 @@ return new class extends Migration
             $table->string('matricule')->nullable()->default(null);
             $table->string('years_experiences')->nullable()->default(null);
             $table->string('grade')->nullable()->default(null);
-            $table->string('graduate_delivery')->nullable()->default(null);
+            $table->string('graduate_deliver')->nullable()->default(null);
             $table->string('graduate_year')->nullable()->default(null);
             $table->string('graduate_type')->nullable()->default(null);
             $table->string('graduate')->nullable()->default(null);
             $table->string('marital_status')->nullable()->default(null);
-            $table->string('state')->nullable()->default(null);
+            $table->string('address')->nullable()->default(null);
+            $table->date('teaching_since')->nullable()->default(null);
             $table->date('birth_date')->nullable()->default(null);
             $table->string('birth_city')->nullable()->default(null);
             $table->string('school')->nullable()->default(null);

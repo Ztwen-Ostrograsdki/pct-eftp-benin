@@ -47,6 +47,7 @@ class RegisterPage extends Component
             $names_exists = User::where('firstname', $this->firstname)->where('lastname', $this->lastname)->first();
 
             if(!$names_exists){
+                
                 if($this->profil_photo){
 
                     $extension = $this->profil_photo->extension();

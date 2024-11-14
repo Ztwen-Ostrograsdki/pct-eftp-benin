@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -86,7 +87,7 @@ class UserResource extends Resource
                                 ->required()
                                 ->placeholder("Vos prénoms"),
                         
-                        DateTimePicker::make('born_at')
+                        DatePicker::make('birth_date')
                                 ->label('Date de naissance')
                                 ->default(now())
                                 ->placeholder("Votre date de naissance"),
@@ -108,10 +109,6 @@ class UserResource extends Resource
                                 ->required()
                                 ->placeholder("66876565 / 61564377 / ..."),
                         
-                        DateTimePicker::make('state')
-                                ->label('Date de naissance')
-                                ->default(now())
-                                ->placeholder("Votre date de naissance"),
 
                         TextInput::make('address')
                                 ->label('Adresse')
@@ -127,7 +124,7 @@ class UserResource extends Resource
                                 ]),
                         
 
-                    ])->columns(5),
+                    ])->columns(4),
 
                     Section::make('Diplômes')->schema([
                         TextInput::make('graduate')
@@ -144,13 +141,12 @@ class UserResource extends Resource
                                 ])
                                 ->label('Type de dipôme'),
                         
-                        DateTimePicker::make('graduate_year')
+                        TextInput::make('graduate_year')
                                 ->label('Année')
-                                ->default(now())
                                 ->required()
                                 ->placeholder("L'année d'obtention du diplôme"),
 
-                        TextInput::make('graduate_delivery')
+                        TextInput::make('graduate_deliver')
                                 ->label('Autorité')
                                 ->required()
                                 ->placeholder("Instance ayant délivrée le diplôme"),
@@ -168,7 +164,7 @@ class UserResource extends Resource
                                 ->label('Ecole ou établissement')
                                 ->placeholder("L'écolde ou établissement de travail"),
                         
-                        DateTimePicker::make('teaching_since')
+                        DatePicker::make('teaching_since')
                                 ->label('Enseigne dépuis')
                                 ->default(now())
                                 ->placeholder("Précisez la date de première prise de fonction"),
@@ -177,6 +173,11 @@ class UserResource extends Resource
                                 ->label('Expériences')
                                 ->required()
                                 ->placeholder("Années d'expérience"),
+                        
+                        TextInput::make('grade')
+                                ->label('Grade')
+                                ->required()
+                                ->placeholder("Votre grade"),
                         
                         TextInput::make('matricule')
                                 ->label('Matricule')
@@ -196,7 +197,7 @@ class UserResource extends Resource
                                 ->required()
                                 ->searchable(),
 
-                    ])->columns(6),
+                    ])->columns(7),
 
                     Section::make('Photo de Profil')->schema([
                         FileUpload::make('profil_photo')
@@ -217,7 +218,7 @@ class UserResource extends Resource
                 TextColumn::make('firstname')->label("Nom")->searchable()->default(fn (Model $user) => $user->firstname ? $user->firstname : "non renseigné"),
                 TextColumn::make('lastname')->label("Prénoms")->searchable()->default(fn (Model $user) => $user->lastname ? $user->lastname : "non renseigné"),
                 TextColumn::make('address')->label("Adresse")->searchable()->default(fn (Model $user) => $user->address ? $user->address : "non renseigné"),
-                TextColumn::make('born_at')->date()->label("Né le")->searchable(),
+                TextColumn::make('birth_date')->date()->label("Né le")->searchable(),
                 TextColumn::make('status')->label("Statut")->searchable()->default(fn (Model $user) => $user->status ? $user->status : "non renseigné"),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('grade')->label("Grade")->searchable()->default(fn (Model $user) => $user->grade ? $user->grade : "non renseigné"),
@@ -226,7 +227,7 @@ class UserResource extends Resource
                 TextColumn::make('job_city')->label("Déployé à ")->searchable()->default(fn (Model $user) => $user->job_city ? $user->job_city : "non renseigné"),
                 TextColumn::make('years_experiences')->label("Expériences")->searchable()->default(fn (Model $user) => $user->years_experiences ? $user->years_experiences : "non renseigné"),
                 TextColumn::make('graduate')->label("Diplôme")->searchable()->description('Le diplome')->default(fn (Model $user) => $user->graduate ? $user->graduate : "non renseigné"),
-                TextColumn::make('graduate_delivery')->label("Délivré par")->searchable()->description('Le diplome')->default(fn (Model $user) => $user->graduate_delivery ? $user->graduate_delivery : "non renseigné"),
+                TextColumn::make('graduate_deliver')->label("Délivré par")->searchable()->description('Le diplome')->default(fn (Model $user) => $user->graduate_delivery ? $user->graduate_delivery : "non renseigné"),
                 TextColumn::make('graduate_type')->sortable()->label("Type de diplôme")->toggleable(isToggledHiddenByDefault: true)->default(fn (Model $user) => $user->graduate_type ? $user->graduate_type : "non renseigné"),
                 TextColumn::make('teaching_since')->dateTime()->sortable()->label("Enseigne dépuis le")->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email_verified_at')->dateTime()->sortable()->label("Vérifié le")->toggleable(isToggledHiddenByDefault: true),

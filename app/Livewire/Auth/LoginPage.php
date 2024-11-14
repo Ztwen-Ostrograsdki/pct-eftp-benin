@@ -77,7 +77,7 @@ class LoginPage extends Component
 
                 request()->session()->regenerate();
 
-                return redirect()->intended();
+                return redirect()->route('user.profil', ['id'=> $user->id]);
             }
             else{
                 //$this->toast("Données incorrectes", 'error');

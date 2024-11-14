@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
@@ -15,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, UserTrait;
+    use HasFactory, Notifiable, UserTrait, DateFormattor;
 
     /**
      * The attributes that are mass assignable.
@@ -32,23 +33,24 @@ class User extends Authenticatable implements FilamentUser, HasName
         'gender',
         'job_city',
         'school',
-        'state',
-        'born_at',
+        'address',
         'teaching_since',
         'marital_status',
         'graduate',
         'graduate_type',
         'graduate_year',
-        'graduate_delivery',
+        'graduate_deliver',
         'grade',
         'years_experiences',
         'contacts',
         'birth_city',
+        'birth_date',
         'matricule',
         'is_ame',
         'status',
         'ability',
-        'confirmed_by_admin'
+        'confirmed_by_admin',
+        'email_verified_at'
     ];
 
     /**
@@ -100,6 +102,20 @@ class User extends Authenticatable implements FilamentUser, HasName
     public function getFilamentAvatarUrl() : ?string
     {
         return asset($this->profil_photo);
+    }
+
+    public function getGender($gender = null)
+    {
+        if(!$gender) $gender = $this->gender;
+
+        $genders = [
+            'female' => "Féminin",
+            'male' => "Masculin",
+            'other' => "Autre",
+            null => "Non renseigné",
+        ];
+
+        return $genders[$gender];
     }
 
 }

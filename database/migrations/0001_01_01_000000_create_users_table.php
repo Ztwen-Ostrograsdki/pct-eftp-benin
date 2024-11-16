@@ -39,8 +39,13 @@ return new class extends Migration
             $table->string('firstname')->nullable()->default(null);
             $table->string('lastname')->nullable()->default(null);
             $table->string('profil_photo')->nullable()->default(null);
+            $table->string('ability')->nullable()->default('default');
             $table->string('password_reset_key')->nullable()->default(null);
             $table->string('email_verify_key')->nullable()->default(null);
+            $table->boolean('confirmed_by_admin')->default(false);
+            $table->boolean('blocked')->default(false);
+            $table->string('current_function')->default('Enseignant');
+            $table->datetime('blocked_at')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });

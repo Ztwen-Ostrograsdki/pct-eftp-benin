@@ -49,8 +49,14 @@ class User extends Authenticatable implements FilamentUser, HasName
         'is_ame',
         'status',
         'ability',
+        'current_function',
+        'email_verified_at',
+    ];
+
+    protected $admins_attr = [
         'confirmed_by_admin',
-        'email_verified_at'
+        'blocked',
+        'blocked_at',
     ];
 
     /**
@@ -110,12 +116,27 @@ class User extends Authenticatable implements FilamentUser, HasName
 
         $genders = [
             'female' => "Féminin",
+            'Féminin' => "Féminin",
+            'Female' => "Féminin",
             'male' => "Masculin",
+            'Masculin' => "Masculin",
+            'Male' => "Masculin",
             'other' => "Autre",
+            'Autre' => "Autre",
             null => "Non renseigné",
         ];
 
         return $genders[$gender];
+    }
+
+
+    public function getUserNamePrefix()
+    {
+        if(in_array($this->gender, ['male', 'Male', 'M', 'm', 'masculin', 'Masculin'])) return 'Mr';
+
+        if(in_array($this->gender, ['female', 'Female', 'F', 'f', 'feminin', 'Féminin', 'Feminin'])) return 'Mme';
+
+        return 'Mr/Mme';
     }
 
 }

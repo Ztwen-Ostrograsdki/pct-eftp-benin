@@ -4,6 +4,9 @@ namespace App\Livewire\User;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ExperiencesManagerModule extends Component
@@ -30,6 +33,16 @@ class ExperiencesManagerModule extends Component
     public $grade;
     public $matricule;
     public $status;
+
+    protected $rules = [
+        'matricule' => 'string',
+        'job_city' => 'string|required',
+        'years_experiences' => 'string|required',
+        'grade' => 'string',
+        'school' => 'string',
+        'status' => 'string|required',
+        'teaching_since' => 'date|required|',
+    ];
 
 
     public function mount()
@@ -89,4 +102,60 @@ class ExperiencesManagerModule extends Component
     {
         return view('livewire.user.experiences-manager-module');
     }
+
+    public function updateUserExperiencesData()
+    {
+        if($this->user->id !== Auth::user()->id) return abort(403, "Vous n'êtes pas authorisé!");
+
+        $this->resetErrorBag();
+
+        $this->validate();
+
+        $data = [
+            'matricule' => $this->matricule,
+            'job_city' => $this->job_city,
+            'grade' => $this->grade,
+            'school' => $this->school,
+            'status' => $this->status,
+            'teaching_since' => $this->teaching_since,
+            'years_experiences' => $this->years_experiences,
+        ];
+
+        $options = ['event' => 'confirmedUserExperiencesDataUpdate', 'data' => $data];
+
+        $this->confirm("Confirmation de la mise à jour des données de " . $this->user->getFullName(true), "Cette action est irréversible", $options);
+
+    }
+
+    #[On('confirmedUserExperiencesDataUpdate')]
+    public function onConfirmationUserExperiencesDataUpdate($data)
+    {
+        if($this->user->id !== Auth::user()->id) return abort(403, "Vous n'êtes pas authorisé!");
+        
+        if($data){
+
+            $user = $this->user->update($data);
+
+            $user = true;
+
+            if($user){
+
+                $message = "La mise à jour est terminée.";
+
+                $this->toast($message, 'success');
+
+                session()->flash('success', $message);
+
+                $this->cancelExperiencesEdition();
+                
+            }
+            else{
+
+                $this->toast( "La mise à jour a échoué! Veuillez réessayer!", 'error');
+
+            }
+        }
+
+    }
+
 }

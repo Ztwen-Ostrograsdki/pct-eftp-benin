@@ -11,7 +11,7 @@ use Livewire\Component;
  
 class LoginPage extends Component
 {
-    //use Toast;
+    use Toast;
 
     #[Validate('required|email|exists:users|max:255')]
     public $email;
@@ -34,7 +34,7 @@ class LoginPage extends Component
 
             session()->flash('error', $message);
 
-           // $this->toast($message, 'info', 7000);
+            $this->toast($message, 'info', 7000);
 
             $this->addError('email', "Entrez une adrresse mail");
         }
@@ -44,7 +44,7 @@ class LoginPage extends Component
 
             session()->flash('error', $message);
 
-            //$this->toast($message, 'info', 7000);
+            $this->toast($message, 'info', 7000);
 
             $this->addError('email', "Aucune correspondance trouvée");
         }
@@ -59,7 +59,7 @@ class LoginPage extends Component
 
                 $message = "Ce compte n'a pas encore été vérifié";
 
-                //$this->toast($message, 'warning', 5000);
+                $this->toast($message, 'warning', 5000);
 
                 session()->flash('error', $message);
 
@@ -69,18 +69,33 @@ class LoginPage extends Component
 
             }
 
+            if(!$user->confirmed_by_admin){
+
+                $message = "Votre identification en tant que utilisateur de cette plateforme n'a pas encore été confirmée par les administrateurs!";
+
+                $this->toast($message, 'warning', 5000);
+
+                session()->flash('error', $message);
+
+                return false;
+
+                // Send notification to admins to confirm the user identification
+
+            }
+
             $auth = Auth::attempt($data);
 
             if($auth){
 
-                //$this->toast("Connexion établie!", 'success');
+                $this->toast("Connexion établie!", 'success');
 
                 request()->session()->regenerate();
 
                 return redirect()->route('user.profil', ['id'=> $user->id]);
             }
             else{
-                //$this->toast("Données incorrectes", 'error');
+
+                $this->toast("Données incorrectes", 'error');
 
                 $this->addError('email', "Les informations ne correspondent pas");
 

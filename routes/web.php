@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
 
-Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil')->middleware(['auth']);
-Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list')->middleware(['auth']);
+Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil')->middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blocked']);
+Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list')->middleware(['auth', 'master', 'user.not.blocked']);
 
 
 

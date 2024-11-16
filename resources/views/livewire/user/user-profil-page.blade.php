@@ -1,17 +1,27 @@
 <div class="mx-auto p-2 min-h-90">
+
     <div class="m-auto w-3/4 bg-gray-500 mt-3 p-0">
-        <h1 class="p-4 text-orange-400 border uppercase text-center rounded-sm bg-slate-600">
-            <span class="">
+        <h1 class="p-4 text-orange-400 border text-left rounded-sm bg-slate-600">
+            <span class=" ml-2">
                 Profil de: 
             </span>
 
-            <strong class="text-orange-600">
-                @if($user) {{$user->pseudo}} @endif
+            <strong class="text-orange-600 uppercase">
+                @if($user)  {{ $user->getUserNamePrefix() . ' ' . $user->getFullName(true) }} @endif
             </strong>
 
             
-        </h1>
+            <strong class="text-gray-200 uppercase float-right">
+                
+                @if($user)  {{ $user->status }} @endif
 
+                @if($user && $user->grade)  {{ " - " . $user->grade }} @endif
+
+            </strong>
+            
+        </h1>
+    </div>
+    <div class="m-auto w-3/4 bg-gray-500 mt-3 p-0">
         @auth
         <div class="m-auto lg:flex xl:flex 2xl:flex justify-between bg-gray-500 min-h-80">
             <div class="lg:w-5/12 xl:w-5/12 2xl:w-5/12 sm:w-full m-0 p-0 border-r border-r-gray-900">
@@ -76,7 +86,7 @@
                                 </span>
                             </td>
                             <td class="py-1">
-                                <strong class="">{{ $user->__getDateAsString($user->birth_date) }}</strong>  <small class="text-gray-900 float-right"> <b>à {{ $user->birth_city }}</b> </small>
+                                <strong class="">{{ $user->__getDateAsString($user->birth_date) }}</strong> @if($user->birth_date && $user->birth_city) <small class="text-gray-900 float-right mr-2 mt-1 italic"> <b> à {{ $user->birth_city }}</b> </small> @endif
                             </td>
                         </tr>
 
@@ -129,14 +139,16 @@
                         </tr>
                     </table>
 
+                    @if($user->id == auth()->user()->id)
                     <div class="flex justify-between my-2">
                         @if(!$show_perso)
-                        <span wire:click='startPersoEdition' class="cursor-pointer border text-white bg-blue-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
+                        <span wire:click.prevent='startPersoEdition' class="cursor-pointer border text-white bg-blue-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
                             <span class="fas fa-edit"></span>
                             Mettre à jour
                         </span>
                         @endif
                     </div>
+                    @endif
                 </div>
             </div>
             <div class="lg:w-7/12 xl:w-7/12 2xl:w-7/12 sm:w-full bg-gray-800">

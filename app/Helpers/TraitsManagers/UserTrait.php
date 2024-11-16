@@ -4,6 +4,7 @@ namespace App\Helpers\TraitsManagers;
 
 use App\Notifications\SendEmailVerificationKeyToUser;
 use App\Notifications\SendPasswordResetKeyToUser;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -111,6 +112,36 @@ trait UserTrait{
     public function formatDate($date, $substr = 3, $withTime = false)
     {
         return $date ? $this->__getDateAsString($date, $substr, $withTime) : "Non renseigné";
+    }
+
+
+    public function getFullName($reverse = false)
+    {
+        return $reverse ? $this->lastname . ' ' . $this->firstname : $this->firstname . ' ' . $this->lastname;
+    }
+
+    public function confirmedThisUserIdentification()
+    {
+        return $this->forceFill([
+            'confirmed_by_admin' => true
+        ])->save();
+    }
+    
+    public function userBlockerOrUnblockerRobot($action = true)
+    {
+        if($action){
+            return $this->forceFill([
+                'blocked' => true,
+                'blocked_at' => Carbon::now()
+            ])->save();
+        }
+        else{
+            return $this->forceFill([
+                'blocked' => false,
+                'blocked_at' => null
+            ])->save();
+
+        }
     }
 
 

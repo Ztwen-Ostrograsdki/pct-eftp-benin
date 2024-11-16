@@ -5,7 +5,9 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -45,6 +47,7 @@ class PersoDataManagerModule extends Component
             $this->status = $user->status ? $this->user->status : 'Non renseigné';
             $this->firstname = $user->firstname ? $this->user->firstname : 'Non renseigné';
             $this->lastname = $user->lastname ? $this->user->lastname : 'Non renseigné';
+            $this->marital_status = $user->marital_status ? $this->user->marital_status : 'Non renseigné';
 
         }
     }
@@ -66,52 +69,51 @@ class PersoDataManagerModule extends Component
         $this->editing_perso = false;
     }
 
-    public function updatePerso()
+    public function updateUserPersoData()
     {
+        if($this->user->id !== Auth::user()->id) return abort(403, "Vous n'êtes pas authorisé!");
 
-        if($this->validate()){
+        $this->resetErrorBag();
+
+        if($this->user && $this->pseudo && $this->firstname && $this->lastname){
+
+            $rules = [
+                'pseudo' => 'string|required',
+                'firstname' => 'string|required',
+                'lastname' => 'string|required',
+                'gender' => 'string|required',
+                'address' => 'string|required',
+                'status' => 'string|required',
+                'contacts' => 'string|required',
+                'marital_status' => 'string|required',
+                'birth_date' => 'date|required|',
+                'birth_city' => 'string|required|',
+            ];
+
+            $data = [
+                'pseudo' => Str::ucwords($this->pseudo),
+                'firstname' => Str::upper($this->firstname),
+                'lastname' => Str::ucwords($this->lastname),
+                'contacts' => $this->contacts,
+                'address' => Str::ucwords($this->address),
+                'gender' => Str::ucwords($this->gender),
+                'status' => Str::upper($this->status),
+                'marital_status' => Str::ucwords($this->marital_status),
+                'birth_date' => $this->birth_date,
+                'birth_city' => Str::ucfirst($this->birth_city),
+            ];
+    
+
+            $validated = $this->validate($rules);
 
             $names_exists = User::where('firstname', $this->firstname)->where('lastname', $this->lastname)->where('id', '<>', $this->user->id)->first();
 
             if(!$names_exists){
 
-                $user = $this->user->update([
-                    'pseudo' => Str::ucwords($this->pseudo),
-                    'firstname' => Str::upper($this->firstname),
-                    'lastname' => Str::ucwords($this->lastname),
-                ])->save();
+                $options = ['event' => 'confirmedUserUpdate', 'data' => $data];
 
-                if($user){
-
-                    $auth = $user->sendVerificationLinkOrKeyToUser();
-
-                    if($auth){
-
-                        $message = "Incription lancée avec succès! Un courriel vous a été envoyé pour confirmation, veuillez vérifier votre boite mail.";
-
-                        $this->toast($message, 'info', 5000);
-
-                        session()->flash('success', $message);
-
-                        return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
-                        
-                    }
-                    else{
-
-                        $this->toast( "L'incription a échoué! Veuillez réessayer!", 'error');
-
-                    }
-                    
-                }
-                else{
-
-                    $message = "L'incription a échoué! Veuillez réessayer!";
-
-                    session()->flash('error', $message);
-
-                    $this->toast($message, 'error', 7000);
-
-                }
+                $this->confirm("Confirmation de la mise à jour des données de " . $this->user->getFullName(true), "Cette action est irréversible", $options);
+               
             }
             else{
 
@@ -137,4 +139,36 @@ class PersoDataManagerModule extends Component
         }
 
     }
+
+    #[On('confirmedUserUpdate')]
+    public function onConfirmationUserUpdate($data)
+    {
+
+        if($this->user->id !== Auth::user()->id) return abort(403, "Vous n'êtes pas authorisé!");
+        
+        if($data){
+
+            $user = $this->user->update($data);
+
+            if($user){
+
+                $message = "La mise à jour est terminée.";
+
+                $this->toast($message, 'success');
+
+                session()->flash('success', $message);
+
+                $this->cancelPersoEdition();
+                
+            }
+            else{
+
+                $this->toast( "La mise à jour a échoué! Veuillez réessayer!", 'error');
+
+            }
+        }
+
+    }
+
+
 }

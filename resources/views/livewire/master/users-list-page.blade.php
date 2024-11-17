@@ -14,13 +14,24 @@
         </div>
 
         <div class="relative w-full overflow-x-auto p-2 shadow-md border sm:rounded-lg">
-            <div class="m-auto bg-gray-700 p-0 my-3">
-                <h1 class="p-4 text-orange-400 border uppercase text-center rounded-sm">
-                  Barre de recherche  
-                </h1>
+            <div class="m-auto  w-full py-1 my-3">
+                <form class="w-full mx-auto">   
+                    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input wire:model.live="search" type="search" id="default-search" class="cursive text-cursive block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Entrer un mot clé, Pseudo, Nom, Prenoms, Email, grade, établissemnt, contacts,..." required />
+                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Rechercher</button>
+                    </div>
+                </form>
             </div>
             
             <table class="w-full text-sm text-left border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400">
+                
+                @if(count($users) > 0)
                 <thead class="text-xs text-gray-900 uppercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
@@ -188,6 +199,12 @@
                     @endforeach
                     
                 </tbody>
+                @else
+                    <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 text-3xl text-cursive">
+                        <span class="fas fa-trash"></span>
+                        <span>Oupps aucune données trouvées!!!</span>
+                    </h4>
+                @endif
             </table>
 
             <div class="my-3">

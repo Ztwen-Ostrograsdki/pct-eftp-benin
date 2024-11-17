@@ -144,6 +144,21 @@ trait UserTrait{
         }
     }
 
+    public function isAdminAs($statuses = null)
+    {
+        if($this->id == 1) return true;
+
+        if($statuses){
+
+            if(is_array($statuses)) return in_array($this->ability, $statuses);
+
+            if(is_string($statuses)) return $this->ability == $statuses;
+
+        }
+        
+        return $this->ability == 'admin' || $this->abitlity == 'master';
+    }
+
 
 
 

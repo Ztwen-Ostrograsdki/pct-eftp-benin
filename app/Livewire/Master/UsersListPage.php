@@ -12,11 +12,51 @@ class UsersListPage extends Component
 {
     use Toast, Confirm;
 
+    public $search = '';
+
+    public $section = null;
+
+    public $paginate_page = 10;
+
     public function render()
     {
-        $users = User::paginate(10);
+        $p = $this->paginate_page;
+
+        $users = User::paginate($p);
+
+        if($this->search && strlen($this->search) >= 2){
+
+            $s = '%' . $this->search . '%';
+
+            $users = User::where('firstname', 'like', $s)
+                         ->orWhere('lastname', 'like', $s)
+                         ->orWhere('email', 'like', $s)
+                         ->orWhere('contacts', 'like', $s)
+                         ->orWhere('school', 'like', $s)
+                         ->orWhere('grade', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('pseudo', 'like', $s)
+                         ->orWhere('address', 'like', $s)
+                         ->orWhere('job_city', 'like', $s)
+                         ->orWhere('status', 'like', $s)
+                         ->orWhere('birth_city', 'like', $s)
+                         ->orWhere('gender', 'like', $s)
+                         ->orWhere('current_function', 'like', $s)
+                         ->orWhere('matricule', 'like', $s)
+                         ->orWhere('ability', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('graduate_type', 'like', $s)
+                         ->orWhere('graduate_deliver', 'like', $s)
+                         ->orWhere('marital_status', 'like', $s)
+                         ->paginate($p);
+        }
         
         return view('livewire.master.users-list-page', compact('users'));
+    }
+
+    public function updatedSearch($search)
+    {
+        $this->search = $search;
     }
 
     public function confirmedUserIdentification($user_id)

@@ -83,6 +83,20 @@ class LoginPage extends Component
 
             }
 
+            if($user->blocked){
+
+                $message = "Vous ne pouvez pas vous connecter, votre compte a été bloqué, veuillez contacter les administrateurs!";
+
+                $this->toast($message, 'warning', 5000);
+
+                session()->flash('error', $message);
+
+                return false;
+
+                // Send notification to admins
+
+            }
+
             $auth = Auth::attempt($data);
 
             if($auth){

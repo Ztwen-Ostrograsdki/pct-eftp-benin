@@ -18,11 +18,21 @@ class NotBlockedUserMiddleware
     {
         if(Auth::user()){
             
-            if(!Auth::user()->blocked){
+            if(Auth::user()->blocked == false){
                 
                 return $next($request);
             }
-            return abort(403, "Vous n'êtes pas authorisé");
+            else{
+
+                Auth::logout();
+
+                request()->session()->invalidate();
+
+                request()->session()->regenerateToken();
+
+                return abort(403, "Vous n'êtes pas authorisé");
+            }
+            
         }
         return redirect(route('login'));
     }

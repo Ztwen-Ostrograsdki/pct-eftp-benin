@@ -10,6 +10,11 @@ use Livewire\Component;
 class Navbar extends Component
 {
     use Toast, Confirm;
+
+    protected $listeners = [
+        'LiveLogoutUserEvent' => 'logout'
+
+    ];
     
     public function render()
     {

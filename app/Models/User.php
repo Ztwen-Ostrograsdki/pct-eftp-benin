@@ -6,13 +6,16 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
+use App\Observers\ObserveUser;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+#[ObservedBy(ObserveUser::class)]
 class User extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

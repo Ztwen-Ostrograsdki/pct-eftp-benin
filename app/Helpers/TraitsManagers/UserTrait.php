@@ -160,6 +160,12 @@ trait UserTrait{
     }
 
 
+    public function userHasBeenBlocked()
+    {
+        return $this->blocked;
+    }
+
+
 
 
 

@@ -12,3 +12,34 @@ window.Echo = new Echo({
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
     enabledTransports: ['ws', 'wss'],
 });
+
+
+var e = window.Echo;
+
+window.ClientUser = {
+    id: 0,
+};
+if (window.User) {
+    window.ClientUser = window.User;
+}
+
+
+
+e.private('master')
+
+    
+
+e.private('admin')
+
+    .listen('UserHasBeenBlockedSuccessfullyEvent', (user) =>{
+
+        Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent', user);
+        
+    })
+
+e.private('App.Models.User.' + window.ClientUser.id)
+    .listen('LogoutUserEvent', (ev) =>{
+
+        Livewire.dispatch('LiveLogoutUserEvent', ev);
+        
+    })

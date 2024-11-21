@@ -4,6 +4,7 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\BlockUserEvent;
 use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -11,6 +12,10 @@ use Livewire\Component;
 class UsersListPage extends Component
 {
     use Toast, Confirm;
+
+    protected $listeners = [
+        'LiveUserHasBeenBlockedSuccessfullyEvent' => 'userBlockedSuccessfully',
+    ];
 
     public $search = '';
 
@@ -150,26 +155,71 @@ class UsersListPage extends Component
 
             if($user->blocked) $action = false;
 
-            $user = $user->userBlockerOrUnblockerRobot($action);
+            if($action == false){
 
-            if($user){
+                $user = $user->userBlockerOrUnblockerRobot($action);
 
-                $message = "L'utilisateur a été bloqué avec success!";
+                if($user){
 
-                if(!$action) $message = "L'utilisateur a été débloqué avec success!" ;
-
-                $this->toast($message, 'success');
-
-                session()->flash('success', $message);
-
+                    $message = "Le processus de blocage a été lancé avec success!";
+    
+                    if(!$action) $message = "Le processus de déblocage a été lancé avec success!" ;
+    
+                    $this->toast($message, 'success');
+    
+                    session()->flash('success', $message);
+    
+                }
+                else{
+    
+                    $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
+    
+                }
             }
             else{
 
-                $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
+                BlockUserEvent::dispatch($user);
 
+                if($user){
+
+                    $message = "Le processus de blocage a été lancé avec success!";
+    
+                    if(!$action) $message = "Le processus de déblocage a été lancé avec success!" ;
+    
+                    $this->toast($message, 'success');
+    
+                    session()->flash('success', $message);
+    
+                }
+                else{
+    
+                    $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
+    
+                }
             }
+            
         }
 
+    }
+
+
+    public function userBlockedSuccessfully($user)
+    {
+        
+        if($user && $user['blocked']){
+
+            $message = "L'utilisateur a été bloqué avec success!";
+
+            $this->toast($message, 'success');
+
+            session()->flash('success', $message);
+
+        }
+        else{
+
+            $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
+
+        }
     }
 
     public function confirmedUserEmailVerification($user_id)

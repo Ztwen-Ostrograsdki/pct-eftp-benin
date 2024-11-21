@@ -27,5 +27,11 @@
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
         @livewireSweetalertScripts
+
+        <script>
+            window.User = { 
+                id: {{optional(auth()->user())->id}},
+            }
+        </script>
     </body>
 </html>

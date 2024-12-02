@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\BlockedUserTryingToLoginEvent;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
@@ -91,6 +92,8 @@ class LoginPage extends Component
 
                 session()->flash('error', $message);
 
+                BlockedUserTryingToLoginEvent::dispatch($user);
+
                 return false;
 
                 // Send notification to admins
@@ -105,7 +108,7 @@ class LoginPage extends Component
 
                 request()->session()->regenerate();
 
-                return redirect()->route('user.profil', ['id'=> $user->id]);
+                return $this->redirectIntended(route('user.profil', ['id'=> $user->id]));
             }
             else{
 

@@ -34,6 +34,6 @@ class NotifyAdminThatUnIdentfiedUserIsTryingToConnect
             ->finally(function(Batch $batch){
 
 
-        })->name('user_blocking')->dispatch();
+        })->name('name')->dispatch();
     }
 }

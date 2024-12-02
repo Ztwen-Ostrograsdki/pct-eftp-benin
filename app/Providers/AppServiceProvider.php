@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\BlockedUserTryingToLoginEvent;
 use App\Events\BlockUserEvent;
+use App\Listeners\BlockedUserTryingToLoginListener;
 use App\Listeners\BlockUserListener;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Support\Facades\Event;
@@ -15,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+
     }
 
     /**
@@ -23,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(BlockUserEvent::class, BlockUserListener::class);
+        require_once app_path('Helpers/RobotsHelpers.php');
+
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch

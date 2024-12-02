@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Classe;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
@@ -39,10 +40,21 @@ class Book extends Model
 
     ];
 
+    public function filiars()
+    {
+        $filiars = (array)$this->filiars_id;
+    }
+
 
     public function classe()
     {
         return $this->belongsTo(Classe::class);
+    }
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

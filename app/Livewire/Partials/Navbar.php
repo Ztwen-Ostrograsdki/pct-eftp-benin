@@ -12,13 +12,19 @@ class Navbar extends Component
     use Toast, Confirm;
 
     protected $listeners = [
-        'LiveLogoutUserEvent' => 'logout'
+        'LiveLogoutUserEvent' => 'logout',
+        'LiveNotificationDispatchedToAdminsSuccessfullyEvent' => 'newNotification',
 
     ];
     
     public function render()
     {
         return view('livewire.partials.navbar');
+    }
+
+    public function newNotification($user = null)
+    {
+        $this->toast("Vous avez reçu une nouvelle notification!!!");
     }
 
 

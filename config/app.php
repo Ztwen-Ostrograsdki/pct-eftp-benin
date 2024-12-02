@@ -27,6 +27,13 @@ return [
         'ame' => 'AME'
     ],
 
+    'notifications_sections' => [
+        null => "Récentes non lues",
+        'unread' => "Non lues",
+        'read' => "Déjà lues",
+        'hidden' => "Masquées",
+    ],
+
 
 
 

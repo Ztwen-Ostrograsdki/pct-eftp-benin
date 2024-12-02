@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
+use App\Models\ENotification;
 use App\Observers\ObserveUser;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
@@ -140,6 +141,12 @@ class User extends Authenticatable implements FilamentUser, HasName
         if(in_array($this->gender, ['female', 'Female', 'F', 'f', 'feminin', 'Féminin', 'Feminin'])) return 'Mme';
 
         return 'Mr/Mme';
+    }
+
+
+    public function getNotifications()
+    {
+        return ENotification::all();
     }
 
 }

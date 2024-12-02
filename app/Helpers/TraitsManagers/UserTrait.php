@@ -1,7 +1,8 @@
 <?php
 namespace App\Helpers\TraitsManagers;
 
-
+use App\Models\ENotification;
+use App\Models\User;
 use App\Notifications\SendEmailVerificationKeyToUser;
 use App\Notifications\SendPasswordResetKeyToUser;
 use Illuminate\Support\Carbon;
@@ -163,6 +164,123 @@ trait UserTrait{
     public function userHasBeenBlocked()
     {
         return $this->blocked;
+    }
+
+    public function getMyIncommingNotifications($senders = null, $search = null, $options = null)
+    {
+        $data = [];
+
+        if($senders){
+
+            $notifs = ENotification::whereIn('user_id', $senders)->orderBy('created_at', 'desc')->get();
+        }
+        elseif($search){
+
+            $s = '%' . $search . '%';
+
+            $senders = User::where('firstname', 'like', $s)
+                         ->orWhere('lastname', 'like', $s)
+                         ->orWhere('email', 'like', $s)
+                         ->orWhere('contacts', 'like', $s)
+                         ->orWhere('school', 'like', $s)
+                         ->orWhere('grade', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('pseudo', 'like', $s)
+                         ->orWhere('address', 'like', $s)
+                         ->orWhere('job_city', 'like', $s)
+                         ->orWhere('status', 'like', $s)
+                         ->orWhere('birth_city', 'like', $s)
+                         ->orWhere('gender', 'like', $s)
+                         ->orWhere('current_function', 'like', $s)
+                         ->orWhere('matricule', 'like', $s)
+                         ->orWhere('ability', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('graduate_type', 'like', $s)
+                         ->orWhere('graduate_deliver', 'like', $s)
+                         ->orWhere('marital_status', 'like', $s)
+                         ->pluck('id')->toArray();
+
+            
+            
+            
+            
+            $notifs1 = ENotification::whereIn('user_id', $senders)->orderBy('created_at', 'desc')->get();
+
+            $notifs2 = ENotification::where('title', 'like', $s)
+                                    ->orWhere('object', 'like', $s)
+                                    ->orWhere('content', 'like', $s)
+                                    ->get();
+
+            $notifs = $notifs1->concat($notifs2);
+
+        }
+        else{
+
+            $notifs = ENotification::orderBy('created_at', 'desc')->get();
+        }
+
+        foreach($notifs as $notif){
+
+            $receivers = $notif->receivers;
+
+            if($options){
+
+                $initiate_data = [];
+
+                if($receivers == null || $receivers == []){
+
+                    $initiate_data[] = $notif;
+    
+                }
+                elseif(in_array($this->id, $receivers)){
+    
+                    $initiate_data[] = $notif;
+    
+                }
+
+                foreach($initiate_data as $f){
+
+                    if($options == 'read'){
+
+                        $seen_by = (array)$f->seen_by;
+
+                        if(in_array($this->id, $seen_by)) $data[] = $f;
+
+                    }
+
+                    elseif($options == 'unread'){
+
+                        $seen_by = (array)$f->seen_by;
+
+                        if(!in_array($this->id, $seen_by)) $data[] = $f;
+
+                    }
+                    elseif($options == 'hidden'){
+
+                        $hide_for = (array)$f->hide_for;
+
+                        if(in_array($this->id, $hide_for)) $data[] = $f;
+
+                    }
+                    
+                }
+            }
+            else{
+                if($receivers == null || $receivers == []){
+
+                    $data[] = $notif;
+    
+                }
+                elseif(in_array($this->id, $receivers)){
+    
+                    $data[] = $notif;
+    
+                }
+            }
+
+        }
+
+        return $data;
     }
 
 

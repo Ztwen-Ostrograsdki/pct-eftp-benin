@@ -5,13 +5,13 @@ namespace App\Jobs;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\User;
+use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\DB;
 
-class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
+class JobNotifyAdminsThatBlockedUserTryingToLogin implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Batchable;
 
     public $user;
 
@@ -29,17 +29,20 @@ class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
      */
     public function handle(): void
     {
+        $user = $this->user;
+
+        $since = $user->__getDateAsString($user->blocked_at, 3, true);
 
         $user = $this->user;
 
         $title = "Tentative de connexion.";
 
-        $object = "Confirmation d'identification.";
+        $object = "Compte bloqué.";
 
         $content = "L'utilisateur " 
-                    . $user->getFullName(true) . 
-                    " a tenté de se connecter a son compte. Le compte de cet utilisateur dont l'adresse mail est " 
-                    . $user->email . " n'a pas encore été identifié!";
+                   . $user->getFullName(true) . 
+                   " a tenté de se connecter a son compte. Le compte de cet utilisateur dont l'adresse mail est " 
+                   . $user->email . " a été bloqué depuis le " . $since ;
 
         $admins = ModelsRobots::getUserAdmins();
         
@@ -48,7 +51,8 @@ class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
             'content' => $content,
             'title' => $title,
             'object' => $object,
-            'receivers' => $admins
+            'receivers' => $admins,
+
         ];
 
         ENotification::create($data);

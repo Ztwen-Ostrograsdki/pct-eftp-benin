@@ -36,6 +36,15 @@ e.private('admin')
         Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent', user);
         
     })
+    
+    .listen('NotificationDispatchedToAdminsSuccessfullyEvent', (user) =>{
+
+        console.log(user);
+        
+
+        Livewire.dispatch('LiveNotificationDispatchedToAdminsSuccessfullyEvent', user);
+        
+    })
 
 e.private('App.Models.User.' + window.ClientUser.id)
     .listen('LogoutUserEvent', (ev) =>{

@@ -40,4 +40,40 @@ class ENotification extends Model
         $receivers = $this->receivers;
         
     }
+
+    public function getSeens($only_ids = false)
+    {
+        $users = [];
+
+        $seens = $this->seen_by;
+
+        if($seens){
+
+            if($only_ids){
+
+                $users = User::whereIn('id', $seens)->get()->pluck('id')->toArray();
+
+            }
+            else{
+                
+                $users = User::whereIn('id', $seens)->get();
+            }
+        }
+
+        return $users;
+    }
+
+    public function getHiddenFor()
+    {
+        $users = [];
+
+        $hides = $this->hide_for;
+
+        if($hides){
+
+            $users = User::whereIn('id', $hides)->get();
+        }
+
+        return $users;
+    }
 }

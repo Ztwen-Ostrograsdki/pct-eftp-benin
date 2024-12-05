@@ -5,6 +5,7 @@ use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
+use App\Livewire\BookDetailsPage;
 use App\Livewire\HomePage;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\Shop\ShoppingHome;
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blo
 
 
 Route::get('boutique/', ShoppingHome::class)->name('shopping.home');
+Route::get('boutique/details-documents/{slug}', BookDetailsPage::class)->name('book.details');
 
 
 Route::middleware(['guest'])->group(function(){

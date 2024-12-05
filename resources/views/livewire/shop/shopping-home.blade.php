@@ -110,203 +110,62 @@
               </div>
             </div>
             <div class="flex flex-wrap items-center ">
-  
+              
+              @foreach($books as $book)
               <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
+                <div @if(array_key_exists($book->id, $carts_items)) title="Vous avez ajouté cet document au panier"  @endif class="border @if(array_key_exists($book->id, $carts_items)) shadow-md transition-shadow shadow-green-600 opacity-65 hover:opacity-100 @endif transition-opacity border-gray-300 dark:border-gray-700">
                   <div class="relative bg-gray-200">
-                    <a href="/products/product_one" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
+                    <a href="{{route('book.details', ['slug' => $book->slug])}}" class="">
+                      @if(isset($book->images) && count($book->images) > 0 )
+                      <img src="{{url('storage', $book->images[$image_indexes[$book->id]['index']]) }}" alt="{{$book->name}}" class="object-cover w-full h-56 mx-auto ">
+                      @else
+                      <div class="object-cover w-full h-56 mx-auto flex justify-center bg-gray-600">
+                          <b class="text-gray-500 text-center text-lg mt-32">Aucune image</b>
+                      </div>
+                      @endif
                     </a>
                   </div>
                   <div class="p-3 ">
                     <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
+                      <h3 class="text-xl flex w-full justify-between font-medium dark:text-gray-400">
+                        <span>{{$book->name}}</span>
+                        @if(count($book->images) > 1)
+                        <img wire:click='reloadImageIndex({{$book->id}})' title="Recharger une autre image" class="w-5 h-5 hover:scale-125 hover:rotate-12 cursor-pointer float-right" src="{{url('images/icons/refresh.ico')}}"/>
+                        @endif
                       </h3>
                     </div>
                     <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
+                      <span class="text-green-600 dark:text-green-600">
+                        {{Number::currency($book->price, 'CFA')}}
+                      </span>
+                      
                     </p>
                   </div>
                   <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
   
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
+                    <a title="Ajouter cet article au panier" wire:click.prevent="addToCart({{$book->id}})" href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 @if(array_key_exists($book->id, $carts_items)) text-green-600 @endif" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
+                      </svg>
+                      @if(array_key_exists($book->id, $carts_items))
+                      <span wire:click="addToCart({{$book->id}})" wire:loading.remove wire:target="addToCart({{$book->id}})">
+                        <b> ({{ $carts_items[$book->id]['quantity'] }}) </b>
+                        Ajouter encore au panier
+                      </span>
+                      @else
+                      <span wire:loading.remove wire:target="addToCart({{$book->id}})">Ajouter au panier</span>
+                      @endif
+                      <span wire:loading wire:target="addToCart({{$book->id}})">Ajout en cours ...</span>
                     </a>
   
                   </div>
                 </div>
               </div>
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
-                  <div class="relative bg-gray-200">
-                    <a href="#" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
-                    </a>
-                  </div>
-                  <div class="p-3 ">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
-                      </h3>
-                    </div>
-                    <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
-                    </p>
-                  </div>
-                  <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
-  
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
-                    </a>
-  
-                  </div>
-                </div>
-              </div>
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
-                  <div class="relative bg-gray-200">
-                    <a href="#" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
-                    </a>
-                  </div>
-                  <div class="p-3 ">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
-                      </h3>
-                    </div>
-                    <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
-                    </p>
-                  </div>
-                  <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
-  
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
-                    </a>
-  
-                  </div>
-                </div>
-              </div>
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
-                  <div class="relative bg-gray-200">
-                    <a href="#" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
-                    </a>
-                  </div>
-                  <div class="p-3 ">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
-                      </h3>
-                    </div>
-                    <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
-                    </p>
-                  </div>
-                  <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
-  
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
-                    </a>
-  
-                  </div>
-                </div>
-              </div>
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
-                  <div class="relative bg-gray-200">
-                    <a href="#" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
-                    </a>
-                  </div>
-                  <div class="p-3 ">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
-                      </h3>
-                    </div>
-                    <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
-                    </p>
-                  </div>
-                  <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
-  
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
-                    </a>
-  
-                  </div>
-                </div>
-              </div>
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
-                <div class="border border-gray-300 dark:border-gray-700">
-                  <div class="relative bg-gray-200">
-                    <a href="#" class="">
-                      <img src="https://i.postimg.cc/hj6h6Vwv/pexels-artem-beliaikin-2292919.jpg" alt="" class="object-cover w-full h-56 mx-auto ">
-                    </a>
-                  </div>
-                  <div class="p-3 ">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <h3 class="text-xl font-medium dark:text-gray-400">
-                        Titre
-                      </h3>
-                    </div>
-                    <p class="text-lg ">
-                      <span class="text-green-600 dark:text-green-600">$800.00</span>
-                    </p>
-                  </div>
-                  <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
-  
-                    <a href="#" class="text-gray-500 flex items-center space-x-2 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4 bi bi-cart3 " viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                      </svg><span>Ajouter au panire</span>
-                    </a>
-  
-                  </div>
-                </div>
-              </div>
-  
+              @endforeach
             </div>
             <!-- pagination start -->
             <div class="flex justify-end mt-6">
-              <nav aria-label="page-navigation">
-                <ul class="flex list-style-none">
-                  <li class="page-item disabled ">
-                    <a href="#" class="relative block pointer-events-none px-3 py-1.5 mr-3 text-base text-gray-700 transition-all duration-300  rounded-md dark:text-gray-400 hover:text-gray-100 hover:bg-blue-600">Previous
-                    </a>
-                  </li>
-                  <li class="page-item ">
-                    <a href="#" class="relative block px-3 py-1.5 mr-3 text-base hover:text-blue-700 transition-all duration-300 hover:bg-blue-200 dark:hover:text-gray-400 dark:hover:bg-gray-700 rounded-md text-gray-100 bg-blue-400">1
-                    </a>
-                  </li>
-                  <li class="page-item ">
-                    <a href="#" class="relative block px-3 py-1.5 text-base text-gray-700 transition-all duration-300 dark:text-gray-400 dark:hover:bg-gray-700 hover:bg-blue-100 rounded-md mr-3  ">2
-                    </a>
-                  </li>
-                  <li class="page-item ">
-                    <a href="#" class="relative block px-3 py-1.5 text-base text-gray-700 transition-all duration-300 dark:text-gray-400 dark:hover:bg-gray-700 hover:bg-blue-100 rounded-md mr-3 ">3
-                    </a>
-                  </li>
-                  <li class="page-item ">
-                    <a href="#" class="relative block px-3 py-1.5 text-base text-gray-700 transition-all duration-300 dark:text-gray-400 dark:hover:bg-gray-700 hover:bg-blue-100 rounded-md ">Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+                {{$books->links()}} 
             </div>
             <!-- pagination end -->
           </div>

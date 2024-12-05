@@ -29,6 +29,9 @@
         @livewireSweetalertScripts
 
         <script>
+            document.addEventListener('livewire.navigated', () =>{
+                window.HSStaticMethods.autoInit();
+            });
             window.User = { 
                 id: {{optional(auth()->user())->id}},
             }

@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\Book;
+use App\Models\Classe;
 use App\Models\Epreuve;
 use App\Models\EpreuveResponse;
 use Illuminate\Database\Eloquent\Model;
 
 class Filiar extends Model
 {
-    protected $fillable = ['name', 'description', 'slug'];
+    protected $fillable = ['name', 'description', 'slug', 'option'];
 
     public function epreuves()
     {
@@ -24,5 +25,10 @@ class Filiar extends Model
     public function books()
     {
         return $this->hasMany(Book::class);
+    }
+
+    public function classes()
+    {
+        return $this->hasMany(Classe::class);
     }
 }

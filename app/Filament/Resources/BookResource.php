@@ -16,11 +16,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class BookResource extends Resource
 {
@@ -37,18 +43,28 @@ class BookResource extends Resource
         return $form
             ->schema([
                 Group::make()->schema([
-                    Section::make('Info basiques')->schema([
+
+                    Section::make('Info basiques et Dénomination')->schema([
                         TextInput::make('name')
                             ->label('Nom du livre')
                             ->placeholder("Veuillez le nom du livre")
-                            ->default("le nom du livre")
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' || $operation === 'edit' ? $set('slug', Str::slug($state)) : null)
                             ->required(),
+                        
+                        TextInput::make('slug')
+                            ->label("Identifiant du livre/document")
+                            ->placeholder("Identifiant du livre/Document")
+                            ->required()
+                            ->disabled()
+                            ->dehydrated()
+                            ->maxLength(255)
+                            ->unique(Book::class, 'slug', ignoreRecord: true),
 
-                        TextInput::make('title')
-                                ->label('Titre du livre')
-                                ->placeholder("Veuillez renseigner le titre du livre")
-                                ->default("le titre du livre")
-                                ->required(),
+                    ])
+                    ->columns(2),
+
+                    Section::make('Identification et Prix')->schema([
 
                         TextInput::make('price')
                                   ->label('Le prix')
@@ -58,31 +74,7 @@ class BookResource extends Resource
                         TextInput::make('quantity_bought')
                                   ->label("Quantités disponibles")
                                   ->required()
-                                  ->suffix('exemplaires')
-
-                    ])
-                    ->columns(5),
-
-                    Section::make('Edition')->schema([
-                        TextInput::make('Edition')
-                                ->label('Edition ')
-                                ->placeholder("Veuillez renseigner le du livre")
-                                ->default("l'édition du livre")
-                                ->required(),
-
-                        DatePicker::make('edited_at')
-                                ->label('Edtité vérifié le ')
-                                ->default(now()),
-
-                        TextInput::make('edited_home')
-                                ->label("Maison d'édition du livre")
-                                ->placeholder("Veuillez préciser la maison d'édition du livre")
-                                ->default("Maison d'édition du livre")
-                                ->required(),
-
-                    ])->columns(4),
-
-                    Section::make('Détails pédagogiques')->schema([
+                                  ->suffix('exemplaires'),
                         
                         Select::make('user_id')
                                   ->label("Publieur du livre ou document")
@@ -90,36 +82,65 @@ class BookResource extends Resource
                                   ->searchable()
                                   ->preload()
                                   ->relationship('user', 'pseudo'),
+
+                    ])
+                    ->columns(3),
+
+                    Section::make('Edition')->schema([
                         
-                        Select::make('classe_id')
-                                  ->label('La classe')
-                                  ->required()
+
+                        TextInput::make('last_edited_year')
+                                ->label('Dernière édition faite en ')
+                                ->placeholder("Dernière édition du livre/document faite en "),
+
+                        TextInput::make('edited_home')
+                                ->label("Maison d'édition du livre")
+                                ->placeholder("Veuillez préciser la maison d'édition du livre")
+                                ->default("Maison d'édition du livre")
+                                ->required(),
+
+                    ])->columns(2),
+
+                    Section::make('Détails pédagogiques')->schema([
+                        
+                        Select::make('promotion_id')
+                                  ->label('Un document de la promotion ')
                                   ->searchable()
+                                  ->default(null)
+                                  ->placeholder("Veuillez préciser la promotion concernée")
                                   ->preload()
-                                  ->relationship('classe', 'name'),
+                                  ->relationship('promotion', 'name'),
                         
                         
-                        
+                        Select::make('classes_id')
+                                  ->label('Un document des classes de')
+                                  ->searchable()
+                                  ->default(null)
+                                  ->multiple()
+                                  ->preload()
+                                  ->options(getClasses(true, 'by name')),
 
-                    ])->columns(5),
+                        Select::make('filiars_id')
+                                  ->label('Les filières concernées')
+                                  ->searchable()
+                                  ->multiple()
+                                  ->default(null)
+                                  ->preload()
+                                  ->options(getFiliars(true, 'by name')),
 
+                    ])->columns(3),
 
                     Section::make('Détails sur le livre ou le document')->schema([
                         MarkdownEditor::make('description')
                                        ->label("Decrivez le document ou le livre")
                                        ->columnSpanFull()
-                                       ->fileAttachmentsDirectory('products'),
+                                       ->fileAttachmentsDirectory('books'),
                         
 
                     ])->columns(1),
 
                     Section::make('Statuts du document ou du livre')->schema([
                         
-                        Toggle::make('in_stock')
-                                ->label('Est disponible ?')
-                                ->required()
-                                ->default(true),
-
                         Toggle::make('is_active')
                                 ->label('Est actif ?')
                                 ->required()
@@ -148,7 +169,7 @@ class BookResource extends Resource
                                    ->required()
                                    ->directory('books')
                                    ->reorderable()
-                                   ->maxFiles(5)
+                                   ->maxFiles(10)
 
                     ]),
 
@@ -160,13 +181,42 @@ class BookResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')->label("Livre ou Document")->searchable(),
+                
+                TextColumn::make('description')->label("Description")->searchable(),
+
+                TextColumn::make('user.email')->label("Publié par ")->searchable()->description(fn(Model $book) => $book->user ? $book->user->getFullName() : 'inconnu' ),
+                
+                TextColumn::make('quantity_bought')->label("Qtité disponibles")->searchable()->description(fn(Model $book) => $book->quantity_bought ? numberZeroFormattor($book->quantity_bought) . ' livres disponibles ' : 'Non renseigné' ),
+                
+                TextColumn::make('edited_home')->label("Edité par")->searchable(),
+                
+                TextColumn::make('last_edited_year')->label("Edité en ")->searchable(),
+                
+                TextColumn::make('price')->label("Le prix")->money("CFA", 0, 'fr')->sortable(),
+                
+                IconColumn::make('on_sale')->label("En vente ?")->boolean(),
+
+                IconColumn::make('is_active')->label("Est actif ?")->boolean(),
+
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label("Date de Création")
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->label("Date de MAJ")
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

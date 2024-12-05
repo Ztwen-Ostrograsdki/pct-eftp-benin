@@ -13,6 +13,3 @@ import { Tooltip } from 'tw-elements';
 const myTooltip = new Tooltip(document.getElementById('my-tooltip'));
 
 
-document.addEventListener('livewire.navigated', () =>{
-    window.HSStaticMethods.autoInit();
-})

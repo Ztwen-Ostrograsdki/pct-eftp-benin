@@ -34,6 +34,49 @@ return [
         'hidden' => "Masquées",
     ],
 
+    'filiars' => [
+        'FC' => ['name' => 'FC', 'description' => 'Froid et Climatisation', 'option' => 'Industrielle'], 
+        'MA' => ['name' => 'MA', 'description' => 'Mécanique et Auto', 'option' => 'Industrielle'],
+        'OBB' => ['name' => 'OBB', 'description' => 'OBB', 'option' => 'Industrielle'],
+        'OG' => ['name' => 'OG', 'description' => 'Opérateur Géomètre', 'option' => 'Industrielle'],
+        'FM' => ['name' => 'FM', 'description' => 'Fabrication Mécanique', 'option' => 'Industrielle'],
+        'BTP' => ['name' => 'BTP', 'description' => 'Batiment et Travaux Publics', 'option' => 'Industrielle'],
+        'F1' => ['name' => 'F1', 'description' => 'Mécanique Générale', 'option' => 'Technique'],
+        'F2' => ['name' => 'F2', 'description' => 'Electronique', 'option' => 'Technique'],
+        'F3' => ['name' => 'F3', 'description' => 'Mécanique Générale', 'option' => 'Technique'],
+        'F4' => ['name' => 'F4', 'description' => 'Génie Civil', 'option' => 'Technique'],
+        'IMI' => ['name' => 'IMI', 'description' => 'Installation et Maintenance Industrielle', 'option' => 'Informatique'],
+        'HR' => ['name' => 'HR', 'description' => 'Hotellerie et Restauration', 'option' => null],
+    ],
+
+    'filiars_options_defaults' => [
+        'FC' => 'Industrielle', 
+        'MA' => 'Industrielle',
+        'OBB' => 'Industrielle',
+        'OG' => 'Industrielle',
+        'FM' => 'Industrielle',
+        'BTP' => 'Industrielle',
+        'F1' => 'Technique',
+        'F2' => 'Technique',
+        'F3' => 'Technique',
+        'F4' => 'Technique',
+        'IMI' => 'Informatique',
+        'HR' => null,
+    ],
+
+    'filiars_options' => [
+        'Industrielle' => 'Industrielle', 
+        'Technique' => 'Technique',
+        'Informatique' => 'Informatique',
+        'Comptabilité' => 'Comptabilité',
+        'Commerce' => 'Commerce',
+        'Secrétariat' => 'Secrétariat',
+        'Hotellerie' => 'Hotellerie',
+        'Restauration' => 'Restauration',
+        'Gestion' => 'Gestion',
+        'Banque et Finance' => 'Banque et Finance',
+    ],
+
 
 
 

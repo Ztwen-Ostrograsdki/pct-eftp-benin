@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('pseudo')->nullable()->default(Str::random(7));
             $table->string('email')->unique();
+            $table->string('identifiant')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_ame')->nullable()->default(false);

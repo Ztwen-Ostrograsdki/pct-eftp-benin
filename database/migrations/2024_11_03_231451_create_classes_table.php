@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('classes');
         Schema::disableForeignKeyConstraints();
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
@@ -21,6 +20,8 @@ return new class extends Migration
             $table->foreignId('filiar_id')->constrained('filiars')->cascadeOnDelete();
             $table->timestamps();
         });
+
+        
     }
 
     /**

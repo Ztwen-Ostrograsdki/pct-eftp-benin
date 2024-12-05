@@ -273,7 +273,7 @@ trait DateFormattor{
 
         if($now_timestamp->diffInHours($date_timestamp) > 24){
 
-            $to = ucwords($date_to_str);
+            $to = 'Le ' . ucwords($date_to_str);
 
             if($with_hour){
 

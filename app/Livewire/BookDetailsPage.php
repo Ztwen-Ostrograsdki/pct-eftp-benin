@@ -8,6 +8,8 @@ use Livewire\Component;
 
 class BookDetailsPage extends Component
 {
+    public $identifiant;
+
     public $slug;
 
     public $book;
@@ -16,13 +18,15 @@ class BookDetailsPage extends Component
 
     public $quantity = 1;
 
-    public function mount($slug)
+    public function mount($identifiant,  $slug)
     {
-        if($slug){
+        if($identifiant && $slug){
+
+            $this->identifiant = $identifiant;
 
             $this->slug = $slug;
 
-            $book = Book::where('slug', $slug)->where('is_active', 1)->firstOrFail();
+            $book = Book::where('identifiant', $identifiant)->where('slug', $slug)->where('is_active', 1)->firstOrFail();
 
             if($book) $this->book = $book;
         }

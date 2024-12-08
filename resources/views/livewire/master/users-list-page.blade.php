@@ -76,12 +76,12 @@
                             {{ \App\Helpers\Dater\Formattors\Formattors::numberZeroFormattor($loop->iteration) }}
                         </th>
                         <td class="px-6 py-4">
-                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['id' => $user->id]) }}">
+                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
                                 {{$user->getFullName()}} 
                             </a>
                         </td>
                         <td class="px-6 py-4">
-                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['id' => $user->id]) }}">
+                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
                                 {{$user->email}} 
                             </a>
                         </td>

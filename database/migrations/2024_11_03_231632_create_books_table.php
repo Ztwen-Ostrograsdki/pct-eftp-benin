@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
             $table->string('slug')->unique();
+            $table->string('identifiant')->unique();
             $table->boolean('on_sale')->nullable()->default(true);
             $table->boolean('is_active')->nullable()->default(true);
             $table->decimal('price', 15, 2)->nullable()->default(null);

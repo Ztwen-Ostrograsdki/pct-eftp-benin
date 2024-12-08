@@ -9,6 +9,9 @@ use App\Livewire\BookDetailsPage;
 use App\Livewire\HomePage;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\Shop\ShoppingHome;
+use App\Livewire\User\CartPage;
+use App\Livewire\User\CheckoutPage;
+use App\Livewire\User\CheckoutSuccessPage;
 use App\Livewire\User\MyNotificationsPage;
 use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
@@ -19,15 +22,21 @@ Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.lis
 
 Route::middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
 
-    Route::get('mon-compte/mes-notifications', MyNotificationsPage::class)->name('user.notifications');
+    Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications');
     
-    Route::get('mon-compte/{id}', UserProfilPage::class)->name('user.profil');
+    Route::get('profil/{identifiant}', UserProfilPage::class)->name('user.profil');
+
+    Route::get('profil/boutique/mon-panier/{identifiant}', CartPage::class)->name('user.cart');
+
+    Route::get('profil/boutique/Validation-payement/{identifiant}', CheckoutPage::class)->name('user.checkout');
+    
+    Route::get('profil/boutique/panier-valide/succes-payement/{identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
 
 });
 
 
 Route::get('boutique/', ShoppingHome::class)->name('shopping.home');
-Route::get('boutique/details-documents/{slug}', BookDetailsPage::class)->name('book.details');
+Route::get('boutique/details-documents/ID={identifiant}/IDX={slug}', BookDetailsPage::class)->name('book.details');
 
 
 Route::middleware(['guest'])->group(function(){

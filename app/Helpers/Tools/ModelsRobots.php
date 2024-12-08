@@ -2,6 +2,7 @@
 namespace App\Helpers\Tools;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class ModelsRobots{
 
@@ -21,6 +22,12 @@ class ModelsRobots{
                       ->toArray();
 
         return count($admins) ? $admins : [1];
+    }
+
+
+    public static function makeUserIdentifySequence()
+    {
+        return Str::random(12);
     }
 
 

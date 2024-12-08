@@ -50,6 +50,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         'birth_city',
         'birth_date',
         'matricule',
+        'identifiant',
         'is_ame',
         'status',
         'ability',

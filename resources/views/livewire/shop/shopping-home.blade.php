@@ -23,68 +23,33 @@
         <div class="flex flex-wrap mb-24 -mx-3">
           <div class="w-full pr-2 lg:w-1/4 lg:block">
             <div class="p-4 mb-5 bg-white border border-gray-200 dark:border-gray-900 dark:bg-gray-900">
-              <h2 class="text-2xl font-bold dark:text-gray-400"> Categories</h2>
+              <h2 class="text-2xl font-bold dark:text-gray-400"> Par Promotion</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
+                @foreach(getPromotions(true) as $p_id => $promo)
                 <li class="mb-4">
                   <label for="" class="flex items-center dark:text-gray-400 ">
                     <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg">Livres</span>
+                    <span class="text-lg">{{ $promo->name }}</span>
                   </label>
                 </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-400 ">
-                    <input type="checkbox" class="w-4 h-4 mr-2 ">
-                    <span class="text-lg">Documents</span>
-                  </label>
-                </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-400">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg">Support</span>
-                  </label>
-                </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-400">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg">Accessoires</span>
-                  </label>
-                </li>
+                @endforeach
               </ul>
-  
             </div>
             <div class="p-4 mb-5 bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-900">
-              <h2 class="text-2xl font-bold dark:text-gray-400">Filières</h2>
+              <h2 class="text-2xl font-bold dark:text-gray-400">Par Filières</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
+                @foreach(getFiliars(true) as $f_id => $fil)
                 <li class="mb-4">
                   <label for="" class="flex items-center dark:text-gray-300">
                     <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg dark:text-gray-400">Inductrielles</span>
+                    <span class="text-lg dark:text-gray-400">{{ $fil->name }}</span>
                   </label>
                 </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-300">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg dark:text-gray-400">Techniques</span>
-                  </label>
-                </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-300">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg dark:text-gray-400">Agricoles</span>
-                  </label>
-                </li>
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-300">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg dark:text-gray-400">Générales</span>
-                  </label>
-                </li>
+                @endforeach
               </ul>
             </div>
-            
-  
             <div class="p-4 mb-5 bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-900">
               <h2 class="text-2xl font-bold dark:text-gray-400">Prix</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
@@ -102,9 +67,10 @@
               <div class="items-center justify-between hidden px-3 py-2 bg-gray-100 md:flex dark:bg-gray-900 ">
                 <div class="flex items-center justify-between">
                   <select name="" id="" class="block w-40 text-base bg-gray-100 cursor-pointer dark:text-gray-400 dark:bg-gray-900">
-                    <option value="">Trier par prix</option>
-                    <option value="">Trier par filière</option>
                     <option value="">Trier par classe</option>
+                    @foreach (getClasses(true) as $c_id => $cl)
+                      <option value="{{$cl->id}}"> {{ $cl->name }} </option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -115,7 +81,7 @@
               <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
                 <div @if(array_key_exists($book->id, $carts_items)) title="Vous avez ajouté cet document au panier"  @endif class="border @if(array_key_exists($book->id, $carts_items)) shadow-md transition-shadow shadow-green-600 opacity-65 hover:opacity-100 @endif transition-opacity border-gray-300 dark:border-gray-700">
                   <div class="relative bg-gray-200">
-                    <a href="{{route('book.details', ['slug' => $book->slug])}}" class="">
+                    <a href="{{route('book.details', ['identifiant' => $book->identifiant, 'slug' => $book->slug])}}" class="">
                       @if(isset($book->images) && count($book->images) > 0 )
                       <img src="{{url('storage', $book->images[$image_indexes[$book->id]['index']]) }}" alt="{{$book->name}}" class="object-cover w-full h-56 mx-auto ">
                       @else

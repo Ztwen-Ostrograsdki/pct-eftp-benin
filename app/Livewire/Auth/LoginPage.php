@@ -108,7 +108,7 @@ class LoginPage extends Component
 
                 request()->session()->regenerate();
 
-                return $this->redirectIntended(route('user.profil', ['id'=> $user->id]));
+                return $this->redirectIntended(route('user.profil', ['identifiant'=> $user->identifiant]));
             }
             else{
 

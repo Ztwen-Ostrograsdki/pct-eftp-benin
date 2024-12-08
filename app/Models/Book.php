@@ -31,6 +31,7 @@ class Book extends Model
         'authorized',
         'hidden',
         'visibity',
+        'identifiant',
         'in_stock',
         'likes',
         'on_sale',

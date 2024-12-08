@@ -50,10 +50,11 @@ class UserProfilPage extends Component
     public $firstname;
 
 
-    public function mount($id)
+    public function mount($identifiant)
     {
-        if($id){
-            $user = User::find($id);
+        if($identifiant){
+
+            $user = getUser($identifiant, 'identifiant');
 
             if($user){
 

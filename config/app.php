@@ -77,6 +77,44 @@ return [
         'Banque et Finance' => 'Banque et Finance',
     ],
 
+    'payments_methods' => [
+        'stripe' => 'Stripe',
+        'momo_mtn' => 'MTN MOMO',
+        'moov_money' => 'MOOV MONEY',
+        'celtiis_cash' => 'Celtiis Cash',
+    ],
+
+    'payments_methods' => [
+        'stripe' => 'Stripe',
+        'momo_mtn' => 'MTN MOMO',
+        'moov_money' => 'MOOV MONEY',
+        'celtiis_cash' => 'Celtiis Cash',
+    ],
+
+    'shipping_methods' => [
+        'fedex' => "FedEx",
+        'ups' => "UPS",
+        'dhl' => "DHL",
+        'usps' => "USPS",
+        'gozem' => "GoZem",
+        'other' => "Autre",
+    ],
+
+    'currencies' => [
+        'inr' => "INR",
+        'usd' => "USD",
+        'cfa' => "CFA",
+        'eur' => "EUR"
+    ],
+
+    'order_status' => [
+        'new' => "Nouvelle demande",
+        'processing' => "En cours de traitement",
+        'shipped' => "Expédié",
+        'delivered' => "Livrée",
+        'canceled' => "Annulée"
+    ],
+
 
 
 

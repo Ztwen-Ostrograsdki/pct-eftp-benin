@@ -16,8 +16,7 @@ class CartManager
 
         $already_exist_item = null;
 
-        $book = Book::where('id', $book_id)->first(['id', 'name', 'price', 'images', 'slug']);
-
+        $book = Book::find($book_id);
 
         foreach ($carts_items as $key => $item) {
 
@@ -42,6 +41,7 @@ class CartManager
                     'book_id' => $book_id,
                     'name' => $book->name,
                     'slug' => $book->slug,
+                    'identifiant' => $book->identifiant,
                     'image' => $book->images[0],
                     'quantity' => $quantity,
                     'unit_amount' => $book->price,

@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -47,6 +48,8 @@ class RegisterPage extends Component
             $names_exists = User::where('firstname', $this->firstname)->where('lastname', $this->lastname)->first();
 
             if(!$names_exists){
+
+                $identifiant = ModelsRobots::makeUserIdentifySequence();
                 
                 if($this->profil_photo){
 
@@ -68,6 +71,7 @@ class RegisterPage extends Component
                         'password' => Hash::make($this->password),
                         'firstname' => Str::upper($this->firstname),
                         'lastname' => Str::ucwords($this->lastname),
+                        'identifiant' => $identifiant,
                         'email' => $this->email,
                         'profil_photo' => 'users/' . $file_name . '.' . $extension,
                     ]);
@@ -78,6 +82,7 @@ class RegisterPage extends Component
                         'password' => Hash::make($this->password),
                         'firstname' => Str::upper($this->firstname),
                         'lastname' => Str::ucwords($this->lastname),
+                        'identifiant' => $identifiant,
                         'email' => $this->email,
                     ]);
                 }

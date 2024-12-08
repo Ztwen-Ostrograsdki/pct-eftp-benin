@@ -50,6 +50,7 @@ class BookResource extends Resource
                             ->placeholder("Veuillez le nom du livre")
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' || $operation === 'edit' ? $set('slug', Str::slug($state)) : null)
+                            ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' ? $set('identifiant', Str::random(16)) : null)
                             ->required(),
                         
                         TextInput::make('slug')
@@ -61,8 +62,18 @@ class BookResource extends Resource
                             ->maxLength(255)
                             ->unique(Book::class, 'slug', ignoreRecord: true),
 
+
+                        TextInput::make('identifiant')
+                            ->label("Identifiant numerique du livre/document")
+                            ->placeholder("Identifiant numérique du livre/Document")
+                            ->required()
+                            ->disabled()
+                            ->dehydrated()
+                            ->maxLength(255)
+                            ->unique(Book::class, 'identifiant', ignoreRecord: true),
+
                     ])
-                    ->columns(2),
+                    ->columns(3),
 
                     Section::make('Identification et Prix')->schema([
 

@@ -78,7 +78,7 @@
               <div class="flex flex-wrap items-center justify-between pb-4 mb-6 space-x-2 border-b dark:border-gray-700">
                 <div class="flex items-center px-6 mb-2 md:mb-0 ">
                   <div class="flex mr-2 rounded-full">
-                    <a title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['id' => $notif->user->id]) }}">
+                    <a title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $notif->user->identifiant]) }}">
                         @if($notif->user->profil_photo)
                             <img src="{{ url('storage', $notif->user->profil_photo) }}" alt="" class="object-cover w-12 h-12 rounded-full">
                         @else
@@ -89,7 +89,7 @@
                     </a>
                 </div>
                   <div>
-                    <a title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['id' => $notif->user->id]) }}">
+                    <a title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $notif->user->identifiant]) }}">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-300">
                             {{ $notif->user->getFullName() }}
                         </h2>

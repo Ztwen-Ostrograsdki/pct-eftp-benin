@@ -40,7 +40,6 @@ e.private('admin')
     .listen('NotificationDispatchedToAdminsSuccessfullyEvent', (user) =>{
 
         console.log(user);
-        
 
         Livewire.dispatch('LiveNotificationDispatchedToAdminsSuccessfullyEvent', user);
         
@@ -50,5 +49,20 @@ e.private('App.Models.User.' + window.ClientUser.id)
     .listen('LogoutUserEvent', (ev) =>{
 
         Livewire.dispatch('LiveLogoutUserEvent', ev);
+        
+    })
+    .listen('OrderCreationHasBeenFailedEvent', (ev) =>{
+
+        console.log(ev);
+        
+
+        Livewire.dispatch('LiveOrderCreationHasBeenFailedEvent', ev);
+        
+    })
+    .listen('NewOrderHasBeenCreatedSuccessfullyEvent', (order) =>{
+
+        console.log(order);
+
+        Livewire.dispatch('LiveNewOrderHasBeenCreatedSuccessfullyEvent', order);
         
     })

@@ -112,7 +112,7 @@
               <a href="{{route('shopping.home')}}" class="w-full text-center px-4 py-2 text-blue-500 border border-blue-500 rounded-md md:w-auto hover:text-white hover:bg-blue-600 dark:border-gray-700 ">
                 Retour au shopping
               </a>
-              <a href="#" class="w-full text-center px-4 py-2 bg-blue-500 rounded-md text-gray-50 md:w-auto dark:text-gray-300 hover:bg-blue-600">
+              <a href="{{route('user.orders', ['identifiant' => auth_user()->identifiant])}}" class="w-full text-center px-4 py-2 bg-blue-500 rounded-md text-gray-50 md:w-auto dark:text-gray-300 hover:bg-blue-600">
                 Voir mes commandes
               </a>
             </div>

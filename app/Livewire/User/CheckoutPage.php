@@ -2,7 +2,12 @@
 
 namespace App\Livewire\User;
 
+use Akhaled\LivewireSweetalert\Confirm;
+use Akhaled\LivewireSweetalert\Toast;
+use App\Events\InitiateNewOrderEvent;
 use App\Helpers\CartManager;
+use App\Models\Order;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -14,7 +19,7 @@ class CheckoutPage extends Component
 {
     public $identifiant;
 
-    use WithFileUploads;
+    use WithFileUploads, Toast, Confirm;
 
     public $carts_items = [];
 
@@ -29,9 +34,6 @@ class CheckoutPage extends Component
     public $counter = 0;
 
     public $user_id;
-
-    #[Validate('required|string|min:3|max:255')]
-    public $address;
 
     #[Validate('required|string|min:3|max:255')]
     public $first_name;
@@ -109,9 +111,15 @@ class CheckoutPage extends Component
 
     public function checkout()
     {
-        return to_route('user.checkout.success', ['identifiant' => auth_user()->identifiant]);
-        
-        $this->validate(['images' => 'array|max:5', 'images.*' => 'image|mimes:jpeg,png,jpg|max:4000']);
+
+        $this->resetErrorBag();
+
+        $this->validate(
+            [
+                'images' => 'array|max:5', 
+                'images.*' => 'image|mimes:jpeg,png,jpg|max:4000',
+            ]
+        );
         
         $this->validate();
 
@@ -119,41 +127,85 @@ class CheckoutPage extends Component
 
         $order_data = [];
 
+        $user = auth_user();
+
+        $order_identifiant =  Str::random(9);
 
         $order_data = [
-        'user_id' => $this->user,
-        'grand_total' => $this->grand_total,
-        'payment_method' => $this->payment_method,
-        'currency' => $this->currency,
-        'shipping_amount' => $this->shipping_amount,
-        'shipping_method' => $this->shipping_method,
-        'notes' => $this->notes,
-
+            'user_id' => $user->id,
+            'grand_total' => $this->grand_total,
+            'identifiant' =>$order_identifiant,
+            'payment_method' => $this->payment_method,
+            'currency' => $this->currency,
+            'shipping_amount' => $this->shipping_amount,
+            'shipping_method' => $this->shipping_method,
+            'notes' => $this->notes,
         ];
 
+        $the_images = [];
 
-        //Create the order firstly
+        $images_banks = [];
 
-        //$order = Order::create($order_data);
+        if($this->images){
 
-        //Create the address then
+            foreach($this->images as $image){
+
+                $extension = $image->extension();
+
+                $file_name = getdate()['year'].''.getdate()['mon'].''.getdate()['mday'].''.getdate()['hours'].''.getdate()['minutes'].''.getdate()['seconds']. '' .  Str::random(20);
+
+                $db_name = 'address/' . $file_name . '.' . $extension;
+
+                $the_images[] = $db_name;
+
+                $images_banks[$file_name] = $image;
+            }
+        }
 
         $address_data = [
-            'order_id',
-            'first_name',
-            'last_name',
-            'phone',
-            'images',
-            'image',
-            'street_address',
-            'city',
-            'state',
-            'zip_code',
+            'order_id' => null,
+            'first_name' => Str::upper($this->first_name),
+            'last_name' => Str::ucwords($this->last_name),
+            'phone' => $this->phone,
+            'street_address' => $this->street_address,
+            'city' => $this->city,
+            'state' => $this->state,
+            'zip_code' => $this->zip_code,
         ];
 
-        //Address::create($address_data);
+        $data = [
+            'items' => $this->carts_items, 
+            'order' => $order_data, 
+            'address' => $address_data,
+            'address_images' => $images_banks,
+            'order_identifiant' => $order_identifiant,
+        ];
 
-        return to_route('user.checkout.success', ['identifiant' => auth_user()->identifiant]);
+        InitiateNewOrderEvent::broadcast($user, $data);
+        
+    }
+
+    #[On('LiveNewOrderHasBeenCreatedSuccessfullyEvent')]
+    public function orderCompleted($order)
+    {
+        $this->toast("La commande a été soumise avec succès", 'success');
+
+        $ord = Order::where('identifiant', $order)->first();
+
+        if($ord){
+
+            return to_route('user.checkout.success', ['identifiant' => $ord->identifiant]);
+
+        }
+
+    }
+
+    #[On('LiveOrderCreationHasBeenFailedEvent')]
+    public function orderFailed($data = [])
+    {
+        $this->toast("Une erreure est survenue : La commande n'a pas pu être soumise", 'error');
+
+        return false;
     }
 }
 

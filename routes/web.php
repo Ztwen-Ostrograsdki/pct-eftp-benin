@@ -13,6 +13,7 @@ use App\Livewire\User\CartPage;
 use App\Livewire\User\CheckoutPage;
 use App\Livewire\User\CheckoutSuccessPage;
 use App\Livewire\User\MyNotificationsPage;
+use App\Livewire\User\Orders;
 use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
 
@@ -24,13 +25,15 @@ Route::middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blo
 
     Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications');
     
-    Route::get('profil/{identifiant}', UserProfilPage::class)->name('user.profil');
+    Route::get('profil/IDX={identifiant}', UserProfilPage::class)->name('user.profil');
 
-    Route::get('profil/boutique/mon-panier/{identifiant}', CartPage::class)->name('user.cart');
+    Route::get('profil/achats/mes-commandes/IDX={identifiant}', Orders::class)->name('user.orders');
 
-    Route::get('profil/boutique/Validation-payement/{identifiant}', CheckoutPage::class)->name('user.checkout');
+    Route::get('profil/boutique/mon-panier/IDX={identifiant}', CartPage::class)->name('user.cart');
+
+    Route::get('profil/boutique/Validation-payement/IDX={identifiant}', CheckoutPage::class)->name('user.checkout');
     
-    Route::get('profil/boutique/panier-valide/succes-payement/{identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
+    Route::get('profil/boutique/panier-valide/succes-payement/ID={identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
 
 });
 

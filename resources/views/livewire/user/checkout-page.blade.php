@@ -17,7 +17,7 @@
 				<!-- Shipping Address -->
 				<div class="mb-6">
 					<h2 class="text-xl uppercase font-bold text-gray-700 dark:text-white mb-2">
-						Adresse de livraion
+						Adresse de livraison
 					</h2>
                     <hr class="bg-slate-400 my-4 h-1 rounded">
 					<div class="grid grid-cols-2 gap-4">

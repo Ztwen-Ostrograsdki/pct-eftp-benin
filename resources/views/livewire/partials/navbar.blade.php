@@ -48,7 +48,7 @@
               </a>
               @endif
               
-              @if($total_items && $total_items > 0)
+              @if(auth_user() && $total_items && $total_items > 0)
               <a wire:navigate class="font-medium flex items-center hover:text-gray-500 py-3 md:py-6 {{request()->route()->named('shopping.cart') ? 'text-blue-600' : 'text-gray-400' }} dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('user.cart', ['identifiant' => auth_user()->identifiant])}}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex-shrink-0 w-5 h-5 mr-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -113,7 +113,7 @@
                     @endif
                   </a>
                 @endif
-                <a wire:navigate class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " href="#">
+                <a wire:navigate class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " href="{{route('user.orders', ['identifiant' => auth_user()->identifiant])}}">
                   Mes commandes
                 </a>
                 @if($total_items && $total_items > 0)

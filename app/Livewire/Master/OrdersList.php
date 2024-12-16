@@ -1,39 +1,23 @@
 <?php
 
-namespace App\Livewire\User;
+namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Models\Order;
-use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Title("Mes commandes")]
-class Orders extends Component
+class OrdersList extends Component
 {
-
     use Confirm, Toast, WithPagination;
 
     public $sectionned = 'new';
 
     public $search = '';
 
-
-    public function mount($identifiant)
-    {
-        if($identifiant){
-
-            if(auth_user()->identifiant !== $identifiant) return abort(404, "Page introuvable!");
-
-        }
-        else{
-
-            return abort(404, "Page introuvable!");
-        }
-
-        
-    }
+    public $counter = 1;
 
     public function updatedSearch($search)
     {
@@ -45,16 +29,13 @@ class Orders extends Component
         $this->sectionned = $sectionned;
     }
 
-
+    
 
     public function render()
     {
-
         $order_status = config('app.order_status');
 
-        $user = auth_user();
-
-        $query = Order::query()->where('user_id', $user->id)->orderBy('updated_at', 'desc');
+        $query = Order::query()->orderBy('updated_at', 'desc');
 
         if($this->sectionned && $this->sectionned !== "new"){
 
@@ -68,7 +49,7 @@ class Orders extends Component
             
         }
 
-        return view('livewire.user.orders', 
+        return view('livewire.master.orders-list', 
             [
                 'order_status' => $order_status,
                 'orders' => $query->paginate(2),
@@ -76,8 +57,16 @@ class Orders extends Component
         );
     }
 
-    public function deleteOrder($order_id)
+    #[On('LiveNewOrderHasBeenCreatedSuccessfullyEvent')]
+    public function newOrderCompleted($order)
     {
-        
+        $message = "Une nouvelle commande a été reçue";
+
+        $this->toast($message, 'success');
+
+        to_flash('new_order', $message);
+
+        $this->counter = rand(12, 1999);
+
     }
 }

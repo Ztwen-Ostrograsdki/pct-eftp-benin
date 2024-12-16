@@ -120,7 +120,7 @@ class MyNotificationsPage extends Component
 
                 $this->toast($message, 'success');
 
-                session()->flash('success', $message);
+                to_flash('success', $message);
 
                 $this->deleteNotif($notif_id);
 
@@ -138,7 +138,7 @@ class MyNotificationsPage extends Component
     {
         $notif = ENotification::find($notif_id);
 
-        $user = auth()->user();
+        $user = auth_user();
 
         if($notif){
 
@@ -195,7 +195,7 @@ class MyNotificationsPage extends Component
 
             $this->toast($message, 'success');
 
-            session()->flash('success', $message);
+            to_flash('success', $message);
 
         }
         else{

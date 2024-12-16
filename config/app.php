@@ -77,11 +77,10 @@ return [
         'Banque et Finance' => 'Banque et Finance',
     ],
 
-    'payments_methods' => [
-        'stripe' => 'Stripe',
-        'momo_mtn' => 'MTN MOMO',
-        'moov_money' => 'MOOV MONEY',
-        'celtiis_cash' => 'Celtiis Cash',
+    'payments_status' => [
+        'pending' => "En cours...",
+        'paid' => "Payé",
+        'failed' => "Echec payement",
     ],
 
     'payments_methods' => [

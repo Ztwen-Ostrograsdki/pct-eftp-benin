@@ -1,15 +1,24 @@
 <div class="w-full mx-auto bg-transparent">
+    @if($order)
     <div class="mx-auto items-center font-poppins bg-green-400 border border-green-700">
         <div class="justify-center flex-1 max-w-6xl px-4 py-4 my-4 mx-auto border rounded-md dark:border-white bg-gray-900 md:py-10 md:px-10">
           <div>
             <h1 class="px-4 mb-8 text-2xl font-semibold tracking-wide text-green-500 ">
               Merci! Votre commande a été reçue 
+
+              <span class="text-orange-500 float-right">
+                ID:
+                <span>
+                  {{ $order->identifiant }}
+                </span>
+              </span>
+              
               <hr class="my-3">
             </h1>
               
             <div class="flex border-b border-gray-200 dark:border-gray-700  items-stretch justify-start w-full h-full px-4 mb-8 md:flex-row xl:flex-col md:space-x-6 lg:space-x-8 xl:space-x-0">
-              <div class="flex items-start justify-start flex-shrink-0">
-                <div class="flex items-center justify-center w-full pb-6 space-x-4 md:justify-start">
+              <div class="flex justify-between">
+                <div class="flex items-center justify-center pb-6 space-x-4 md:justify-start">
                   <div class="flex flex-col items-start justify-start space-y-2">
                     <p class="text-lg font-semibold leading-4 text-left text-blue-400">
                         <span>
@@ -24,40 +33,44 @@
                             Receveur :
                         </span>
                         <span>
-                            {{ auth_user()->getFullName() }}
+                            {{ $address->getFullName() }}
                         </span>
                     </p>
-                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">71582 Schmitt Springs</p>
-                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">Castro Valley, Delaware, 53476-0454</p>
-                    <p class="text-sm leading-4 cursor-pointer dark:text-gray-400">Contact: 587-019-6103</p>
+                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $address->state }}, {{ $address->city }}</p>
+                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $address->street_address }}</p>
+                    <p class="text-sm leading-4 cursor-pointer dark:text-gray-400">Contact: {{ $address->phone }}</p>
                   </div>
+                </div>
+
+                <div>
+                  <h4 class="text-gray-600 animate-pulse letter-spacing-2 text-2xl">
+                      {{ $order->getIsCompletedStatusMessage() }}
+                  </h4>
                 </div>
               </div>
             </div>
-            <div class="flex flex-wrap items-center pb-4 mb-10 border-b border-gray-200 dark:border-gray-700">
-              <div class="w-full px-4 mb-4 md:w-1/4">
+            <div class="flex items-center pb-4 mb-10 border-b border-gray-200 dark:border-gray-700">
+              
+              <div class="w-full px-4 mb-4">
                 <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
-                  N° Commande: </p>
+                  Date de soumission: </p>
                 <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
-                  29</p>
+                  {{ $order->__getDateAsString($order->created_at, 3, true) }} 
+                </p>
               </div>
-              <div class="w-full px-4 mb-4 md:w-1/4">
-                <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
-                  Date: </p>
-                <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
-                  17-02-2024</p>
-              </div>
-              <div class="w-full px-4 mb-4 md:w-1/4">
+              <div class="w-full px-4 mb-4">
                 <p class="mb-2 text-sm font-medium leading-5 text-gray-800 dark:text-gray-400 ">
-                  Total: </p>
+                  Total Brut: </p>
                 <p class="text-base font-semibold leading-4 text-blue-600 dark:text-gray-400">
-                  ₹157,495.00</p>
+                  {{ Number::currency($order->getTotalAmountWithTaxAndShipping(false), $order->currency) }}
+                </p>
               </div>
-              <div class="w-full px-4 mb-4 md:w-1/4">
+              <div class="w-full px-4 mb-4">
                 <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
                   Méthode de payement: </p>
                 <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400 ">
-                  Payement cash à la livraison </p>
+                  {{ config('app.payments_methods')[$order->payment_method] }}
+                </p>
               </div>
             </div>
             <div class="px-4 mb-10">
@@ -66,29 +79,30 @@
                   <h2 class="mb-2 text-xl font-semibold text-gray-700 dark:text-gray-400">Détails de la commande</h2>
                   <div class="flex flex-col items-center justify-center w-full pb-4 space-y-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex justify-between w-full">
-                      <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Sous total</p>
-                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400">₹157,495.00</p>
+                      <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Total brut</p>
+                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->grand_total, $order->currency) }}</p>
                     </div>
                     <div class="flex items-center justify-between w-full">
                       <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Réduction
                       </p>
-                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400">00</p>
+                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400"> {{ numberZeroFormattor($order->discount) }} % </p>
                     </div>
                     <div class="flex items-center justify-between w-full">
-                      <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Expédition</p>
-                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400">00</p>
+                      <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Coût expédition</p>
+                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400"> {{ Number::currency($order->shipping_price, $order->currency) }} </p>
+                    </div>
+                    <div class="flex items-center justify-between w-full">
+                      <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Taxe: </p>
+                      <p class="text-base leading-4 text-gray-600 dark:text-gray-400"> {{ Number::currency($order->tax, $order->currency) }} </p>
                     </div>
                   </div>
                   <div class="flex items-center justify-between w-full">
                     <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">Total</p>
-                    <p class="text-base font-semibold leading-4 text-gray-600 dark:text-gray-400">₹157,495.00</p>
+                    <p class="text-base font-semibold leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->getTotalAmountWithTaxAndShipping(true), $order->currency) }}</p>
                   </div>
                 </div>
                 <div class="flex flex-col w-full px-2 space-y-4 md:px-8 ">
-                  <h2 class="mb-2 text-xl font-semibold text-green-300">
-                    <span class="fa fa-rotate animate-spin text-green-300"></span>
-                    <span class="text-green-300">En cours de livraison...</span>
-                  </h2>
+                  
                   <div class="flex items-start justify-between w-full">
                     <div class="flex items-center justify-center space-x-2">
                       <div class="w-8 h-8">
@@ -99,11 +113,25 @@
                       </div>
                       <div class="flex flex-col items-center justify-start">
                         <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">
-                          Livraison<br><span class="text-sm font-normal">Livré en 24 Heures</span>
+                          Livraison par <br>
+                          <span class="text-sm font-normal"></span>
+                          <span class="text-green-600">
+                            {{ config('app.shipping_methods')[$order->shipping_method] }}
+                          </span>
+
+                          @if($order->shipping_date)
+                          <span class="text-green-500">
+                            Livré le {{ $order->__getDateAsString($order->shipping_date, 3) }} 
+                          </span>
+                          @else
+                            <span class="text-red-400">
+                              Pas encore livré
+                            </span>
+                          @endif
                         </p>
                       </div>
                     </div>
-                    <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">00</p>
+                    <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400"></p>
                   </div>
                 </div>
               </div>
@@ -119,4 +147,5 @@
           </div>
         </div>
     </div>
+    @endif
 </div>

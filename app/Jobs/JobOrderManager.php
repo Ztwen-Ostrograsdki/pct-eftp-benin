@@ -103,6 +103,8 @@ class JobOrderManager implements ShouldQueue
                                 $order_item_data = [];
                             }
                         }
+
+                        $order->update(['status' => 'processing']);
     
                     }
                 }

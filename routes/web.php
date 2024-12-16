@@ -7,6 +7,7 @@ use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\BookDetailsPage;
 use App\Livewire\HomePage;
+use App\Livewire\Master\OrdersList;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\Shop\ShoppingHome;
 use App\Livewire\User\CartPage;
@@ -19,7 +20,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
 
-Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list')->middleware(['auth', 'master', 'user.not.blocked']);
+
+Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
+
+    Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
+
+    Route::get('gestion/les-commandes', OrdersList::class)->name('master.orders.list');
+
+
+});
 
 Route::middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
 

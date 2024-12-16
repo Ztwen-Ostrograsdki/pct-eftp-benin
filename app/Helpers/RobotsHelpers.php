@@ -19,6 +19,33 @@ if(!function_exists('numberZeroFormattor')){
 
 }
 
+if(!function_exists('to_flash')){
+
+    function to_flash($name, $message)
+    {
+        return session()->flash($name, $message);
+    }
+
+}
+
+if(!function_exists('flash')){
+
+    function flash($name, $message)
+    {
+        return session()->flash($name, $message);
+    }
+
+}
+
+if(!function_exists('__flash')){
+
+    function __flash($name, $message)
+    {
+        return session()->flash($name, $message);
+    }
+
+}
+
 if(!function_exists('getPromotions')){
 
     function getPromotions($associate = false, $column = null)

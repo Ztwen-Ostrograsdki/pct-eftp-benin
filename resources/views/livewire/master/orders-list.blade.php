@@ -5,12 +5,20 @@
             <div class="text-left w-full">
               <div class="relative flex flex-col">
                 <div>
-                    <h1 class="text-4xl text-gray-600 uppercase">
-                      <strong>
-                        <span class="fas fa-cart-arrow-down"></span>
-                        <span>mes commandes</span>
-                      </strong>
-                    </h1>
+                    <div class="text-4xl flex gap-x-2 text-gray-600 uppercase">
+                      <h1>
+                        <strong>
+                            <span class="fas fa-cart-arrow-down"></span>
+                            <span>Les commandes</span>
+                        </strong>
+                      </h1>
+
+                      @if(session()->has('new_order'))
+                        <h6 class="border shadow-lg shadow-green-400 border-white text-green-800 ml-3 px-3 opacity-65 bg-green-300 text-center text-xl">
+                            {{ session('new_order') }}
+                        </h6>
+                      @endif
+                    </div>
                 </div>
                 <div class="w-full mx-auto">
                     @if(auth()->user()->profil_photo)
@@ -24,7 +32,7 @@
                     @endif
                 </div>
                 <h4 class="text-2xl font-bold dark:text-gray-200"> 
-                    Mes <span class="text-blue-500"> Commandes</span> 
+                    Les <span class="text-blue-500"> Commandes</span> 
                     <span class="text-blue-300 ml-3 text-base lowercase @if($search  && strlen($search) >= 3) hidden @endif ">
                       <span class="fas fa-quote-left"></span>
                       {{ config('app.order_status')[$sectionned] }}
@@ -43,7 +51,7 @@
               </div>
               @if(count($orders))
               <p class="mb-12 text-base text-gray-500">
-                Vous avez de nouvelles commandes
+                De nouvelles commandes sont disponibles
               </p>
               @endif
             </div>
@@ -97,7 +105,7 @@
             @else
               <div>
                 <h4 class="text-gray-400 text-xl animate-pulse text-center">
-                  <strong>Vous n'avez aucune commande <span class="text-warning-600"> {{ config('app.order_status')[$sectionned] }} </span> en cours...</strong>
+                  <strong>Aucune commande <span class="text-warning-600"> {{ config('app.order_status')[$sectionned] }} </span> en cours...</strong>
                 </h4>
               </div>
             @endif

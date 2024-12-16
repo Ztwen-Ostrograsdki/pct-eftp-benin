@@ -25,6 +25,12 @@ return new class extends Migration
             $table->string('shipping_method')->nullable()->default(null);
             $table->text('notes')->nullable()->default(null);
             $table->string('identifiant')->unique();
+            $table->decimal('discount')->nullable()->default(0);
+            $table->decimal('tax', 15, 2)->nullable()->default(0.0);
+            $table->boolean('completed')->default(false);
+            $table->date('shipping_date')->nullable()->default(null);
+            $table->decimal('shipping_price', 15, 2)->nullable()->default(0.0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -39,8 +39,6 @@ e.private('admin')
     
     .listen('NotificationDispatchedToAdminsSuccessfullyEvent', (user) =>{
 
-        console.log(user);
-
         Livewire.dispatch('LiveNotificationDispatchedToAdminsSuccessfullyEvent', user);
         
     })
@@ -66,3 +64,6 @@ e.private('App.Models.User.' + window.ClientUser.id)
         Livewire.dispatch('LiveNewOrderHasBeenCreatedSuccessfullyEvent', order);
         
     })
+
+    console.log('Vous êtes connecté');
+    

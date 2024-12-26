@@ -32,7 +32,7 @@
                 Gestion
               </a>
 
-              <a wire:navigate id="my-tooltip" title="Télécharger des épreuves" class="transition duration-150 ease-in-out dark:focus:text-primary-500 dark:active:text-primary-600 font-medium text-gray-400 hover:text-gray-500 py-3 md:py-6  dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">
+              <a wire:navigate id="my-tooltip" title="Télécharger des épreuves" class="transition duration-150 ease-in-out dark:focus:text-primary-500 dark:active:text-primary-600 font-medium text-gray-400 hover:text-gray-500 py-3 md:py-6  dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('library.home')}}">
                 Bibliothèque
               </a>
   

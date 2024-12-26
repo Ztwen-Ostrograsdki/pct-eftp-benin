@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('status')->nullable()->default(null);
             $table->string('contacts')->nullable()->default(null);
             $table->string('matricule')->nullable()->default(null);
+            $table->string('FEDAPAY_ID')->nullable()->default(null);
             $table->string('years_experiences')->nullable()->default(null);
             $table->string('grade')->nullable()->default(null);
             $table->string('graduate_deliver')->nullable()->default(null);

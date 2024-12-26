@@ -7,6 +7,9 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitiateNewOrderEvent;
 use App\Helpers\CartManager;
 use App\Models\Order;
+use FedaPay\Customer;
+use FedaPay\FedaPay;
+use FedaPay\Transaction;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -50,7 +53,7 @@ class CheckoutPage extends Component
     #[Validate('required|string|min:3|max:255')]
     public $state;
 
-    #[Validate('string|betweEn:4, 12')]
+    #[Validate('string|between:4, 12')]
     public $zip_code;
 
     #[Validate('required|string|min:3|max:255')]
@@ -181,6 +184,7 @@ class CheckoutPage extends Component
             'order_identifiant' => $order_identifiant,
         ];
 
+        
         InitiateNewOrderEvent::broadcast($user, $data);
         
     }

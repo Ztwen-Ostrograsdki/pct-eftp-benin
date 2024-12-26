@@ -1,6 +1,11 @@
 <div>
     @if($order)
         <div class="py-6 bg-white rounded-md shadow dark:bg-gray-900">
+          <div class="flex items-center ml-2 px-2 text-xs gap-x-1 cursor-pointer hover:text-blue-500">
+            <span class="fas fa-circle"></span>
+            <span class="fas fa-circle"></span>
+            <span class="fas fa-circle"></span>
+          </div>
           <div class="flex flex-wrap items-center justify-between pb-4 mb-6 space-x-2 border-b dark:border-gray-700">
             <div class="flex items-center px-6 mb-2 md:mb-0 ">
               <div class="flex mr-2 rounded-full">
@@ -24,30 +29,33 @@
                     </p>
                 </a>
               </div>
+              
             </div>
-            <p class="px-6 text-base font-medium text-gray-600 dark:text-gray-400 flex flex-col"> 
-              <span class="text-green-500">
-                Montant brut de la commande : {{ Number::currency($order->grand_total, $order->currency) }}
-              </span>
-              <span class="text-gray-300">
+            
+            <div class="flex gap-x-2">
+              <p class="px-6 text-base font-medium text-gray-600 dark:text-gray-400 flex flex-col"> 
+                <span class="text-green-500">
+                  Montant brut de la commande : {{ Number::currency($order->grand_total, $order->currency) }}
+                </span>
+                <span class="text-gray-300">
+                    <span>
+                      <span>Payé par : {{ config('app.payments_methods')[$order->payment_method] }}</span>
+                      <span class="text-green-700">(Payé) <span class="fas fa-check text-green-600"></span> </span>
+                    </span>
+                </span> 
+                <span class="flex flex-col">
                   <span>
-                    <span>Payé par : {{ config('app.payments_methods')[$order->payment_method] }}</span>
-                    <span class="text-green-700">(Payé) <span class="fas fa-check text-green-600"></span> </span>
+                    <span> Méthode:</span>
+                    <span>{{ config('app.shipping_methods')[$order->shipping_method] }}</span>
                   </span>
-              </span> 
-              <span class="flex flex-col">
-                <span>
-                  <span> Méthode:</span>
-                  <span>{{ config('app.shipping_methods')[$order->shipping_method] }}</span>
+  
+                  <span>
+                    <span>Status:</span>
+                    <span class="text-orange-400">{{ config('app.order_status')[$order->status] }}</span>
+                  </span>
                 </span>
-
-                <span>
-                  <span>Status:</span>
-                  <span class="text-orange-400">{{ config('app.order_status')[$order->status] }}</span>
-                </span>
-              </span>
-
-            </p>
+              </p>
+            </div>
           </div>
           <div class="flex flex-col px-6 mb-6 text-base text-gray-500 dark:text-gray-400">
             <div class="flex flex-col items-start justify-start">
@@ -73,16 +81,16 @@
                 <div>
                     <div>
                       @if($order->shipping_date)
-                    <span class="text-green-500">
-                      Livré le {{ $order->__getDateAsString($order->shipping_date, 3) }} 
-                    </span>
-                    @else
-                      <span class="text-red-400">
-                        Pas encore livré
+                      <span class="text-green-500">
+                        Livré le {{ $order->__getDateAsString($order->shipping_date, 3) }} 
                       </span>
-                    @endif
+                      @else
+                        <span class="text-red-400">
+                          Pas encore livré
+                        </span>
+                      @endif
                     </div>
-                    <h4 class="text-gray-600 animate-pulse letter-spacing-2">
+                    <h4 class="text-orange-400 animate-pulse text-center shadow-2 shadow-green-400 px-2 letter-spacing-2">
                       {{ $order->getIsCompletedStatusMessage() }}
                     </h4>
                 </div>
@@ -163,15 +171,10 @@
                     
                   <div>
                     <span wire:click="deleteOrder({{$order->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:bg-red-400 px-3 py-2 rounded ">
-                        <span class="fas fa-trash"></span>
-                        <span wire:loading.remove wire:target='deleteOrder({{$order->id}})'>Supprimer</span>
+                        <span class="fas fa-eye"></span>
+                        <span wire:loading.remove wire:target='deleteOrder({{$order->id}})'>Masquer</span>
+                        <span wire:loading wire:target='deleteOrder({{$order->id}})' class="">Traitement en cours...</span>
                         <span wire:loading wire:target='deleteOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
-                    </span>
-                  </div>
-                  <div>
-                    <span wire:click='sendEmailTo({{$order->id}})' class="border cursor-pointer bg-blue-300 text-blue-700 hover:bg-blue-400 px-3 py-2 rounded ">
-                        <span class="fas fa-comment"></span>
-                        <span>Commenter</span>
                     </span>
                   </div>
                 </div>

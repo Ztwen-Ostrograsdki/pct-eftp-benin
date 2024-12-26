@@ -86,7 +86,14 @@
                 <b>{{ Number::currency(($grand_total + $taxe + $shipping_price), 'CFA') }}</b>
               </span>
             </div>
-            <span wire:click='checkoutCart' class=" cursor-pointer bg-blue-500 block text-center text-white py-2 px-4 border hover:bg-green-700 rounded-lg mt-4 w-full">Payer</span>
+
+            <a href="#" wire:click='checkoutCart' wire:loading.class='opacity-50' wire:target='checkoutCart' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <span wire:loading wire:target='checkoutCart'>
+                <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                <span class="mx-2">Traitement en cours </span>
+              </span>
+              <span wire:loading.remove wire:target='checkoutCart'>Soumettre l'achat</span>
+            </a>
 
             <span wire:click='clearCart' class="cursor-pointer bg-red-600 block text-center text-white py-2 px-4 border hover:bg-red-700 rounded-lg mt-4 w-full">Vider le panier</span>
           </div>

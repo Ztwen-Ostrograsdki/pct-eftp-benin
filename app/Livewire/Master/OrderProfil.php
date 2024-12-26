@@ -22,4 +22,9 @@ class OrderProfil extends Component
 
         return view('livewire.master.order-profil');
     }
+
+    public function deleteOrder($order_id)
+    {
+        
+    }
 }

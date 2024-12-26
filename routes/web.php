@@ -6,7 +6,11 @@ use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\BookDetailsPage;
+use App\Livewire\FedapayCheckoutPage;
 use App\Livewire\HomePage;
+use App\Livewire\Libraries\EpreuvesPage;
+use App\Livewire\Libraries\EpreuvesUploader;
+use App\Livewire\Libraries\LibraryHomePage;
 use App\Livewire\Master\OrdersList;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\Shop\ShoppingHome;
@@ -30,19 +34,29 @@ Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 
 });
 
-Route::middleware(['auth', 'user.self', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
+Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
 
-    Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications');
+
+
+    Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
+
+    Route::get('bibliotheque/tag=les-epreuves', EpreuvesPage::class)->name('library.epreuves');
+
+    Route::get('bibliotheque/publication/tag=les-epreuves', EpreuvesUploader::class)->name('library.epreuves.uplaoder');
     
-    Route::get('profil/IDX={identifiant}', UserProfilPage::class)->name('user.profil');
-
-    Route::get('profil/achats/mes-commandes/IDX={identifiant}', Orders::class)->name('user.orders');
-
-    Route::get('profil/boutique/mon-panier/IDX={identifiant}', CartPage::class)->name('user.cart');
-
-    Route::get('profil/boutique/Validation-payement/IDX={identifiant}', CheckoutPage::class)->name('user.checkout');
+    Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications')->middleware(['user.self']);
     
-    Route::get('profil/boutique/panier-valide/succes-payement/ID={identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
+    Route::get('profil/IDX={identifiant}', UserProfilPage::class)->name('user.profil')->middleware(['user.self']);
+
+    Route::get('profil/achats/mes-commandes/IDX={identifiant}', Orders::class)->name('user.orders')->middleware(['user.self']);
+
+    Route::get('profil/boutique/mon-panier/IDX={identifiant}', CartPage::class)->name('user.cart')->middleware(['user.self']);
+
+    Route::get('profil/boutique/validation-payement/IDX={identifiant}', CheckoutPage::class)->name('user.checkout')->middleware(['user.self']);
+    
+    Route::get('profil/boutique/commande/ID={identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
+
+    Route::get('https://sandbox-process.fedapay.com/{token}', FedapayCheckoutPage::class)->name('feda.checkout.proccess');
 
 });
 

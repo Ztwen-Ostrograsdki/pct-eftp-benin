@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('completed')->default(false);
             $table->date('shipping_date')->nullable()->default(null);
             $table->decimal('shipping_price', 15, 2)->nullable()->default(0.0);
+            $table->string('FEDAPAY_TRANSACTION_ID')->nullable()->default(null);
             $table->softDeletes();
             $table->timestamps();
         });

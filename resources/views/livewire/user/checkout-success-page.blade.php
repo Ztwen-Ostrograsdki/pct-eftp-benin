@@ -43,9 +43,18 @@
                 </div>
 
                 <div>
+                  @if($order->status !== 'delivered')
                   <h4 class="text-gray-600 animate-pulse letter-spacing-2 text-2xl">
                       {{ $order->getIsCompletedStatusMessage() }}
                   </h4>
+                  @else
+                  <h4 class="text-yellow-400 p-2 shadow-3 shadow-green-400 rounded-xl letter-spacing-2 text-xl">
+                    <strong>
+                      {{ $order->getIsCompletedStatusMessage() }}
+                      <span class="fa fa-check"></span>
+                    </strong>
+                  </h4>
+                  @endif
                 </div>
               </div>
             </div>
@@ -113,12 +122,12 @@
                       </div>
                       <div class="flex flex-col items-center justify-start">
                         <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">
-                          Livraison par <br>
+                          Livraison par : 
                           <span class="text-sm font-normal"></span>
                           <span class="text-green-600">
                             {{ config('app.shipping_methods')[$order->shipping_method] }}
                           </span>
-
+                          <br>
                           @if($order->shipping_date)
                           <span class="text-green-500">
                             Livré le {{ $order->__getDateAsString($order->shipping_date, 3) }} 
@@ -145,7 +154,46 @@
               </a>
             </div>
           </div>
+          @if(auth_user()->isAdminAs())
+          <div class="w-full mx-auto p-2 my-2 border-t border-gray-500">
+            <div class="w-full mx-auto flex gap-2 justify-end my-2">
+
+              @if(!$order->deleted_at)
+              <div>
+                <span wire:click="deleteOrder({{$order->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:bg-red-400 px-3 py-2 rounded ">
+                    <span class="fas fa-trash"></span>
+                    <span wire:loading.remove wire:target='deleteOrder({{$order->id}})'>Supprimer</span>
+                    <span wire:loading wire:target='deleteOrder({{$order->id}})' class="">Suppresion en cours...</span>
+                    <span wire:loading wire:target='deleteOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
+                </span>
+              </div>
+              @endif
+              @if(!$order->shipping_date)
+              <div>
+                <span wire:click="shippedOrder({{$order->id}})" class="border cursor-pointer bg-green-300 text-green-700 hover:bg-green-400 px-3 py-2 rounded ">
+                    <span class="fas fa-check"></span>
+                    <span wire:loading.remove wire:target='shippedOrder({{$order->id}})'>Marquer Livrée</span>
+                    <span wire:loading wire:target='shippedOrder({{$order->id}})' class="">Traitement en cours...</span>
+                    <span wire:loading wire:target='shippedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
+                </span>
+              </div>
+              @endif
+
+              @if(!$order->shipping_date && !$order->completed)
+              <div>
+                <span wire:click="completedOrder({{$order->id}})" class="border cursor-pointer bg-blue-300 text-blue-700 hover:bg-blue-400 px-3 py-2 rounded ">
+                    <span class="fas fa-filter"></span>
+                    <span wire:loading.remove wire:target='completedOrder({{$order->id}})'>Marquer commande Traitée</span>
+                    <span wire:loading wire:target='completedOrder({{$order->id}})' class="">Traitement en cours...</span>
+                    <span wire:loading wire:target='completedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
+                </span>
+              </div>
+              @endif
+            </div>
         </div>
+        @endif
+        </div>
+        
     </div>
     @endif
 </div>

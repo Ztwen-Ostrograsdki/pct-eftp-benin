@@ -57,6 +57,8 @@ class User extends Authenticatable implements FilamentUser, HasName
         'ability',
         'current_function',
         'email_verified_at',
+        'FEDAPAY_ID',
+
     ];
 
     protected $admins_attr = [

@@ -5,12 +5,15 @@ namespace App\Models;
 use App\Helpers\Dater\DateFormattor;
 use App\Models\OrderItem;
 use App\Models\User;
+use App\Observers\ObserveOrder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(ObserveOrder::class)]
 class Order extends Model
 {
-    use DateFormattor;
+    use DateFormattor, SoftDeletes;
     
     protected $fillable = [
         'user_id',
@@ -21,11 +24,13 @@ class Order extends Model
         'currency',
         'shipping_amount',
         'shipping_method',
+        'shipping_date',
         'notes',
         'discount',
         'tax',
         'completed',
         'shipping_price',
+        'FEDAPAY_TRANSACTION_ID',
         'identifiant'
 
     ];
@@ -59,7 +64,8 @@ class Order extends Model
 
     public function getIsCompletedStatusMessage()
     {
-        if($this->completed && $this->status == 'shipped')
+
+        if($this->completed || $this->status == 'delivered')
 
             return "Traité et livré";
 

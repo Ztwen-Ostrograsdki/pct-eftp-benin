@@ -4,6 +4,9 @@ namespace App\Livewire\User;
 
 use App\Helpers\CartManager;
 use Dotenv\Util\Str;
+use FedaPay\Customer;
+use FedaPay\FedaPay;
+use FedaPay\Transaction;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -83,7 +86,58 @@ class CartPage extends Component
 
     public function checkoutCart()
     {
-        return to_route('user.checkout', ['identifiant' => auth_user()->identifiant]);
+
+        $user = auth_user();
+
+        FedaPay::setApiKey(env('MY_FEDA_SECRET_KEY'));
+
+        FedaPay::setEnvironment('sandbox'); //or setEnvironment('live');
+        /* Créer un client */
+
+        $exists = false;
+
+        if($user->FEDAPAY_ID){
+
+            $exists = Customer::retrieve($user->FEDAPAY_ID);
+        }
+
+        if(!$exists){
+            $c = Customer::create(
+                array(
+                    "firstname" => $user->firstname,
+                    "lastname" => $user->lastname,
+                    "email" => $user->email,
+                    "phone_number" => [
+                        "number" => $user->contacts,
+                        "country" => 'bj' // 'bj' Benin code
+                    ]
+                )
+            );
+    
+            if($c){
+                $user->update(['FEDAPAY_ID' => $c->id]);
+            }
+        }
+
+        if($user->FEDAPAY_ID){
+            $transaction = Transaction::create([
+                'description' => 'Payment for order #1234',
+                'amount' => 100,
+                'currency' => ['iso' => 'XOF'],
+                'callback_url' => url('user.checkout', ['identifiant' => auth_user()->identifiant]),
+                'mode' => 'mtn',
+                'customer' => ['id' => $user->FEDAPAY_ID]
+            ]);
+
+            $token = $transaction->generateToken();
+            
+            return to_route('feda.checkout.proccess', ['token' => $token]);
+        }
+
+
+        
+
+        //return to_route('user.checkout', ['identifiant' => auth_user()->identifiant]);
     }
     
 }

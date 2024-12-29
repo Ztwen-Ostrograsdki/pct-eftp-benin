@@ -26,6 +26,7 @@
         @livewireScripts
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+        <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
         @livewireSweetalertScripts
 
         <script>

@@ -153,6 +153,40 @@
                 <p class="text-base font-semibold leading-4 text-orange-600">{{ Number::currency($order->getTotalAmountWithTaxAndShipping(true), $order->currency) }}</p>
               </div>
             </div>
+            <div class="w-full mx-auto p-2 cursor-pointer flex my-1 justify-end">
+              @if(auth_user() && $order->user_id == auth_user()->id)
+                <div>
+                  @if($order->approved && !in_array($order->status, ['procecced', 'delivered', 'approved']))
+                  <span wire:click='initOrderCheckout' wire:loading.class='opacity-50' wire:target='initOrderCheckout' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                    <span wire:loading wire:target='initOrderCheckout'>
+                      <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                      <span class="mx-2">Processus de payement en cours... </span>
+                    </span>
+                    <span wire:loading.remove wire:target='initOrderCheckout'>
+                      <span class="">
+                        Valider le payement de la commande N° {{ $order->identifiant }}
+                      </span>
+                    </span>
+                </span>
+                  @endif
+                </div>
+                @endif
+                @if(__isAdminAs())
+                  @if(!$order->approved)
+                    <span wire:click='approveOrder' wire:loading.class='opacity-50' wire:target='approveOrder' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                        <span wire:loading wire:target='approveOrder'>
+                          <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                          <span class="mx-2">Validation en cours... </span>
+                        </span>
+                        <span wire:loading.remove wire:target='approveOrder'>
+                          <span class="">
+                            Valider cette commande N° {{ $order->identifiant }}
+                          </span>
+                        </span>
+                    </span>
+                  @endif
+                @endif
+            </div>
         </div>
           
           <div class="flex flex-wrap justify-between pt-4 border-t dark:border-gray-700">
@@ -168,7 +202,6 @@
             <div class="flex items-center px-6 space-x-1 text-sm font-medium text-gray-500 dark:text-gray-400">
               <div class="flex items-center">
                 <div class="flex gap-x-2 mr-3 text-sm text-gray-700 dark:text-gray-400">
-                    
                   <div>
                     <span wire:click="deleteOrder({{$order->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:bg-red-400 px-3 py-2 rounded ">
                         <span class="fas fa-eye"></span>
@@ -178,7 +211,6 @@
                     </span>
                   </div>
                 </div>
-                
               </div>
             </div>
           </div>

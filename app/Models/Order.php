@@ -21,6 +21,7 @@ class Order extends Model
         'payment_method',
         'payment_status',
         'status',
+        'approved', // when the order has been authorized by admin
         'currency',
         'shipping_amount',
         'shipping_method',
@@ -28,9 +29,9 @@ class Order extends Model
         'notes',
         'discount',
         'tax',
-        'completed',
+        'completed', // when the order has been payed and delivered or shipped
         'shipping_price',
-        'FEDAPAY_TRANSACTION_ID',
+        'FEDAPAY_TRANSACTION_ID', // the Id of the related fedapay Transaction instance
         'identifiant'
 
     ];
@@ -65,19 +66,15 @@ class Order extends Model
     public function getIsCompletedStatusMessage()
     {
 
-        if($this->completed || $this->status == 'delivered')
+        if($this->completed || $this->status == 'delivered' || $this->status == 'shipped')
 
-            return "Traité et livré";
+            return "Traitée, payée et livrée";
 
-        elseif($this->completed)
+        elseif($this->status == 'approved')
 
-            return "Traité";
+            return "Traitée et payée";
 
-        elseif($this->status !== 'canceled')
-
-            return "Traitement en cours";
         else
-
-            return "En cours de traitement";
+            return "En attente";
     }
 }

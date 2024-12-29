@@ -37,6 +37,25 @@ if(!function_exists('flash')){
 
 }
 
+if(!function_exists('__isAdminAs')){
+
+    function __isAdminAs($roles = null)
+    {
+        if(Auth::user()->id == 1) return true;
+
+        if($roles){
+
+            if(is_array($roles)) return in_array(Auth::user()->ability, $roles);
+
+            if(is_string($roles)) return Auth::user()->ability == $roles;
+
+        }
+        
+        return Auth::user()->ability == 'admin' || Auth::user()->abitlity == 'master';
+    }
+
+}
+
 if(!function_exists('__flash')){
 
     function __flash($name, $message)

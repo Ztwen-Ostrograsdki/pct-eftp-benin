@@ -43,6 +43,11 @@
                 </div>
 
                 <div>
+                  @if($order->approved)
+                  <h4 class="text-success-600 animate-pulse letter-spacing-2 text-xl">
+                      Déjà approuvée par les admins
+                  </h4>
+                  @endif
                   @if($order->status !== 'delivered')
                   <h4 class="text-gray-600 animate-pulse letter-spacing-2 text-2xl">
                       {{ $order->getIsCompletedStatusMessage() }}
@@ -154,10 +159,9 @@
               </a>
             </div>
           </div>
-          @if(auth_user()->isAdminAs())
+          @if(__isAdminAs())
           <div class="w-full mx-auto p-2 my-2 border-t border-gray-500">
             <div class="w-full mx-auto flex gap-2 justify-end my-2">
-
               @if(!$order->deleted_at)
               <div>
                 <span wire:click="deleteOrder({{$order->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:bg-red-400 px-3 py-2 rounded ">
@@ -168,32 +172,67 @@
                 </span>
               </div>
               @endif
-              @if(!$order->shipping_date)
-              <div>
-                <span wire:click="shippedOrder({{$order->id}})" class="border cursor-pointer bg-green-300 text-green-700 hover:bg-green-400 px-3 py-2 rounded ">
-                    <span class="fas fa-check"></span>
-                    <span wire:loading.remove wire:target='shippedOrder({{$order->id}})'>Marquer Livrée</span>
-                    <span wire:loading wire:target='shippedOrder({{$order->id}})' class="">Traitement en cours...</span>
-                    <span wire:loading wire:target='shippedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
-                </span>
-              </div>
-              @endif
+              @if($order->approved)
+                @if(!$order->shipping_date)
+                <div>
+                  <span wire:click="shippedOrder({{$order->id}})" class="border cursor-pointer bg-green-300 text-green-700 hover:bg-green-400 px-3 py-2 rounded ">
+                      <span class="fas fa-check"></span>
+                      <span wire:loading.remove wire:target='shippedOrder({{$order->id}})'>Marquer Livrée</span>
+                      <span wire:loading wire:target='shippedOrder({{$order->id}})' class="">Traitement en cours...</span>
+                      <span wire:loading wire:target='shippedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
+                  </span>
+                </div>
+                @endif
 
-              @if(!$order->shipping_date && !$order->completed)
-              <div>
-                <span wire:click="completedOrder({{$order->id}})" class="border cursor-pointer bg-blue-300 text-blue-700 hover:bg-blue-400 px-3 py-2 rounded ">
-                    <span class="fas fa-filter"></span>
-                    <span wire:loading.remove wire:target='completedOrder({{$order->id}})'>Marquer commande Traitée</span>
-                    <span wire:loading wire:target='completedOrder({{$order->id}})' class="">Traitement en cours...</span>
-                    <span wire:loading wire:target='completedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
-                </span>
-              </div>
+                @if(!$order->shipping_date && !$order->completed)
+                <div>
+                  <span wire:click="completedOrder({{$order->id}})" class="border cursor-pointer bg-blue-300 text-blue-700 hover:bg-blue-400 px-3 py-2 rounded ">
+                      <span class="fas fa-filter"></span>
+                      <span wire:loading.remove wire:target='completedOrder({{$order->id}})'>Marquer commande Traitée</span>
+                      <span wire:loading wire:target='completedOrder({{$order->id}})' class="">Traitement en cours...</span>
+                      <span wire:loading wire:target='completedOrder({{$order->id}})' class="fas fa-rotate animate-spin"></span>
+                  </span>
+                </div>
+                @endif
               @endif
             </div>
         </div>
-        @endif
+        <div class="w-full mx-auto p-2 cursor-pointer flex my-1 justify-end">
+          @if(auth_user() && $order->user_id == auth_user()->id)
+            <div class="w-full mx-auto">
+              @if($order->approved && !in_array($order->status, ['procecced', 'delivered', 'approved']))
+              <span wire:click='initOrderCheckout' wire:loading.class='opacity-50' wire:target='initOrderCheckout' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-950 hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
+                <span wire:loading wire:target='initOrderCheckout'>
+                  <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                  <span class="mx-2">Processus de payement en cours... </span>
+                </span>
+                <span wire:loading.remove wire:target='initOrderCheckout'>
+                  <span class="">
+                    Procéder au payement de cette commande N° {{ $order->identifiant }}
+                  </span>
+                </span>
+            </span>
+              @endif
+            </div>
+            @endif
+            @if(__isAdminAs())
+              @if(!$order->approved)
+                <span wire:click='approveOrder' wire:loading.class='opacity-50' wire:target='approveOrder' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-yellow-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-900 hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none">
+                    <span wire:loading wire:target='approveOrder'>
+                      <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                      <span class="mx-2">Validation en cours... </span>
+                    </span>
+                    <span wire:loading.remove wire:target='approveOrder'>
+                      <span class="">
+                        Approuver cette commande N° {{ $order->identifiant }}
+                      </span>
+                    </span>
+                </span>
+              @endif
+            @endif
         </div>
-        
+        @endif
+      </div>
     </div>
     @endif
 </div>

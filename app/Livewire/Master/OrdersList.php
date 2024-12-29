@@ -27,6 +27,7 @@ class OrdersList extends Component
     public function updatedSectionned($sectionned)
     {
         $this->sectionned = $sectionned;
+
     }
 
     
@@ -41,6 +42,11 @@ class OrdersList extends Component
 
             $query->where('status', $this->sectionned);
 
+        }
+
+        if($this->sectionned && $this->sectionned == 'approved'){
+
+            $query->where('approved', true);
         }
 
         if($this->search && strlen($this->search) >= 2){
@@ -68,5 +74,17 @@ class OrdersList extends Component
 
         $this->counter = rand(12, 1999);
 
+    }
+
+    #[On('LiveTheOrderApprovedSuccessfullyEvent')]
+    public function orderApproved($order_identifiant)
+    {
+        $this->toast("Votre commande N° ". $order_identifiant. " a été approuvée avec succès. Vous pouvez procéder au payement", 'success');
+    }
+    
+    #[On('LiveTheOrderApprovedSuccessfullyEventForAdmin')]
+    public function orderApprovedForAdmins($order_identifiant)
+    {
+        $this->toast("La commande N° ". $order_identifiant. " a été approuvée avec succès.", 'success');
     }
 }

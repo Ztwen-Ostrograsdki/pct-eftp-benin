@@ -52,11 +52,12 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 
     Route::get('profil/boutique/mon-panier/IDX={identifiant}', CartPage::class)->name('user.cart')->middleware(['user.self']);
 
-    Route::get('profil/boutique/validation-payement/IDX={identifiant}', CheckoutPage::class)->name('user.checkout')->middleware(['user.self']);
+    Route::get('profil/boutique/validation-payement/IDX={identifiant}/FADAPAYTRANSACTION={transactionID}/token={token}', FedapayCheckoutPage::class)->name('feda.checkout.proccess');
+    
+    Route::get('profil/boutique/validation-panier-et-addresse-reception/IDX={identifiant}', CheckoutPage::class)->name('user.checkout.address')->middleware(['user.self']);
     
     Route::get('profil/boutique/commande/ID={identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
 
-    Route::get('https://sandbox-process.fedapay.com/{token}', FedapayCheckoutPage::class)->name('feda.checkout.proccess');
 
 });
 

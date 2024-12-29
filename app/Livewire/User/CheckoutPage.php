@@ -17,7 +17,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-#[Title("Validation payment")]
+#[Title("Validation de la commande et de l'addresse de reception")]
 class CheckoutPage extends Component
 {
     public $identifiant;
@@ -132,7 +132,11 @@ class CheckoutPage extends Component
 
         $user = auth_user();
 
-        $order_identifiant =  Str::random(9);
+        $title = 'order_identifiant' . $user->id;
+
+        $order_identifiant = Str::random(15);
+
+        session()->put($title, $order_identifiant);
 
         $order_data = [
             'user_id' => $user->id,
@@ -192,11 +196,13 @@ class CheckoutPage extends Component
     #[On('LiveNewOrderHasBeenCreatedSuccessfullyEvent')]
     public function orderCompleted($order)
     {
-        $this->toast("La commande a été soumise avec succès", 'success');
+        $this->toast("La commande a été soumise avec succès. Veuillez attendre l'approbation pour procéder au payement", 'success');
 
         $ord = Order::where('identifiant', $order)->first();
 
         if($ord){
+
+            self::clearCart();
 
             return to_route('user.checkout.success', ['identifiant' => $ord->identifiant]);
 
@@ -210,6 +216,16 @@ class CheckoutPage extends Component
         $this->toast("Une erreure est survenue : La commande n'a pas pu être soumise", 'error');
 
         return false;
+    }
+
+    public function clearCart()
+    {
+        $this->carts_items = CartManager::clearCartItemsFromCookies();
+
+        $this->dispatch('UpdateCartItemsCounter', count($this->carts_items));
+
+        $this->grand_total = CartManager::getComputedGrandTotalValue($this->carts_items);
+
     }
 }
 

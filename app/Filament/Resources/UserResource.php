@@ -60,6 +60,7 @@ class UserResource extends Resource
                                 ->label('Adress mail')
                                 ->email()
                                 ->maxlength('255')
+                                ->disabledOn('edit')
                                 ->unique(ignoreRecord: true)
                                 ->required(),
                         
@@ -80,10 +81,12 @@ class UserResource extends Resource
                         TextInput::make('firstname')
                             ->label('Nom')
                             ->required()
+                            ->disabledOn('edit')
                             ->placeholder("Votre nom"),
 
                         TextInput::make('lastname')
                                 ->label('Prénoms')
+                                ->disabledOn('edit')
                                 ->required()
                                 ->placeholder("Vos prénoms"),
                         
@@ -139,7 +142,7 @@ class UserResource extends Resource
                                     'professionnel' => "Professionnel",
                                     'autre' => "Autre",
                                 ])
-                                ->label('Type de dipôme'),
+                                ->label('Type de diplôme'),
                         
                         TextInput::make('graduate_year')
                                 ->label('Année')
@@ -153,7 +156,7 @@ class UserResource extends Resource
 
                     ])->columns(4),
 
-                    Section::make('Profession et expériences dans le métier')->schema([
+                    Section::make('Profession et expériences dans le métier 1')->schema([
                         
                         TextInput::make('job_city')
                             ->label('Ville de travail')
@@ -173,6 +176,10 @@ class UserResource extends Resource
                                 ->label('Expériences')
                                 ->required()
                                 ->placeholder("Années d'expérience"),
+
+                    ])->columns(4),
+
+                    Section::make('Profession et expériences dans le métier 2')->schema([
                         
                         TextInput::make('grade')
                                 ->label('Grade')
@@ -181,6 +188,7 @@ class UserResource extends Resource
                         
                         TextInput::make('matricule')
                                 ->label('Matricule')
+                                ->disabledOn('edit')
                                 ->required()
                                 ->placeholder("Votre matricule"),
                                 
@@ -197,11 +205,12 @@ class UserResource extends Resource
                                 ->required()
                                 ->searchable(),
 
-                    ])->columns(7),
+                    ])->columns(3),
 
                     Section::make('Photo de Profil')->schema([
                         FileUpload::make('profil_photo')
                         ->image()
+                        ->disabledOn('edit')
                         ->directory('users'),
                     ]),
 

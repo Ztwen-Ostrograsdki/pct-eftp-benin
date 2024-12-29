@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -125,6 +126,8 @@ class EmailVerificationPage extends Component
                         if($status){
 
                             $texto = "Votre compte ..." . $this->email . " ... a été confirmé avec succès!";
+
+                            ModelsRobots::notificationToConfirmUnconfirmedUser($user);
     
                             return redirect(route('login'))->with('success', $texto);
                         }

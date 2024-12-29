@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('grand_total', 15, 2)->nullable();
             $table->string('payment_method')->nullable();
             $table->string('payment_status')->nullable();
-            $table->enum('status', ['new', 'processing', 'shipped', 'delivered', 'canceled'])->default('new');
+            $table->string('status')->default('pending');
             $table->string('currency')->nullable()->default('FCFA');
             $table->decimal('shipping_amount', 15, 2)->nullable();
             $table->string('shipping_method')->nullable()->default(null);
@@ -31,6 +31,7 @@ return new class extends Migration
             $table->date('shipping_date')->nullable()->default(null);
             $table->decimal('shipping_price', 15, 2)->nullable()->default(0.0);
             $table->string('FEDAPAY_TRANSACTION_ID')->nullable()->default(null);
+            $table->boolean('approved')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

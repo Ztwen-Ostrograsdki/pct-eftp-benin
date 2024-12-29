@@ -1,6 +1,7 @@
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
+
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -42,6 +43,11 @@ e.private('admin')
         Livewire.dispatch('LiveNotificationDispatchedToAdminsSuccessfullyEvent', user);
         
     })
+    .listen('TheOrderApprovedSuccessfullyEvent', (order_identifiant) =>{
+
+        Livewire.dispatch('LiveTheOrderApprovedSuccessfullyEventForAdmin', order_identifiant);
+        
+    })
 
 e.private('App.Models.User.' + window.ClientUser.id)
     .listen('LogoutUserEvent', (ev) =>{
@@ -51,19 +57,28 @@ e.private('App.Models.User.' + window.ClientUser.id)
     })
     .listen('OrderCreationHasBeenFailedEvent', (ev) =>{
 
-        console.log(ev);
-        
-
         Livewire.dispatch('LiveOrderCreationHasBeenFailedEvent', ev);
         
     })
     .listen('NewOrderHasBeenCreatedSuccessfullyEvent', (order) =>{
 
-        console.log(order);
-
         Livewire.dispatch('LiveNewOrderHasBeenCreatedSuccessfullyEvent', order);
         
     })
+    .listen('TheOrderApprovedSuccessfullyEvent', (order_identifiant) =>{
 
-    console.log('Vous êtes connecté');
+        Livewire.dispatch('LiveTheOrderApprovedSuccessfullyEvent', order_identifiant);
+        
+    })
+
+    .listen('InitFedaPayCheckoutEvent', (data) =>{
+        
+    })
+    
+    FedaPay.init('#pay-btn', {
+        public_key: 'pk_sandbox_lf7ed0OyC_S-JmIEL3RvCE1R',
+        
+      }
+    )
+
     

@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockedUserTryingToLoginEvent;
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
@@ -64,7 +65,7 @@ class LoginPage extends Component
 
                 session()->flash('error', $message);
 
-                //$user->sendVerificationLinkOrKeyToUser();
+                $user->sendVerificationLinkOrKeyToUser();
 
                 return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Pour vous connecter, confirmer votre compte en renseignant le code qui vous été envoyé!");
 
@@ -78,9 +79,11 @@ class LoginPage extends Component
 
                 session()->flash('error', $message);
 
+                ModelsRobots::notificationToConfirmUnconfirmedUser($user);
+
                 return false;
 
-                // Send notification to admins to confirm the user identification
+                
 
             }
 
@@ -95,8 +98,6 @@ class LoginPage extends Component
                 BlockedUserTryingToLoginEvent::dispatch($user);
 
                 return false;
-
-                // Send notification to admins
 
             }
 

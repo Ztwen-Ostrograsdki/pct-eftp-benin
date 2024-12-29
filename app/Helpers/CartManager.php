@@ -92,6 +92,10 @@ class CartManager
     {
         Cookie::queue(Cookie::forget('carts_items'));
 
+        $title = 'order_identifiant' . auth_user()->id;
+
+        session()->forget($title);
+
         return [];
     }
 

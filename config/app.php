@@ -78,9 +78,10 @@ return [
     ],
 
     'payments_status' => [
-        'pending' => "En cours...",
-        'paid' => "Payé",
+        'pending' => "En attente",
+        'approved' => "Payé",
         'failed' => "Echec payement",
+        'cancel' => "Payement annulé",
     ],
 
     'payments_methods' => [
@@ -109,9 +110,12 @@ return [
     'order_status' => [
         'new' => "Nouvelle demande",
         'processing' => "En cours de traitement",
+        'procecced' => "Traité",
         'shipped' => "Expédié",
         'delivered' => "Livrée",
-        'canceled' => "Annulée"
+        'canceled' => "Annulée",
+        'pending' => "En attente",
+        'approved' => "Approuvée"
     ],
 
 

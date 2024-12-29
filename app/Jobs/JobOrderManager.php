@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
+use App\Notifications\NotifyAdminsThatNewOrderHasBeenCreated;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -107,9 +109,22 @@ class JobOrderManager implements ShouldQueue
                         $order->update(['status' => 'processing']);
     
                     }
+
+                    self::notifyAdmins($order);
                 }
             }
         });
 
+    }
+
+    public function notifyAdmins($order)
+    {
+        $admins = ModelsRobots::getAllAdmins();
+
+        foreach($admins as $admin){
+
+            $admin->notify(new NotifyAdminsThatNewOrderHasBeenCreated($order));
+
+        }
     }
 }

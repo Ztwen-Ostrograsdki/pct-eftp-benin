@@ -88,31 +88,30 @@
             </div>
             
             @if(count($orders))
-            
-            @foreach ($orders as $key => $order)
-              @livewire('master.order-profil', ['order' => $order])
-            @endforeach
-            @elseif($search)
-              <div>
-                <h4 class="text-gray-400 text-xl animate-pulse text-center">
-                  <strong>Désolée aucune résultat trouvé avec 
-                    <b class="text-red-600 underline">
-                      {{ $search }}
-                    </b>
-                  </strong>
-                </h4>
-              </div>
-            @else
-              <div>
-                <h4 class="text-gray-400 text-xl animate-pulse text-center">
-                  <strong>Aucune commande <span class="text-warning-600"> {{ config('app.order_status')[$sectionned] }} </span> en cours...</strong>
-                </h4>
-              </div>
+              @foreach ($orders as $key => $order)
+                @livewire('master.order-profil', ['order' => $order])
+              @endforeach
+              @elseif($search)
+                <div>
+                  <h4 class="text-gray-400 text-xl animate-pulse text-center">
+                    <strong>Désolée aucune résultat trouvé avec 
+                      <b class="text-red-600 underline">
+                        {{ $search }}
+                      </b>
+                    </strong>
+                  </h4>
+                </div>
+              @else
+                <div>
+                  <h4 class="text-gray-400 text-xl animate-pulse text-center">
+                    <strong>Aucune commande <span class="text-warning-600"> {{ config('app.order_status')[$sectionned] }} </span> en cours...</strong>
+                  </h4>
+                </div>
             @endif
             <div>
               {{$orders->links()}}
             </div>
           </div>
-        </div>
-      </section>
+      </div>
+    </section>
 </div>

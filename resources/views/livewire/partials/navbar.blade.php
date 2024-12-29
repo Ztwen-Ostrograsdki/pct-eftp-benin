@@ -29,7 +29,11 @@
               </a>
 
               <a wire:navigate class="font-medium hover:text-gray-500 py-3 md:py-6 {{request()->route()->named('master.users.list') ? 'text-blue-600' : 'text-gray-400' }} dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('master.users.list')}}">
-                Gestion
+                Les utilisateurs
+              </a>
+
+              <a wire:navigate class="font-medium hover:text-gray-500 py-3 md:py-6 {{request()->route()->named('master.orders.list') ? 'text-blue-600' : 'text-gray-400' }} dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('master.orders.list')}}">
+                Les commandes
               </a>
 
               <a wire:navigate id="my-tooltip" title="Télécharger des épreuves" class="transition duration-150 ease-in-out dark:focus:text-primary-500 dark:active:text-primary-600 font-medium text-gray-400 hover:text-gray-500 py-3 md:py-6  dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('library.home')}}">

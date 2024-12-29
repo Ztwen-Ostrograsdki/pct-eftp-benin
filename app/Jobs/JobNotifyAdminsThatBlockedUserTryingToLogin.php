@@ -43,6 +43,8 @@ class JobNotifyAdminsThatBlockedUserTryingToLogin implements ShouldQueue
                    . $user->getFullName(true) . 
                    " a tenté de se connecter a son compte. Le compte de cet utilisateur dont l'adresse mail est " 
                    . $user->email . " a été bloqué depuis le " . $since ;
+        
+        ModelsRobots::notificationThatBlockedUserTriedToLogin($user, $title, $object, $content);
 
         $admins = ModelsRobots::getUserAdmins();
         

@@ -1,7 +1,7 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-	<h1 class="text-xl uppercase font-bold bg-gray-800 text-gray-400 rounded-lg mb-4 w-full py-2 px-3">
-		Processus de validation du panier
-	</h1>
+	<h4 class="text-xl uppercase font-bold bg-gray-800 text-gray-400 rounded-lg mb-4 w-full py-4 px-3">
+		Processus de validation du panier et définition de l'addresse de livraion
+	</h4>
     @if($errors->any())
         <h4 class="w-full letter-spacing-2 p-2 text-xl mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
             <strong>

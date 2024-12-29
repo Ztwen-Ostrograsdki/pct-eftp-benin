@@ -67,7 +67,7 @@ trait UserTrait{
 
         $email_verify_key = Str::random(6);
 
-        //$this->notify(new SendEmailVerificationKeyToUser($email_verify_key));
+        $this->notify(new SendEmailVerificationKeyToUser($email_verify_key));
 
         $auth = $this->forceFill([
             'email_verify_key' => Hash::make($email_verify_key)
@@ -82,7 +82,7 @@ trait UserTrait{
         
         if($key) $password_reset_key = $key;
 
-        //$this->notify(new SendPasswordResetKeyToUser($password_reset_key));
+        $this->notify(new SendPasswordResetKeyToUser($password_reset_key));
 
         $this->forceFill([
             'password_reset_key' => Hash::make($password_reset_key)

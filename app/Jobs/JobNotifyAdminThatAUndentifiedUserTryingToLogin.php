@@ -5,13 +5,14 @@ namespace App\Jobs;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\User;
+use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
 
 class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Batchable;
 
     public $user;
 

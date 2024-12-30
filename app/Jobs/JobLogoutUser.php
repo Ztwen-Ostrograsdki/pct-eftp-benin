@@ -3,12 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\User;
+use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
 class JobLogoutUser implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Batchable;
 
     public $user;
 

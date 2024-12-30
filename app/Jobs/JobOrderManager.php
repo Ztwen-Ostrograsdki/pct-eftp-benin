@@ -77,13 +77,13 @@ class JobOrderManager implements ShouldQueue
 
                                 $db_name = 'address/' . $file_name . '.' . $extension;
                 
-                                $image->storeAs('public/' . $db_name);
-                
+                                $save = $image->storeAs("address/", $file_name . '.' . $extension, ['disk' => 'public']);
+
                                 $to_db_images[] = $db_name;
                 
                             }
 
-                            $address->update(['images' => $to_db_images]);
+                            $address->update(['images' => json_encode($to_db_images)]);
                         }
 
                         foreach($items as $book_id => $item){

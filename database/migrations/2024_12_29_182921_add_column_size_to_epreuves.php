@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('FEDAPAY_ID')->nullable()->default(null);
+        Schema::table('epreuves', function (Blueprint $table) {
+            $table->string('file_size')->nullable()->default(null);
+        });
+
+        Schema::table('epreuve_responses', function (Blueprint $table) {
+            $table->string('file_size')->nullable()->default(null);
         });
     }
 
@@ -21,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('epreuves', function (Blueprint $table) {
             //
         });
     }

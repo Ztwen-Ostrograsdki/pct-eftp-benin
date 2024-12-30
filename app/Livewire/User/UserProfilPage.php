@@ -33,6 +33,8 @@ class UserProfilPage extends Component
 
     public $editing_experiences = false;
 
+    public $editing_photo = false;
+
 
     public $hidden_graduate = false;
 
@@ -63,6 +65,12 @@ class UserProfilPage extends Component
 
             if(!$user) return abort(404, "La page est introuvable");
         }
+    }
+
+
+    public function startPhotoEdition()
+    {
+        $this->editing_photo = true;
     }
 
 

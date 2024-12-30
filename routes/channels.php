@@ -19,3 +19,9 @@ Broadcast::channel('admin', function ($user) {
     return $user->isAdminAs();
 });
 
+Broadcast::channel('confirmeds', function ($user) {
+
+    return $user->confirmed_by_admin === true && $user->blocked === false && $user->emailVerified();
+
+});
+

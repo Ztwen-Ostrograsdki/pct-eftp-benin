@@ -28,13 +28,20 @@ if (window.User) {
 
 e.private('master')
 
+e.private('confirmeds')
+        .listen('EpreuveWasCreatedSuccessfullyEvent', () =>{
+
+            Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent');
+            
+        })
+
     
 
 e.private('admin')
 
-    .listen('UserHasBeenBlockedSuccessfullyEvent', (user) =>{
+    .listen('UserHasBeenBlockedSuccessfullyEvent', () =>{
 
-        Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent', user);
+        Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent');
         
     })
     
@@ -46,6 +53,11 @@ e.private('admin')
     .listen('TheOrderApprovedSuccessfullyEvent', (order_identifiant) =>{
 
         Livewire.dispatch('LiveTheOrderApprovedSuccessfullyEventForAdmin', order_identifiant);
+        
+    })
+    .listen('EpreuveWasCreatedSuccessfullyEvent', (user) =>{
+
+        Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent', user);
         
     })
 

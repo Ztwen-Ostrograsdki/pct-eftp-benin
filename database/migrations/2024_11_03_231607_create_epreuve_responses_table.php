@@ -22,11 +22,11 @@ return new class extends Migration
             $table->text('notes')->nullable()->default(null);
             $table->string('path')->nullable()->default(null);
             $table->string('name')->nullable()->default(null);
+            $table->string('file_size')->nullable()->default(null);
             $table->string('school_year')->nullable()->default(null);
             $table->json('images')->nullable()->default(null);
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->foreignId('epreuve_id')->constrained('epreuve_responses')->cascadeOnDelete();
-            $table->foreignId('classe_id')->constrained('classes')->cascadeOnDelete();
             $table->unsignedBigInteger('downloaded')->nullable()->default(0);
             $table->json('seen_by')->nullable()->default(null);
             $table->json('downloaded_by')->nullable()->default(null);

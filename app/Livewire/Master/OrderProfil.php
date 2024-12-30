@@ -23,6 +23,8 @@ class OrderProfil extends Component
 
     public $address;
 
+    public $counter = 0;
+
     public function render()
     {
         $order = $this->order;
@@ -106,7 +108,7 @@ class OrderProfil extends Component
 
                 $amount = $this->order->grand_total + $this->order->shipping_price + $this->order->tax;
 
-                $callback_url = url('user.checkout.success', ['identifiant' => $this->order->identifiant]);
+                $callback_url = route('user.checkout.success', ['identifiant' => $this->order->identifiant]);
 
                 $transaction = Transaction::create([
                     'description' => $description,
@@ -169,11 +171,15 @@ class OrderProfil extends Component
     public function orderApproved($order_identifiant)
     {
         $this->toast("Votre commande N° ". $order_identifiant. " a été approuvée avec succès. Vous pouvez procéder au payement", 'success');
+
+        $this->counter = rand(12, 300);
     }
     
     #[On('LiveTheOrderApprovedSuccessfullyEventForAdmin')]
     public function orderApprovedForAdmins($order_identifiant)
     {
         $this->toast("La commande N° ". $order_identifiant. " a été approuvée avec succès.", 'success');
+    
+        $this->counter = rand(12, 300);
     }
 }

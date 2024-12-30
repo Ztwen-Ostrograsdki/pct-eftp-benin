@@ -80,11 +80,15 @@ class OrdersList extends Component
     public function orderApproved($order_identifiant)
     {
         $this->toast("Votre commande N° ". $order_identifiant. " a été approuvée avec succès. Vous pouvez procéder au payement", 'success');
+    
+        $this->counter = rand(12, 300);
     }
     
     #[On('LiveTheOrderApprovedSuccessfullyEventForAdmin')]
     public function orderApprovedForAdmins($order_identifiant)
     {
         $this->toast("La commande N° ". $order_identifiant. " a été approuvée avec succès.", 'success');
+        
+        $this->counter = rand(12, 300);
     }
 }

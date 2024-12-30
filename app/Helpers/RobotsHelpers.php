@@ -251,6 +251,15 @@ if(!function_exists('auth_user')){
 
 }
 
+if(!function_exists('auth_user_fullName')){
+
+    function auth_user_fullName($reverse = false)
+    {
+        return User::find(Auth::user()->id)->getFullName($reverse);
+    }
+
+}
+
 if(!function_exists('getClasse')){
 
     function getClasse($value, $column = "id")

@@ -22,9 +22,11 @@ class Orders extends Component
 
     use Confirm, Toast, WithPagination;
 
-    public $sectionned = 'new';
+    public $sectionned = 'pending';
 
     public $search = '';
+
+    public $counter = 1;
 
 
     public function mount($identifiant)
@@ -64,7 +66,7 @@ class Orders extends Component
 
         $query = Order::query()->where('user_id', $user->id)->orderBy('updated_at', 'desc');
 
-        if($this->sectionned && $this->sectionned !== "new"){
+        if($this->sectionned && $this->sectionned !== "pending"){
 
             $query->where('status', $this->sectionned);
 
@@ -98,12 +100,17 @@ class Orders extends Component
     public function orderApproved($order_identifiant)
     {
         $this->toast("Votre commande N° ". $order_identifiant. " a été approuvée avec succès. Vous pouvez procéder au payement", 'success');
+        
+        $this->counter = rand(12, 300);
+    
     }
     
     #[On('LiveTheOrderApprovedSuccessfullyEventForAdmin')]
     public function orderApprovedForAdmins($order_identifiant)
     {
         $this->toast("La commande N° ". $order_identifiant. " a été approuvée avec succès.", 'success');
+    
+        $this->counter = rand(12, 300);
     }
 
 

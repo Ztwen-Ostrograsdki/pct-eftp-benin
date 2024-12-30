@@ -5,6 +5,9 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Models\Book;
+use App\Models\Epreuve;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -43,52 +46,39 @@ class EpreuvesPage extends Component
 
     public function render()
     {
-        $query = Book::query()->where('is_active', 1);
+        $query = Epreuve::query()->whereNotNull('created_at');
 
-        foreach($query->get() as $p){
-
-            if($this->current_index == $p->id){
-
-                $images = $p->images;
-
-                $current = $this->image_indexes[$p->id]['current'];
-
-                if($current + 1 < count($images)){
-
-                    $index = $current + 1;
-                }
-                else{
-                    $index = 0;
-                }
-
-                $this->image_indexes[$p->id] = [
-                    'index' => $index, 
-                    'current' => $index
-                ];
-
-            }
-            else{
-                if(isset($this->image_indexes[$p->id]) && $this->image_indexes[$p->id]['index'] !== 0){
-                    $this->image_indexes[$p->id] = [
-                        'index' => $this->image_indexes[$p->id]['index'], 
-                        'current' => $this->image_indexes[$p->id]['index']
-                    ];
-                }
-                else{
-                    $this->image_indexes[$p->id] = [
-                        'index' => 0, 
-                        'current' => 0
-                    ];
-                }
-               
-            }
-           
-        }
 
         return view('livewire.libraries.epreuves-page', 
             [
-                'books' => $query->paginate(6),
+                'epreuves' => $query->paginate(6),
             ]
-        );
+        ); 
+    }
+
+    #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
+    public function newEpreuveCreated()
+    {
+        $this->toast("Une nouvelle épreuve a été ajoutée", 'success');
+
+        $this->counter = rand(12, 300);
+    }
+
+    public function downloadTheFile($id)
+    {
+        $this->toast("Le téléchargement lancé... patientez", 'success');
+
+        $epreuve = Epreuve::find($id);
+
+        $epreuve->downloadManager();
+
+        $path = storage_path().'/app/public/' . $epreuve->path;
+
+        return response()->download($path);
+    }
+
+    public function deleteFile($id)
+    {
+
     }
 }

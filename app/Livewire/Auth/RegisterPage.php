@@ -57,7 +57,7 @@ class RegisterPage extends Component
 
                     $file_name = getdate()['year'].''.getdate()['mon'].''.getdate()['mday'].''.getdate()['hours'].''.getdate()['minutes'].''.getdate()['seconds']. '' .  Str::random(20);
 
-                    $this->profil_photo->storeAs('public/users/', $file_name . '.' . $extension);
+                    $save = $this->profil_photo->storeAs("users/", $file_name . '.' . $extension, ['disk' => 'public']);
                 }
 
                 if($this->firstname && $this->lastname){

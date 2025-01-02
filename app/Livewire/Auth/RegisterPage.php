@@ -72,6 +72,7 @@ class RegisterPage extends Component
                         'firstname' => Str::upper($this->firstname),
                         'lastname' => Str::ucwords($this->lastname),
                         'identifiant' => $identifiant,
+                        'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
                         'email' => $this->email,
                         'profil_photo' => 'users/' . $file_name . '.' . $extension,
                     ]);
@@ -83,6 +84,7 @@ class RegisterPage extends Component
                         'firstname' => Str::upper($this->firstname),
                         'lastname' => Str::ucwords($this->lastname),
                         'identifiant' => $identifiant,
+                        'auth_token' =>Str::replace("/", $identifiant, Hash::make($identifiant)),
                         'email' => $this->email,
                     ]);
                 }

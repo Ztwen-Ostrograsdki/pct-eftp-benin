@@ -1,4 +1,4 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 sm:text-xs lg:px-8 mx-auto">
     <div class="w-4/5 mx-auto px-3" >
         @if($errors->any())
             <h4 class="w-full letter-spacing-2 p-2 text-xl mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
@@ -7,24 +7,29 @@
                 </strong>
             </h4>
         @endif
-        <div class="bg-gray-900 w-full pb-3 @if($errors->any()) shadow-3-strong shadow-red-500 @endif ">
+        <div class="bg-gray-900 w-full xs:text-xs lg:text-base pb-3 @if($errors->any()) shadow-3-strong shadow-red-500 @endif ">
             <div class="w-full">
-                <div class="m-0 my-2 p-2 border-b">
-                    <h6 class="py-3 text-lg text-gray-500">Gestionnaire d'envoi des épreuves</h6>
+                <div class="m-0 my-2 p-2 border-b flex justify-between items-center">
+                    <h6 class="py-3 text-gray-400">Gestionnaire d'envoi des épreuves</h6>
+
+                    <a class="border py-2 px-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-gray-50" href="{{route('library.epreuves')}}">
+                        <span class="xs:hidden lg:inline">Page de téléchargement</span>
+                        <span class="fas fa-download"></span>
+                    </a>
                 </div>
 
             </div>
 
             <div class="w-full px-3">
                 <div class="m-0 p-2">
-                    <h6 class="py-1 text-lg text-orange-500 text-right">Veuillez renseigner les infos de sur votre document</h6>
+                    <h6 class="py-1 xs:text-xs lg:text-base text-orange-500 text-right">Veuillez renseigner les infos de sur votre document</h6>
                 </div>
 
                 <form class="w-full mx-auto">
         
                     <div class="grid md:grid-cols-2 md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
-                            <input wire:model.live="name" type="text" name="name" id="name" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Renseigner un nom à votre épreuve" />
+                            <input wire:model.live="name" type="text" name="name" id="name" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Renseigner un nom à votre épreuve" />
                             <label for="name" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Veuillez renseigner un nom à votre épreuve</label>
                             @error('name')
                                 <span class="text-red-600">{{$message}}</span>
@@ -32,7 +37,7 @@
                         </div>
                         
                         <div class="relative z-0 w-full mb-5 group">
-                            <input disabled wire:model="author" type="text" name="author" id="author" class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Auteur de l'épreuve" />
+                            <input disabled wire:model="author" type="text" name="author" id="author" class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Auteur de l'épreuve" />
                             <label for="author" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Auteur de l'épreuve</label>
                             @error('author')
                                 <span class="text-red-600">{{$message}}</span>
@@ -42,7 +47,7 @@
 
                     <div class="grid md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
-                            <select wire:model.live="promotion_id" type="text" name="promotion_id" id="promotion_id" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="La promotion ciblée">
+                            <select wire:model.live="promotion_id" type="text" name="promotion_id" id="promotion_id" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="La promotion ciblée">
                                 <option class="bg-gray-600 text-gray-950 " value="">Sélectionner la promotion</option>
                                 @foreach ($promotions as  $promotion)
                                     <option class="bg-gray-600 text-gray-950 " value="{{$promotion->id}}">{{ $promotion->name }}</option>
@@ -58,12 +63,12 @@
 
                     <div class="grid md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
-							<textarea name="contents_titles" wire:model.live='contents_titles' placeholder="Renseignez les notions ciblées ou évaluées sur cette épreuve..." class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  id="contents_titles" type="text">
+							<textarea name="contents_titles" wire:model.live='contents_titles' placeholder="Renseignez les notions ciblées ou évaluées sur cette épreuve..." class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  id="contents_titles" type="text">
 							
 							</textarea>
                             <label for="contents_titles" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">
                                 Les Contenus notionnels ciblés
-                                <small class="text-orange-600 float-right ml-6 letter-spacing-2">(Veuillez séparer chaque notion par un tiret)</small>
+                                <small class="text-orange-600 float-right ml-6 letter-spacing-2 xs:hidden lg:inline">(Veuillez séparer chaque notion par un tiret)</small>
                             </label>
                             @error('contents_titles')
                                 <span class="text-red-600">{{$message}}</span>
@@ -73,7 +78,7 @@
 
                     <div class="grid md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
-							<textarea name="description" wire:model.live='description' placeholder="Renseignez ce que vous voulez faire savoir sur cette épreuve..." class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  id="description" type="text">
+							<textarea name="description" wire:model.live='description' placeholder="Renseignez ce que vous voulez faire savoir sur cette épreuve..." class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  id="description" type="text">
 							
 							</textarea>
                             <label for="description" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Décrivez cette épreuve</label>
@@ -85,7 +90,7 @@
 
                     <div class="grid md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
-                            <input wire:model.live="file_epreuve" type="file" name="file_epreuve" id="file_epreuve" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Veuillez Sélectionner le fichier" />
+                            <input wire:model.live="file_epreuve" type="file" name="file_epreuve" id="file_epreuve" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Veuillez Sélectionner le fichier" />
                             <label for="file_epreuve" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Sélectionner l'épreuve</label>
                             @error('file_epreuve')
                                 <span class="text-red-600">{{$message}}</span>
@@ -96,7 +101,7 @@
                     </div>
 
                     <div class="w-full my-2">
-                        <h5 class="my-3 text-gray-500 text-xl w-full">
+                        <h5 class="my-3 text-gray-500 xs:text-xs lg:text-base w-full">
                             <span>Veuillez sélectionner les filières</span>
 
                             <span class="float-right text-orange-300"> {{ count($selecteds) }} filières sélectionnées </span>
@@ -104,7 +109,7 @@
                     </div>
                     <div class="mt-3 w-full mb-5 group overflow-y-auto" style="max-height: 300px">
 
-                        <table class="w-full text-sm text-center border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400">
+                        <table class="w-full text-sm text-center border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400 xs:text-xs lg:text-base">
                 
                             @if(count($filiars) > 0)
                             <thead class="text-xs text-gray-900 uppercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
@@ -115,7 +120,7 @@
                                     <th scope="col" class="px-6 py-3">
                                        Filière
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-6 py-3 xs:hidden lg:inline">
                                         Option
                                      </th>
                                     <th scope="col" class="px-6 py-3 float-right text-right">
@@ -133,7 +138,7 @@
                                     <td class="px-6 py-4">
                                         {{$filiar->name}} 
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4 xs:hidden lg:inline">
                                         {{$filiar->option}} 
                                     </td>
                                     <td class="px-6 py-4 float-right">

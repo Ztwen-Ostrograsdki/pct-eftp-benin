@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
 use App\Models\ENotification;
+use App\Models\Member;
 use App\Models\Order;
 use App\Observers\ObserveUser;
 use Filament\Models\Contracts\FilamentUser;
@@ -58,6 +59,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         'current_function',
         'email_verified_at',
         'FEDAPAY_ID',
+        'auth_token',
 
     ];
 
@@ -157,5 +159,11 @@ class User extends Authenticatable implements FilamentUser, HasName
     {
         return ENotification::all();
     }
+
+    public function member()
+    {
+        return $this->hasOne(Member::class);
+    }
+
 
 }

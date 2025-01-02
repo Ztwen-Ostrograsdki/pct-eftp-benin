@@ -21,6 +21,7 @@
         "@sweetalert2/theme-dark": "^5.0.18",
         "@sweetalert2/themes": "^5.0.18",
         "flag-icons": "^7.2.3",
+        "flowbite": "^2.5.2",
         "preline": "^2.5.1",
         "tw-elements": "^2.0.0"
     }

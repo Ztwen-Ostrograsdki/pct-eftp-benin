@@ -7,6 +7,8 @@ use App\Events\BlockedUserTryingToLoginEvent;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -105,7 +107,12 @@ class LoginPage extends Component
 
             if($auth){
 
-                $this->toast("Connexion établie!", 'success');
+                if(!$user->auth_token){
+
+                    $user->update(['auth_token' => Str::replace("/", $user->identifiant, Hash::make($user->identifiant))]);
+                }
+
+                $this->toast("Vous êtes connecté!", 'success');
 
                 request()->session()->regenerate();
 

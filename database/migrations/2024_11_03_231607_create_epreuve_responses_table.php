@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
+            $table->string('extension')->nullable()->default('.pdf');
             $table->string('visibity')->nullable()->default('public');
             $table->boolean('hidden')->nullable()->default(true);
             $table->text('description')->nullable()->default(null);

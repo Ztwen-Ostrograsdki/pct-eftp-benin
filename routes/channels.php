@@ -14,6 +14,12 @@ Broadcast::channel('master', function ($user) {
 });
 
 
+Broadcast::channel('members', function ($user) {
+
+    return $user->member !== null;
+});
+
+
 Broadcast::channel('admin', function ($user) {
 
     return $user->isAdminAs();

@@ -135,6 +135,7 @@ class EpreuvesUploader extends Component
             'description' => $this->description,
             'filiars_id' => $this->filiars_ids,
             'promotion_id' => $this->promotion_id,
+            'extension' => "." . $extension,
             'file_size' => $file_size,
             'path' => $path,
         ];

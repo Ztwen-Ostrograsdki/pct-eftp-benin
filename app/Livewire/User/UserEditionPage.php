@@ -14,14 +14,16 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-#[Title('Profil Utilisateur')]
-class UserProfilPage extends Component
+#[Title('Edition Profil Utilisateur')]
+class UserEditionPage extends Component
 {
     protected $listeners = [
         'HideUserPersoModuleLiveEvent' => "cancelPersoEdition",
     ];
 
     use WithFileUploads, Toast, Confirm;
+
+    public $counter;
 
     public $user;
 
@@ -34,7 +36,6 @@ class UserProfilPage extends Component
     public $editing_experiences = false;
 
     public $editing_photo = false;
-
 
     public $hidden_graduate = false;
 
@@ -52,11 +53,11 @@ class UserProfilPage extends Component
     public $firstname;
 
 
-    public function mount($identifiant)
+    public function mount($identifiant, $auth_token)
     {
-        if($identifiant){
+        if($identifiant && $auth_token){
 
-            $user = getUser($identifiant, 'identifiant');
+            $user = User::where('identifiant', $identifiant)->where('auth_token', $auth_token)->first();
 
             if($user){
 
@@ -118,7 +119,7 @@ class UserProfilPage extends Component
 
     public function render()
     {
-        return view('livewire.user.user-profil-page');
+        return view('livewire.user.user-edition-page');
     }
 
     public function confirmedData()
@@ -133,6 +134,12 @@ class UserProfilPage extends Component
     public function onConfirmationData()
     {
         $this->toast("Precessus confirmé", "success");
+    }
+
+    #[On('UserProfilUpdated')]
+    public function reloadData()
+    {
+        $this->counter = rand(3, 133);
     }
 
 

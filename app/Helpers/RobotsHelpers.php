@@ -250,11 +250,24 @@ if(!function_exists('auth_user')){
     }
 
 }
+if(!function_exists('user_profil_photo')){
+
+    function user_profil_photo($user)
+    {
+        return url('storage', $user->profil_photo);
+    }
+
+}
 
 if(!function_exists('auth_user_fullName')){
 
-    function auth_user_fullName($reverse = false)
+    function auth_user_fullName($reverse = false, $user = null)
     {
+        if($user){
+
+            return $user->getFullName($reverse);
+
+        }
         return User::find(Auth::user()->id)->getFullName($reverse);
     }
 
@@ -293,6 +306,15 @@ if(!function_exists('getUser')){
     function getUser($value, $column = "id")
     {
         return User::where($column, $value)->first();
+    }
+
+}
+
+if(!function_exists('__selfUser')){
+
+    function __selfUser($user)
+    {
+        return $user->id === auth_user()->id;
     }
 
 }

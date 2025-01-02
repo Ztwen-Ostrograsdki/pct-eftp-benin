@@ -1,5 +1,4 @@
 <div class="mx-auto p-2 min-h-90">
-
     <div class="m-auto w-3/4 bg-gray-500 mt-3 p-0">
         <h1 class="p-4 text-orange-400 border text-left rounded-sm bg-slate-600">
             <span class=" ml-2">
@@ -9,7 +8,6 @@
             <strong class="text-orange-600 uppercase">
                 @if($user)  {{ $user->getUserNamePrefix() . ' ' . $user->getFullName(true) }} @endif
             </strong>
-
             
             <strong class="text-gray-200 uppercase float-right">
                 
@@ -26,7 +24,7 @@
         <div class="m-auto lg:flex xl:flex 2xl:flex justify-between bg-gray-500 min-h-80">
             <div class="lg:w-5/12 xl:w-5/12 2xl:w-5/12 sm:w-full m-0 p-0 border-r border-r-gray-900">
                 <div class="w-full p-0 m-0">
-                    <img class="w-full border-b z-10" src="{{ url('storage', auth()->user()->profil_photo) }}" alt="Photo de profil" alt="User-Profile-Image">
+                    <img class="w-full border-b z-10" src="{{ url('storage', $user->profil_photo) }}" alt="Photo de profil de {{ $user->getFullName() }}" >
                 </div>
 
                 <div class="pl-2 py-2 w-full m-0">
@@ -152,7 +150,7 @@
                 </div>
             </div>
             <div class="lg:w-7/12 xl:w-7/12 2xl:w-7/12 sm:w-full bg-gray-800">
-                <div class="mt-2 w-full px-2">
+                <div class="mt-2 w-full px-2 pb-4">
 
                     @livewire('user.graduate-manager-module', 
                         [
@@ -184,18 +182,22 @@
                     
                     @endif
                     <div class="w-full mx-auto my-3">
-                        <span wire:click='confirmedData' class="cursor-pointer block w-full border text-white bg-blue-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-blue-800">
-                            <span  class="fas fa-ban"></span>
+                        <span wire:click='confirmedData' class="cursor-pointer block border text-white bg-blue-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-success-600 dark:hover:bg-success-700 dark:focus:ring-blue-800">
+                            <span  class="fas fa-recycle"></span>
                             Réinitiliser mes données
                         </span>
+                    </div>
+
+                    <div class="w-full mx-auto my-3">
+                        <a href="{{route('user.profil', ['identifiant' => $user->identifiant])}}" class="cursor-pointer block border text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <span  class="fas fa-user"></span>
+                            Retour à la page de profil
+                        </a>
                     </div>
                 </div>
             </div>
             
         </div>
-        
         @endauth
     </div>
-   
-    
 </div>

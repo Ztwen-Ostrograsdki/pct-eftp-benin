@@ -87,10 +87,5 @@ e.private('App.Models.User.' + window.ClientUser.id)
         
     })
     
-    FedaPay.init('#pay-btn', {
-        public_key: 'pk_sandbox_lf7ed0OyC_S-JmIEL3RvCE1R',
-        
-      }
-    )
 
     

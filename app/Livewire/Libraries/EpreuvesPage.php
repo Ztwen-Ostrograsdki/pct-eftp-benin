@@ -15,30 +15,11 @@ class EpreuvesPage extends Component
 {
     use Toast, Confirm, WithPagination;
 
-    public $carts_items = [];
-
-    public $image_indexes = [];
-
-    public $current_index = 0;
-
-
     public $selected_filiars = [];
 
     public $selected_promotions = [];
 
     public $selected_classes = [];
-
-    public $on_sale;
-
-    public $is_active;
-
-    public $step = 10000;
-
-    public $price_range = 5000;
-
-    public $min_price = 0;
-
-    public $max_price = 90000000;
 
     public $counter = 0;
 
@@ -48,12 +29,62 @@ class EpreuvesPage extends Component
     {
         $query = Epreuve::query()->whereNotNull('created_at');
 
+        $ids = [
+            'has' => false,
+            'items' => [],
+        ];
+
+        if($this->selected_filiars !== []){
+
+            $ids['has'] = true;
+
+            $epreuves = Epreuve::all();
+
+            foreach($epreuves as $e){
+                
+                foreach($this->selected_filiars as $id){
+
+                    if($e->isForThisFiliar($id)){
+
+                        $ids['items'][] = $e->id;
+                    }
+                }
+            }
+
+        }
+
+        if($this->selected_classes){
+
+
+
+        }
+
+        if($ids['has']){
+
+            $query->whereIn('epreuves.id', $ids['items']);
+
+        }
+
+        if($this->selected_promotions !== []){
+
+            $query->whereIn('epreuves.promotion_id', $this->selected_promotions);
+
+        }
+
 
         return view('livewire.libraries.epreuves-page', 
             [
                 'epreuves' => $query->paginate(6),
             ]
         ); 
+    }
+
+    public function updatedSelectedPromotions($values)
+    {
+    }
+
+    public function updatedSelectedFiliars($values)
+    {
     }
 
     #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]

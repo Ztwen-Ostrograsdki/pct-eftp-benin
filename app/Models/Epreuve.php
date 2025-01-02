@@ -33,6 +33,7 @@ class Epreuve extends Model
         'downloaded_by',
         'contents_titles',
         'seen_by',
+        'extension',
         'likes'
     ];
 
@@ -59,11 +60,6 @@ class Epreuve extends Model
         return $this->belongsTo(Promotion::class);
     }
 
-    public function extension()
-    {
-        return mb_substr($this->path, -3);
-    }
-
     public function getFiliars()
     {
         if($this->filiars_id){
@@ -86,9 +82,25 @@ class Epreuve extends Model
 
     public function getEpreuveSize()
     {
-        $file_epreuve = url('storage', $this->path);
+        $file_size = $this->file_size;
 
-        //return $file_epreuve->getSize() >= 1048580 ? number_format($file_epreuve->getSize() / 1048576, 2) . ' Mo' :  number_format($file_epreuve->getSize() / 1000, 2) . ' Ko';
+        if(!$file_size){
+            
+            $size = Storage::disk('public')->size($this->path);
+
+            if($size >= 1048580){
+
+                $file_size = number_format($size / 1048576, 2) . ' Mo';
+
+            }
+            else{
+
+                $file_size = number_format($size / 1000, 2) . ' Ko';
+
+            }
+        }
+
+        return $file_size;
     }
 
     public function downloadManager()
@@ -122,5 +134,18 @@ class Epreuve extends Model
         }
 
         $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders, 'file_size' => $file_size]);
+    }
+
+    public function isForThisFiliar($filiar_id)
+    {
+        $filiars = $this->getFiliars();
+
+        foreach($filiars as $filiar){
+
+            if($filiar->id == $filiar_id) return true;
+
+        }
+
+        return false;
     }
 }

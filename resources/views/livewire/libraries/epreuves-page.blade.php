@@ -1,7 +1,7 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <div class="py-2 bg-gray-400 border rounded-lg w-full my-2">
         <div class="w-full px-2">
-            <h4 class="py-3 text-2xl">
+            <h4 class="py-3 xs:text-xs lg:text-base">
                 <span class="text-gray-700">
                     Vous êtes
                 </span>
@@ -9,7 +9,7 @@
                     à la
                 </span>
                 <span class="text-gray-900 uppercase ml-2">
-                    Banque des épreuves  <span class="float-right text-gray-800"> {{ numberZeroFormattor(count($epreuves)) }}</span>
+                    Banque des épreuves  <span class="float-right text-gray-800"> {{ numberZeroFormattor(count($epreuves)) }} <span class="lowercase">épreuves disponibles</span> </span>
                 </span>
             </h4>
         </div>
@@ -26,31 +26,31 @@
     <section class="py-3 bg-gray-50 font-poppins dark:bg-gray-800 rounded-lg">
       <div class="px-4 mx-auto max-w-7xl lg:py-6 md:px-6">
         
-        <div class="flex flex-wrap mb-24 -mx-3">
-          <div class="w-full pr-2 lg:w-1/4 lg:block">
-            <div class="p-4 mb-5 bg-white border border-gray-200 dark:border-gray-900 dark:bg-gray-900">
-              <h2 class="text-2xl font-bold dark:text-gray-400"> Par Promotion</h2>
+        <div class="grid lg:grid-cols-4  mb-24 -mx-3">
+          <div class="pr-2 sm:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
+            <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1 bg-white border border-gray-200 dark:border-gray-900 dark:bg-gray-900">
+              <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400"> Par Promotion</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getPromotions(true) as $p_id => $promo)
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-400 ">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg">{{ $promo->name }}</span>
+                <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                  <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400 ">
+                    <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2">
+                    <span class="">{{ $promo->name }}</span>
                   </label>
                 </li>
                 @endforeach
               </ul>
             </div>
-            <div class="p-4 mb-5 bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-900">
-              <h2 class="text-2xl font-bold dark:text-gray-400">Par Filières</h2>
+            <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1 bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-900">
+              <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400">Par Filières</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getFiliars(true) as $f_id => $fil)
-                <li class="mb-4">
-                  <label for="" class="flex items-center dark:text-gray-300">
-                    <input type="checkbox" class="w-4 h-4 mr-2">
-                    <span class="text-lg dark:text-gray-400">{{ $fil->name }}</span>
+                <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                  <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300">
+                    <input on wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2">
+                    <span class=" dark:text-gray-400">{{ $fil->name }}</span>
                   </label>
                 </li>
                 @endforeach
@@ -58,26 +58,25 @@
             </div>
             
           </div>
-          <div class="w-full px-3 lg:w-3/4">
+          <div class="w-full xs:col-span-4 sm:col-span-4 lg:col-span-3 lg:grid-cols-4">
             <div class="px-3 mb-4">
-              <div class="items-center justify-between hidden px-3 py-2 bg-gray-100 md:flex dark:bg-gray-900 ">
-                <div class="flex items-center justify-between">
-                  <select name="" id="" class="block w-40 text-base bg-gray-100 cursor-pointer dark:text-gray-400 dark:bg-gray-900">
-                    <option value="">Trier par classe</option>
+              <div class="items-center justify-between hidden px-3 py-2 bg-gray-100 sm:flex dark:bg-gray-900 rounded-lg shadow-2">
+                <div class="flex items-center w-2/5 justify-between py-2">
+                  <select name="" id="" class="block w-full text-base px-3 bg-gray-100 border-none cursor-pointer dark:text-gray-400 dark:bg-gray-900">
+                    <option class="py-4" value="">Trier par classe</option>
                     @foreach (getClasses(true) as $c_id => $cl)
-                      <option value="{{$cl->id}}"> {{ $cl->name }} </option>
+                      <option class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
                     @endforeach
                   </select>
                 </div>
               </div>
             </div>
             @if(count($epreuves))
-            <div class="flex gap-2">
+            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div class="w-full px-3 mb-6 sm:w-1/2 md:w-1/3">
+              <div class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
-                  
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
                         <span>
@@ -105,7 +104,7 @@
                         <img width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
                         <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$epreuve->name}}</span>
-                          <strong class="text-blue-600 ml-3 float-right">(fichier {{$epreuve->extension()}})</strong>
+                          <strong class="text-blue-600 ml-3 float-right">(fichier {{$epreuve->extension}})</strong>
                         </h5>
                       </div>
                       

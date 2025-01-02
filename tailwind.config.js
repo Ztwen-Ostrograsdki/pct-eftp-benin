@@ -22,5 +22,6 @@ export default {
     plugins: [
         require('preline/plugin'),
         require("tw-elements/plugin.cjs")
+        
     ],
 };

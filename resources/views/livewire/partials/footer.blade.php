@@ -22,10 +22,17 @@
         <h4 class="font-semibold text-gray-100">Notre association</h4>
 
         <div class="mt-3 grid space-y-3">
-          <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">A propos de nous</a></p>
-          <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">Blog</a></p>
+          <p>
+            <a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('master.members.home')}}">
+              A propos de nous
+            </a>
+          </p>
 
-          <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">Nos membres</a></p>
+          <p>
+            <a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('master.members.home')}}">
+              Nos membres
+            </a>
+          </p>
         </div>
       </div>
       <!-- End Col -->
@@ -78,19 +85,13 @@
         </a>
 
         @guest
-        <a href="{{route('register')}}" class=" mt-2 inline-flex gap-x-2 text-orange-800 hover:text-orange-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+        <a title="S'inscrire" href="{{route('register')}}" class="w-10  h-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-primary-500 hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-gray-600" >
           <span class="fas fa-user-plus"></span>
-          <strong>
-            Inscrivez-vous
-          </strong> 
+        </a>
+        <a title="Se connecter" href="{{route('login')}}" class="w-10  h-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-success-500 hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-gray-600" >
+          <span class="fas fa-user"></span>
         </a>
 
-        <a href="{{route('login')}}" class=" mt-2 inline-flex gap-x-2 text-blue-800 hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-          <span class="fas fa-user-plus"></span>
-          <strong>
-            Connectez-vous
-          </strong> 
-        </a>
         @endguest
 
       </div>

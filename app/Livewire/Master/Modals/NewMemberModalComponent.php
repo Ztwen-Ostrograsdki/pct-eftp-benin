@@ -2,14 +2,19 @@
 
 namespace App\Livewire\Master\Modals;
 
+use Akhaled\LivewireSweetalert\Confirm;
+use Akhaled\LivewireSweetalert\Toast;
 use App\Models\Member;
 use App\Models\Role;
 use App\Models\User;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class NewMemberModalComponent extends Component
 {
+    use Toast, Confirm;
+
     #[Validate('required|numeric')]
     public $user_id;
 
@@ -19,6 +24,12 @@ class NewMemberModalComponent extends Component
     public $email;
 
     public $description;
+
+    public $for_update = false;
+
+    public $member = null;
+
+    public $counter = 1;
 
 
     public function render()
@@ -47,6 +58,22 @@ class NewMemberModalComponent extends Component
     public function insert()
     {
 
+        if(!$this->for_update){
+
+            return self::forCreation();
+        }
+        else{
+
+            return self::forEdition();
+
+        }
+
+
+    }
+
+
+    public function forCreation()
+    {
         $this->validate();
 
         $role = Role::find($this->role_id);
@@ -61,12 +88,10 @@ class NewMemberModalComponent extends Component
 
                     if(!$user->member){
 
-                        $role_id = 1;
-
                         $m_data = [
 
                             'user_id' => $user->id,
-                            'role_id' => $role_id,
+                            'role_id' => $role->id,
                             'tasks' => $role->tasks,
                             'ability' => $role->ability
                         ];
@@ -75,7 +100,9 @@ class NewMemberModalComponent extends Component
 
                         if($member){
 
-                            return $this->toast("Le proccessus c'est bien déroulé!", 'success');
+                            $this->toast("Le proccessus c'est bien déroulé!", 'success');
+
+                            return self::hideModal();
                             
                         }
 
@@ -98,5 +125,98 @@ class NewMemberModalComponent extends Component
 
             return $this->toast("La fonction sélectionnée est innexistante!", 'error');
         }
+    }
+
+    public function forEdition()
+    {
+        $this->validate();
+
+        $role = Role::find($this->role_id);
+
+        if($role){
+
+            if($this->user_id){
+
+                $user = User::find($this->user_id);
+
+                if($user){
+
+                    if(!$user->member){
+
+                        $m_data = [
+                            'user_id' => $user->id,
+                        ];
+
+                        $member = $this->update($m_data);
+
+                        if($member){
+
+                            $this->reset();
+
+                            $this->toast("Le proccessus c'est bien déroulé!", 'success');
+
+                            $this->dispatch('UpdatedMemberList');
+
+                            return self::hideModal();
+
+                            
+                        }
+
+                    }
+                    else{
+
+                        return $this->toast("Cet utilisateur joue déjà le role de " . $user->member->role->name, 'warning');
+                    }
+
+                }
+                else{
+
+                    return $this->toast("L'utilisateur est innexistant!", 'error');
+                }
+
+            }
+
+        }
+        else{
+
+            return $this->toast("La fonction sélectionnée est innexistante!", 'error');
+        }
+    }
+
+
+    #[On('OpenMemberModalForEditEvent')]
+    public function openModal($member_id)
+    {
+        $this->for_update = true;
+
+        $member = Member::find($member_id);
+
+        if($member){
+
+            $this->member = $member;
+
+            $this->user_id = $member->user_id;
+
+            $this->email = $member->user->email;
+
+            $this->description = $member->description;
+
+            $this->role_id = $member->role_id;
+
+
+        }
+
+        $this->dispatch('OpenModalEvent', '#new-member-modal');
+    }
+
+    public function hideModal($modal_name = null)
+    {
+        $this->dispatch('HideModalEvent', '#new-member-modal');
+    }
+
+    #[On('UpdatedMemberList')]
+    public function reloadData()
+    {
+        $this->counter = rand(3, 342);
     }
 }

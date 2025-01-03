@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Models\Member;
 use App\Models\User;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class MembersProfilComponent extends Component
@@ -27,5 +28,12 @@ class MembersProfilComponent extends Component
                 'users' => $users,
             ]
         );
+    }
+
+
+    #[On('UpdatedMemberList')]
+    public function reloadData()
+    {
+        $this->counter = rand(3, 342);
     }
 }

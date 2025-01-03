@@ -91,4 +91,5 @@ class OrdersList extends Component
         
         $this->counter = rand(12, 300);
     }
+    
 }

@@ -48,11 +48,13 @@
                                 <a wire:click='confirmedUserIdentification' href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Confirmer l'identification</a>
                             </li>
                             @endif
+                            @if(!$user->email_verified_at)
                             <li>
                                 <a wire:click='confirmedUserEmailVerification' href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     {{ $user->email_verified_at ? "Marquer email non vérifié" : "Marquer email vérifié" }}
                                 </a>
                             </li>
+                            @endif
                         @endif
                     </ul>
                 </div>
@@ -69,7 +71,13 @@
                 </span>
                 <span class="text-sm text-yellow-800 letter-spacing-2 dark:text-yellow-400">
                     <span class="fas fa-phone"></span>
-                    <span>{{ $user->contacts }}</span>
+                    <span> 
+                        @if($user->contacts)
+                            {{ $user->contacts }}
+                        @else
+                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                        @endif
+                    </span>
                 </span>
                 <span class="text-sm text-green-300 dark:text-green-300">
                     <span class="fas fa-user"></span>
@@ -80,243 +88,343 @@
                         </span>
                     </span>
                 </span>
-                <div class="mt-2 md:mt-2 w-full mx-auto">
-                    <h4 class="text-orange-400 py-2 letter-spacing-2 text-center border-t border-b">
-                        {{ $details[$public_section] }}
-                    </h4>
-                    <div class="flex w-full items-center text-center mx-auto">
-                        
+
+                <div class="w-full p-2">
+                    <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 rounded-full px-3 my-3 text-blue-500" data-inactive-classes="text-gray-500 dark:text-gray-400">
+                        <h2 id="accordion-flush-heading-1 px-3 ">
+                            <button type="button" class="flex items-center justify-between w-full py-5 font-medium  text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" data-accordion-target="#accordion-flush-body-1" aria-expanded="false" aria-controls="accordion-flush-body-1">
+                                <span>Détails civilités</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                            </button>
+                        </h2>
+                        <div id="accordion-flush-body-1" class="hidden" aria-labelledby="accordion-flush-heading-1">
+                            <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700">
+                                <table class="text-gray-100 w-full m-0">
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-envelope"></span>
+                                            <span>
+                                                Mail:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>{{ $user->email}}</span>
+                                        </td>
+                                    </tr>
+        
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-genderless"></span>
+                                            <span>
+                                                Sexe:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class=""> {{ $user->getGender() }} </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-chalkboard"></span>
+                                            <span>
+                                                Né le:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class="">{{ $user->__getDateAsString($user->birth_date) }}</span> @if($user->birth_date && $user->birth_city) <small class="text-yellow-200 float-right mr-2 mt-1 italic"> <b> à {{ $user->birth_city }}</b> </small> @endif
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-phone"></span>
+                                            <span>
+                                                Contacts:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class="">
+                                                @if($user->contacts)
+                                                    {{ $user->contacts }}
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">
+                                                        Non renseigné
+                                                    </small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-chalkboard"></span>
+                                            <span>
+                                                Statut:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                            @if($user->status)
+                                                Enseignant {{ Str::upper($user->status) }}
+                                            @else
+                                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                            @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-home"></span>
+                                            <span>
+                                                Adresse:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                            @if($user->address)
+                                                Résidant à {{ Str::upper($user->address) }}
+                                            @else
+                                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                            @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-children"></span>
+                                            <span>
+                                                Statut matrimonial:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                            @if($user->marital_status)
+                                                {{ Str::ucfirst($user->marital_status) }}
+                                            @else
+                                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                            @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <h2 id="accordion-flush-heading-2">
+                            <button type="button" class="flex items-center justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" data-accordion-target="#accordion-flush-body-2" aria-expanded="false" aria-controls="accordion-flush-body-2">
+                                <span>Détails Diplôme</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                            </button>
+                        </h2>
+                        <div id="accordion-flush-body-2" class="hidden" aria-labelledby="accordion-flush-heading-2">
+                            <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700">
+                                <table class="text-gray-100 w-full m-0 p-0">
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-chalkboard"></span>
+                                            <span>
+                                                Diplôme:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                            @if($user->graduate)
+                                                {{ $user->graduate }} 
+                                            @else
+                                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                            @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-genderless"></span>
+                                            <span>
+                                                Type:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                            @if($user->graduate_type)
+                                                {{ $user->graduate_type }} 
+                                            @else
+                                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                            @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-chalkboard"></span>
+                                            <span>
+                                                Obtenu en:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->graduate_year)
+                                                    {{ $user->graduate_year }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-home"></span>
+                                            <span>
+                                                Délivré par:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->graduate_deliver)
+                                                    {{ $user->graduate_deliver }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <h2 id="accordion-flush-heading-3">
+                            <button type="button" class="flex items-center justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" data-accordion-target="#accordion-flush-body-3" aria-expanded="false" aria-controls="accordion-flush-body-3">
+                                <span>Détails professionnel</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                            </button>
+                        </h2>
+                        <div id="accordion-flush-body-3" class="hidden" aria-labelledby="accordion-flush-heading-3">
+                            <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700">
+                                <table class="text-gray-100 w-full text-left m-0 p-0">
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-chalkboard"></span>
+                                            <span>
+                                                Grade:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->grade)
+                                                    {{ $user->grade }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-person-circle-check"></span>
+                                            <span>
+                                                Matricule:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->matricule)
+                                                    {{ $user->matricule }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-clock"></span>
+                                            <span>
+                                                Enseignant depuis:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->teaching_since)
+                                                    {{ $user->teaching_since }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span> 
+                                        </td>
+                                    </tr>
+        
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-home"></span>
+                                            <span>
+                                                Lieu de travail:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->job_city)
+                                                    {{ $user->job_city }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-school-flag"></span>
+                                            <span>
+                                                Etablissement:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->school)
+                                                    {{ $user->school }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1">
+                                            <span class="fas fa-network-wired"></span>
+                                            <span>
+                                                Années d'expériences:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->years_experiences)
+                                                    {{ $user->years_experiences }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="pl-2 py-2 w-full m-0">
-
-                    @if($public_section == 'personnel')
-
-                        <table class="text-gray-100 w-full m-0 p-0">
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-envelope"></span>
-                                    <span>
-                                        Mail:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span>{{ $user->email}}</span>
-                                </td>
-                            </tr>
-
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-genderless"></span>
-                                    <span>
-                                        Sexe:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class=""> {{ $user->getGender() }} </span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-chalkboard"></span>
-                                    <span>
-                                        Né le:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->__getDateAsString($user->birth_date) }}</span> @if($user->birth_date && $user->birth_city) <small class="text-yellow-200 float-right mr-2 mt-1 italic"> <b> à {{ $user->birth_city }}</b> </small> @endif
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-phone"></span>
-                                    <span>
-                                        Contacts:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->contacts }}</span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-chalkboard"></span>
-                                    <span>
-                                        Statut:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">Enseignant {{ Str::upper($user->status) }}</span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-home"></span>
-                                    <span>
-                                        Adresse:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    Résidant à <span class=""> {{ Str::upper($user->address) }}</span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-children"></span>
-                                    <span>
-                                        Statut matrimonial:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class=""> {{ Str::ucfirst($user->marital_status) }}</span>
-                                </td>
-                            </tr>
-                        </table>
-                    
-                    @elseif($public_section == 'diplome')
-
-                        <table class="text-gray-100 w-full m-0 p-0">
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-chalkboard"></span>
-                                    <span>
-                                        Diplôme:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span>{{ $user->graduate}}</span>
-                                </td>
-                            </tr>
-
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-genderless"></span>
-                                    <span>
-                                        Type:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class=""> {{ $user->graduate_type }} </span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-chalkboard"></span>
-                                    <span>
-                                        Obtenu en:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->graduate_year }}</span> 
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-home"></span>
-                                    <span>
-                                        Délivré par:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->graduate_deliver }}</span>
-                                </td>
-                            </tr>
-                        </table>
-
-                    @elseif($public_section == 'professionnel')
-
-                        <table class="text-gray-100 w-full text-left m-0 p-0">
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-chalkboard"></span>
-                                    <span>
-                                        Grade:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span>{{ $user->grade}}</span>
-                                </td>
-                            </tr>
-
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-person-circle-check"></span>
-                                    <span>
-                                        Matricule:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class=""> {{ $user->matricule }} </span>
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-clock"></span>
-                                    <span>
-                                        Enseignant depuis:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->teaching_since }}</span> 
-                                </td>
-                            </tr>
-
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-home"></span>
-                                    <span>
-                                        Lieu de travail:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->job_city }}</span>
-                                </td>
-                            </tr>
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-school-flag"></span>
-                                    <span>
-                                        Etablissement:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->school }}</span>
-                                </td>
-                            </tr>
-                            <tr class=" cursor-pointer w-full border-b border-gray-700">
-                                <td class="py-1">
-                                    <span class="fas fa-network-wired"></span>
-                                    <span>
-                                        Années d'expériences:
-                                    </span>
-                                </td>
-                                <td class="py-1">
-                                    <span class="">{{ $user->years_experiences }}</span>
-                                </td>
-                            </tr>
-                        </table>
-
-                    @endif
-                </div>
+  
                 <div class="flex mt-4 gap-x-2 " wire:loading.remove wire:target="makePublicSection">
-                    @foreach ($details as $sec => $name)
-                        <div class="@if($sec == $public_section) hidden @endif " wire:click="makePublicSection('{{$sec}}')">
-                            <a href="#" class="inline-flex border items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-{{$loop->iteration + 4}}00 rounded-lg hover:bg-blue-{{$loop->iteration + 4}}00 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-{{$loop->iteration + 4}}00 dark:hover:bg-blue-{{$loop->iteration + 4}}00 dark:focus:ring-blue-800">
-                                {{ $name }}
-                            </a>
-                        </div>
-                    @endforeach
                     @if($user->id == auth_user()->id)
                         <a href="{{route('user.profil.edition', ['identifiant' => $user->identifiant, 'auth_token' => $user->auth_token])}}" class="py-2 px-4 ms-2 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-success-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-success-700">
                             <span class="fas fa-edit"></span>
@@ -332,7 +440,9 @@
             </div>
         </div>
     </div>
-    @livewire('user.profil-photo-zoomer', ['user' => $user])
-    @livewire('user.profil-photo-editor', ['user' => $user])
+    <div>
+        @livewire('user.profil-photo-zoomer', ['user' => $user])
+        @livewire('user.profil-photo-editor', ['user' => $user])
+    </div>
 </div>
 @endauth

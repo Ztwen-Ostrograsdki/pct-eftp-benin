@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -26,6 +27,8 @@ class NewRoleModalComponent extends Component
     public $user_id;
 
     public $email;
+
+    public $counter = 2;
 
     #[Validate('required')]
     public $tasks;
@@ -103,7 +106,9 @@ class NewRoleModalComponent extends Component
 
                             if($member){
 
-                                return $this->toast("Le proccessus c'est bien déroulé!", 'success');
+                                $this->toast("Le proccessus c'est bien déroulé!", 'success');
+
+                                return self::hideModal();
                                 
                             }
     
@@ -131,5 +136,16 @@ class NewRoleModalComponent extends Component
 
             if($user) $this->email = $user->email;
         }
+    }
+
+    public function hideModal($modal_name = null)
+    {
+        $this->dispatch('HideModalEvent', '#new-role-modal');
+    }
+
+    #[On('UpdatedMemberList')]
+    public function reloadData()
+    {
+        $this->counter = rand(3, 342);
     }
 }

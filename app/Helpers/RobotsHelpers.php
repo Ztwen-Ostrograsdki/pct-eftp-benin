@@ -41,17 +41,21 @@ if(!function_exists('__isAdminAs')){
 
     function __isAdminAs($roles = null)
     {
-        if(Auth::user()->id == 1) return true;
+        if(auth_user()){
+            if(Auth::user()->id == 1) return true;
 
-        if($roles){
+            if($roles){
 
-            if(is_array($roles)) return in_array(Auth::user()->ability, $roles);
+                if(is_array($roles)) return in_array(Auth::user()->ability, $roles);
 
-            if(is_string($roles)) return Auth::user()->ability == $roles;
+                if(is_string($roles)) return Auth::user()->ability == $roles;
 
+            }
+            
+            return Auth::user()->ability == 'admin' || Auth::user()->abitlity == 'master';
         }
-        
-        return Auth::user()->ability == 'admin' || Auth::user()->abitlity == 'master';
+
+        return false;
     }
 
 }
@@ -254,7 +258,15 @@ if(!function_exists('user_profil_photo')){
 
     function user_profil_photo($user)
     {
-        return url('storage', $user->profil_photo);
+        if($user->profil_photo) 
+
+            return url('storage', $user->profil_photo);
+
+        else
+
+            return asset("/images/errors/nf7.png");
+
+
     }
 
 }

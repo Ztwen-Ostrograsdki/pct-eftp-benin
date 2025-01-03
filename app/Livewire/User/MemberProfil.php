@@ -2,6 +2,8 @@
 
 namespace App\Livewire\User;
 
+use Akhaled\LivewireSweetalert\Confirm;
+use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Models\User;
 use Livewire\Attributes\On;
@@ -9,6 +11,8 @@ use Livewire\Component;
 
 class MemberProfil extends Component
 {
+    use Toast, Confirm;
+    
     public $user;
 
     public $member;
@@ -250,6 +254,53 @@ class MemberProfil extends Component
                 $this->toast( "La confirmation a échoué! Veuillez réessayer!", 'error');
 
             }
+        }
+
+    }
+
+    public function editRole($member_id = null)
+    {
+        $member_id = $this->member->id;
+
+        $this->dispatch('OpenMemberModalForEditEvent', $member_id);
+    }
+
+    public function removeUserFormMembers($member_id = null)
+    {
+        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+
+        $member = $this->member;
+
+        if($member){
+
+            $options = ['event' => 'confirmedMemberRetrieving'];
+
+            $this->confirm("Confirmation de la suppression ou du retrait de " . $member->user->getFullName(true) . " de la liste des membres!", "Cette action est irréversible", $options);
+        }
+        else{
+
+            $this->toast( "La suppression ne peut être effectuée: Membre inconnu! Veuillez vérifier les données et réessayer!", 'warning');
+        }
+    }
+
+    #[On('confirmedMemberRetrieving')]
+    public function onConfirmationMemberRetrieving()
+    {
+        $del = $this->member->delete();
+
+        if($del){
+
+            $message = "La suppression est terminée.";
+
+            $this->toast($message, 'success');
+
+            $this->dispatch("UpdatedMemberList");
+
+        }
+        else{
+
+            $this->toast( "La suppression a échoué! Veuillez réessayer!", 'error');
+
         }
 
     }

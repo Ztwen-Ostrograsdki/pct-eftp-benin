@@ -13,14 +13,13 @@
 
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">
-        <div x-show="loaded" x-init="window.addEventListener('DOMContentLoaded', () => {setTimeout(() => loaded = false, 500)})" class="fixed left-0 top-0 z-999999 flex h-screen w-screen items-center justify-center bg-white dark:bg-black">
-            <div class="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent">
-            </div>
-        </div>
+        
         @livewire('partials.navbar')
         <main>
             {{ $slot }}
         </main>
+        @livewire('master.modals.new-member-modal-component')
+        @livewire('master.modals.new-role-modal-component')
         @livewire('partials.footer')
 
         @livewireScripts
@@ -31,29 +30,49 @@
         @livewireSweetalertScripts
 
         <script>
-            // document.addEventListener('livewire.navigated', () =>{
-            //     window.HSStaticMethods.autoInit();
-            // });
+            document.addEventListener('livewire:navigated', () =>{
+                console.log('navigated');
+                
+                initFlowbite();
+            });
+            
             window.User = { 
                 id: {{optional(auth()->user())->id}},
             }
 
-            $wire.on('HideModal', (event) => {
+            
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('HideModalEvent', (event) => {
 
-                console.log("okay", event);
-                
+                    let modal_name = event[0];
 
-                modal_name = event[0];
+                    let modalElement = document.querySelector(modal_name);
 
-                const modalElement: HTMLElement = document.querySelector(modal_name);
-                
+                    console.log(modalElement);
+
+                    modal = new Modal(modalElement)
+
+                    modal.hide();
+
+                    document.querySelector(".fixed.inset-0.z-40").remove()
+
+                });
+
+                Livewire.on('OpenModalEvent', (event) => {
+
+                let modal_name = event[0];
+
+                let modalElement = document.querySelector(modal_name);
+
                 console.log(modalElement);
 
-                //modal = new Modal($modalElement)
+                modal = new Modal(modalElement)
 
-                //modal.hide();
+                modal.show();
 
+                });
             });
+
 
             FedaPay.init('#pay-btn', {
                 public_key: 'pk_sandbox_lf7ed0OyC_S-JmIEL3RvCE1R',

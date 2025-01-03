@@ -27,7 +27,7 @@ use App\Livewire\User\UserProfil;
 use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomePage::class);
+Route::get('/', HomePage::class)->name('home');
 
 
 Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){

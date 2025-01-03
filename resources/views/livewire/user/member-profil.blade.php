@@ -35,7 +35,7 @@
                         @endif
                         @if(__isAdminAs() && !__selfUser($user))
                             <li>
-                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
+                                <a wire:click='removeUserFormMembers' href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
                             </li>
                             <li>
                                 <a wire:click='confirmedUserBlockOrUnblocked' href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
@@ -58,7 +58,7 @@
                 
             </div>
             <div class="flex flex-col items-center pb-10 px-2">
-                <img class="w-24 h-24 mb-3 border border-gray-100 rounded-full shadow-lg" src="{{ url('storage', $user->profil_photo) }}" alt="Photo de profil de {{ $user->getFullName() }}"/>
+                <img class="w-24 h-24 mb-3 border border-gray-100 rounded-full shadow-lg" src="{{user_profil_photo($user)}}" alt="Photo de profil de {{ $user->getFullName() }}"/>
                 <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                     {{ $user->getFullName(true) }}
                 </h5>
@@ -88,13 +88,23 @@
                     </div>
                 </div>
                 <div class="flex mt-4 md:mt-6">
-                    <a href="#" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Notifier</a>
-                    <a href="#" class="py-2 px-4 ms-2 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-red-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-red-700">Supprimer</a>
+                    <a href="#" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Notifier
+                    </a>
+                    <a wire:click='removeUserFormMembers' href="#" class="py-2 px-4 ms-2 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-red-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-red-700">
+                        <span wire:loading.remove wire:target='removeUserFormMembers'>Supprimer</span>
+                        <span wire:loading wire:target='removeUserFormMembers'>
+                            <span>En cours...</span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    @livewire('user.profil-photo-zoomer', ['user' => $user])
-    @livewire('user.profil-photo-editor', ['user' => $user])
+    <div>
+        @livewire('user.profil-photo-zoomer', ['user' => $user])
+        @livewire('user.profil-photo-editor', ['user' => $user])
+    </div>
     @endif
 </div>

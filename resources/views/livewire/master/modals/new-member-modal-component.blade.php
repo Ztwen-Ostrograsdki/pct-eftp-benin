@@ -8,7 +8,7 @@
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    @if($for_update) Edition du statut "<span class="text-yellow-300">{{ $member->role->name }}</span> "
+                    @if($for_update) Edition du statut @if($role) "<span class="text-yellow-300">{{ $role->name }}</span> " @endif
 
                     @else
 
@@ -40,9 +40,9 @@
                     </div>
 
                     <div class="col-span-2">
-                        <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> @if($for_update) Veuillez choisir le nouveau {{ $member->role->name }} @else L'utilisateur @endif </label>
+                        <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> @if($for_update) Veuillez choisir le nouveau {{ $role ? $role->name : " acteur du poste" }} @else L'utilisateur @endif </label>
                         <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='user_id' class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg cursor-pointer focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option selected=""> @if($for_update) Veuillez choisir le nouveau {{ $member->role->name }} @else Sélectionnez l'utilisateur @endif</option>
+                            <option selected=""> @if($for_update) Veuillez choisir le nouveau {{ $role ? $role->name : " acteur du poste" }} @else L'utilisateur @endif</option>
                             @foreach ($users as $user)
                               <option @if($user->member) disabled title="{{$user->getFullName()}} exerce déjà en tant que {{$user->member->role->name}} de l'association" @endif  value="{{$user->id}}">{{ $user->getFullName() }}</option>
                             @endforeach
@@ -53,16 +53,16 @@
                     </div>
                     <div class="col-span-2">
                         <label for="role_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">La Fonction</label>
-                        <select @if($for_update) disabled @endif wire:model.live='role_id' class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <select  @if($for_update) disabled @endif wire:model.live='role_id' class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option selected="">Sélectionner le role ou la Fonction</option>
-                            @foreach ($roles as $role)
-                              <option  @if(!$for_update) @if($role->member) disabled title="Le poste {{$role->name}} est déjà occupé par {{$role->member->user->getFullName()}}"  @endif  @endif value="{{$role->id}}">{{ $role->name }}</option>
+                            @foreach ($roles as $r)
+                              <option @if($for_update && $role->id == $r->id) selected  @endif  @if(!$for_update) @if($r->member) disabled title="Le poste {{$r->name}} est déjà occupé par {{$r->member->user->getFullName()}}"  @endif  @endif value="{{$r->id}}">{{ $r->name }}</option>
                             @endforeach
                             
                         </select>
                     </div>
                     
-                    <div class="col-span-2">
+                    <div class="col-span-2 @if($for_update) hidden @endif">
                         <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <small class="text-yellow-300">Facultative</small> </label>
                         <textarea @if($for_update) disabled @endif wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='description' rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Décrivez brièvement cette fonction"></textarea>                    
                         @error('description')

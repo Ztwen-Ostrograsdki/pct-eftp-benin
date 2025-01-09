@@ -1,9 +1,12 @@
 <div class="w-full mx-auto bg-transparent">
     @if($order)
-    <div class="mx-auto items-center font-poppins bg-green-400 border border-green-700">
+    <h5 class="justify-center max-w-6xl px-4 py-4 my-4 mx-auto border rounded-full dark:border-white letter-spacing-2 bg-gray-900 lg:text-lg md:text-base sm:text-sm xs:text-xs text-gray-200">
+      <span>Page Profil de la commande <span class="text-yellow-500 float-right">{{ $order->identifiant }}</span></span>
+    </h5>
+    <div class="mx-auto items-center font-poppins bg-transparent border border-green-700 lg:text-lg md:text-base sm:text-sm xs:text-xs">
         <div class="justify-center flex-1 max-w-6xl px-4 py-4 my-4 mx-auto border rounded-md dark:border-white bg-gray-900 md:py-10 md:px-10">
           <div>
-            <h1 class="px-4 mb-8 text-2xl font-semibold tracking-wide text-green-500 ">
+            <h1 class="px-4 mb-8  tracking-wide text-green-500 ">
               Merci! Votre commande a été reçue 
 
               <span class="text-orange-500 float-right">
@@ -17,10 +20,10 @@
             </h1>
               
             <div class="flex border-b border-gray-200 dark:border-gray-700  items-stretch justify-start w-full h-full px-4 mb-8 md:flex-row xl:flex-col md:space-x-6 lg:space-x-8 xl:space-x-0">
-              <div class="flex justify-between">
-                <div class="flex items-center justify-center pb-6 space-x-4 md:justify-start">
+              <div class="flex justify-between w-full">
+                <div class="flex items-center justify-center pb-6 space-x-4 md:justify-start w-full">
                   <div class="flex flex-col items-start justify-start space-y-2">
-                    <p class="text-lg font-semibold leading-4 text-left text-blue-400">
+                    <p class="  leading-4 text-left text-blue-400">
                         <span>
                             Acheteur :
                         </span>
@@ -28,7 +31,7 @@
                             {{ auth_user()->getFullName() }}
                         </span>
                     </p>
-                    <p class="text-lg font-semibold leading-4 text-left text-blue-600">
+                    <p class="  leading-4 text-left text-blue-600">
                         <span>
                             Receveur :
                         </span>
@@ -36,24 +39,24 @@
                             {{ $address->getFullName() }}
                         </span>
                     </p>
-                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $address->state }}, {{ $address->city }}</p>
-                    <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $address->street_address }}</p>
-                    <p class="text-sm leading-4 cursor-pointer dark:text-gray-400">Contact: {{ $address->phone }}</p>
+                    <p class=" leading-4 text-gray-600 dark:text-gray-400">{{ $address->state }}, {{ $address->city }}</p>
+                    <p class=" leading-4 text-gray-600 dark:text-gray-400">{{ $address->street_address }}</p>
+                    <p class=" leading-4 cursor-pointer dark:text-gray-400">Contact: {{ $address->phone }}</p>
                   </div>
                 </div>
 
                 <div>
                   @if($order->approved)
-                  <h4 class="text-success-600 animate-pulse letter-spacing-2 text-xl">
+                  <h4 class="text-success-600 animate-pulse letter-spacing-2 ">
                       Déjà approuvée par les admins
                   </h4>
                   @endif
                   @if($order->status !== 'delivered')
-                  <h4 class="text-gray-600 animate-pulse letter-spacing-2 text-2xl">
+                  <h4 class="text-orange-500 animate-pulse letter-spacing-2">
                       {{ $order->getIsCompletedStatusMessage() }}
                   </h4>
                   @else
-                  <h4 class="text-yellow-400 p-2 shadow-3 shadow-green-400 rounded-xl letter-spacing-2 text-xl">
+                  <h4 class="text-yellow-400 p-2 shadow-3 shadow-green-400 rounded-xl letter-spacing-2 ">
                     <strong>
                       {{ $order->getIsCompletedStatusMessage() }}
                       <span class="fa fa-check"></span>
@@ -66,23 +69,23 @@
             <div class="flex items-center pb-4 mb-10 border-b border-gray-200 dark:border-gray-700">
               
               <div class="w-full px-4 mb-4">
-                <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
+                <p class="mb-2  leading-5 text-gray-600 dark:text-gray-400 ">
                   Date de soumission: </p>
-                <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
+                <p class="text-base  leading-4 text-gray-800 dark:text-gray-400">
                   {{ $order->__getDateAsString($order->created_at, 3, true) }} 
                 </p>
               </div>
               <div class="w-full px-4 mb-4">
-                <p class="mb-2 text-sm font-medium leading-5 text-gray-800 dark:text-gray-400 ">
+                <p class="mb-2 leading-5 text-gray-800 dark:text-gray-400 ">
                   Total Brut: </p>
-                <p class="text-base font-semibold leading-4 text-blue-600 dark:text-gray-400">
+                <p class=" leading-4 text-blue-600 dark:text-gray-400">
                   {{ Number::currency($order->getTotalAmountWithTaxAndShipping(false), $order->currency) }}
                 </p>
               </div>
               <div class="w-full px-4 mb-4">
-                <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
+                <p class="mb-2  leading-5 text-gray-600 dark:text-gray-400 ">
                   Méthode de payement: </p>
-                <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400 ">
+                <p class=" leading-4 text-gray-800 dark:text-gray-400 ">
                   {{ config('app.payments_methods')[$order->payment_method] }}
                 </p>
               </div>
@@ -90,7 +93,7 @@
             <div class="px-4 mb-10">
               <div class="flex flex-col items-stretch justify-center w-full space-y-4 md:flex-row md:space-y-0 md:space-x-8">
                 <div class="flex flex-col w-full space-y-6 ">
-                  <h2 class="mb-2 text-xl font-semibold text-gray-700 dark:text-gray-400">Détails de la commande</h2>
+                  <h2 class="mb-2   text-gray-700 dark:text-gray-400">Détails de la commande</h2>
                   <div class="flex flex-col items-center justify-center w-full pb-4 space-y-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex justify-between w-full">
                       <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Total brut</p>
@@ -111,8 +114,8 @@
                     </div>
                   </div>
                   <div class="flex items-center justify-between w-full">
-                    <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">Total</p>
-                    <p class="text-base font-semibold leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->getTotalAmountWithTaxAndShipping(true), $order->currency) }}</p>
+                    <p class="text-base  leading-4 text-gray-800 dark:text-gray-400">Total</p>
+                    <p class="text-base  leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->getTotalAmountWithTaxAndShipping(true), $order->currency) }}</p>
                   </div>
                 </div>
                 <div class="flex flex-col w-full px-2 space-y-4 md:px-8 ">
@@ -126,9 +129,9 @@
                         </svg>
                       </div>
                       <div class="flex flex-col items-center justify-start">
-                        <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">
+                        <p class="text-lg  leading-6 text-gray-800 dark:text-gray-400">
                           Livraison par : 
-                          <span class="text-sm font-normal"></span>
+                          <span class=" font-normal"></span>
                           <span class="text-green-600">
                             {{ config('app.shipping_methods')[$order->shipping_method] }}
                           </span>
@@ -145,7 +148,7 @@
                         </p>
                       </div>
                     </div>
-                    <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400"></p>
+                    <p class="text-lg  leading-6 text-gray-800 dark:text-gray-400"></p>
                   </div>
                 </div>
               </div>
@@ -201,7 +204,7 @@
           @if(auth_user() && $order->user_id == auth_user()->id)
             <div class="w-full mx-auto">
               @if($order->approved && !in_array($order->status, ['procecced', 'delivered', 'approved']))
-              <span wire:click='initOrderCheckout' wire:loading.class='opacity-50' wire:target='initOrderCheckout' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-950 hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
+              <span wire:click='initOrderCheckout' wire:loading.class='opacity-50' wire:target='initOrderCheckout' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2  border bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-950 hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
                 <span wire:loading wire:target='initOrderCheckout'>
                   <span class="fa animate-spin fa-rotate float-end mt-2"></span>
                   <span class="mx-2">Processus de payement en cours... </span>
@@ -217,7 +220,7 @@
             @endif
             @if(__isAdminAs())
               @if(!$order->approved)
-                <span wire:click='approveOrder' wire:loading.class='opacity-50' wire:target='approveOrder' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2 font-semibold border bg-yellow-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-900 hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none">
+                <span wire:click='approveOrder' wire:loading.class='opacity-50' wire:target='approveOrder' class="cursor-pointer py-1 px-4 inline-flex justify-center items-center gap-x-2  border bg-yellow-500 mt-4 w-full p-3 rounded-lg text-lg text-gray-900 hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none">
                     <span wire:loading wire:target='approveOrder'>
                       <span class="fa animate-spin fa-rotate float-end mt-2"></span>
                       <span class="mx-2">Validation en cours... </span>

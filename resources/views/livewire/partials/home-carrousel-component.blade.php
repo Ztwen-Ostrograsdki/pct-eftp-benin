@@ -1,6 +1,6 @@
 <div
   id="carouselExampleIndicators"
-  class="relative"
+  class="relative hidden"
   data-twe-carousel-init
   data-twe-ride="carousel">
   <!--Carousel indicators-->
@@ -40,16 +40,15 @@
       data-twe-carousel-item
       data-twe-carousel-active>
       <img
-        src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+        src="{{asset('images/img7.jpg')}}"
         class="block w-full"
         alt="Wild Landscape" />
     </div>
     <!--Second item-->
-    <div
-      class="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
+    <div class="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
       data-twe-carousel-item>
       <img
-        src="https://mdbcdn.b-cdn.net/img/new/slides/042.webp"
+        src="{{asset('images/img3.jpg')}}"
         class="block w-full"
         alt="Camera" />
     </div>
@@ -58,7 +57,7 @@
       class="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
       data-twe-carousel-item>
       <img
-        src="https://mdbcdn.b-cdn.net/img/new/slides/043.webp"
+        src="{{asset('images/img2.jpg')}}"
         class="block w-full"
         alt="Exotic Fruits" />
     </div>

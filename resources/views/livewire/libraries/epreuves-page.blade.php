@@ -9,7 +9,7 @@
                     à la
                 </span>
                 <span class="text-gray-900 uppercase ml-2">
-                    Banque des épreuves  <span class="float-right text-gray-800"> {{ numberZeroFormattor(count($epreuves)) }} <span class="lowercase">épreuves disponibles</span> </span>
+                    Banque des épreuves  <span class="float-right text-gray-800"> {{ numberZeroFormattor(count($epreuves)) }} <span class="lowercase">épreuves trouvées</span> </span>
                 </span>
             </h4>
         </div>
@@ -25,17 +25,16 @@
     </div>
     <section class="py-3 bg-gray-50 font-poppins dark:bg-gray-800 rounded-lg">
       <div class="px-4 mx-auto max-w-7xl lg:py-6 md:px-6">
-        
         <div class="grid lg:grid-cols-4  mb-24 -mx-3">
-          <div class="pr-2 sm:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
+          <div class="pr-2 sm:col-span-4 xs:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
             <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1 bg-white border border-gray-200 dark:border-gray-900 dark:bg-gray-900">
               <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400"> Par Promotion</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getPromotions(true) as $p_id => $promo)
                 <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
-                  <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400 ">
-                    <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2">
+                  <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400  has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
+                    <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class="">{{ $promo->name }}</span>
                   </label>
                 </li>
@@ -48,8 +47,8 @@
               <ul>
                 @foreach(getFiliars(true) as $f_id => $fil)
                 <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
-                  <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300">
-                    <input on wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2">
+                  <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300 has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
+                    <input on wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class=" dark:text-gray-400">{{ $fil->name }}</span>
                   </label>
                 </li>
@@ -70,6 +69,24 @@
                   </select>
                 </div>
               </div>
+            </div>
+            <div class="w-full py-1 my-3 px-3">
+              <form class="w-full mx-auto">   
+                  <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
+                  <div class="relative">
+                      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                          </svg>
+                      </div>
+                      <input wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-4 ps-10 text-sm letter-spacing-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus" placeholder="Rechercher des épreuves selon: une notion, un titre..." />
+                      @if(!$search)
+                      <span class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 xs:hidden sm:hidden">Rechercher</span>
+                      @else
+                      <span wire:click="resetSearch" class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer xs:hidden sm:hidden">Effacer</span>
+                      @endif
+                  </div>
+              </form>
             </div>
             @if(count($epreuves))
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
@@ -101,10 +118,13 @@
                     </div>
                     <div class=" items-center justify-between gap-2 mb-2">
                       <div class="flex items-center">
-                        <img width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
+                        <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
+                        <span class="text-gray-400 letter-spacing-2 mr-3">
+                          Fichier
+                        </span> 
+                        <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
                         <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$epreuve->name}}</span>
-                          <strong class="text-blue-600 ml-3 float-right">(fichier {{$epreuve->extension}})</strong>
                         </h5>
                       </div>
                       
@@ -161,9 +181,16 @@
             </div>
             @else
               <div class="mx-auto w-full p-4 mt-5">
-                <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 text-2xl py-3 px-2 rounded-2xl text-center">
+                <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
                   Oupppps!!! Aucune épreuve n'a été trouvée
                 </h2>
+                <h5 class="w-full my-6 mx-auto flex justify-center">
+                  <span wire:click="clearAll" class="text-white inline-block rounded-full bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium text-sm p-5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer border">
+                    <span class="fa fa-trash mr-5"></span>
+                    <span>Réinitialiser les filtres</span>
+                  </span>
+                </h5>
+                
               </div>
             @endif
             <!-- pagination start -->

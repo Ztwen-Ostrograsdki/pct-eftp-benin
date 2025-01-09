@@ -76,7 +76,7 @@
                         @enderror
                     </div>
                     <div class="col-span-2">
-                        <label for="tasks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tâches ou prérogatives <small class="text-yellow-300">Séparer les tâches par un point virgule ; </small> </label>
+                        <label for="tasks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Une Tâche ou prérogative <small class="text-yellow-300">Une et une seule  </small> </label>
                         <textarea wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='tasks' id="tasks" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="listez les tâches ou les prérogatives liées à cette fonction"></textarea>                    
                         @error('tasks')
                             <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>

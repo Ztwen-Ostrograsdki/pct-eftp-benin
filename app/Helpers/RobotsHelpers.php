@@ -258,6 +258,8 @@ if(!function_exists('user_profil_photo')){
 
     function user_profil_photo($user)
     {
+        if(!$user) return asset("/images/errors/nf7.png");
+        
         if($user->profil_photo) 
 
             return url('storage', $user->profil_photo);

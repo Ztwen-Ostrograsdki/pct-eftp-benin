@@ -54,7 +54,7 @@
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
                     <input wire:model="school" @if(!$editing_experiences) disabled @endif type="text" name="school" id="school" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Etablissement" />
-                    <label for="school" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Etablissement</label>
+                    <label for="school" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Lycée de provénance</label>
                     @error('school')
                         <span class="text-red-600">{{$message}}</span>
                     @enderror
@@ -66,6 +66,28 @@
                         <span class="text-red-600">{{$message}}</span>
                     @enderror
                 </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 md:gap-6">
+                <div class="relative col-span-1 z-0 w-full mb-5 group">
+                    <select wire:model="from_general_school" @if(!$editing_experiences) disabled @endif type="text" name="from_general_school" id="from_general_school" class="block rounded-sm ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Votre genre">
+                        <option class="bg-gray-600 rounded-sm text-gray-950 " value="{{false}}">Non</option>
+                        <option class="bg-gray-600 rounded-sm text-gray-950 " value="{{true}}">Oui</option>
+                    </select>
+                    <label for="from_general_school" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Viens du CEG</label>
+                    @error('from_general_school')
+                        <span class="text-red-600">{{$message}}</span>
+                    @enderror
+                </div>
+                <div class="relative col-span-2 z-0 w-full mb-5 group">
+                    <input wire:model="general_school" @if(!$editing_experiences) disabled @endif type="text" name="general_school" id="general_school" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-orange-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Ville ou commune de travail" />
+                    <label for="general_school" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Votre établissement du général de provénance</label>
+                    @error('general_school')
+                        <span class="text-red-600">{{$message}}</span>
+                    @enderror
+                </div>
+                
+                
             </div>
 
             @if($user->id == auth()->user()->id)

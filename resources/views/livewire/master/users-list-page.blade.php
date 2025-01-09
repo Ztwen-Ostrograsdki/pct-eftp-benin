@@ -1,15 +1,24 @@
 <div>
-    <div class="m-auto border rounded my-1 w-4/5 z-bg-secondary-light-opac min-h-80 p-2">
+    <div class="m-auto my-1 w-full bg-transparent min-h-80 p-2">
         <div class="m-auto bg-gray-700 p-0 my-3">
-            <h1 class="p-4 text-orange-400 border uppercase text-center rounded-sm">
-                <span class="">
-                    Administration :
+            <h1 class="p-4 text-gray-300 flex items-center justify-between border uppercase text-center rounded-sm">
+                <span class="text-xs letter-spacing-2">
+                    <span class="">
+                        Administration :
+                    </span>
+    
+                    <strong class="text-gray-200">
+                        Gestion des enseignants 
+                        @if ($users)
+                        <br>
+                        <small class="text-orange-600"> {{ numberZeroFormattor(count($users)) }} enseignants inscrits</small>
+                        @endif
+                    </strong>
                 </span>
 
-                <strong class="text-orange-600">
-                    Gestion des Utilisateurs 
-                </strong>
-                
+                <div class="flex gap-x-2">
+                    
+                </div>
             </h1>
         </div>
 
@@ -29,7 +38,7 @@
                 </form>
             </div>
             
-            <table class="w-full text-sm text-left border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400">
+            <table class="w-full xs:text-xs text-left border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400">
                 
                 @if(count($users) > 0)
                 <thead class="text-xs text-gray-900 uppercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
@@ -39,12 +48,10 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                            Nom et Prénoms
+                           (Email)
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Email
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Etablissement
+                            Lycée
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Statut
@@ -55,9 +62,7 @@
                         <th scope="col" class="px-6 py-3">
                             Inscrit depuis
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Email confirmé le
-                        </th>
+                        
                         <th scope="col" class="px-6 py-3">
                             Utilisateur
                         </th>
@@ -73,23 +78,21 @@
                     @foreach($users as $key => $user)
                     <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ \App\Helpers\Dater\Formattors\Formattors::numberZeroFormattor($loop->iteration) }}
+                            {{ numberZeroFormattor($loop->iteration) }}
                         </th>
                         <td class="px-6 py-4">
-                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
+                            <a class="flex flex-col" title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
                                 {{$user->getFullName()}} 
-                            </a>
-                        </td>
-                        <td class="px-6 py-4">
-                            <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
-                                {{$user->email}} 
+                                <span class="text-yellow-400 letter-spacing-2">
+                                    ({{$user->email}})
+                                </span>
                             </a>
                         </td>
                         <td class="px-6 py-4 @if(!$user->school) text-orange-400 @endif">
                             {{ $user->formatString($user->school) }}
 
-                            <small class="text-orange-500 @if(!$user->job_city) hidden @endif">
-                                ( {{ $user->job_city }} )
+                            <small class="text-orange-500 letter-spacing-2 @if(!$user->job_city) hidden @endif">
+                                ({{ $user->job_city }})
                             </small>
                         </td>
                         <td class="px-6 py-4  @if($user->status) uppercase @else text-orange-400 @endif">
@@ -99,20 +102,38 @@
                             {{$user->formatString($user->current_function)}}
                         </td>
                         <td class="px-6 py-4">
-                            {{$user->__getDateAsString($user->created_at)}}
-                        </td>
-                        <td class="px-6 py-4 ">
-                            @if($user->email_verified_at)
                             <span>
-                                <strong class="fas fa-user-check text-green-700 mr-2"></strong>
-                                {{ $user->__getDateAsString($user->email_verified_at) }}
-                            </span>
-                            @else
-                                <span wire:click.prevent="confirmedUserEmailVerification({{$user->id}})" class="text-red-600" title="{{ $user->getFullName() }} n'a pas encore confirmé son addresss mail. Cliquer pour lancer manuellement la confirmation de ce compte.">
-                                    <strong class="fas fa-user-xmark text-red-700 mr-2"></strong>
-                                    <span>Nom confirmé</span>
+                                <span class="flex flex-col">
+                                    <span>
+                                        <small class="fas fa-circle mr-1"></small>
+                                        Inscrit le
+                                    </span>
+                                    <span>
+                                        {{$user->__getDateAsString($user->created_at)}}
+                                    </span>
                                 </span>
-                            @endif
+                            </span>
+                            
+                            <span>
+                                <span>
+                                    @if($user->email_verified_at)
+                                    <span class="flex flex-col">
+                                        <span>
+                                            <small class="fas fa-circle mr-1"></small>
+                                            <span>Email confirmé </span>
+                                        </span>
+                                        <span>
+                                            le {{ $user->__getDateAsString($user->email_verified_at) }}
+                                        </span>
+                                    </span>
+                                    @else
+                                        <span wire:click.prevent="confirmedUserEmailVerification({{$user->id}})" class="text-red-600" title="{{ $user->getFullName() }} n'a pas encore confirmé son addresss mail. Cliquer pour lancer manuellement la confirmation de ce compte.">
+                                            <strong class="fas fa-user-xmark text-red-700 mr-2"></strong>
+                                            <span>Nom confirmé</span>
+                                        </span>
+                                    @endif
+                                </span>
+                            </span>
                         </td>
                         
                         <td class="px-6 py-4">

@@ -384,17 +384,51 @@
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700 text-sky-500">
                                         <td class="py-1">
                                             <span class="fas fa-school-flag"></span>
                                             <span>
-                                                Etablissement:
+                                                Lycée:
                                             </span>
                                         </td>
                                         <td class="py-1">
                                             <span>
                                                 @if($user->school)
                                                     {{ $user->school }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                        <td class="py-1 text-yellow-400">
+                                            <span class="fas fa-school-flag"></span>
+                                            <span>
+                                                Vient de l'enseignement général (CEG)
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->from_general_school)
+                                                    <span class="fas fa-check text-success-600 mr-2"></span> {{ 'OUI' }} 
+                                                @else
+                                                    <small class="text-gray-500 letter-spacing-2">Non</small>
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class=" cursor-pointer w-full border-b border-gray-700 text-yellow-500">
+                                        <td class="py-1">
+                                            <span class="fas fa-school-flag"></span>
+                                            <span>
+                                                CEG de provénance:
+                                            </span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span>
+                                                @if($user->general_school)
+                                                    {{ $user->general_school }} 
                                                 @else
                                                     <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
                                                 @endif

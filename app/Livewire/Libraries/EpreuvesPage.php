@@ -23,10 +23,14 @@ class EpreuvesPage extends Component
 
     public $counter = 0;
 
+    public $search = '';
+
 
 
     public function render()
     {
+        $search = $this->search;
+
         $query = Epreuve::query()->whereNotNull('created_at');
 
         $ids = [
@@ -61,6 +65,7 @@ class EpreuvesPage extends Component
 
         if($ids['has']){
 
+            
             $query->whereIn('epreuves.id', $ids['items']);
 
         }
@@ -71,12 +76,36 @@ class EpreuvesPage extends Component
 
         }
 
+        if($search && strlen($search) >= 3 ){
+
+            $find = '%' . $search . '%';
+
+            $query->where('epreuves.contents_titles', 'like', $find);
+
+        }
+
 
         return view('livewire.libraries.epreuves-page', 
             [
                 'epreuves' => $query->paginate(6),
             ]
         ); 
+    }
+
+    public function resetSearch()
+    {
+        $this->reset('search');
+    }
+
+    public function clearAll()
+    {
+        $this->reset();
+    }
+
+
+
+    public function updatedSearch($search)
+    {
     }
 
     public function updatedSelectedPromotions($values)

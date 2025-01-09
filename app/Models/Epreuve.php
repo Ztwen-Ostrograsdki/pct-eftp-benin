@@ -148,4 +148,32 @@ class Epreuve extends Model
 
         return false;
     }
+
+    public function getExtensionIcon()
+    {
+        $excel = "fas fa-file-excel text-green-400";
+
+        $world = "fas fa-file-word text-blue-400";
+
+        $pdf = "fas fa-file-pdf text-red-500";
+
+        $uncown = "fas fa-file";
+
+        if($this->extension == ".pdf")
+
+            return $pdf;
+
+        elseif(in_array($this->extension, [".dot", '.docx', '.dotx', '.doc', '.docm', ]))
+
+            return $world;
+
+        elseif(in_array($this->extension, [".xltx", '.xlt', '.xlsx', '.xls']))
+
+            return $excel;
+
+        else
+
+            return $uncown;
+
+    }
 }

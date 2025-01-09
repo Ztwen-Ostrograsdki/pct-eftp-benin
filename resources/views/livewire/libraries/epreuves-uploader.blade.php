@@ -37,16 +37,6 @@
                         </div>
                         
                         <div class="relative z-0 w-full mb-5 group">
-                            <input disabled wire:model="author" type="text" name="author" id="author" class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Auteur de l'épreuve" />
-                            <label for="author" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Auteur de l'épreuve</label>
-                            @error('author')
-                                <span class="text-red-600">{{$message}}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="grid md:gap-6">
-                        <div class="relative z-0 w-full mb-5 group">
                             <select wire:model.live="promotion_id" type="text" name="promotion_id" id="promotion_id" class="block ucfirst py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="La promotion ciblée">
                                 <option class="bg-gray-600 text-gray-950 " value="">Sélectionner la promotion</option>
                                 @foreach ($promotions as  $promotion)
@@ -58,7 +48,6 @@
                                 <span class="text-red-600">{{$message}}</span>
                             @enderror
                         </div>
-                        
                     </div>
 
                     <div class="grid md:gap-6">
@@ -133,7 +122,7 @@
                                 @foreach($filiars as $key => $filiar)
                                 <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                     <th scope="row" class="px-6 py-4 text-left font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ \App\Helpers\Dater\Formattors\Formattors::numberZeroFormattor($loop->iteration) }}
+                                        {{ numberZeroFormattor($loop->iteration) }}
                                     </th>
                                     <td class="px-6 py-4">
                                         {{$filiar->name}} 

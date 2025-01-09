@@ -14,8 +14,10 @@ class MembersHomePage extends Component
     public $counter = 2;
 
     public $member_sections = [
-        'list' => "Liste",
+        'members-list' => "Liste",
+        'users-list' => "Les enseignants",
         'members' => "Les membres",
+        'roles' => "Les Fonctions",
         'info' => "Les Communiqués",
         "lays" => "Les réglements intérieurs",
         "history" => "Historique",

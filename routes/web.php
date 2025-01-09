@@ -6,6 +6,7 @@ use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\BookDetailsPage;
+use App\Livewire\Chat\ForumChatBox;
 use App\Livewire\FedapayCheckoutPage;
 use App\Livewire\HomePage;
 use App\Livewire\Libraries\EpreuvesPage;
@@ -44,6 +45,8 @@ Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 });
 
 Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
+
+    Route::get('chat/forum/', ForumChatBox::class)->name('forum.chat');
 
     Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
 

@@ -1,33 +1,76 @@
 <div>
-    <section class="py-14 font-poppins ">
+    
+    <section class="pb-14 font-poppins {{ $is_included ? '' : 'bg-gray-800' }}">
         <div class="max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
-          <div class="max-w-xl mx-auto">
+          <div class="w-full my-3 mb-6 mx-auto">
             <div class="text-center ">
               <div class="relative flex flex-col items-center">
-                <h1 class="text-xl font-bold dark:text-gray-200 "> 
-                    Les membres de 
-                    <span class="text-blue-500">l'association</span> 
+                <h1 class="text-xl font-bold dark:text-gray-200 flex flex-col gap-2 ">
+
+                    <span class="text-blue-500">{{env('APP_NAME')}}</span> 
+                    <span>
+                        Association des Enseignants de Sciences Physiques de l'EFTP
+                    </span>
                 </h1>
-                <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
-                  <div class="flex-1 h-2 bg-blue-200">
-                  </div>
-                  <div class="flex-1 h-2 bg-blue-400">
-                  </div>
-                  <div class="flex-1 h-2 bg-blue-600">
-                  </div>
+                <div class="flex w-full mt-2 mb-0 overflow-hidden rounded">
+                  <div class="flex-1 h-2 bg-blue-200"></div>
+                  <div class="flex-1 h-2 bg-blue-300"></div>
+                  <div class="flex-1 h-2 bg-blue-400"></div>
+                  <div class="flex-1 h-2 bg-blue-500"></div>
+                  <div class="flex-1 h-2 bg-blue-600"></div>
+                  <div class="flex-1 h-2 bg-blue-700"></div>
+                  <div class="flex-1 h-2 bg-blue-800"></div>
+                  <div class="flex-1 h-2 bg-blue-900"></div>
                 </div>
               </div>
-              <p class="mb-12 text-base text-center text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
-                Pariatur
-                numquam, odio quod nobis ipsum ex cupiditate?
+              <p class=" my-0 text-center text-gray-200">
+                <div class="my-3 text-lg letter-spacing-2 py-2 text-sky-500 shadow-2 shadow-sky-400 rounded-2xl">
+                    <span>NOS OBJECTIFS</span>
+                </div>
+                <div class="text-gray-100 text-left py-3">
+                    <ul class="flex flex-col gap-y-2">
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                            <span class="fas fa-circle text-sky-400 mr-2 animate-pulse"></span>
+                            <span class="">
+                                Renforcer la qualité de l'enseignement des Sciences Physiques dans le sous-secteur de l'EFTP;
+                            </span>
+                        </li>
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                            <span class="fas fa-circle text-sky-600 mr-2 animate-pulse"></span>
+                            <span>
+                                Oeuvrer à l'élaboration des cours de sciences Physiques adaptés aux différents offres de formation selon le programme en vigueur;
+                            </span>
+                        </li>
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                            <span class="fas fa-circle text-sky-800 mr-2 animate-pulse"></span>
+                           <span>
+                                Contribuer à l'amélioration des résultats des apprenants en sciences Physiques dans le sous-secteur de l'EFTP
+                           </span>
+                        </li>
+                    </ul>
+                </div>
               </p>
             </div>
           </div>
+          <div class="flex w-full flex-row-reverse mt-2 mb-0 overflow-hidden rounded">
+            <div class="flex-1 h-2 bg-blue-200"></div>
+            <div class="flex-1 h-2 bg-blue-300"></div>
+            <div class="flex-1 h-2 bg-blue-400"></div>
+            <div class="flex-1 h-2 bg-blue-500"></div>
+            <div class="flex-1 h-2 bg-blue-600"></div>
+            <div class="flex-1 h-2 bg-blue-700"></div>
+            <div class="flex-1 h-2 bg-blue-800"></div>
+            <div class="flex-1 h-2 bg-blue-900"></div>
+          </div>
+            
           
-            @if($members)
+            @if(count($members))
+                <div class="my-3 text-lg letter-spacing-2 py-2 text-center text-sky-500 shadow-2 shadow-sky-400 rounded-2xl">
+                    <span>NOS MEMBRES</span>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2  sm:grid-cols-1 ">
                 @foreach($members as $key => $member)
-                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 ">
+                    <div class="">
                         <div class="py-6 bg-inherit border rounded-md shadow-3 shadow-sky-400">
                         <div class=" pb-4 mb-6 w-full">
                             <a href="{{ route('member.profil', ['identifiant' => $member->user->identifiant]) }}" class="flex items-center px-6 mb-2 md:mb-0 hover:text-blue-500">
@@ -131,11 +174,14 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
             @else
+                @if($is_included)
                 <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 text-3xl text-cursive">
                     <span class="fas fa-trash"></span>
                     <span>Oupps aucune données trouvées!!!</span>
                 </h4>
+                @endif
             @endif
         </div>
     </section>

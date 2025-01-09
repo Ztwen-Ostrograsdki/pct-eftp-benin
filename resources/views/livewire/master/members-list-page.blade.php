@@ -88,8 +88,8 @@
                             <span class="text-white flex gap-x-2">
                                 <span wire:click="editRole('{{$member->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="editRole('{{$member->id}}')">
-                                        <span>Editer</span>
-                                        <span class="fa fa-edit"></span>
+                                        <span title="Choisir un nouveau {{$member->role->name}}" class="hidden lg:inline">Changer</span>
+                                        <span class="fa fa-recycle"></span>
                                     </span>
                                     <span wire:loading wire:target="editRole('{{$member->id}}')">
                                         <span>Chargement</span>
@@ -98,7 +98,7 @@
                                 </span>
                                 <span wire:click="removeUserFormMembers('{{$member->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="removeUserFormMembers('{{$member->id}}')">
-                                        <span>Suppr.</span>
+                                        <span class="hidden lg:inline">Suppr.</span>
                                         <span class="fa fa-trash"></span>
                                     </span>
                                     <span wire:loading wire:target="removeUserFormMembers('{{$member->id}}')">

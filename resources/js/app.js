@@ -12,6 +12,8 @@ import { Tooltip } from 'tw-elements';
 
 import { Modal } from 'flowbite';
 
+import { Drawer } from 'flowbite';
+
 const myTooltip = new Tooltip(document.getElementById('my-tooltip'));
 
 

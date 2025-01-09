@@ -13,6 +13,11 @@
 
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">
+
+        <div id="my-preloader-cover" role="status" class="hidden text-center opacity-70 justify-center text-gray-300 w-full min-h-screen items-center absolute z-50 bg-slate-500">
+            <span class="text-3xl fas fa-rotate animate-spin"></span>
+            <span>Chargement...</span>
+        </div>
         
         @livewire('partials.navbar')
         <main>
@@ -20,6 +25,7 @@
         </main>
         @livewire('master.modals.new-member-modal-component')
         @livewire('master.modals.new-role-modal-component')
+        @livewire('master.modals.role-manager-component')
         @livewire('partials.footer')
 
         @livewireScripts
@@ -30,9 +36,15 @@
         @livewireSweetalertScripts
 
         <script>
+            document.addEventListener('DOMContentLoaded', () => {
+
+                console.log('loaded');
+
+                document.getElementById('my-preloader-cover').remove();
+
+            });
+
             document.addEventListener('livewire:navigated', () =>{
-                console.log('navigated');
-                
                 initFlowbite();
             });
             
@@ -42,6 +54,7 @@
 
             
             document.addEventListener('livewire:init', () => {
+
                 Livewire.on('HideModalEvent', (event) => {
 
                     let modal_name = event[0];
@@ -71,7 +84,26 @@
                 modal.show();
 
                 });
+
+                
             });
+
+            /*const onClickOutside = (element, callback) => {
+
+                document.addEventListener('click', (e) => {
+
+                    if (!element.contains(e.target)) callback();
+
+                });
+            };
+
+
+            let targetEl = document.getElementById('drawer-navigation');
+
+            let drawer = new Drawer(targetEl);
+
+            onClickOutside('#drawer-navigation', () => console.log('Hello'));
+            */
 
 
             FedaPay.init('#pay-btn', {

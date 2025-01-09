@@ -75,7 +75,7 @@ class EpreuvesUploader extends Component
 
         if(!in_array($id, $selecteds)){
 
-            $selecteds[] = $id;
+            $selecteds[$id] = $id;
         }
 
         $this->selecteds = $selecteds;
@@ -99,11 +99,15 @@ class EpreuvesUploader extends Component
     {
         $this->filiars_ids = $this->selecteds;
 
+        $filiars = [];
+
         if(!$this->name) $this->name = Str::random(8);
 
         $this->validate();
 
         $path = null;
+
+        $selecteds = $this->selecteds;
 
         if($this->file_epreuve){
 
@@ -112,6 +116,12 @@ class EpreuvesUploader extends Component
             $file_name = 'EPREUVE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday'].'-'.getdate()['hours'].''.getdate()['minutes'].'-'.getdate()['seconds']. '-' .  Str::random(5);
 
             $path = 'epreuves/' . $file_name . '.' . $extension;
+
+            foreach($selecteds as $fid){
+
+                $filiars[] = $fid;
+
+            }
 
         }
 
@@ -133,7 +143,7 @@ class EpreuvesUploader extends Component
             'user_id' => auth_user()->id,
             'contents_titles' => $this->contents_titles,
             'description' => $this->description,
-            'filiars_id' => $this->filiars_ids,
+            'filiars_id' => $filiars,
             'promotion_id' => $this->promotion_id,
             'extension' => "." . $extension,
             'file_size' => $file_size,

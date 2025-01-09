@@ -25,6 +25,8 @@ class NewMemberModalComponent extends Component
 
     public $description;
 
+    public $role;
+
     public $for_update = false;
 
     public $member = null;
@@ -185,25 +187,38 @@ class NewMemberModalComponent extends Component
 
 
     #[On('OpenMemberModalForEditEvent')]
-    public function openModal($member_id)
+    public function openModal($role_id = null)
     {
         $this->for_update = true;
 
-        $member = Member::find($member_id);
+        if($role_id){
 
-        if($member){
+            $role = Role::find($role_id);
 
-            $this->member = $member;
+            if($role){
 
-            $this->user_id = $member->user_id;
+                $this->role = $role;
 
-            $this->email = $member->user->email;
+                $this->description = $role->description;
+    
+                $this->role_id = $role->id;
 
-            $this->description = $member->description;
+                if($role->member){
 
-            $this->role_id = $member->role_id;
+                    $member = $role->member;
 
+                    if($member){
 
+                        $this->member = $member;
+        
+                        $this->user_id = $member->user_id;
+        
+                        $this->email = $member->user->email;
+        
+                    }
+
+                }
+            }
         }
 
         $this->dispatch('OpenModalEvent', '#new-member-modal');

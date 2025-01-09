@@ -15,6 +15,8 @@ class MembersProfilComponent extends Component
 
     public $counter = 0;
 
+    public $is_included = false;
+
 
     public function render()
     {

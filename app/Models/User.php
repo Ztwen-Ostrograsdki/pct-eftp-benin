@@ -59,6 +59,8 @@ class User extends Authenticatable implements FilamentUser, HasName
         'current_function',
         'email_verified_at',
         'FEDAPAY_ID',
+        'general_school',
+        'from_general_school',
         'auth_token',
 
     ];

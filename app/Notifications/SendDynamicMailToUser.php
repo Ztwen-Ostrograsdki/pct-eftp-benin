@@ -43,8 +43,7 @@ class SendDynamicMailToUser extends Notification
         return (new MailMessage)
                     ->subject(__($this->sub))
                     ->line(__($this->bod))
-                    ->line(__('The introduction to the notification.'))
-                    ->line(__('Thank you for using our application!'));
+                    ->line(__('Merci de prendre en compte ce mail'));
     }
 
     /**

@@ -151,7 +151,7 @@ return [
     'starts_with' => 'Le doit commencer par l\'un des éléments suivants : :values.',
     'string' => 'Le doit être une chaîne.',
     'timezone' => 'Le doit être un fuseau horaire valide.',
-    'unique' => 'Le a déjà été pris.',
+    'unique' => 'Cette valeur est déjà prise.',
     'uploaded' => 'Le n\'a pas pu être téléchargé.',
     'uppercase' => 'Le doit être en majuscule.',
     'url' => 'Le doit être une URL valide.',

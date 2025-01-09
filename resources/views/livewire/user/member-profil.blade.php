@@ -33,7 +33,10 @@
                             <a href="{{route('user.profil', ['identifiant' => $user->identifiant])}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profil utilisateur</a>
                         </li>
                         @endif
-                        @if(__isAdminAs() && !__selfUser($user))
+                        @if(__isAdminAs() && $user->member)
+                            <li>
+                                <a href="#" wire:click="$dispatch('OpenMemberModalForEditEvent', {member_id: {{$user->member->id}}})" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Choisir un nouveau membre</a>
+                            </li>
                             <li>
                                 <a wire:click='removeUserFormMembers' href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
                             </li>

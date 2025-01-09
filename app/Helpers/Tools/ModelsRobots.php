@@ -53,6 +53,8 @@ class ModelsRobots{
     {
         $data = [];
 
+        return 1;
+
         FedaPay::setApiKey(env('MY_FEDA_SECRET_KEY'));
 
         FedaPay::setEnvironment('sandbox');

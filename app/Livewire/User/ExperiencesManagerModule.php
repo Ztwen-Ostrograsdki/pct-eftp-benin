@@ -28,6 +28,8 @@ class ExperiencesManagerModule extends Component
 
     public $job_city;
     public $school;
+    public $from_general_school;
+    public $general_school;
     public $teaching_since;
     public $years_experiences;
     public $grade;
@@ -59,6 +61,8 @@ class ExperiencesManagerModule extends Component
             $this->teaching_since = $user->teaching_since ? $this->user->teaching_since : 'Non renseigné';
             $this->grade = $user->grade ? $this->user->grade : 'Non renseigné';
             $this->school = $user->school ? $this->user->school : 'Non renseigné';
+            $this->from_general_school = $user->from_general_school ? $this->user->from_general_school : 'Non renseigné';
+            $this->general_school = $user->general_school ? $this->user->general_school : 'Non renseigné';
             
         }
 
@@ -86,6 +90,8 @@ class ExperiencesManagerModule extends Component
             $this->teaching_since = $user->teaching_since ? $this->user->teaching_since : 'Non renseigné';
             $this->grade = $user->grade ? $this->user->grade : 'Non renseigné';
             $this->school = $user->school ? $this->user->school : 'Non renseigné';
+            $this->from_general_school = $user->from_general_school ? $this->user->from_general_school : 'Non renseigné';
+            $this->general_school = $user->general_school ? $this->user->general_school : 'Non renseigné';
         }
     }
 
@@ -118,6 +124,8 @@ class ExperiencesManagerModule extends Component
             'school' => $this->school,
             'status' => $this->status,
             'teaching_since' => $this->teaching_since,
+            'general_school' => $this->general_school,
+            'from_general_school' => $this->from_general_school,
             'years_experiences' => $this->years_experiences,
         ];
 

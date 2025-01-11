@@ -22,6 +22,12 @@ class LoginPage extends Component
 
     #[Validate('required|string|min:5')]
     public $password;
+
+
+    public function mount($email = null)
+    {
+        if($email) $this->email = $email;
+    }
     
     public function render()
     {

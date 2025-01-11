@@ -1,5 +1,5 @@
 <div>
-    <div class="m-auto border rounded my-1 w-4/5 z-bg-secondary-light-opac min-h-80 p-2">
+    <div class="m-auto border rounded my-1 lg:w-full z-bg-secondary-light-opac min-h-80 p-2">
         <div class="my-2 p-3 w-full">
             <h4 class="text-lg text-gray-400 text-right border-b pb-2 border-gray-400">Bienvenue sur la page de l'association</h4>
         </div>
@@ -14,6 +14,7 @@
                         {{$sec_title}}
                     </span>
                     @endforeach
+                    @if(__isAdminAs())
                     <button title="Ajouter un nouveau membre à l'association" data-modal-target="new-member-modal" data-modal-toggle="new-member-modal" type="button" class="border cursor-pointer bg-blue-500 text-gray-100 rounded-xl hover:bg-blue-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <span>Ajouter un membre</span>
                         <span class="fas fa-plus hover:animate-spin"></span>
@@ -23,6 +24,7 @@
                         <span>Ajouter un role</span>
                         <span class="fas fa-plus hover:animate-spin"></span>
                     </button>
+                    @endif
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class MembersHomePage extends Component
 {
-    public $member_section = 'list';
+    public $member_section = 'users-list';
 
     public $member_section_title = 'liste';
 

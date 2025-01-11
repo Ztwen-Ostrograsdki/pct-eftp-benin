@@ -15,9 +15,9 @@ return [
 
 
     'genders' => [
-        'female' => "Féminin",
-        'male' => "Masculin",
-        'other' => "Autre",
+        'Féminin' => "Féminin",
+        'Masculin' => "Masculin",
+        'Autre' => "Autre",
     ],
 
     'teachers_statuses' => [
@@ -27,6 +27,23 @@ return [
         'ame' => 'AME'
     ],
 
+    'teachers_graduates' => [
+        'bts' => 'BTS', 
+        'dues-1' => 'DUES-1', 
+        'dues-2' => 'DUES-2', 
+        'licence' => 'Licence', 
+        'maitrise' => 'Maitrise', 
+        'master' => 'Master', 
+        'doctorat' => 'Doctorat', 
+        'autre' => 'Autre', 
+    ],
+
+    'teachers_graduate_type' => [
+        'académique' => 'Académique', 
+        'professionnel' => 'Professionnel', 
+        'autre' => 'Autre', 
+    ],
+    
     'notifications_sections' => [
         null => "Récentes non lues",
         'unread' => "Non lues",

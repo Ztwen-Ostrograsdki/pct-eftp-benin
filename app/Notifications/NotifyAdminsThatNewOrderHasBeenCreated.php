@@ -42,7 +42,7 @@ class NotifyAdminsThatNewOrderHasBeenCreated extends Notification
 
         return (new MailMessage)
         ->subject("Nouvelle demande d'achat reçue: Demande N° " . $this->order->identifiant)
-        ->line('Bonjour Mr/Mme' . $notifiable->getFullName())
+        ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
         ->line('Vous recevez ce courriel parce que vous êtes un administrateur actif de ' . config('app.name') . '!')
         ->line("L'utilisateur " . $user->getFullName() . " dont l'adresse mail est " . $user->email . " a fait une demande d'achat!")
         ->line("La demande d'achat porte le N° " . $this->order->identifiant . " !")

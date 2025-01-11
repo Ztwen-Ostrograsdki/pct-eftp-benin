@@ -41,46 +41,46 @@
             <table class="w-full xs:text-xs text-left border rounded-lg rtl:text-right text-gray-500 dark:text-gray-400">
                 
                 @if(count($users) > 0)
-                <thead class="text-xs text-gray-900 uppercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
+                <thead class="text-xs text-gray-900 lg:uppercase md:uppercase sm:lowercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             N°
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                            Nom et Prénoms
                            (Email)
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             Lycée
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             Statut
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Fonction
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
+                            CEG de provénance
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             Inscrit depuis
                         </th>
                         
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             Utilisateur
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
                             De/Bloquer
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Actions
+                        <th scope="col" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-3 md:py-1">
+                            Options
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($users as $key => $user)
                     <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <th scope="row" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </th>
-                        <td class="px-6 py-4">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             <a class="flex flex-col" title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
                                 {{$user->getFullName()}} 
                                 <span class="text-yellow-400 letter-spacing-2">
@@ -88,20 +88,27 @@
                                 </span>
                             </a>
                         </td>
-                        <td class="px-6 py-4 @if(!$user->school) text-orange-400 @endif">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 @if(!$user->school) text-orange-400 @endif">
                             {{ $user->formatString($user->school) }}
 
                             <small class="text-orange-500 letter-spacing-2 @if(!$user->job_city) hidden @endif">
                                 ({{ $user->job_city }})
                             </small>
                         </td>
-                        <td class="px-6 py-4  @if($user->status) uppercase @else text-orange-400 @endif">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1  @if($user->status) uppercase @else text-orange-400 @endif">
                             {{$user->formatString($user->status)}}
                         </td>
-                        <td class="px-6 py-4 ">
-                            {{$user->formatString($user->current_function)}}
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 ">
+                            @if($user->from_general_school)
+                                <span>Vient du CEG</span>
+                                {{ 
+                                    $user->general_school ? $user->user->general_school : 'Non renseigné'
+                                }}
+                            @else
+                                <span>Ne vient pas du CEG</span>
+                            @endif
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             <span>
                                 <span class="flex flex-col">
                                     <span>
@@ -136,14 +143,14 @@
                             </span>
                         </td>
                         
-                        <td class="px-6 py-4">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             <span wire:click.prevent="confirmedUserIdentification({{$user->id}})" @if(!$user->confirmed_by_admin) title="Cliquer pour confirmer l'identification de {{ $user->getFullName() }}" @endif>
                                 <span class=" @if($user->confirmed_by_admin) fas fa-user-check text-green-600 @else fas fa-user-slash text-red-500 @endif"></span>
                                 <span class="@if($user->confirmed_by_admin) text-green-600 @else text-red-500 @endif">{{$user->confirmed_by_admin ? 'identifié' : 'non identifié'}}</span>
                             </span>
                         </td>
 
-                        <td title="Cliquer pour exécuter l'action" class="px-6 py-4">
+                        <td title="Cliquer pour exécuter l'action" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             <span wire:click.prevent="confirmedUserBlockOrUnblocked({{$user->id}})">
                                 @if($user->blocked)
                                     <span class=" fas fa-unlock text-green-700"></span>
@@ -155,75 +162,85 @@
                             </span>
                         </td>
                         
-                        <td class="px-6 py-4">
+                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             
-                            <div class="hs-dropdown [--strategy:static] md:[--strategy:fixed] [--adaptive:none] md:[--trigger:hover] md:py-4">
-                                <button type="button" class="flex items-center w-full text-gray-500 hover:text-gray-400 font-medium dark:text-gray-400 dark:hover:text-gray-500">
-                                    <span>
-                                        <span class="fas fa-layer-group"></span>
-                                        <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Options</a>
-                                    </span>
+                            <div class="flex justify-end px-4 pt-4">
+                                <button id="dropdownButton-{{$user->id}}" data-dropdown-toggle="dropdown-{{$user->id}}" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg p-1.5" type="button">
+                                    <span class="sr-only">Open dropdown</span>
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                        <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                                    </svg>
                                 </button>
-                  
-                              <div class="hs-dropdown-menu transition-[opacity,margin] duration-[0.1ms] md:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 md:w-48 hidden z-10 bg-white md:shadow-md rounded-lg p-2 dark:bg-gray-800 md:dark:border dark:border-gray-700 dark:divide-gray-700 before:absolute top-full md:border before:-top-5 before:start-0 before:w-full before:h-5">
-                                @if($user)
-                                <a class="rounded-full p-0 m-0 px-3 mx-auto text-center" href="#">
-                                    <strong class="w-full block text-center text-sm">Effectuer des actions sur</strong>
-                                    <hr class="my-2 bg-slate-500 text-gray-700">
-                                    <span class="text-orange-600 block my-1 text-left px-2"> 
-                                        <span class="fas fa-user"></span>
-                                        <b>{{ $user->pseudo }}</b>
-                                        <small class="text-orange-400">{{ $user->email }}</small>
-                                    </span>
-                                </a>
-                                <hr class="bg-slate-500 m-0 mb-1 p-0 text-gray-700">
-                                @endif
-                                <a  href="#" title="Bloquer {{$user->getFullName()}}" class=" @if($user->blocked) hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span class="fas fa-user-lock hover:scale-125 cursor-pointer text-red-400"></span>
-                                    Bloquer
-                                </a>
-                                <a  href="#" title="identifier et authoriser {{$user->getFullName()}}" class="@if($user->confirmed_by_admin) hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="text-left  fas fa-user-check hover:scale-125 cursor-pointer text-green-700"></span>
-                                    identifier
-                                </a>
-                                <a  href="#" title="Débloquer {{$user->getFullName()}}" class="@if(!$user->blocked) hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="fas  fas fa-unlock hover:scale-125 cursor-pointer text-red-400"></span>
-                                    Débloquer
-                                </a>
-                                <a  href="#" title="Marquer {{$user->getFullName()}} comme non confirmé" class=" @if(!$user->email_verified_at) hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="text-left fas fa-person-circle-question hover:scale-125 cursor-pointer text-red-500"></span>
-                                    Confirmé
-                                </a>
-
-                                <a  href="#" title="Promouvoir comme administrateur {{$user->getFullName()}}" class=" @if($user->ability == "admin") hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="text-left  fas fa-user-secret hover:scale-125 cursor-pointer text-blue-400"></span>
-                                    Promouvoir
-                                </a>
-
-                                <a  href="#" title="Retirer des administrateurs {{$user->getFullName()}}" class=" @if($user->ability !== "admin") hidden @endif flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="text-left  fas fa-user-minus hover:scale-125 cursor-pointer text-yellow-400"></span>
-                                    Retirer des admin
-                                </a>
-
-                                <a  href="#" title="Supprimer {{$user->getFullName()}}" class=" flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <span  class="text-left fas fa-user-xmark hover:scale-125 cursor-pointer text-red-700"></span>
-                                    Supprimer
-                                </a>
-                                <a  href="#" title="Supprimer {{$user->getFullName()}}" class=" flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 " >
-                                    <div class="flex items-center">
-                                        <input checked id="checkbox-item-2" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="checkbox-item-2" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Checked state</label>
-                                    </div>
-                            
-                                </a>
-
-                              </div>
+                                <!-- Dropdown menu -->
+                                <div id="dropdown-{{$user->id}}" class="z-10 hidden lg:text-sm sm:text-xs md:text-xs xs:text-xs list-none bg-white divide-y divide-gray-100 rounded-lg shadow-2 shadow-sky-500 w-56 z-bg-secondary-light border border-sky-500">
+                                    <ul class="py-2" aria-labelledby="dropdownButton-{{$user->id}}">
+                                        <li>
+                                            <a href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                <span class="fas fa-user"></span>
+                                                <b>{{ $user->getFilamentName() }}</b>
+                                                <br>
+                                                <small class="text-orange-400">
+                                                    {{ $user->email }}
+                                                </small>
+                                            </a>
+                                        </li>
+                                        
+                                        <li class="hidden">
+                                            <a href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-wrap">
+                                                Opérations sur
+                                                <br>
+                                                <span class="fas fa-user"></span>
+                                                <b>{{ $user->pseudo }}</b>
+                                                <br>
+                                                <small class="text-orange-400">
+                                                    {{ $user->email }}
+                                                </small>
+                                            </a>
+                                        </li>
+                                        @if(__selfUser($user))
+                                            <li>
+                                                <a href="{{route('user.profil.edition', ['identifiant' => $user->identifiant, 'auth_token' => $user->auth_token])}}" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Editer</a>
+                                            </li>
+                                        @endif
+                                        <li>
+                                            <a wire:click="$dispatch('OpenUserProfilPhotoEvent', {user_id: {{$user->id}}})" type="button" title="Zoomer la photo de profil" href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Zoomer la photo de profil</a>
+                                        </li>
+                                        @if($user->member)
+                                        <li>
+                                            <a href="{{route('member.profil', ['identifiant' => $user->identifiant])}}" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profil membre</a>
+                                        </li>
+                                        @endif
+                                        @if(__isAdminAs() && !__selfUser($user))
+                                            <li>
+                                                <a href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
+                                            </li>
+                                            <li>
+                                                <a wire:click='confirmedUserBlockOrUnblocked' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                    {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
+                                                </a>
+                                            </li>
+                                            @if(!$user->confirmed_by_admin)
+                                            <li>
+                                                <a wire:click='confirmedUserIdentification' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Confirmer l'identification</a>
+                                            </li>
+                                            @endif
+                                            @if(!$user->email_verified_at)
+                                            <li>
+                                                <a wire:click='confirmedUserEmailVerification' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                    {{ $user->email_verified_at ? "Marquer email non vérifié" : "Marquer email vérifié" }}
+                                                </a>
+                                            </li>
+                                            @endif
+                                        @endif
+                                    </ul>
+                                </div>
                             </div>
                         </td>
                     </tr>
                     @endforeach
                     
                 </tbody>
+                
                 @else
                     <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 text-3xl text-cursive">
                         <span class="fas fa-trash"></span>

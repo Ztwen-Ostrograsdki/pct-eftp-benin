@@ -41,9 +41,11 @@ class SendDynamicMailToUser extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
+                    ->greeting("Bonjour Mr/Mme")
                     ->subject(__($this->sub))
                     ->line(__($this->bod))
-                    ->line(__('Merci de prendre en compte ce mail'));
+                    ->line(__('Merci de prendre en compte ce mail'))
+                    ->line("Ensemble développons de notre communauté scientifique !!!");
     }
 
     /**

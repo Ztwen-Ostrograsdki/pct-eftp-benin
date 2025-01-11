@@ -37,12 +37,13 @@ class SendEmailVerificationKeyToUser extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Bonjour Mr/Mme' . $notifiable->getFullName())
+                    ->subject("Confirmation adresse mail d'inscription de la plateforme" . config('app.name') . " du compte " . $notifiable->email)
+                    ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
                     ->line('Vous recevez ce courriel parce que')
                     ->line("Vous avez lancer l'inscription sur " . config('app.name') . " avec l'addresse : " . $notifiable->email)
                     ->action('Confirmez votre compte', url(route('email.verification', ['email' => $notifiable->email, 'key' => $this->key])))
                     ->line('La clé est :' . $this->key)
-                    ->line('Merci pour votre fidélité');
+                    ->line("Ensemble développons de notre communauté scientifique !!!");
     }
 
     /**

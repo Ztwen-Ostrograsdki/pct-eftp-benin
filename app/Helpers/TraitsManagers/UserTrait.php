@@ -3,6 +3,8 @@ namespace App\Helpers\TraitsManagers;
 
 use App\Models\ENotification;
 use App\Models\User;
+use App\Notifications\NotifyUserThatAccountHasBeenConfirmedByAdmins;
+use App\Notifications\SendDynamicMailToUser;
 use App\Notifications\SendEmailVerificationKeyToUser;
 use App\Notifications\SendPasswordResetKeyToUser;
 use Illuminate\Support\Carbon;
@@ -123,9 +125,30 @@ trait UserTrait{
 
     public function confirmedThisUserIdentification()
     {
-        return $this->forceFill([
+        $identified = $this->forceFill([
             'confirmed_by_admin' => true
         ])->save();
+
+        if($identified){
+
+            $auth = User::find(auth_user()->id);
+
+            $subjet = "Confirmation de l'identification utilisateur de la plateforme" . config('app.name') . " du compte " . $this->email;
+
+            $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous avez confirmé l'identification de l'utilisateur " 
+                . $this->getFullName(true) . 
+                " dont l'addresse mail est "
+                . $this->email . 
+                " et dont l'identifiant unique utilisateur est "
+                . $this->identifiant .
+                "La confirmation s'est déroulée avec success et l'utilisateur pourra se connecter à son compte."
+            ;
+
+            $this->notify(new NotifyUserThatAccountHasBeenConfirmedByAdmins(true));
+
+            $auth->notify(new SendDynamicMailToUser($subjet, $body));
+
+        }
     }
     
     public function userBlockerOrUnblockerRobot($action = true)

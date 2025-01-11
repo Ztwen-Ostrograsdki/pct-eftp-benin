@@ -26,6 +26,7 @@
         @livewire('master.modals.new-member-modal-component')
         @livewire('master.modals.new-role-modal-component')
         @livewire('master.modals.role-manager-component')
+        @livewire('master.modals.open-user-profil-photo-view-component')
         @livewire('partials.footer')
 
         @livewireScripts
@@ -38,9 +39,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
 
-                console.log('loaded');
-
-                document.getElementById('my-preloader-cover').remove();
+                //document.getElementById('my-preloader-cover').remove();
 
             });
 
@@ -73,15 +72,15 @@
 
                 Livewire.on('OpenModalEvent', (event) => {
 
-                let modal_name = event[0];
+                    let modal_name = event[0];
 
-                let modalElement = document.querySelector(modal_name);
+                    let modalElement = document.querySelector(modal_name);
 
-                console.log(modalElement);
+                    console.log(modalElement);
 
-                modal = new Modal(modalElement)
+                    modal = new Modal(modalElement)
 
-                modal.show();
+                    modal.show();
 
                 });
 

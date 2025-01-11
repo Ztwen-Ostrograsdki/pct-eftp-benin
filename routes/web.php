@@ -80,7 +80,7 @@ Route::get('boutique/', ShoppingHome::class)->name('shopping.home');
 Route::get('boutique/details-documents/ID={identifiant}/IDX={slug}', BookDetailsPage::class)->name('book.details');
 
 Route::middleware(['guest'])->group(function(){
-    Route::get('/connexion', LoginPage::class)->name('login');
+    Route::get('/connexion/{email?}', LoginPage::class)->name('login');
     Route::get('/inscription', RegisterPage::class)->name('register');
     Route::get('/verification-email/email={email}/{key?}', EmailVerificationPage::class)->name('email.verification');
     Route::get('/reinitialisation-mot-de-passe/token={token?}/email={email?}', ResetPasswordPage::class)->name('password.reset');

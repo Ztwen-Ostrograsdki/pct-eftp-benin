@@ -4,7 +4,9 @@
       <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
         <div>
           <h1 class="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl lg:leading-tight dark:text-gray-500">Bienvenue sur 
-            <br><span class="text-blue-600">{{ config('app.name') }}</span></h1>
+            <br><span class="text-blue-600">{{ config('app.name') }}</span><br>
+            <span class="text-sky-500">BENIN</span>
+          </h1>
           <p class="mt-3 text-lg text-gray-800">
             La plateforme qui vous oriente sur le fonctionnement et la pédagogie en PCT dans la formation technique et professionnel en république du BENIN
         </p>

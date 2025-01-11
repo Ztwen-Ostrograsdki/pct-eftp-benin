@@ -54,7 +54,7 @@ class NotifyAdminThatBlockedUserTriedToLoginToUnblockThisUserAccount extends Not
 
         return (new MailMessage)
             ->subject($this->title . " : " . $this->object)
-            ->line('Bonjour Mr/Mme' . $notifiable->getFullName())
+            ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
             ->line('Vous recevez ce courriel parce que vous êtes un administrateur actif de ' . config('app.name') . '!')
             ->line("L'utilisateur " . $user->getFullName() . " dont l'adresse mail est " . $user->email . "  a tenté de se connecté!")
             ->line($this->content)

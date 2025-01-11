@@ -68,7 +68,7 @@
                       <a wire:loading.class='opacity-50' wire:target='confirmEmail' href="#" wire:click='confirmEmail' class="w-full cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                         <span wire:loading.remove wire:target='confirmEmail'>Confirmez</span>
                         <span wire:loading wire:target='confirmEmail' class="">
-                          Mise à jour en cours...
+                          Confirmation en cours...
                           <span class="fa fas fa-rotate animate-spin"></span>
                         </span>
                       </a>

@@ -43,7 +43,7 @@ class NotifyAdminThatNewUserSubscribedToConfirmThisUserAccount extends Notificat
 
         return (new MailMessage)
             ->subject("Nouvelle inscription sur la plateforme. Utilisateur: " . $user->getFullName())
-            ->line('Bonjour Mr/Mme' . $notifiable->getFullName())
+            ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
             ->line('Vous recevez ce courriel parce que vous êtes un administrateur actif de la plateforme ' . config('app.name') . '!')
             ->line("L'utilisateur " . $user->getFullName() . " dont l'adresse mail est " . $user->email . " s'est inscrit nouvellement sur le site!")
             ->line("Son compte n'a pas encore été approuvé ou validé depuis la validation de son inscription faite depuis " . $since)

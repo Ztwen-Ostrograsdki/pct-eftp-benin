@@ -20,9 +20,8 @@ class ExperiencesManagerModule extends Component
     public $user;
 
     public $experiences_title = "Profession et expériences dans le métier";
+    
     public $editing_experiences = false;
-
-
 
     public $hidden_experiences = false;
 

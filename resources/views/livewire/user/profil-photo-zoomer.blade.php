@@ -19,7 +19,7 @@
             <form wire:ignore.self class="p-1 md:p-5">
                 <div class="grid grid-cols-1">
                     <div class="flex items-center justify-center">
-                        <img class="mb-3 shadow-3 border rounded-2xl h-72 w-60 border-green-900" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}"/>
+                        <img class="mb-3 shadow-3 border rounded-2xl border-green-900" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}"/>
                     </div>
                     
                 </div>

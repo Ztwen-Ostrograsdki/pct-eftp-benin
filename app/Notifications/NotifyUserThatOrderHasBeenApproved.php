@@ -39,7 +39,7 @@ class NotifyUserThatOrderHasBeenApproved extends Notification
     {
         return (new MailMessage)
         ->subject("Demande d'achat approuvée: Demande N° " . $this->order->identifiant)
-        ->line('Bonjour Mr/Mme' . $notifiable->getFullName())
+        ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
         ->line('Vous recevez ce courriel parce que')
         ->line("Votre demande d'achat N° " . $this->order->identifiant . " a été approuvée avec succès!")
         ->line("Vous pouvez procéder au payement")

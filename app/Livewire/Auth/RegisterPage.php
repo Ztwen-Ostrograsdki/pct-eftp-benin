@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,24 +17,56 @@ class RegisterPage extends Component
 {
     use WithFileUploads, Toast;
 
-    #[Validate('required|email|unique:users|min:3|max:255')]
-    public $email;
+    public $is_perso_data_insertion = true;
 
-    #[Validate('required|string|min:2')]
-    public $lastname;
+    public $is_graduate_data_insertion = false;
 
-    #[Validate('required|string|min:2')]
-    public $firstname;
+    public $is_professionnal_data_insertion = false;
 
-    #[Validate('required|string|confirmed|min:5')]
-    public $password;
-    
-    #[Validate('nullable|image|mimes:jpeg,png,jpg|max:2400')]
-    public $profil_photo;
+    public $is_password_data_insertion = false;
 
-    public $password_confirmation;
+    public $section = 'perso';
 
-    public $pseudo;
+    public $user;
+
+
+
+
+    public function mount()
+    {
+        if(session()->has('register-section')){
+
+            $this->section = session('register-section');
+        }
+
+        $section = $this->section;
+
+        if($section === 'graduate'){
+
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = true;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'professionnal'){
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = true;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'perso'){
+            $this->is_perso_data_insertion = true;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'password'){
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = true;
+        }
+    }
 
     public function render()
     {
@@ -158,9 +191,96 @@ class RegisterPage extends Component
 
     }
 
+
+    
+
+    public function initGraduateDataInsertion()
+    {
+        
+    }
+
+    public function initProfessionnalDataInsertion()
+    {
+        
+    }
+
+    public function initLastDataInsertion()
+    {
+        //Set password and profil photo
+    }
+
+
+
+    public function clearPersoData()
+    {
+        $this->reset(
+            'pseudo',
+            'password',
+            'firstname',
+            'lastname' ,
+            'identifiant',
+            'auth_token',
+            'email',
+        );
+    }
+
+    public function clearGraduateData()
+    {
+        
+    }
+
+    public function clearProfessionnalData()
+    {
+        $this->reset(
+            'matricule',
+            'job_city' ,
+            'grade' ,
+            'school' ,
+            'status',
+            'teaching_since' ,
+            'general_school' ,
+            'from_general_school' ,
+            'years_experiences' ,
+        );
+    }
+
     public function updated($password_confirmation)
     {
         $this->validateOnly('password');
+    }
+
+    #[On('UpdateSectionInsertion')]
+    public function updateTheSection($section)
+    {
+        if($section === 'graduate'){
+
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = true;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'professionnal'){
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = true;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'perso'){
+            $this->is_perso_data_insertion = true;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
+        }
+        elseif($section === 'password'){
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = true;
+        }
+
+        $this->section = $section;
+
+        session()->put('register-section', $section);
     }
 }
 

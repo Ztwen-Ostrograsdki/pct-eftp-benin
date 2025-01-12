@@ -97,9 +97,12 @@ class InitUserGraduateData extends Component
             'graduate_type' => Str::ucfirst($this->graduate_type),
         ];
 
-        SubscriptionManager::putGraduateDataIntoSession($data); 
+        session()->put('graduate_data_is_ok', true);
 
         $this->dispatch("UpdateSectionInsertion", 'professionnal');
+
+        SubscriptionManager::putGraduateDataIntoSession($data); 
+        
     }
 
     public function goToThePersoForm()

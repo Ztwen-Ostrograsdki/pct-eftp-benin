@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use Akhaled\LivewireSweetalert\Toast;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -40,7 +41,11 @@ class ProfilPhotoEditor extends Component
 
             if($save){
 
-                Storage::delete($this->user->profil_photo);
+                $profil_photo = $this->user->profil_photo;
+
+                $path = storage_path().'/app/public/' . $profil_photo;
+
+                File::delete($path);
 
                 $update = $this->user->update(['profil_photo' => 'users/' . $file_name . '.' . $extension]);
 

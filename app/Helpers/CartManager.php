@@ -84,6 +84,7 @@ class CartManager
     public static function addCartItemsToCookies(array $carts_items)
     {
         Cookie::queue('carts_items', json_encode($carts_items), 60 * 24 * 30);
+
     }
 
     /* clear cart item from cookies */

@@ -6,6 +6,8 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\CartManager;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -64,5 +66,16 @@ class Navbar extends Component
 
         return redirect(route('login'));
 
+    }
+
+    public function deleteProfilPhoto($path = null)
+    {
+
+        $profil_photo = auth_user()->profil_photo;
+
+        $path = storage_path().'/app/public/' . $profil_photo;
+
+        return File::delete($path);
+        
     }
 }

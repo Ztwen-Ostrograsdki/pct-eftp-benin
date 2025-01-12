@@ -44,7 +44,7 @@ class ModelsRobots{
 
     public static function makeUserIdentifySequence()
     {
-        return Str::random(12);
+        return Str::upper(Str::random(18));
     }
 
 

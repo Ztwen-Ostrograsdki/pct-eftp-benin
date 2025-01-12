@@ -31,6 +31,11 @@
               Mon profil
             </a>
           </li>
+          <li>
+            <a href="#" wire:click="deleteProfilPhoto" class="block text-gray-400 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+              Supprimer ma photo de profil
+            </a>
+          </li>
           @if(__isAdminAs())
           <li>
             <a wire:navigate href="{{route('master.users.list')}}" class="block {{request()->route()->named('master.users.list') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">

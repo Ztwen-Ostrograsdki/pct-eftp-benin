@@ -6,6 +6,25 @@ use App\Models\Promotion;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+if(!function_exists('__arrayAllTruesValues')){
+
+    function __arrayAllTruesValues($data)
+    {
+        $is_okay = true;
+
+        foreach ($data as $d) {
+
+            if($d == false){
+
+                $is_okay = false;
+
+            }
+        }
+
+        return $is_okay;
+    }
+
+}
 if(!function_exists('numberZeroFormattor')){
 
     function numberZeroFormattor($number, $string = false)

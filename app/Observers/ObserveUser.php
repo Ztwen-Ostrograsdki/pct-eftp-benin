@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Jobs\JobLogoutUser;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class ObserveUser
 {
@@ -12,7 +13,7 @@ class ObserveUser
      */
     public function created(User $user): void
     {
-        //
+        if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
     }
 
     /**
@@ -20,7 +21,7 @@ class ObserveUser
      */
     public function updated(User $user): void
     {
-        
+        if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
     }
 
     /**

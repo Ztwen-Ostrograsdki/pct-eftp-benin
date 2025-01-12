@@ -21,16 +21,16 @@
             <form wire:ignore.self class="p-4 md:p-5">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">La fonction</label>
-                        <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='name' type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Le nom de la fonction">
+                        <label for="new-role-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">La fonction</label>
+                        <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='name' type="text" name="name" id="new-role-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Le nom de la fonction">
                         @error('name')
                             <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
                         @enderror
                     </div>
 
                     <div class="col-span-2 hidden">
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address mail</label>
-                        <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='email' disabled type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="L'address mail de l'utilisateur">
+                        <label for="new-role-email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address mail</label>
+                        <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='email' disabled type="email" name="email" id="new-role-email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="L'address mail de l'utilisateur">
                     </div>
 
                     <div class="col-span-2">
@@ -46,8 +46,8 @@
                         @enderror
                     </div>
                     <div class="col-span-2 sm:col-span-1">
-                        <label for="ability" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Le grade relatif</label>
-                        <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='ability' id="ability" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <label for="ability-new-role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Le grade relatif</label>
+                        <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='ability' id="ability-new-role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option selected="">Sélectionner le rand relatif de cette fonction</option>
                             @foreach ($abilities as $k =>  $a)
                               <option value="{{$a}}">{{ $a }}</option>
@@ -58,8 +58,8 @@
                         @enderror
                     </div>
                     <div class="col-span-2 sm:col-span-1">
-                        <label for="is_active" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Est active</label>
-                        <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='is_active' id="is_active" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <label for="new-role-is_active" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Est active</label>
+                        <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='is_active' id="new-role-is_active" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option selected="">Est actif</option>
                                 <option value="{{true}}">OUI</option>
                                 <option value="{{false}}">NON</option>
@@ -69,8 +69,8 @@
                         @enderror
                     </div>
                     <div class="col-span-2">
-                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <small class="text-yellow-300">Facultative</small> </label>
-                        <textarea wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='description' id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Décrivez brièvement cette fonction"></textarea>                    
+                        <label for="new-role-description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <small class="text-yellow-300">Facultative</small> </label>
+                        <textarea wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='description' id="new-role-description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Décrivez brièvement cette fonction"></textarea>                    
                         @error('description')
                             <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
                         @enderror

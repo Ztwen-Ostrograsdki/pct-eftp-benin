@@ -64,7 +64,7 @@
                 <form action="w-full">
                   <select  class="bg-transparent text-white py-3 w-full px-2" wire:model.live='sectionned' id="user_e_notifications_section">
                     @foreach ($notif_sections as $key => $sec)
-                      <option class="bg-gray-700" value="{{$key}}">{{ $sec }}</option>
+                      <option wire:key="option-{{$sec}}-{{auth()->user()->id}}" class="bg-gray-700" value="{{$key}}">{{ $sec }}</option>
                     @endforeach
                   </select>
                 </form>
@@ -74,7 +74,7 @@
             @if(count($my_notifications))
             
             @foreach ($my_notifications as $key => $notif)
-            <div class="py-6 bg-white rounded-md shadow dark:bg-gray-900">
+            <div wire:key="notif-{{$notif->id}}-{{auth()->user()->id}}" class="py-6 bg-white rounded-md shadow dark:bg-gray-900">
               <div class="flex flex-wrap items-center justify-between pb-4 mb-6 space-x-2 border-b dark:border-gray-700">
                 <div class="flex items-center px-6 mb-2 md:mb-0 ">
                   <div class="flex mr-2 rounded-full">

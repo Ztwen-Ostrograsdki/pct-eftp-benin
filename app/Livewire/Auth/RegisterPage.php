@@ -25,6 +25,8 @@ class RegisterPage extends Component
 
     public $is_password_data_insertion = false;
 
+    public $to_confirm_data = false;
+
     public $section = 'perso';
 
     public $user;
@@ -47,24 +49,35 @@ class RegisterPage extends Component
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = true;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'professionnal'){
             $this->is_perso_data_insertion = false;
             $this->is_professionnal_data_insertion = true;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'perso'){
             $this->is_perso_data_insertion = true;
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'password'){
+            $this->to_confirm_data = false;
             $this->is_perso_data_insertion = false;
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = true;
+        }
+        elseif($section === 'confirmed'){
+            $this->to_confirm_data = true;
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
         }
     }
 
@@ -258,24 +271,35 @@ class RegisterPage extends Component
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = true;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'professionnal'){
             $this->is_perso_data_insertion = false;
             $this->is_professionnal_data_insertion = true;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'perso'){
             $this->is_perso_data_insertion = true;
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = false;
+            $this->to_confirm_data = false;
         }
         elseif($section === 'password'){
+            $this->to_confirm_data = false;
             $this->is_perso_data_insertion = false;
             $this->is_professionnal_data_insertion = false;
             $this->is_graduate_data_insertion = false;
             $this->is_password_data_insertion = true;
+        }
+        elseif($section === 'confirmed'){
+            $this->to_confirm_data = true;
+            $this->is_perso_data_insertion = false;
+            $this->is_professionnal_data_insertion = false;
+            $this->is_graduate_data_insertion = false;
+            $this->is_password_data_insertion = false;
         }
 
         $this->section = $section;

@@ -1,173 +1,433 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+<div class="w-full mx-auto">
     <div class="flex h-full items-center">
-      <main class="w-full max-w-lg mx-auto p-6">
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <div class="p-4 sm:p-7">
-            <div wire:loading wire:target='register' class="text-center">
-              <h5 class="w-full bg-success-400 text-gray-900 shadow-2 shadow-sky-500 border rounded-xl p-3 letter-spacing-2 border-r-gray-800">
-                <span class="fa animate-spin fa-rotate"></span>
-                Traitement en cours...
-              </h5>
-            </div>
-            <div wire:loading.remove wire:target='register' class="text-center">
-              <h1 class="block text-2xl font-bold text-gray-800 dark:text-white uppercase">inscription</h1>
-              <p class="mt-2 text-sm block text-gray-600 dark:text-gray-400">
-                Vous avez déjà un compte?
-                <a class="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('login')}}">
-                  Connectez-vous ici
-                </a>
-              </p>
-              <div class="block w-full">
-                <small class="text-yellow-400 float-right w-full block ">
-                    Veuillez renseigner vos nom et prénoms selon votre acte de naissance
-                </small>
-            </div>
-              <div class=" bg-transparent w-full p-2 text-center py-6 my-2" wire:loading wire:target='profil_photo'>
-                <b class=" text-yellow-700 text-center">
-                  Chargement photo en cours... Veuillez patientez!
-                </b>
-              </div>
-              @if($profil_photo)
-              <div class="flex justify-center rounded-full p-2 my-2" >
-                  <img wire:loaded wire:target='profil_photo' class="mt-1  h-40 w-40 border rounded-full" src="{{$profil_photo->temporaryUrl()}}" alt="">
-              </div>
-              @else
-              <div class="flex justify-center @if(!$pseudo) hidden @endif rounded-full p-2 my-2" >
-                <b wire:loaded.remove wire:target='profil_photo' class="pt-2 text-9xl  bg-gray-900 uppercase text-center align-middle text-gray-400 h-40 w-40 border rounded-full">
-                  {{ Str::upper(Str::substr($pseudo, 0, 1)) }}
-                </b>
-            </div>
-              @endif
-            </div>
-            <hr class="my-5 border-slate-300">
-            <!-- Form -->
-            <form wire:submit.prevent='register'>
-              <div class="grid gap-y-4">
-                <!-- Form Group -->
+        <div class="w-full">
+            <div class="w-full py-2 mt-3">
+                <div class="w-full  my-2 bg-transparent border border-gray-200 rounded-lg shadow dark:border-gray-700">
+                    <h4 class="text-sm letter-spacing-2 w-full text-gray-200 p-3">
+                        Les informations renseignées sur vous
+                    </h4>
+                </div>
                 
-                <div>
-                    <label for="firstname" class="block text-sm mb-2 cursor-pointer dark:text-white">Votre Nom <span class="text-red-700 text-lg">*</span></label>
-                    <div class="relative">
-                      <input placeholder="Renseignez votre Nom..." wire:model.live='firstname' type="text" id="firstname" name="firstname" class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="email-error">
-                      @error('firstname')
-                      <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                        <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                        </svg>
-                      </div>
-                      @enderror
+                <div class="w-full mx-auto bg-transparent border border-gray-200 rounded-lg shadow dark:border-gray-700">
+                    
+                    <div class="flex flex-col items-center pb-10 px-2">
+                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{url('storage', $photo_path)}}" alt="Photo de profil de {{ $firstname . ' ' . $lastname}}"/>
+                        <h5 class="mb-1 text-xl border-b font-medium text-gray-900 dark:text-white">
+                            {{ $firstname . ' ' . $lastname}}
+                        </h5>
+                        <span class="text-sm text-yellow-500 letter-spacing-2 dark:text-yellow-400">
+                            <span class="fas fa-envelope"></span>
+                            <span>{{ $email }}</span>
+                        </span>
+                        <span class="text-sm text-yellow-800 letter-spacing-2 dark:text-yellow-400">
+                            <span class="fas fa-phone"></span>
+                            <span> 
+                                @if($contacts)
+                                    {{ $contacts }}
+                                @else
+                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                @endif
+                            </span>
+                        </span>
+                        <span class="text-sm text-green-300 dark:text-green-300">
+                            <span class="fas fa-user"></span>
+                            <span>
+                                {{ $current_function }}
+                                <span class="text-orange-500">
+                                    @if($grade) ({{ $grade }}) @endif
+                                </span>
+                            </span>
+                        </span>
+        
+                        <div class="w-full p-2 xl:text-base lg:text-base md:text-sm sm:text-xs xs:text-xs">
+                            <div class=" px-3 my-3 text-blue-500" >
+                                <div class="">
+                                    <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700 z-bg-secondary-light-opac">
+                                        <h5 class="text-gray-300 text-center pb-2 border-b  letter-spacing-2">
+                                            Détails civilités
+                                        </h5>
+                                        <table class="text-gray-100 w-full m-0">
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-envelope"></span>
+                                                    <span>
+                                                        Mail:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>{{ $email}}</span>
+                                                </td>
+                                            </tr>
+                
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-genderless"></span>
+                                                    <span>
+                                                        Sexe:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class=""> {{ $gender }} </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-chalkboard"></span>
+                                                    <span>
+                                                        Né le:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="">{{ $birth_date }}</span> @if($birth_date && $birth_city) <small class="text-yellow-200 float-right mr-2 mt-1 italic"> <b> à {{ $birth_city }}</b> </small> @endif
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-phone"></span>
+                                                    <span>
+                                                        Contacts:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="">
+                                                        @if($contacts)
+                                                            {{ $contacts }}
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">
+                                                                Non renseigné
+                                                            </small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-chalkboard"></span>
+                                                    <span>
+                                                        Statut:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                    @if($status)
+                                                        Enseignant {{ Str::upper($status) }}
+                                                    @else
+                                                        <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                    @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-home"></span>
+                                                    <span>
+                                                        Adresse:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                    @if($address)
+                                                        Résidant à {{ Str::upper($address) }}
+                                                    @else
+                                                        <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                    @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-children"></span>
+                                                    <span>
+                                                        Statut matrimonial:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                    @if($marital_status)
+                                                        {{ Str::ucfirst($marital_status) }}
+                                                    @else
+                                                        <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                    @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="mx-auto w-full mt-3 flex justify-center" wire:click="$dispatch('UpdateSectionInsertion', {section: 'perso'})" >
+                            
+                                            <a href="#" class="py-2 px-4 ms-2 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-success-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-success-700">
+                                                <span class="fas fa-edit"></span>
+                                                Editer ces informations
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div>
+                                    <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700 z-bg-secondary-light-opac">
+                                        <h5 class="text-gray-300 text-center pb-2 border-b  letter-spacing-2">
+                                            Détails Diplôme
+                                        </h5>
+                                        <table class="text-gray-100 w-full m-0 p-0">
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-chalkboard"></span>
+                                                    <span>
+                                                        Diplôme:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                    @if($graduate)
+                                                        {{ $graduate }} 
+                                                    @else
+                                                        <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                    @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-genderless"></span>
+                                                    <span>
+                                                        Type:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                    @if($graduate_type)
+                                                        {{ $graduate_type }} 
+                                                    @else
+                                                        <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                    @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-chalkboard"></span>
+                                                    <span>
+                                                        Obtenu en:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($graduate_year)
+                                                            {{ $graduate_year }}
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-home"></span>
+                                                    <span>
+                                                        Délivré par:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($graduate_deliver)
+                                                            {{ $graduate_deliver }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="mx-auto w-full mt-3 flex justify-center" wire:click="$dispatch('UpdateSectionInsertion', {section: 'graduate'})" >
+                            
+                                            <a href="#" class="py-2 px-4 ms-2 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-success-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-success-700">
+                                                <span class="fas fa-edit"></span>
+                                                Editer ces informations
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div >
+                                    <div class="py-5 border rounded-xl px-3 mt-1 border-gray-200 dark:border-gray-700 z-bg-secondary-light-opac">
+                                        <h5 class="text-gray-300 text-center pb-2 border-b  letter-spacing-2">
+                                            Détails Professionnels
+                                        </h5>
+                                        <table class="text-gray-100 w-full text-left m-0 p-0">
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-chalkboard"></span>
+                                                    <span>
+                                                        Grade:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($grade)
+                                                            {{ $grade }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-person-circle-check"></span>
+                                                    <span>
+                                                        Matricule:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($matricule)
+                                                            {{ $matricule }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-clock"></span>
+                                                    <span>
+                                                        Enseignant depuis:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($teaching_since)
+                                                            {{ $teaching_since }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span> 
+                                                </td>
+                                            </tr>
+                
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-home"></span>
+                                                    <span>
+                                                        Lieu de travail:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($job_city)
+                                                            {{ $job_city }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700 text-sky-500">
+                                                <td class="py-1">
+                                                    <span class="fas fa-school-flag"></span>
+                                                    <span>
+                                                        Lycée:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($school)
+                                                            {{ $school }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1 text-yellow-400">
+                                                    <span class="fas fa-school-flag"></span>
+                                                    <span>
+                                                        Vient de l'enseignement général (CEG)
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($from_general_school)
+                                                            <span class="fas fa-check text-success-600 mr-2"></span> {{ 'OUI' }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700 text-yellow-500">
+                                                <td class="py-1">
+                                                    <span class="fas fa-school-flag"></span>
+                                                    <span>
+                                                        CEG de provénance:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($general_school)
+                                                            {{ $general_school }} 
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class=" cursor-pointer w-full border-b border-gray-700">
+                                                <td class="py-1">
+                                                    <span class="fas fa-network-wired"></span>
+                                                    <span>
+                                                        Années d'expériences:
+                                                    </span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span>
+                                                        @if($years_experiences)
+                                                            {{ $years_experiences }} ans
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="mx-auto w-full mt-3 flex justify-center" wire:click="$dispatch('UpdateSectionInsertion', {section: 'professionnal'})" >
+                            
+                                            <a href="#" class="py-2 px-4 ms-2 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-success-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-success-700">
+                                                <span class="fas fa-edit"></span>
+                                                Editer ces informations
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    @error('firstname')
-                      <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                    @enderror
                 </div>
-                <div>
-                    <label for="lastname" class="block text-sm mb-2 cursor-pointer dark:text-white">Vos prénoms <span class="text-red-700 text-lg">*</span> </label>
-                    <div class="relative">
-                      <input placeholder="Renseignez vos prénoms complet selon votre acte de naissance..." wire:model.live='lastname' type="text" id="lastname" name="lastname" class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="email-error">
-                      @error('lastname')
-                      <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                        <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                        </svg>
-                      </div>
-                      @enderror
-                    </div>
-                    @error('lastname')
-                      <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div>
-                  <label for="email" class="block text-sm mb-2 cursor-pointer dark:text-white">Adresse mail <span class="text-red-700 text-lg">*</span></label>
-                  <div class="relative">
-                    <input placeholder="Renseignez votre adresse mail" wire:model.live='email' type="email" id="email" name="email" class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="email-error">
-                    @error('email')
-                    <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                      <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      </svg>
-                    </div>
-                    @enderror
-                  </div>
-                  @error('email')
-                    <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                  @enderror
-                </div>
-                <!-- End Form Group -->
-  
-                <!-- Form Group -->
-                <div>
-                  <div class="flex justify-between items-center">
-                    <label for="password" class="block text-sm mb-2 cursor-pointer dark:text-white">Mot de passe <span class="text-red-700 text-lg">*</span></label>
-                  </div>
-                  <div class="relative">
-                    <input placeholder="Choisissez un mot de passe" wire:model.live='password' type="password" id="password" name="password" class="@error('password') border-red-700 @else @if($password && $password_confirmation) border-green-700  @endif @enderror  py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="password-error">
-                    @error('password')
-                    <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                      <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      </svg>
-                    </div>
-                    @enderror
-                  </div>
-                  @error('password')
-                    <p class="text-xs text-red-600 mt-2" id="password-error">{{ $message }}</p>
-                  @else
-                  @if ($password && $password_confirmation &&  $password == $password_confirmation)
-                    <p class="text-xs text-green-700 mt-2" id="password-error">Confirmé!</p>
-                  @endif
-                  @enderror
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center">
-                    <label for="password_confirmation" class="block text-sm mb-2 cursor-pointer dark:text-white">Confirmez <span class="text-red-700 text-lg">*</span></label>
-                  </div>
-                  <div class="relative">
-                    <input placeholder="Confirmez le mot de passe..." wire:model.live='password_confirmation' type="password" id="password_confirmation" name="password_confirmation" class="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="password_confirmation-error">
-                    @error('password_confirmation')
-                    <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                      <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      </svg>
-                    </div>
-                    @enderror
-                  </div>
-                  @error('password_confirmation')
-                    <p class="text-xs text-red-600 mt-2" id="password_confirmation-error">{{ $message }}</p>
-                  @enderror
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center">
-                    <label for="profil_photo" class="block text-sm mb-2 cursor-pointer dark:text-white">Photo de profil (Facultative)</label>
-                  </div>
-                  <div class="relative">
-                    <input placeholder="Choisissez une photo de profil" wire:model='profil_photo' type="file" id="profil_photo" name="profil_photo" class="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" required aria-describedby="profil_photo-error">
-                    @error('profil_photo')
-                    <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                      <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      </svg>
-                    </div>
-                    @enderror
-                  </div>
-                  @error('profil_photo')
-                    <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                  @enderror
-                </div>
-                <!-- End Form Group -->
-                <a href="#" wire:click='register' wire:loading.class='opacity-50' wire:target='register' class="w-full cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-                  <span wire:loading.remove wire:target='register'>S'inscrire</span>
-                  <span wire:loading wire:target='register'>
-                    <span class="fa animate-spin fa-rotate"></span>
-                    Traitement en cours...
-                  </span>
+            </div>
+            @if(session()->has('perso_data_is_ok') && session()->has('graduate_data_is_ok') && session()->has('professionnal_data_is_ok') && session()->has('email_data_is_ok'))
+            <div class="mx-auto w-full mt-3 flex justify-center" wire:click="register" >
+                <a href="#" class="py-3 w-full px-4 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-xl border  focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 bg-blue-800 hover:bg-blue-600 text-gray-200 text-center hover:text-white">
+                    <span class="fas fa-user-check mr-2"></span>
+                    Valider mon inscription
+                    <span>
+                    <span class=" fas fa-chevron-down ml-3"></span>
+                    </span>
                 </a>
-              </div>
-            </form>
-            <!-- End Form -->
-          </div>
+            </div>
+            @endif
         </div>
     </div>
-  </div>
+</div>

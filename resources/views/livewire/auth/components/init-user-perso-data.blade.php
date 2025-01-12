@@ -147,8 +147,8 @@
                 <label for="register-city" class="block mb-1 text-sm font-medium text-gray-400">Votre commune</label>
                 <select aria-describedby="helper-text-register-city" wire:model.live='city' id="register-city" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   <option class="z-bg-secondary-light-opac" value="{{null}}">Votre commune</option>
-                  @foreach ($cities[$department_key] as $ck => $city)
-                    <option class="z-bg-secondary-light-opac" value="{{$city}}">{{$city}}</option>
+                  @foreach ($cities[$department_key] as $ck => $ct)
+                    <option class="z-bg-secondary-light-opac" value="{{$ct}}">{{$ct}}</option>
                   @endforeach
                 </select>
                 @error('city')

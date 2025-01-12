@@ -28,6 +28,7 @@
         @livewire('master.modals.role-manager-component')
         @livewire('master.modals.open-user-profil-photo-view-component')
         @livewire('partials.footer')
+        
 
         @livewireScripts
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

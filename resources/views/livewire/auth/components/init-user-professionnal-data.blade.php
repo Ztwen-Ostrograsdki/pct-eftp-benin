@@ -27,12 +27,29 @@
         </h5>
       </div>
     </div>
-  
-    <div class="my-7">
-  
-    </div>
-  
+    <div class="my-7"></div>
     <div class="mt-4">
+      @if($errors->any())
+
+        <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
+            <span>
+              Le formulaire est incorrect
+            </span>
+        </h4>
+      @endif
+
+      @if (session()->has('professionnalData'))
+        <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow text-center mx-auto">
+            <span wire:loading.remove wire:target='clearprofessionnalData' wire:click='clearprofessionnalData' class="inline-block w-full border hover:bg-orange-600 bg-orange-700 text-gray-950 py-2 text-center rounded-full cursor-pointer">
+              Vider le cache enregistré
+            </span>
+
+            <span wire:loading wire:target='clearprofessionnalData' class="inline-block w-full hover:bg-primary-600 bg-primary-700 border text-gray-950 py-2 text-center rounded-full cursor-pointer">
+              <span class="fas fa-rotate animate-spin mr-4"></span>
+              <span>Nettoyage en cours...</span>
+            </span>
+        </h4>
+      @endif
       <form class="mx-auto mt-4 shadow-2 p-3" autocomplete="false">
         
         <div class="relative z-0 w-full mb-5 group text-gray-400">
@@ -55,30 +72,30 @@
             </span>
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 text-gray-400 group ">
-                    <label for="register-department" class="block mb-1 text-sm font-medium text-gray-400">Votre département</label>
-                    <select aria-describedby="helper-text-register-department" wire:model.live='department' id="register-department" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <label for="register-job_department" class="block mb-1 text-sm font-medium text-gray-400">Votre département</label>
+                    <select aria-describedby="helper-text-register-job_department" wire:model.live='job_department' id="register-job_department" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
                       <option class="z-bg-secondary-light-opac" value="{{null}}">Votre département</option>
                       @foreach ($departments as $dk => $dep)
-                        <option class="z-bg-secondary-light-opac" value="{{$dk}}">{{$dep}}</option>
+                        <option class="z-bg-secondary-light-opac" value="{{$dep}}">{{$dep}}</option>
                       @endforeach
                     </select>
-                    @error('department')
-                    <p id="helper-text-register-department" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
+                    @error('job_department')
+                    <p id="helper-text-register-job_department" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
                       {{ $message }}
                     </p>
                     @enderror
                   </div>
-                  @if($department)
+                  @if($job_department)
                   <div class="relative z-0 w-full mb-5 text-gray-400 group ">
-                    <label for="register-city" class="block mb-1 text-sm font-medium text-gray-400">Votre commune</label>
-                    <select aria-describedby="helper-text-register-city" wire:model.live='city' id="register-city" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <label for="register-job_city" class="block mb-1 text-sm font-medium text-gray-400">Votre commune</label>
+                    <select aria-describedby="helper-text-register-job_city" wire:model.live='job_city' id="register-job_city" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
                       <option class="z-bg-secondary-light-opac" value="{{null}}">Votre commune</option>
-                      @foreach ($cities[$department_key] as $ck => $city)
-                        <option class="z-bg-secondary-light-opac" value="{{$city}}">{{$city}}</option>
+                      @foreach ($cities[$department_key] as $ck => $jcity)
+                        <option class="z-bg-secondary-light-opac" value="{{$jcity}}">{{$jcity}}</option>
                       @endforeach
                     </select>
-                    @error('city')
-                    <p id="helper-text-register-city" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
+                    @error('job_city')
+                    <p id="helper-text-register-job_city" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
                       {{ $message }}
                     </p>
                     @enderror
@@ -87,13 +104,18 @@
             </div>
             
         </div>
-        
   
-        <div class="grid md:grid-cols-2 md:gap-6">
-          
+        <div class="">
           <div class="relative z-0 w-full mb-5 text-gray-400 group ">
-            <label for="register-teaching_since" class="block mb-1 text-sm font-medium text-gray-400">Je suis dans l'enseignement dépuis</label>
-            <select aria-describedby="helper-text-register-teaching_since" wire:model='teaching_since' id="register-teaching_since" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <label for="register-teaching_since" class="block mb-1 text-sm font-medium text-gray-400">
+              Je suis dans l'enseignement dépuis
+              @if($teaching_since && $years_experiences)
+                <small class="text-yellow-400 float-right letter-spacing-2">
+                    {{ $years_experiences }} années d'expériences 
+                </small>
+              @endif
+            </label>
+            <select aria-describedby="helper-text-register-teaching_since" wire:model.live='teaching_since' id="register-teaching_since" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option class="z-bg-secondary-light-opac" value="{{null}}">Préciser l'Année 
                 </option>
                  
@@ -144,11 +166,9 @@
                     
                   </div>
                   
-                    @endif
+                  @endif
             </div>
-            
         </div>
-  
         <div class="grid md:gap-6">
           <div class="relative z-0 w-full mb-5 group text-gray-400">
             <label for="register-school" class="block mb-1 text-sm font-medium text-gray-400">

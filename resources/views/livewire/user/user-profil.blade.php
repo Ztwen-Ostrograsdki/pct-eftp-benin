@@ -475,8 +475,13 @@
         </div>
     </div>
     <div>
-        @livewire('user.profil-photo-zoomer', ['user' => $user])
-        @livewire('user.profil-photo-editor', ['user' => $user])
+        <div wire:key="profil-zoomer-{{$user->id}}">
+            @livewire('user.profil-photo-zoomer', ['user' => $user, 'key' => $user->id])
+        </div>
+
+        <div wire:key="profil-editor{{$user->id}}">
+            @livewire('user.profil-photo-editor', ['user' => $user, 'key' => $user->id])
+        </div>
     </div>
 </div>
 @endauth

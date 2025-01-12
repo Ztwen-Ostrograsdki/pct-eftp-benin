@@ -72,7 +72,7 @@
                 <form action="w-full">
                   <select  class="bg-transparent text-white py-3 w-full px-2" wire:model.live='sectionned' id="user_orders_section">
                     @foreach ($order_status as $key => $sec)
-                      <option class="bg-gray-700" value="{{$key}}">{{ $sec }}</option>
+                      <option wire:key="order-{{$sec}}-{{auth()->user()->id}}" class="bg-gray-700" value="{{$key}}">{{ $sec }}</option>
                     @endforeach
                   </select>
                 </form>
@@ -82,7 +82,9 @@
             @if(count($orders))
             
             @foreach ($orders as $key => $order)
-              @livewire('master.order-profil', ['order' => $order])
+              <div wire:key="order-profil-{{$order->id}}">
+                @livewire('master.order-profil', ['order' => $order])
+              </div>
             @endforeach
             @elseif($search)
               <div>

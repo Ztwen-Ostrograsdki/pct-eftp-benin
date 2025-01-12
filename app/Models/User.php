@@ -37,6 +37,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         'lastname',
         'firstname',
         'gender',
+        'job_department',
         'job_city',
         'school',
         'address',

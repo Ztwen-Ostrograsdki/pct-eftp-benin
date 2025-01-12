@@ -18,7 +18,7 @@
               <tbody>
                 
                 @forelse ($carts_items as $item)
-                <tr class="shadow my-2 hover:bg-slate-500" wire:key='{{ $item['book_id'] }}'>
+                <tr class="shadow my-2 hover:bg-slate-500" wire:key='cart-{{ $item['book_id'] }}'>
                   <td class="py-4">
                     <div class="flex items-center pl-3">
                       <a href="{{route('book.details', ['identifiant' => $item['identifiant'], 'slug' => $item['slug']])}}">

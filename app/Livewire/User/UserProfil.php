@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -77,6 +78,7 @@ class UserProfil extends Component
         }
 
     }
+
 
     #[On('confirmedTheUserIdentification')]
     public function onConfirmationTheUserIdentification($data)

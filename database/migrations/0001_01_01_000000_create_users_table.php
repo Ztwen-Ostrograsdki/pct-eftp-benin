@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('birth_city')->nullable()->default(null);
             $table->string('school')->nullable()->default(null);
             $table->string('job_city')->nullable()->default(null);
+            $table->string('job_department')->nullable()->default(null);
             $table->string('gender')->nullable()->default(null);
             $table->string('firstname')->nullable()->default(null);
             $table->string('lastname')->nullable()->default(null);

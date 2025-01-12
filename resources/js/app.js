@@ -17,6 +17,10 @@ import { Drawer } from 'flowbite';
 const myTooltip = new Tooltip(document.getElementById('my-tooltip'));
 
 
+document.addEventListener('livewire:navigated', () =>{
+  initFlowbite();
+});
+
 
 
 

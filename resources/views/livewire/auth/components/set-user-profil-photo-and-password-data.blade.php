@@ -28,7 +28,7 @@
               Traitement en cours...
             </h5>
         </div>
-      
+
         <div class=" bg-transparent w-full p-2 text-center py-6 my-2" wire:loading wire:target='profil_photo'>
           <b class=" text-yellow-700 text-center">
             Chargement photo en cours... Veuillez patientez!
@@ -37,6 +37,11 @@
         @if($profil_photo)
         <div class="flex justify-center rounded-full p-2 my-2" >
             <img wire:loaded wire:target='profil_photo' class="mt-1  h-40 w-40 border rounded-full" src="{{$profil_photo->temporaryUrl()}}" alt="">
+        </div>
+       
+        @elseif ($photo_path)
+        <div class="flex justify-center rounded-full p-2 my-2" >
+          <img class="mt-1  h-40 w-40 border rounded-full" src="{{url('storage', $photo_path)}}" alt="">
         </div>
         @else
             <div class="flex mx-auto items-center @if(!$email) hidden @endif rounded-full p-2 my-2 justify-center text-gray-400 bg-gray-900 h-20 w-20 border" >
@@ -47,6 +52,18 @@
         @endif
     </div>
     <!-- Form -->
+    @if (session()->has('emailData'))
+        <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow text-center mx-auto">
+            <span wire:loading.remove wire:target='clearEmailData' wire:click='clearEmailData' class="inline-block w-full border hover:bg-orange-600 bg-orange-700 text-gray-950 py-2 text-center rounded-full cursor-pointer">
+              Vider le cache enregistré
+            </span>
+
+            <span wire:loading wire:target='clearEmailData' class="inline-block w-full hover:bg-primary-600 bg-primary-700 border text-gray-950 py-2 text-center rounded-full cursor-pointer">
+              <span class="fas fa-rotate animate-spin mr-4"></span>
+              <span>Nettoyage en cours...</span>
+            </span>
+        </h4>
+      @endif
     <form wire:submit.prevent='validatePasswordAndProfil'>
             <div class="w-full mt-5">
                 <div class="relative z-0 w-full mb-5 group text-gray-400">

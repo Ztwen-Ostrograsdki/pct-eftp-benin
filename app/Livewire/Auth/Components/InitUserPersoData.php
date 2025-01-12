@@ -5,6 +5,8 @@ namespace App\Livewire\Auth\Components;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\SubscriptionManager;
 use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Livewire\Auth\Components\ValidateUserDataSubscription;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -85,6 +87,17 @@ class InitUserPersoData extends Component
 
         $this->validate();
 
+        $exists = User::where('firstname', $this->firstname)->where('lastname', $this->lastname)->first();
+
+        if($exists){
+
+            $this->addError('firstname', "Cet utilisateur existe déjà");
+            
+            $this->addError('lastname', "Cet utilisateur existe déjà");
+
+            return false;
+        }
+
         if($this->validatePhoneNumber() && $this->validateBirthDate($this->birth_date)){
 
             $data = [
@@ -103,9 +116,12 @@ class InitUserPersoData extends Component
 
             ];
 
-            SubscriptionManager::putPersoDataIntoSession($data); 
+            SubscriptionManager::putPersoDataIntoSession($data);
+            
+            session()->put('perso_data_is_ok', true);
 
             $this->dispatch("UpdateSectionInsertion", 'graduate');
+            
         }
         else{
             return $this->toast("FORMULAIRE INAVALIDE", "Le formulaire est invalide!");

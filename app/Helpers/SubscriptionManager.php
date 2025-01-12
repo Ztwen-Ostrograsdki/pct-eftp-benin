@@ -2,44 +2,45 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 
 class SubscriptionManager
 {
-	public static function setPersonnalData($data)
+	public static function putPersoDataIntoSession($data)
 	{
-		Cookie::queue('personnalData', json_encode($data), 60 * 24 * 7);
+		Session::put('persoData', json_encode($data));
+
 	}
 
-	public static function getPersonnalData()
+	public static function getPersoData() : ?array
 	{
-		$data = json_decode(Cookie::get('personnalData'), true);
-	}
-
-
-	public static function setGraduateData($data)
-	{
-		Cookie::queue('graduateData', json_encode($data), 60 * 24 * 7);
-	}
-
-	public static function getGraduateData()
-	{
-		$data = json_decode(Cookie::get('graduateData'), true);
-	}
-
-	public static function setProfessionnalData($data)
-	{
-		Cookie::queue('professionnalData', json_encode($data), 60 * 24 * 7);
+		return (array)json_decode(session('persoData'));
 	}
 
 
-	public static function getProfessionnalData()
+	public static function putGraduateDataIntoSession($data)
 	{
-		$data = json_decode(Cookie::get('professionnalData'), true);
+		Session::put('graduateData', json_encode($data));
+	}
+
+	public static function getGraduateData() : ? array
+	{
+		return (array)json_decode(session('graduateData'));
+	}
+
+	public static function putProfessionnalDataIntoSession($data)
+	{
+		Session::queue('professionnalData', json_encode($data));
 	}
 
 
-	public static function clearUserDataFromCookie()
+	public static function getProfessionnalData() : ?array
+	{
+		return (array)json_decode(session('professionnalData'));
+	}
+
+
+	public static function clearUserDataFromSession()
 	{
 		self::clearEachData();
 
@@ -48,18 +49,16 @@ class SubscriptionManager
 
 	public static function clearEachData()
 	{
-		Cookie::queue(Cookie::forget('personnalData'));
+		Session::forget('persoData');
 
-		Cookie::queue(Cookie::forget('graduateData'));
+		Session::forget('graduateData');
 
-		Cookie::queue(Cookie::forget('professionnalData'));
+		Session::forget('professionnalData');
 	}
 
-	public static function clearDataFromCache($target = null)
+	public static function clearDataFromSession($target = null)
 	{
-
-		Cookie::queue(Cookie::forget($target));
-
+		Session::forget($target);
 	}
 
 	

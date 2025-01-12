@@ -36,7 +36,30 @@
 
   </div>
 
-  <div class="mt-4">
+  <div class="my-4">
+
+    
+    @if($errors->any())
+
+      <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
+            <span>
+              Le formulaire est incorrect
+            </span>
+      </h4>
+    @endif
+
+    @if (session()->has('persoData'))
+      <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow text-center mx-auto">
+          <span wire:loading.remove wire:target='clearPersoData' wire:click='clearPersoData' class="inline-block w-full border hover:bg-orange-600 bg-orange-700 text-gray-950 py-2 text-center rounded-full cursor-pointer">
+            Vider le cache enregistré
+          </span>
+
+          <span wire:loading wire:target='clearPersoData' class="inline-block w-full hover:bg-primary-600 bg-primary-700 border text-gray-950 py-2 text-center rounded-full cursor-pointer">
+            <span class="fas fa-rotate animate-spin mr-4"></span>
+            <span>Nettoyage en cours...</span>
+          </span>
+      </h4>
+    @endif
     <form class="mx-auto mt-4 shadow-2 p-3" autocomplete="false">
       <div class="relative z-0 w-full mb-5 group text-gray-400">
         <label for="register-firstname" class="block mb-1 text-sm font-medium text-gray-400">Votre Nom</label>
@@ -44,7 +67,7 @@
             <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                 <span class="fas fa-user"></span>
             </div>
-            <input wire:model='firstname' type="text" id="register-firstname" aria-describedby="helper-text-register-firstname" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Votre Nom complets" required />
+            <input wire:model='firstname' type="text" id="register-firstname" aria-describedby="helper-text-register-firstname" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Votre nom" required />
         </div>
         @error('firstname')
         <p id="helper-text-register-firstname" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
@@ -66,6 +89,38 @@
           {{ $message }}
         </p>
         @enderror
+      </div>
+
+      <div class="mb-5 grid md:grid-cols-2 gap-3">
+        <div class="relative z-0 w-full mb-5 group text-gray-400">
+          <label for="register-birth_date" class="block mb-1 text-sm font-medium text-gray-400">Date de naissance</label>
+          <div class="relative">
+              <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                  <span class="fas fa-calendar-days"></span>
+              </div>
+              <input wire:model='birth_date' type="date" id="register-birth_date" aria-describedby="helper-text-register-birth_date" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Votre date de naissance" required />
+          </div>
+          @error('birth_date')
+          <p id="helper-text-register-birth_date" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
+            {{ $message }}
+          </p>
+          @enderror
+        </div>
+          
+        <div class="relative z-0 w-full mb-5 group text-gray-400">
+          <label for="register-birth_city" class="block mb-1 text-sm font-medium text-gray-400">Lieu de naissance</label>
+          <div class="relative">
+              <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                  <span class="fas fa-city"></span>
+              </div>
+              <input wire:model='birth_city' type="text" id="register-birth_city" aria-describedby="helper-text-register-birth_city" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Lieu de naissance" required />
+          </div>
+          @error('birth_city')
+          <p id="helper-text-register-birth_city" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
+            {{ $message }}
+          </p>
+          @enderror
+        </div>
       </div>
       
       <div class="w-full mx-auto border rounded-lg border-gray-500 px-2 mb-5">
@@ -125,7 +180,7 @@
         <div class="relative z-0 w-full mb-5 text-gray-400 group ">
           <label for="register-marital_status" class="block mb-1 text-sm font-medium text-gray-400">Situation matrimoniale</label>
           <select aria-describedby="helper-text-register-marital_status" wire:model='marital_status' id="register-marital_status" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option class="z-bg-secondary-light-opac" value="{{null}}">Préciser votre genre </option>
+            <option class="z-bg-secondary-light-opac" value="{{null}}">Préciser votre situation </option>
             @foreach ($marital_statuses as $mk => $m)
               <option class="z-bg-secondary-light-opac" value="{{$mk}}">{{$m}}</option>
             @endforeach
@@ -141,16 +196,20 @@
 
       <div class="grid md:gap-6">
         <div class="relative z-0 w-full mb-5 group text-gray-400">
-          <label for="register-contacts" class="block mb-1 text-sm font-medium text-gray-400">Votre contacts</label>
+          <label for="register-contacts" class="block mb-1 text-sm font-medium text-gray-400">
+            Vos contacts
+            <small class="text-yellow-500 text-xs letter-spacing-2 float-right ml-3">Séparez vos contacts par un tiret - </small>
+
+          </label>
           <div class="relative">
               <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                   <span class="fas fa-phone"></span>
               </div>
-              <input wire:model.live='contacts' type="text" id="register-contacts" aria-describedby="helper-text-register-contacts" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="01 97 00 00 00" required />
+              <input wire:model='contacts' type="text" id="register-contacts" aria-describedby="helper-text-register-contacts" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Vos contacts" required />
           </div>
           @error('contacts')
           <p id="helper-text-register-contacts" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
-            {{ "Votre contact doir respecter le format en république du BENIN" }}
+             {{ $message }}
           </p>
           @enderror
           

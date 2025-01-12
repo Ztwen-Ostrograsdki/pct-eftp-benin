@@ -21,27 +21,27 @@ return [
     ],
 
     'teachers_statuses' => [
-        'acdpe' => 'ACDPE', 
-        'ace' => 'ACE', 
-        'ape' => 'APE', 
-        'ame' => 'AME'
+        'ACDPE' => 'ACDPE', 
+        'ACE' => 'ACE', 
+        'APE' => 'APE', 
+        'AME' => 'AME'
     ],
 
     'teachers_graduates' => [
-        'bts' => 'BTS', 
-        'dues-1' => 'DUES-1', 
-        'dues-2' => 'DUES-2', 
-        'licence' => 'Licence', 
-        'maitrise' => 'Maitrise', 
-        'master' => 'Master', 
-        'doctorat' => 'Doctorat', 
-        'autre' => 'Autre', 
+        'BTS' => 'BTS', 
+        'DUES-1' => 'DUES-1', 
+        'DUES-2' => 'DUES-2', 
+        'LICENCE' => 'LICENCE', 
+        'MAITRISE' => 'MAITRISE', 
+        'MASTER' => 'MASTER', 
+        'DOCTORAT' => 'DOCTORAT', 
+        'AUTRE' => 'AUTRE', 
     ],
 
     'teachers_graduate_type' => [
-        'académique' => 'Académique', 
-        'professionnel' => 'Professionnel', 
-        'autre' => 'Autre', 
+        'Académique' => 'Académique', 
+        'Professionnel' => 'Professionnel', 
+        'Autre' => 'Autre', 
     ],
     
     'notifications_sections' => [

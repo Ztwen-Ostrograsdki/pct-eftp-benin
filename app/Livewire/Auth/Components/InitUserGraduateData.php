@@ -3,6 +3,8 @@
 namespace App\Livewire\Auth\Components;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Helpers\SubscriptionManager;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class InitUserGraduateData extends Component
@@ -24,10 +26,17 @@ class InitUserGraduateData extends Component
         'grade' => 'string|required',
         'status' => 'string|required',
     ];
+
+    public function mount()
+    {
+        self::initializator();
+    }
     
     public function render()
     {
         $years = [];
+
+        self::initializator();
 
         $current_year = (int)date('Y');
 
@@ -36,7 +45,9 @@ class InitUserGraduateData extends Component
         }
 
         $teachers_statuses = config('app.teachers_statuses');
+
         $teachers_graduates = config('app.teachers_graduates');
+
         $teachers_graduate_types = config('app.teachers_graduate_type');
         
 
@@ -50,8 +61,44 @@ class InitUserGraduateData extends Component
         );
     }
 
+    public function cleargraduateData()
+    {
+        SubscriptionManager::clearDataFromSession('graduateData');
+
+        $this->reset();
+    }
+
+    public function initializator()
+    {
+        $data = SubscriptionManager::getGraduateData();
+
+        if($data){
+
+            $this->graduate = isset($data['graduate']) ? $data['graduate'] : null;
+            $this->graduate_deliver = isset($data['graduate_deliver']) ? $data['graduate_deliver'] : null;
+            $this->graduate_year = isset($data['graduate_year']) ? $data['graduate_year'] : null;
+            $this->graduate_type = isset($data['graduate_type']) ? $data['graduate_type'] : null;
+            $this->grade = isset($data['grade']) ? $data['grade'] : null;
+            $this->status = isset($data['status']) ? $data['status'] : null;
+
+        }
+    }
+
     public function initGraduateDataInsertion()
     {
+        $this->validate();
+
+        $data = [
+            'grade' => Str::upper($this->grade),
+            'status' => Str::upper($this->status),
+            'graduate' => Str::upper($this->graduate),
+            'graduate_deliver' => Str::ucwords($this->graduate_deliver),
+            'graduate_year' => $this->graduate_year,
+            'graduate_type' => Str::ucfirst($this->graduate_type),
+        ];
+
+        SubscriptionManager::putGraduateDataIntoSession($data); 
+
         $this->dispatch("UpdateSectionInsertion", 'professionnal');
     }
 

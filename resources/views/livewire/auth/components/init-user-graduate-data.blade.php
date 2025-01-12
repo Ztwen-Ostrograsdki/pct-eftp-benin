@@ -10,7 +10,7 @@
         </span>
           <span wire:loading.remove wire:target='initGraduateDataInsertion' class="inline-block w-full py-2 border-y">
             <span class="text-green-600 font-semibold letter-spacing-1 border-b border-green-500 mb-2 inline-block">
-              Insertion des donnée liées au diplôme
+              Insertion des données liées au diplôme
             </span>
 
           </span>
@@ -30,11 +30,31 @@
       </div>
     </div>
   
-    <div class="my-7">
-  
-    </div>
+    <div class="my-7"></div>
+
   
     <div class="mt-4">
+      @if($errors->any())
+
+          <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
+                <span>
+                  Le formulaire est incorrect
+                </span>
+          </h4>
+        @endif
+
+        @if (session()->has('graduateData'))
+          <h4 class="w-full letter-spacing-2 p-2 text-base lg:text-base md:text-base sm:text-xs xs:text-xs mb-4 shadow text-center mx-auto">
+              <span wire:loading.remove wire:target='cleargraduateData' wire:click='cleargraduateData' class="inline-block w-full border hover:bg-orange-600 bg-orange-700 text-gray-950 py-2 text-center rounded-full cursor-pointer">
+                Vider le cache enregistré
+              </span>
+
+              <span wire:loading wire:target='cleargraduateData' class="inline-block w-full hover:bg-primary-600 bg-primary-700 border text-gray-950 py-2 text-center rounded-full cursor-pointer">
+                <span class="fas fa-rotate animate-spin mr-4"></span>
+                <span>Nettoyage en cours...</span>
+              </span>
+          </h4>
+        @endif
       <form class="mx-auto mt-4 shadow-2 p-3" autocomplete="false">
         
         <div class="relative z-0 w-full mb-5 group text-gray-400">
@@ -68,7 +88,7 @@
           </div>
           <div class="relative z-0 w-full mb-5 text-gray-400 group ">
             <label for="register-graduate" class="block mb-1 text-sm font-medium text-gray-400">Votre diplôme</label>
-            <select aria-describedby="helper-text-register-graduate" wire:model.live='graduate' id="register-graduate" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select aria-describedby="helper-text-register-graduate" wire:model='graduate' id="register-graduate" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option class="z-bg-secondary-light-opac" value="{{null}}">Votre diplôme</option>
               @foreach ($teachers_graduates as $grk => $gr)
                 <option class="z-bg-secondary-light-opac" value="{{$gr}}">{{$gr}}</option>
@@ -124,7 +144,7 @@
                 <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                     <span class="fas fa-school"></span>
                 </div>
-                <input wire:model.live='graduate_deliver' type="text" id="register-graduate_deliver" aria-describedby="helper-text-register-graduate_deliver" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Renseignez l'instance ayant délivrée le diplôme" required />
+                <input wire:model='graduate_deliver' type="text" id="register-graduate_deliver" aria-describedby="helper-text-register-graduate_deliver" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Renseignez l'instance ayant délivrée le diplôme" required />
             </div>
             @error('graduate_deliver')
             <p id="helper-text-register-graduate_deliver" class="mt-2 text-xs text-red-500 letter-spacing-2 ">

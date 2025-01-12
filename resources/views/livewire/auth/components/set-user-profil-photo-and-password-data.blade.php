@@ -7,7 +7,7 @@
                 <span>4/4</span>
               </span>
               <span class="inline-block w-full py-2 border-y">
-                <span class="text-green-700 font-semibold letter-spacing-1 border-b border-green-700 mb-2 inline-block">
+                <span class="text-green-400 font-semibold letter-spacing-1 border-b border-green-700 mb-2 inline-block">
                   Validation addresse mail et photo de profil
                 </span>
                 <span class="text-yellow-400 letter-spacing-2 text-xs block">

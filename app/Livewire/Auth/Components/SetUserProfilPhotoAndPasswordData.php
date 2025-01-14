@@ -32,8 +32,7 @@ class SetUserProfilPhotoAndPasswordData extends Component
 
     protected $rules = [
         'email' => 'required|email|unique:users|min:3|max:255',
-        'password' => 'string|required|min:8|confirmed:password',
-        'password_confirmation' => 'string|required',
+        'password' => 'string|required|min:4|confirmed',
         'profil_photo' => 'required|image|mimes:jpeg,png,jpg|max:4000',
     ];
 
@@ -49,6 +48,9 @@ class SetUserProfilPhotoAndPasswordData extends Component
 
     public function validatePasswordAndProfil()
     {
+        session()->forget('email_data_is_ok');
+
+        $this->resetErrorBag();
         
         if(!$this->profil_photo){
 
@@ -56,8 +58,7 @@ class SetUserProfilPhotoAndPasswordData extends Component
 
                 $this->validate([
                     'email' => 'required|email|unique:users|min:3|max:255',
-                    'password' => 'string|required|min:8|confirmed:password',
-                    'password_confirmation' => 'string|required',
+                    'password' => 'string|required|min:4|confirmed',
                 ]);
 
                 $data = [
@@ -175,6 +176,28 @@ class SetUserProfilPhotoAndPasswordData extends Component
     public function updatedEmail($email)
     {
         $this->validateOnly('email');
+    }
+
+    public function updatedProfilPhoto($profil_photo)
+    {
+        $this->validateOnly('profil_photo');
+    }
+
+    public function updatedPassword($password)
+    {
+        $this->validateOnly('password');
+    }
+
+    public function updatedPasswordConfirmation($password_confirmation)
+    {
+        $this->validateOnly('password');
+
+        if($password_confirmation === $this->password){
+
+            $this->resetErrorBag('password');
+
+        }
+        
     }
 
     public function initializator()

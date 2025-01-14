@@ -136,6 +136,10 @@ class InitUserProfessionnalData extends Component
 
     public function initProfessionnalDataInsertion()
     {
+        session()->forget('professionnal_data_is_ok');
+
+        $this->resetErrorBag();
+
         $this->validate();
 
         $data = [

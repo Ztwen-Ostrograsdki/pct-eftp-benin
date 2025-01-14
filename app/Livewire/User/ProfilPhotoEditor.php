@@ -56,6 +56,8 @@ class ProfilPhotoEditor extends Component
                     $this->counter = rand(2, 100);
 
                     $this->dispatch("UserProfilUpdated");
+
+                    self::hideModal();
                     
                 }
                 else{
@@ -69,5 +71,11 @@ class ProfilPhotoEditor extends Component
                 $this->toast("Une erreure est survenue, veuillez réessayer", 'error', 5000);
             }
         }
+    }
+
+
+    public function hideModal($modal_name = null)
+    {
+        $this->dispatch('HideModalEvent', '#user-profil-photo-edition');
     }
 }

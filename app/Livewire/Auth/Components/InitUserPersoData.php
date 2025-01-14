@@ -83,6 +83,10 @@ class InitUserPersoData extends Component
 
     public function initPersonnalDataInsertion()
     {
+        session()->forget('perso_data_is_ok');
+
+        $this->resetErrorBag();
+
         self::setUserAddress();
 
         $this->validate();

@@ -5,6 +5,7 @@ namespace App\Livewire\Auth\Components;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\SubscriptionManager;
 use App\Helpers\Tools\ModelsRobots;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -185,77 +186,72 @@ class ValidateUserDataSubscription extends Component
 
         $this->pseudo = '@' . Str::substr($this->firstname, 0, 3) . '.' . Str::substr($this->lastname, 0, 3) . '' . rand(20, 99);
         
-        $data = [
-            'matricule' => $this->matricule,
-            'job_city' => $this->job_city,
-            'job_department' => $this->job_department,
-            'grade' => $this->grade,
-            'school' => $this->school,
-            'status' => $this->status,
-            'teaching_since' => $this->teaching_since,
-            'general_school' => $this->general_school,
-            'from_general_school' => $this->from_general_school,
-            'years_experiences' => $this->years_experiences,
-            'graduate' => $this->graduate,
-            'graduate_deliver' => $this->graduate_deliver,
-            'graduate_type' => $this->graduate_type,
-            'graduate_year' => $this->graduate_year,
-            'contacts' => $this->contacts,
-            'address' => Str::ucwords($this->address),
-            'gender' => Str::ucwords($this->gender),
-            'status' => Str::upper($this->status),
-            'marital_status' => Str::ucwords($this->marital_status),
-            'birth_date' => $this->birth_date,
-            'birth_city' => Str::ucfirst($this->birth_city),
-            'pseudo' => Str::ucwords($this->pseudo),
-            'password' => Hash::make($this->password),
-            'firstname' => Str::upper($this->firstname),
-            'lastname' => Str::ucwords($this->lastname),
-            'identifiant' => $identifiant,
-            'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
-            'email' => $this->email,
-            'profil_photo' => $this->photo_path,
-        ];
+        $all_data_is_ok = (session()->has('perso_data_is_ok') && session()->has('graduate_data_is_ok') && session()->has('professionnal_data_is_ok') && session()->has('email_data_is_ok'));
+        
 
-        dd($data);
+        if($all_data_is_ok){
 
-        $user = false;
+            $data = [
+                'matricule' => $this->matricule,
+                'job_city' => $this->job_city,
+                'job_department' => $this->job_department,
+                'grade' => $this->grade,
+                'school' => $this->school,
+                'status' => $this->status,
+                'teaching_since' => $this->teaching_since,
+                'general_school' => $this->general_school,
+                'from_general_school' => $this->from_general_school,
+                'years_experiences' => $this->years_experiences,
+                'graduate' => $this->graduate,
+                'graduate_deliver' => $this->graduate_deliver,
+                'graduate_type' => $this->graduate_type,
+                'graduate_year' => $this->graduate_year,
+                'contacts' => $this->contacts,
+                'address' => Str::ucwords($this->address),
+                'gender' => Str::ucwords($this->gender),
+                'status' => Str::upper($this->status),
+                'marital_status' => Str::ucwords($this->marital_status),
+                'birth_date' => $this->birth_date,
+                'birth_city' => Str::ucfirst($this->birth_city),
+                'pseudo' => Str::ucwords($this->pseudo),
+                'password' => Hash::make($this->password),
+                'firstname' => Str::upper($this->firstname),
+                'lastname' => Str::ucwords($this->lastname),
+                'identifiant' => $identifiant,
+                'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
+                'email' => $this->email,
+                'profil_photo' => $this->photo_path,
+            ];
 
-        if($user){
+            if($data){
 
-            $auth = $user->sendVerificationLinkOrKeyToUser();
+                $user = User::create($data);
 
-            if($auth){
+                if($user){
 
-                $message = "Incription lancée avec succès! Un courriel vous a été envoyé pour confirmation, veuillez vérifier votre boite mail.";
+                    $auth = $user->sendVerificationLinkOrKeyToUser();
+        
+                    $message = "Incription lancée avec succès! Un courriel vous a été envoyé pour confirmation, veuillez vérifier votre boite mail.";
+        
+                    $this->toast($message, 'success', 5000);
+    
+                    session()->flash('success', $message);
 
-                $this->toast($message, 'info', 5000);
-
-                session()->flash('success', $message);
-
-                return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
-                
-            }
-            else{
-
-                $user->delete();
-
-                if($this->profil_photo){
-                
-                    //DELETE PHOTO FROM STORAGE
+                    SubscriptionManager::clearEachData();
+    
+                    return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
+                    
                 }
-
-
+                else{
+        
+                    $message = "L'incription a échoué! Veuillez réessayer!";
+        
+                    session()->flash('error', $message);
+        
+                    $this->toast($message, 'error', 7000);
+        
+                }
             }
-            
-        }
-        else{
-
-            $message = "L'incription a échoué! Veuillez réessayer!";
-
-            session()->flash('error', $message);
-
-            $this->toast($message, 'error', 7000);
 
         }
     }

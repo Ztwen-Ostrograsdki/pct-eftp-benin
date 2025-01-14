@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('graduate')->nullable()->default(null);
             $table->string('marital_status')->nullable()->default(null);
             $table->string('address')->nullable()->default(null);
-            $table->date('teaching_since')->nullable()->default(null);
+            $table->string('teaching_since')->nullable()->default(null);
             $table->date('birth_date')->nullable()->default(null);
             $table->string('birth_city')->nullable()->default(null);
             $table->string('school')->nullable()->default(null);

@@ -1,23 +1,56 @@
 <div class="w-full mx-auto">
     <div class="flex h-full items-center">
         <div class="w-full">
+            <div wire:loading wire:target='register' class="mx-auto w-full mt-3 flex justify-center" >
+                <a href="#" class="py-3 w-full px-4 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-xl border inline-block focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 bg-orange-600 hover:bg-orange-600 text-gray-950 text-center hover:text-white">
+                    <span class="fas fa-rotate animate-spin mr-3"></span>
+                    Validation en cours...
+                </a>
+            </div>
             <div class="w-full py-2 mt-3">
                 <div class="w-full  my-2 bg-transparent border border-gray-200 rounded-lg shadow dark:border-gray-700">
                     <h4 class="text-sm letter-spacing-2 w-full text-gray-200 p-3">
                         Les informations renseignées sur vous
                     </h4>
                 </div>
-                
-                <div class="w-full mx-auto bg-transparent border border-gray-200 rounded-lg shadow dark:border-gray-700">
-                    
+
+                @if(session()->has('success'))
+                <div class="w-full my-2 bg-transparent  mx-auto">
+                    <h4 class="text-sm letter-spacing-2 w-full text-gray-100 bg-green-600 rounded-lg text-center p-3 shadow-2 shadow-green-500">
+                        {{ session('success') }}
+                    </h4>
+                </div>
+                @endif
+
+                <div wire:loading.class='opacity-25' wire:target='register' class="w-full mx-auto bg-transparent border border-gray-200 rounded-lg shadow dark:border-gray-700">
+
                     <div class="flex flex-col items-center pb-10 px-2">
+                        @if($photo_path)
                         <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{url('storage', $photo_path)}}" alt="Photo de profil de {{ $firstname . ' ' . $lastname}}"/>
+                        @else
+                            <div class="flex mx-auto items-center rounded-full p-2 my-2 justify-center text-gray-400 bg-gray-900 h-20 w-20 border" >
+                                <b  class="text-xs text-center">
+                                    Votre photo de profil
+                                </b>
+                            </div>
+                        @endif
                         <h5 class="mb-1 text-xl border-b font-medium text-gray-900 dark:text-white">
-                            {{ $firstname . ' ' . $lastname}}
+                            @if($firstname && $lastname)
+                                    {{ $firstname . ' ' . $lastname}}
+                            @else
+                                <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                            @endif
+                            
                         </h5>
                         <span class="text-sm text-yellow-500 letter-spacing-2 dark:text-yellow-400">
                             <span class="fas fa-envelope"></span>
-                            <span>{{ $email }}</span>
+                            <span>
+                                @if($email)
+                                    {{ $email }}
+                                @else
+                                    <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                @endif
+                            </span>
                         </span>
                         <span class="text-sm text-yellow-800 letter-spacing-2 dark:text-yellow-400">
                             <span class="fas fa-phone"></span>
@@ -55,7 +88,13 @@
                                                     </span>
                                                 </td>
                                                 <td class="py-1">
-                                                    <span>{{ $email}}</span>
+                                                    <span>
+                                                        @if($email)
+                                                            {{ $email }}
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                 
@@ -68,7 +107,13 @@
                                                     </span>
                                                 </td>
                                                 <td class="py-1">
-                                                    <span class=""> {{ $gender }} </span>
+                                                    <span>
+                                                        @if($gender)
+                                                            {{ $gender }}
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                 
@@ -80,7 +125,18 @@
                                                     </span>
                                                 </td>
                                                 <td class="py-1">
-                                                    <span class="">{{ $birth_date }}</span> @if($birth_date && $birth_city) <small class="text-yellow-200 float-right mr-2 mt-1 italic"> <b> à {{ $birth_city }}</b> </small> @endif
+                                                    <span>
+                                                        @if($birth_date)
+                                                            {{ $birth_date }}
+                                                            @if($birth_city) 
+                                                            <small class="text-yellow-200 float-right mr-2 mt-1 italic"> 
+                                                                <b> à {{ $birth_city }}</b> 
+                                                            </small> 
+                                                            @endif
+                                                        @else
+                                                            <small class="text-gray-500 letter-spacing-2">Non renseigné</small>
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                 
@@ -418,12 +474,28 @@
                 </div>
             </div>
             @if(session()->has('perso_data_is_ok') && session()->has('graduate_data_is_ok') && session()->has('professionnal_data_is_ok') && session()->has('email_data_is_ok'))
-            <div class="mx-auto w-full mt-3 flex justify-center" wire:click="register" >
+            <div wire:loading.remove wire:target='register' class="mx-auto w-full mt-3 flex justify-center" wire:click="register" >
                 <a href="#" class="py-3 w-full px-4 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-xl border  focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 bg-blue-800 hover:bg-blue-600 text-gray-200 text-center hover:text-white">
                     <span class="fas fa-user-check mr-2"></span>
                     Valider mon inscription
                     <span>
                     <span class=" fas fa-chevron-down ml-3"></span>
+                    </span>
+                </a>
+            </div>
+
+            <div wire:loading wire:target='register' class="mx-auto w-full mt-3 flex justify-center" >
+                <a href="#" class="py-3 w-full px-4 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-xl border  focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 bg-green-800 hover:bg-green-600 text-gray-200 text-center hover:text-white">
+                    <span class="fas fa-rotate animate-spin mr-3"></span>
+                    Validation en cours...
+                </a>
+            </div>
+            @else
+            <div class="mx-auto w-full mt-3 flex justify-center">
+                <a href="#" class="py-3 cursor-default w-full px-4 xl:text-sm lg:text-sm md:text-sm sm:text-xs xs:text-xs font-medium focus:outline-none rounded-xl border  focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 bg-orange-800 text-gray-200 text-center hover:text-white">
+                    <span class="fas fa-exclamation mr-2"></span>
+                    Renseigner toutes les informations avant de valider
+                    <span>
                     </span>
                 </a>
             </div>

@@ -158,7 +158,7 @@
             <a href="#" wire:click='goToThePersoForm' wire:loading.class='opacity-50' wire:target='goToThePersoForm' class=" cursor-pointer py-3 px-4 col-span-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <span wire:loading.remove wire:target='goToThePersoForm'>
                     <span class="fas fa-hand-point-left"></span>
-                    <span>En arrière</span>
+                    <span>Etape précédente</span>
                 </span>
                 <span wire:loading wire:target='goToThePersoForm'>
                   <span class="fa animate-spin fa-rotate"></span>
@@ -168,7 +168,7 @@
 
             <a href="#" wire:click='initGraduateDataInsertion' wire:loading.class='opacity-50' wire:target='initGraduateDataInsertion' class=" cursor-pointer py-3 px-4 col-span-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <span wire:loading.remove wire:target='initGraduateDataInsertion'>
-                  <span>Suivant</span>
+                  <span>Etape suivante</span>
                   <span class="fas fa-hand-point-right"></span>
         
                 </span>

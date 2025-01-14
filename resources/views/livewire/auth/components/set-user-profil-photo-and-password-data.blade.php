@@ -10,9 +10,9 @@
                 <span class="text-green-400 font-semibold letter-spacing-1 border-b border-green-700 mb-2 inline-block">
                   Validation addresse mail et photo de profil
                 </span>
-                <span class="text-yellow-400 letter-spacing-2 text-xs block">
+                <label for="register-profil_photo" class="text-yellow-400 letter-spacing-2 text-xs block cursor-pointer">
                   Veuillez choisir une photo récente de vous
-                </span>
+                </label>
               </span>
             </h5>
             <p class="mt-2 text-sm block text-gray-600 dark:text-gray-400">
@@ -41,13 +41,15 @@
        
         @elseif ($photo_path)
         <div class="flex justify-center rounded-full p-2 my-2" >
-          <img class="mt-1  h-40 w-40 border rounded-full" src="{{url('storage', $photo_path)}}" alt="">
+          <img for="register-profil_photo" class="mt-1  h-40 w-40 border rounded-full" src="{{url('storage', $photo_path)}}" alt="">
         </div>
         @else
             <div class="flex mx-auto items-center @if(!$email) hidden @endif rounded-full p-2 my-2 justify-center text-gray-400 bg-gray-900 h-20 w-20 border" >
-            <b wire:loaded.remove wire:target='profil_photo' class="text-6xl   uppercase mb-2">
-                {{ Str::upper(Str::substr($email, 0, 1)) }}
-            </b>
+            <label class="cursor-pointer mb-2" for="register-profil_photo" wire:loaded.remove wire:target='profil_photo'>
+                <span  class="text-6xl font-bold  uppercase">
+                    {{ Str::upper(Str::substr($email, 0, 1)) }}
+                </span>
+            </label>
             </div>
         @endif
     </div>
@@ -86,7 +88,7 @@
                         <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                             <span class="fas fa-key"></span>
                         </div>
-                        <input wire:model='password' type="password" id="register-password" aria-describedby="helper-text-register-password" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Choisissez un mot de passe confidentiel" required />
+                        <input wire:model.live='password' type="password" id="register-password" aria-describedby="helper-text-register-password" class="bg-transparent border  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 @if ($password && $password_confirmation &&  $password == $password_confirmation) border-green-600 shadow-2 shadow-green-600 @else shadow-none border-gray-600 @endif" placeholder="Choisissez un mot de passe confidentiel" required />
                     </div>
                     @error('password')
                     <p id="helper-text-register-password" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
@@ -107,7 +109,7 @@
                         <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                             <span class="fas fa-key"></span>
                         </div>
-                        <input wire:model='password_confirmation' type="password" id="register-password_confirmation" aria-describedby="helper-text-register-password_confirmation" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Confirmez le mot de passe" required />
+                        <input wire:model.live='password_confirmation' type="password" id="register-password_confirmation" aria-describedby="helper-text-register-password_confirmation" class="bg-transparent borde  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 @if ($password && $password_confirmation &&  $password == $password_confirmation) border-green-600 shadow-2 shadow-green-600 @else shadow-none border-gray-600 @endif" placeholder="Confirmez le mot de passe" required />
                     </div>
                     @error('password_confirmation')
                     <p id="helper-text-register-password_confirmation" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
@@ -119,12 +121,12 @@
 
             <div class="w-full mb-5">
                 <div class="flex justify-between items-center">
-                    <label for="profil_photo" class="block text-sm mb-2 cursor-pointer text-gray-400">Photo de profil 
+                    <label for="register-profil_photo" class="block text-sm mb-2 cursor-pointer text-gray-400">Photo de profil 
                         <span class="text-orange-500 float-right ml-4">(Obligatoire)</span>
                     </label>
                 </div>
                 <div class="relative">
-                    <input placeholder="Choisissez une photo de profil" wire:model='profil_photo' type="file" id="profil_photo" name="profil_photo" class="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-transparent dark:border-gray-700 text-gray-400 dark:focus:ring-gray-600" required aria-describedby="profil_photo-error">
+                    <input placeholder="Choisissez une photo de profil" wire:model.live='profil_photo' type="file" id="register-profil_photo" name="profil_photo" class="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-transparent dark:border-gray-700 text-gray-400 dark:focus:ring-gray-600" required aria-describedby="profil_photo-error">
                     @error('profil_photo')
                         <div class="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
                         <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
@@ -141,7 +143,7 @@
                 <a href="#" wire:click='goToTheProfessionnalForm' wire:loading.class='opacity-50' wire:target='goToTheProfessionnalForm' class=" cursor-pointer py-3 px-4 col-span-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                     <span wire:loading.remove wire:target='goToTheProfessionnalForm'>
                         <span class="fas fa-hand-point-left"></span>
-                        <span>En arrière</span>
+                        <span>Etape précédente</span>
                     </span>
                     <span wire:loading wire:target='goToTheProfessionnalForm'>
                       <span class="fa animate-spin fa-rotate"></span>
@@ -151,7 +153,7 @@
     
                 <a href="#" wire:click='validatePasswordAndProfil' wire:loading.class='opacity-50' wire:target='validatePasswordAndProfil' class=" cursor-pointer py-3 px-4 col-span-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                     <span wire:loading.remove wire:target='validatePasswordAndProfil'>
-                      <span>Suivant</span>
+                      <span>Etape suivante</span>
                       <span class="fas fa-hand-point-right"></span>
             
                     </span>

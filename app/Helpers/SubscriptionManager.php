@@ -68,6 +68,14 @@ class SubscriptionManager
 		Session::forget('professionnalData');
 
 		Session::forget('emailData');
+
+		Session::forget('perso_data_is_ok');
+
+		Session::forget('graduate_data_is_ok');
+
+		Session::forget('professionnal_data_is_ok');
+		
+		Session::forget('email_data_is_ok');
 	}
 
 	public static function clearDataFromSession($target = null)

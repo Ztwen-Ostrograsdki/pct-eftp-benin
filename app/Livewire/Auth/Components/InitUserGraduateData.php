@@ -86,6 +86,10 @@ class InitUserGraduateData extends Component
 
     public function initGraduateDataInsertion()
     {
+        session()->forget('graduate_data_is_ok');
+
+        $this->resetErrorBag();
+
         $this->validate();
 
         $data = [

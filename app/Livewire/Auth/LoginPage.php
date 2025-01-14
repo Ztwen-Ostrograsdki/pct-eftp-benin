@@ -81,7 +81,7 @@ class LoginPage extends Component
 
             if(!$user->confirmed_by_admin){
 
-                $message = "Votre identification en tant que utilisateur de cette plateforme n'a pas encore été confirmée par les administrateurs!";
+                $message = "Votre identification en tant que utilisateur de cette plateforme n'a pas encore été confirmée par les administrateurs! Cependant, un courriel a été envoyé aux administrateurs afin de prendre en compte le plus vite possible la confirmation de votre compte";
 
                 $this->toast($message, 'warning', 5000);
 

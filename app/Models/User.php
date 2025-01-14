@@ -10,16 +10,13 @@ use App\Models\ENotification;
 use App\Models\Member;
 use App\Models\Order;
 use App\Observers\ObserveUser;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasName;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[ObservedBy(ObserveUser::class)]
-class User extends Authenticatable implements FilamentUser, HasName
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, UserTrait, DateFormattor;
@@ -118,10 +115,6 @@ class User extends Authenticatable implements FilamentUser, HasName
         return $this->pseudo;
     }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->id === 1 ;
-    }
 
     public function getFilamentAvatarUrl() : ?string
     {

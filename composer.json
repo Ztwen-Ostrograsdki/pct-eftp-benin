@@ -7,9 +7,7 @@
     "require": {
         "php": "^8.2",
         "akhaled/livewire-sweetalert": "^0.2.3",
-        "bezhansalleh/filament-language-switch": "^3.1",
         "fedapay/fedapay-php": "^0.4.3",
-        "filament/filament": "^3.2",
         "laravel/framework": "^11.9",
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",

@@ -28,10 +28,5 @@ class AppServiceProvider extends ServiceProvider
         require_once app_path('Helpers/RobotsHelpers.php');
 
 
-        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-            $switch
-            ->locales(['en','fr', 'af', 'ar']); // also accepts a closure
-        });
- 
     }
 }

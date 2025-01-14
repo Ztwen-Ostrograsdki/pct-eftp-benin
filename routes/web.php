@@ -35,8 +35,6 @@ Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 
     Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
 
-    Route::get('gestion/les-commandes', OrdersList::class)->name('master.orders.list');
-
     Route::get('association/acceuil', MembersHomePage::class)->name('master.members.home');
 
     Route::get('association/les-membres', MembersListPage::class)->name('master.members.list');
@@ -62,22 +60,11 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     
     Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['user.self']);
 
-    Route::get('profil/achats/mes-commandes/IDX={identifiant}', Orders::class)->name('user.orders')->middleware(['user.self']);
-
-    Route::get('profil/boutique/mon-panier/IDX={identifiant}', CartPage::class)->name('user.cart')->middleware(['user.self']);
-
-    Route::get('profil/boutique/validation-payement/IDX={identifiant}/FADAPAYTRANSACTION={transactionID}/token={token}', FedapayCheckoutPage::class)->name('feda.checkout.proccess');
-    
-    Route::get('profil/boutique/validation-panier-et-addresse-reception/IDX={identifiant}', CheckoutPage::class)->name('user.checkout.address')->middleware(['user.self']);
-    
-    Route::get('profil/boutique/commande/ID={identifiant}', CheckoutSuccessPage::class)->name('user.checkout.success');
 
 });
 
 
-Route::get('boutique/', ShoppingHome::class)->name('shopping.home');
 
-Route::get('boutique/details-documents/ID={identifiant}/IDX={slug}', BookDetailsPage::class)->name('book.details');
 
 Route::middleware(['guest'])->group(function(){
     Route::get('/connexion/{email?}', LoginPage::class)->name('login');

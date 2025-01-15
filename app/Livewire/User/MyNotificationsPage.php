@@ -17,18 +17,27 @@ class MyNotificationsPage extends Component
 {
     use Confirm, Toast;
 
-    public $sectionned = null;
+    public $counter = 1;
+
+    public $sectionned = 'unread';
 
     public $search = '';
 
     protected $listeners = [
-        'LiveNotificationDispatchedToAdminsSuccessfullyEvent' => 'newNotifications',
+        'LiveIHaveNewNotificationEvent' => 'reloadNotificationsData',
+        'LiveNotificationDispatchedToAdminsSuccessfullyEvent' => 'reloadNotificationsData',
         'LiveUserHasBeenBlockedSuccessfullyEvent' => 'userUnBlockedSuccessfully',
     ];
 
 
     public function render()
     {
+        if(session()->has('my-notification-section')){
+
+            $this->sectionned = session('my-notification-section');
+
+        }
+        
         $user = Auth::user();
 
         $search = null;
@@ -41,7 +50,7 @@ class MyNotificationsPage extends Component
 
         $notif_sections = config('app.notifications_sections');
 
-        $my_notifications = $user->getMyIncommingNotifications(null, $search, $this->sectionned);
+        $my_notifications = User::find($user->id)->getMyIncommingNotifications(null, $search, $this->sectionned);
 
         return view('livewire.user.my-notifications-page', compact('my_notifications', 'notif_sections'));
     }
@@ -54,85 +63,17 @@ class MyNotificationsPage extends Component
     public function updatedSectionned($sectionned)
     {
         $this->sectionned = $sectionned;
+
+        session()->put('my-notification-section', $sectionned);
     }
 
-    public function newNotification($user = null)
+    public function reloadNotificationsData($user = null)
     {
         $this->toast("Vous avez reçu une nouvelle notification!!!");
     }
 
 
-    public function confirmedUserUnblocked($notif_id)
-    {
-        $notif = ENotification::find($notif_id);
-
-        if($notif){
-
-            $user = $notif->user;
-
-        }
-        else{
-
-            $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
-
-        }
-
-        if($user){
-
-            if($user->blocked){
-
-                $since = $user->__getDateAsString($user->blocked_at, 3, true);
-
-                $t = "Confirmez le déblocage de " . $user->getFullName();
-
-                $r = "Vous étes sur le point de débloquer cet utilisateur bloqué depuis " . $since;
-            }
-
-            $options = ['event' => 'confirmedTheUserUnblocked', 'data' => ['notif_id' => $notif_id]];
-
-            $this->confirm($t, $r, $options);
-        }
-
-    }
-
-    #[On('confirmedTheUserUnblocked')]
-    public function onConfirmationTheUserUnblocked($data)
-    {
-        if($data){
-
-            $user = null;
-
-            $notif = null;
-
-            $act = null;
-
-            $notif_id = $data['notif_id'];
-
-            $notif = ENotification::find($notif_id);
-
-            if($notif) $user = $notif->user;
-
-            if($user) $act = $user->userBlockerOrUnblockerRobot(false);
-
-            if($act){
-
-                $message = "Le processus de déblocage a été lancé avec success!";
-
-                $this->toast($message, 'success');
-
-                to_flash('success', $message);
-
-                $this->deleteNotif($notif_id);
-
-            }
-            else{
-
-                $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
-
-            }
-        }
-
-    }
+   
 
     public function markAsRead($notif_id)
     {
@@ -144,14 +85,21 @@ class MyNotificationsPage extends Component
 
             $seen_by = $notif->seen_by;
 
-            $seen_by[] = $user->id;
+            if(!in_array($user->id, $seen_by)){
+
+                $seen_by[] = $user->id;
+
+                $notif->update(['seen_by' => $seen_by]);
+
+                $message = "La notification a été marquée comme lue et envoyée dans la section des notifications lues avec success!";
+        
+                $this->toast($message, 'success');
+        
+                $this->counter = rand(3, 65);
+            }
         }
 
-        $notif->update(['seen_by' => $seen_by]);
-
-        $message = "La notification a été marquée comme lue et envoyée dans la section des notifications lues avec success!";
-
-        $this->toast($message, 'success');
+       
     }
 
 

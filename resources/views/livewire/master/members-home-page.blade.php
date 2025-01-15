@@ -45,6 +45,10 @@
                 <div>
                     @livewire('master.roles-list-page')
                 </div>
+                @elseif($member_section == "epreuves")
+            <div>
+                    @livewire('master.epreuves-list-page')
+                </div>
             @endif
         </div>
     </div>

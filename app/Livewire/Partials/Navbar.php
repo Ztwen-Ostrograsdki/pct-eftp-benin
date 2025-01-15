@@ -20,6 +20,7 @@ class Navbar extends Component
     protected $listeners = [
         'LiveLogoutUserEvent' => 'logout',
         'LiveNotificationDispatchedToAdminsSuccessfullyEvent' => 'newNotification',
+        'LiveIHaveNewNotificationEvent' => 'newNotification',
 
     ];
 

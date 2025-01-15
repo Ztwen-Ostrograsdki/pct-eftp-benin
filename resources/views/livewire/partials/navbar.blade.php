@@ -42,11 +42,6 @@
               Gestion utilisateurs
             </a>
           </li>
-          <li>
-            <a wire:navigate href="{{route('master.orders.list')}}" class="block {{request()->route()->named('master.orders.list') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
-              Gestion commandes
-            </a>
-          </li>
           @if(count(auth()->user()->getNotifications()))
           <li>
             <a wire:navigate href="{{route('user.notifications')}}" class="block {{request()->route()->named('user.notifications') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
@@ -75,34 +70,6 @@
               Bibliothèque
             </a>
           </li>
-          <li>
-            <a href="{{route('shopping.home')}}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  {{request()->route()->named('shopping.home') ? 'text-blue-600' : 'text-gray-400' }} ">
-              Boutique
-            </a>
-          </li>
-          <li>
-            <a href="{{route('user.orders', ['identifiant' => auth_user()->identifiant])}}"" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  {{request()->route()->named('user.orders') ? 'text-blue-600' : 'text-gray-400' }} ">
-              Mes commandes
-            </a>
-          </li>
-          @if(auth_user() && $total_items && $total_items > 0)
-          <li>
-            <a href="{{route('user.cart', ['identifiant' => auth_user()->identifiant])}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 {{request()->route()->named('user.cart') ? 'text-blue-600' : 'text-gray-400' }} ">
-                Panier
-                <span class="py-0.5 px-1.5 rounded-full float-right text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
-                {{ $total_items }}
-                </span>
-            </a>
-          </li>
-          <li>
-            <a wire:click.prevent='clearCart' href="#" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-orange-400 ">
-              Vider panier
-              <span class="py-0.5 px-1.5 rounded-full float-right text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
-                {{ $total_items }}
-                </span>
-            </a>
-          </li>
-          @endif
           <li>
             <a title="Se déconnecter" wire:click.prevent='logout' href="#" class="block px-4 py-2 text-sm hover:bg-red-600 dark:hover:bg-red-600 border rounded-xl bg-red-400 text-gray-50 text-center mx-2">
               <strong class="letter-spacing-2">Deconnexion</strong>
@@ -144,19 +111,7 @@
       <li>
         <a wire:navigate href="{{route('library.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('library.home') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Bibliothèque</a>
       </li>
-      <li>
-        <a wire:navigate href="{{route('shopping.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('shopping.home') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Librairie</a>
-      </li>
-      @if(auth_user() && $total_items && $total_items > 0)
-      <li>
-        <a wire:navigate href="{{route('user.cart', ['identifiant' => auth_user()->identifiant])}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('user.cart') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">
-          Panier
-          <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
-            {{ $total_items }}
-            </span>
-        </a>
-      </li>
-      @endif
+      
 
       @auth
       <li>

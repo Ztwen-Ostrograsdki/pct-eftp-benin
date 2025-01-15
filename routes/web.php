@@ -5,27 +5,18 @@ use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
-use App\Livewire\BookDetailsPage;
 use App\Livewire\Chat\ForumChatBox;
-use App\Livewire\FedapayCheckoutPage;
 use App\Livewire\HomePage;
 use App\Livewire\Libraries\EpreuvesPage;
 use App\Livewire\Libraries\EpreuvesUploader;
 use App\Livewire\Libraries\LibraryHomePage;
 use App\Livewire\Master\MembersHomePage;
 use App\Livewire\Master\MembersListPage;
-use App\Livewire\Master\OrdersList;
 use App\Livewire\Master\UsersListPage;
-use App\Livewire\Shop\ShoppingHome;
-use App\Livewire\User\CartPage;
-use App\Livewire\User\CheckoutPage;
-use App\Livewire\User\CheckoutSuccessPage;
 use App\Livewire\User\MemberProfil;
 use App\Livewire\User\MyNotificationsPage;
-use App\Livewire\User\Orders;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
-use App\Livewire\User\UserProfilPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class)->name('home');
@@ -35,9 +26,9 @@ Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 
     Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
 
-    Route::get('association/acceuil', MembersHomePage::class)->name('master.members.home');
+    Route::get('administration/aesp-eftp/acceuil', MembersHomePage::class)->name('master.members.home');
 
-    Route::get('association/les-membres', MembersListPage::class)->name('master.members.list');
+    Route::get('administration/aesp-eftp/les-membres', MembersListPage::class)->name('master.members.list');
 
 
 });

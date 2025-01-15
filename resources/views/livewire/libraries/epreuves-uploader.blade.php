@@ -1,5 +1,5 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 sm:text-xs lg:px-8 mx-auto">
-    <div class="w-4/5 mx-auto px-3" >
+<div class="w-full max-w-[85rem] p-5 sm:text-xs mx-auto shadow-3 shadow-sky-500 rounded-lg mt-5">
+    <div class="w-4/5 mx-auto px-3  " >
         @if($errors->any())
             <h4 class="w-full letter-spacing-2 p-2 text-xl mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
                 <strong>
@@ -17,6 +17,15 @@
                         <span class="fas fa-download"></span>
                     </a>
                 </div>
+
+                @session('epreuve-success')
+                <div class="mx-auto w-full p-3">
+                    <h6 class="w-full py-3 px-3 mx-auto text-center letter-spacing-2 rounded-lg shadow-3 shadow-green-500 bg-green-400 text-green-950">
+                        {{ session('epreuve-success') }} 
+                    </h6>
+                </div>
+                @endsession
+                
 
             </div>
 

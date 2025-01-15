@@ -8,26 +8,21 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderCreationHasBeenFailedEvent implements ShouldBroadcastNow
+class NewEpreuveHasBeenPublishedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
-
-    public $data;
+    public $sender;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user, array $data = [])
+    public function __construct(User $sender)
     {
-        $this->user = $user;
-
-        $this->data = $data;
+        $this->sender = $sender;
     }
 
     /**
@@ -38,16 +33,14 @@ class OrderCreationHasBeenFailedEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $this->user->id),
+            new PrivateChannel('admin'),
         ];
     }
 
-
-    public function broadcastWith(): array
+    public function broadcastWith() : array
     {
         return [
-            'user' => $this->user,
-            'order' => $this->data,
+            'sender' => $this->sender,
         ];
     }
 }

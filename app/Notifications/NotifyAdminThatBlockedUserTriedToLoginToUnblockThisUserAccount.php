@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,9 +53,11 @@ class NotifyAdminThatBlockedUserTriedToLoginToUnblockThisUserAccount extends Not
     {
         $user = $this->blocked_user;
 
+        $salutation = ModelsRobots::greatingMessage($notifiable->getUserNamePrefix(true, false));
+
         return (new MailMessage)
             ->subject($this->title . " : " . $this->object)
-            ->greeting('Bonjour Mr/Mme' . $notifiable->getFullName())
+            ->greeting($salutation)
             ->line('Vous recevez ce courriel parce que vous êtes un administrateur actif de ' . config('app.name') . '!')
             ->line("L'utilisateur " . $user->getFullName() . " dont l'adresse mail est " . $user->email . "  a tenté de se connecté!")
             ->line($this->content)

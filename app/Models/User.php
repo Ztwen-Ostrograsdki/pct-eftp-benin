@@ -8,7 +8,6 @@ use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
 use App\Models\ENotification;
 use App\Models\Member;
-use App\Models\Order;
 use App\Observers\ObserveUser;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -94,10 +93,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
 
     public function classes()
     {
@@ -110,16 +105,6 @@ class User extends Authenticatable
         
     }
 
-    public function getFilamentName(): string
-    {
-        return $this->pseudo;
-    }
-
-
-    public function getFilamentAvatarUrl() : ?string
-    {
-        return asset($this->profil_photo);
-    }
 
     public function getGender($gender = null)
     {
@@ -140,14 +125,20 @@ class User extends Authenticatable
         return $genders[$gender];
     }
 
+    public function getFilamentName(){}
 
-    public function getUserNamePrefix()
+
+    public function getUserNamePrefix($withFullName = false, $reverseName = false)
     {
-        if(in_array($this->gender, ['male', 'Male', 'M', 'm', 'masculin', 'Masculin'])) return 'Mr';
+        $prefix = 'Mr/Mme';
 
-        if(in_array($this->gender, ['female', 'Female', 'F', 'f', 'feminin', 'Féminin', 'Feminin'])) return 'Mme';
+        if(in_array($this->gender, ['male', 'Male', 'M', 'm', 'masculin', 'Masculin'])) $prefix = 'Mr';
 
-        return 'Mr/Mme';
+        if(in_array($this->gender, ['female', 'Female', 'F', 'f', 'feminin', 'Féminin', 'Feminin'])) $prefix = 'Mme';
+
+        if($withFullName) return $prefix . ' ' . $this->getFullName($reverseName);
+
+        return $prefix;
     }
 
 

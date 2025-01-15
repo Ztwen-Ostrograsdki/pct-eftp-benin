@@ -19,6 +19,7 @@ class MembersHomePage extends Component
         'members' => "Les membres",
         'roles' => "Les Fonctions",
         'info' => "Les Communiqués",
+        'epreuves' => "Les Epreuves",
         "lays" => "Les réglements intérieurs",
         "history" => "Historique",
         'cv' => "CV de l'association"

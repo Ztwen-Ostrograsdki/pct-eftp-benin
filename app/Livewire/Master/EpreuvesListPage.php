@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Livewire\Libraries;
+namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
-use App\Models\Book;
+use App\Models\ENotification;
 use App\Models\Epreuve;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EpreuvesPage extends Component
+class EpreuvesListPage extends Component
 {
     use Toast, Confirm, WithPagination;
 
@@ -22,6 +21,8 @@ class EpreuvesPage extends Component
     public $selected_classes = [];
 
     public $counter = 0;
+
+    public $authorized = 'all';
 
     public $search = '';
 
@@ -84,11 +85,11 @@ class EpreuvesPage extends Component
 
         }
 
-        $query->where('epreuves.authorized', true);
+        if($this->authorized !== 'all'){
+            $query->where('epreuves.authorized', $this->authorized);
+        }
 
-
-
-        return view('livewire.libraries.epreuves-page', 
+        return view('livewire.master.epreuves-list-page', 
             [
                 'epreuves' => $query->paginate(6),
             ]
@@ -103,6 +104,49 @@ class EpreuvesPage extends Component
     public function clearAll()
     {
         $this->reset();
+    }
+
+    public function validateEpreuve($epreuve_id)
+    {
+        $epreuve = Epreuve::find($epreuve_id);
+
+        if($epreuve){
+
+            if(!$epreuve->authorized){
+
+                $user = $epreuve->user;
+
+                $make = $epreuve->update(['authorized' => true]);
+
+                if($make){
+
+                    $auth = auth_user();
+
+                    $this->toast("L'épreuve $epreuve->name a été publié avec succès et est désormais visible sur la plateforme");
+
+                    $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
+
+                    $object = "Validation de votre épreuve publiée sur la plateforme";
+
+                    $content = "Votre $epreuve->name épreuve publiée le " . $since . " a été approuvée par les administrateurs";
+                    
+                    $title = "Validation d'une épreuve publié";
+                
+                    $data = [
+                        'user_id' => $auth->id,
+                        'content' => $content,
+                        'title' => $title,
+                        'object' => $object,
+                        'receivers' => [$user->id],
+
+                    ];
+
+                    $enotif = ENotification::create($data);
+                }
+
+            }
+
+        }
     }
 
 

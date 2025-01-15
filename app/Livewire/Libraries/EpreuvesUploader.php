@@ -148,6 +148,7 @@ class EpreuvesUploader extends Component
             'extension' => "." . $extension,
             'file_size' => $file_size,
             'path' => $path,
+            'authorized' => 0,
         ];
 
         $save = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
@@ -170,7 +171,11 @@ class EpreuvesUploader extends Component
     #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
     public function newEpreuveCreated()
     {
-        $this->toast("Une nouvelle épreuve a été ajoutée", 'success');
+        $message = "Votre épreuve a été publiée avec succès. Elle sera analysée et validée par les administrateurs avant d'être visible par tous!";
+
+        $this->toast($message, 'success');
+
+        to_flash('epreuve-success', $message);
 
         $this->counter = rand(12, 300);
     }

@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Models\User;
+use App\Observers\ObserveENotification;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ObserveENotification::class)]
 class ENotification extends Model
 {
     use DateFormattor;
@@ -36,9 +39,9 @@ class ENotification extends Model
 
     public function getReceivers()
     {
-        
         $receivers = $this->receivers;
-        
+
+        return User::whereIn('users.id', $receivers)->get();
     }
 
     public function getSeens($only_ids = false)

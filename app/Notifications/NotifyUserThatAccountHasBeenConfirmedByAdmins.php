@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Tools\ModelsRobots;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -36,10 +37,13 @@ class NotifyUserThatAccountHasBeenConfirmedByAdmins extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $salutation = ModelsRobots::greatingMessage($notifiable->getUserNamePrefix(true, false));
+        
         return (new MailMessage)
         ->subject("Confirmation de l'indentification utilisateur de la plateforme" . config('app.name') . " du compte " . $notifiable->email)
+        ->greeting($salutation)
         ->line('Félicitation Mr/Mme' . $notifiable->getFullName())
-        ->line("Nous vous informons que votre comte a été confirmé avec succès!")
+        ->line("Nous vous informons que votre compte a été confirmé avec succès!")
         ->line("Votre identifiant unique de la plateforme est " . $notifiable->identifiant . " !")
         ->line("Vous pouvez à présent vous connecter !")
         ->action('Je me connecte ' , url(route('login', ['email' => $notifiable->email])))

@@ -50,9 +50,9 @@ e.private('admin')
         Livewire.dispatch('LiveNotificationDispatchedToAdminsSuccessfullyEvent', user);
         
     })
-    .listen('TheOrderApprovedSuccessfullyEvent', (order_identifiant) =>{
+    .listen('NewEpreuveHasBeenPublishedEvent', (user) =>{
 
-        Livewire.dispatch('LiveTheOrderApprovedSuccessfullyEventForAdmin', order_identifiant);
+        Livewire.dispatch('LiveNewEpreuveHasBeenPublishedEvent', user);
         
     })
     .listen('EpreuveWasCreatedSuccessfullyEvent', (user) =>{
@@ -67,23 +67,10 @@ e.private('App.Models.User.' + window.ClientUser.id)
         Livewire.dispatch('LiveLogoutUserEvent', ev);
         
     })
-    .listen('OrderCreationHasBeenFailedEvent', (ev) =>{
 
-        Livewire.dispatch('LiveOrderCreationHasBeenFailedEvent', ev);
-        
-    })
-    .listen('NewOrderHasBeenCreatedSuccessfullyEvent', (order) =>{
+    .listen('IHaveNewNotificationEvent', (data) =>{
 
-        Livewire.dispatch('LiveNewOrderHasBeenCreatedSuccessfullyEvent', order);
-        
-    })
-    .listen('TheOrderApprovedSuccessfullyEvent', (order_identifiant) =>{
-
-        Livewire.dispatch('LiveTheOrderApprovedSuccessfullyEvent', order_identifiant);
-        
-    })
-
-    .listen('InitFedaPayCheckoutEvent', (data) =>{
+        Livewire.dispatch('LiveIHaveNewNotificationEvent', ev);
         
     })
     

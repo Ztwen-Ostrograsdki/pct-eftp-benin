@@ -1,9 +1,9 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
+<div class="w-full  py-4 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
     <div class="py-2 mb-4 shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5">
         <div class="w-full px-2 font-semibold letter-spacing-2">
             <h4 class="py-3 xs:text-xs lg:text-base">
                 <span class="text-sky-400 uppercase ml-2">
-                    Banque des épreuves  
+                    Liste complète des épreuves publiées  
                     <span class=" text-sky-400 float-right">
                        {{ numberZeroFormattor(count($epreuves)) }} 
                        <span class="lowercase">épreuves trouvées</span> 
@@ -14,15 +14,21 @@
     </div>
     <div class="w-full p-0 m-0">
         <div class="w-full m-0 p-0 mb-2 ">
-            <a class="bg-blue-600 text-gray-300 border border-white rounded-lg px-2 py-3 text-lg w-full inline-block" href="{{route('library.epreuves.uplaoder')}}">
-                <span class="fa fa-send"></span>
-                <span>Envoyer des épreuves</span>
-                <span class="fa fa-book"></span>
-            </a>
+            <div class="mb-4">
+                <div class="items-center justify-between px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg">
+                  <div class="flex items-center w-2/5 justify-between">
+                    <select wire:model.live='authorized' name="authorized" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                        <option class="py-4" value="{{'all'}}">Lister toutes les épreuves</option>
+                        <option class="py-4 px-3" value="{{true}}"> {{ "Les épreuves déjà authorisées" }} </option>
+                        <option class="py-4 px-3" value="{{false}}"> {{ "Les épreuves pas encore authorisées" }} </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
         </div>
     </div>
-    <section class="py-3 bg-gray-50 font-poppins bg-transparent rounded-lg">
-      <div class="px-4 mx-auto max-w-7xl lg:py-6 md:px-6">
+    <section class="py-3 font-poppins bg-transparent rounded-lg">
+      <div class="px-4 mx-auto lg:py-6 md:px-6">
         <div class="grid lg:grid-cols-4  mb-24 -mx-3">
           <div class="pr-2 sm:col-span-4 xs:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
             <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
@@ -79,7 +85,7 @@
                       </div>
                       <input wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-4 ps-10 text-sm letter-spacing-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus" placeholder="Rechercher des épreuves selon: une notion, un titre..." />
                       @if(!$search)
-                      <span class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 xs:hidden sm:hidden">Rechercher</span>
+                      <span disabled class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled xs:hidden sm:hidden">Rechercher</span>
                       @else
                       <span wire:click="resetSearch" class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer xs:hidden sm:hidden">Effacer</span>
                       @endif
@@ -90,8 +96,8 @@
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
-                <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
+              <div wire:key="epreuve-admin-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+                <div class="border transition-opacity rounded-lg  @if($epreuve->authorized) shadow-gray-300 shadow-3 @else shadow-red-500 shadow-2 opacity-75 p-1 @endif border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
                         <span>
@@ -100,21 +106,32 @@
                           @endif
                         </span>
                         <span class="gap-x-2 flex">
-                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire les éléments de réponses" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
+                        
+                            @if(!$epreuve->authorized)
+                                <span wire:loading.remove wire:target='validateEpreuve({{$epreuve->id}})' wire:click="validateEpreuve({{$epreuve->id}})"   title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                    <span class="fas fa-check"></span> 
+                                    <span>Valider</span>
+                                </span>
+                                <span wire:loading wire:target='validateEpreuve({{$epreuve->id}})'  title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                    <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                    <span>Validation en cours...</span>
+                                </span>
+                            @endif
+                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire les éléments de réponses" class="text-gray-900 p-2 rounded-full cursor-pointer bg-sky-400 border-gray-900 border hover:shadow-3 hover:shadow-sky-600">
                             <span class="fas fa-pen"></span> 
                             <span>Rep</span>
                           </a>
-                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
+                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border hover:shadow-3 hover:shadow-sky-600">
                             <span class="fas fa-eye"></span> 
                             <span>Lire</span>
                           </a>
-                          <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full animate-pulse cursor-pointer bg-gray-900 border-gray-400 border">
+                          <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full animate-pulse cursor-pointer bg-gray-900 border-gray-400 border hover:shadow-3 hover:shadow-sky-600">
                             {{ $epreuve->downloaded }}
                             <span class="fas fa-download"></span> 
                           </span>
                         </span>
                     </div>
-                    <div class=" items-center justify-between gap-2 mb-2">
+                    <div class=" items-center justify-between mt-2 gap-2 mb-2">
                       <div class="flex items-center">
                         <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
                         <span class="text-gray-400 letter-spacing-2 mr-3">
@@ -156,7 +173,7 @@
                          {{$epreuve->__getDateAsString($epreuve->created_at)}}
                       </small>
                       <br>
-                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-sm">Par 
+                      <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-sm">Par 
                          {{$epreuve->user->getFullName()}}
                       </small>
                     </p>

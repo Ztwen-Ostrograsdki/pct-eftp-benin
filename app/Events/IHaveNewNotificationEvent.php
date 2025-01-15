@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Order;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -13,21 +12,17 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewOrderHasBeenCreatedSuccessfullyEvent implements ShouldBroadcastNow
+class IHaveNewNotificationEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $order_identifiant;
 
     public $user;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user, $order_identifiant)
+    public function __construct(User $user)
     {
-        $this->order_identifiant = $order_identifiant;
-
         $this->user = $user;
     }
 
@@ -40,15 +35,6 @@ class NewOrderHasBeenCreatedSuccessfullyEvent implements ShouldBroadcastNow
     {
         return [
             new PrivateChannel('App.Models.User.' . $this->user->id),
-            new PrivateChannel('admin'),
-        ];
-    }
-
-
-    public function broadcastWith(): array
-    {
-        return [
-            'order' => $this->order_identifiant,
         ];
     }
 }

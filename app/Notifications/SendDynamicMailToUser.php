@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Tools\ModelsRobots;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -40,8 +41,10 @@ class SendDynamicMailToUser extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $salutation = ModelsRobots::greatingMessage($notifiable->getUserNamePrefix(true, false));
+        
         return (new MailMessage)
-                    ->greeting("Bonjour Mr/Mme ")
+                    ->greeting($salutation)
                     ->subject(__($this->sub))
                     ->line(__($this->bod))
                     ->line(__('Merci de prendre en compte ce mail'))

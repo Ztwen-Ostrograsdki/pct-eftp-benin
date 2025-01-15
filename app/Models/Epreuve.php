@@ -7,9 +7,12 @@ use App\Models\Classe;
 use App\Models\EpreuveResponse;
 use App\Models\Promotion;
 use App\Models\User;
+use App\Observers\ObserveEpreuve;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[ObservedBy(ObserveEpreuve::class)]
 class Epreuve extends Model
 {
     use DateFormattor;

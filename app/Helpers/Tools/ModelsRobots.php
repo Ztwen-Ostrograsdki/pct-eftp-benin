@@ -1,14 +1,11 @@
 <?php
 namespace App\Helpers\Tools;
 
-use App\Models\FedapayTransaction;
-use App\Models\Order;
+use App\Models\Epreuve;
 use App\Models\User;
 use App\Notifications\NotifyAdminThatBlockedUserTriedToLoginToUnblockThisUserAccount;
 use App\Notifications\NotifyAdminThatNewUserSubscribedToConfirmThisUserAccount;
-use FedaPay\FedaPay;
-use FedaPay\Transaction;
-use Illuminate\Support\Facades\DB;
+use App\Notifications\SendDynamicMailToUser;
 use Illuminate\Support\Str;
 
 class ModelsRobots{
@@ -18,6 +15,23 @@ class ModelsRobots{
     public function __construct($model = null) {
 
         $this->model = $model;
+    }
+
+
+    public static function greatingMessage($name = null)
+    {
+        $hour = date('G');
+        
+        if($hour >= 0 && $hour <= 12){
+
+            $greating = "Bonjour ";
+        }
+        else{
+
+            $greating = "Bonsoir ";
+        }
+
+        return $name  ? $greating . ' ' . $name : $greating;
     }
 
     public static function getUserAdmins($pluckindColumn = 'id', $except = null)
@@ -41,6 +55,35 @@ class ModelsRobots{
         return $admins;
     }
 
+    public static function notificationToAdminsThatNewEpreuveHasBeenPublished(User $user, Epreuve $epreuve)
+    {
+        if($user && $user->confirmed_by_admin){
+
+            $admins = self::getAllAdmins();
+
+            $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
+
+            $subjet = "Validation d'une épreuve publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
+            " et d'identifiant personnel : ID = " . $user->identifiant;
+
+            $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
+            . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
+                
+                "L'épreuve a été publiée le " . $since . " ."
+            ;
+
+            foreach($admins as $admin){
+
+                $admin->notify(new SendDynamicMailToUser($subjet, $body));
+
+            }
+
+        }
+    }
+
+
+
+
 
     public static function makeUserIdentifySequence()
     {
@@ -49,63 +92,6 @@ class ModelsRobots{
 
 
 
-    public static function synchronyzeOrderWithTransaction(Order $order)
-    {
-        $data = [];
-
-        return 1;
-
-        FedaPay::setApiKey(env('MY_FEDA_SECRET_KEY'));
-
-        FedaPay::setEnvironment('sandbox');
-
-        if($order){
-
-            DB::transaction(function () use($data, $order) {
-
-                $local_db_feda_transaction = FedapayTransaction::where('transaction_id', $order->FEDAPAY_TRANSACTION_ID)
-                                                  ->whereNotNull('token')
-                                                  ->where('user_id', auth_user()->id)
-                                                  ->first();
-                if($local_db_feda_transaction){
-
-                    $fedapay_transaction_id = $local_db_feda_transaction->transaction_id;
-    
-                    if($fedapay_transaction_id){
-
-                        $feda_transaction = Transaction::retrieve($fedapay_transaction_id);
-
-                        if($feda_transaction){
-
-                            if($feda_transaction->status == 'approved'){
-
-                                $data = [
-                                    'status' => $feda_transaction->status,
-                                    'mobile_operator' => $feda_transaction->mode,
-                                    'transaction_key' => $feda_transaction->transaction_key,
-                                    'payment_status' => $feda_transaction->status,
-                                    'amount' => $feda_transaction->amount,
-                                    'reference' => $feda_transaction->reference,
-                                ];
-                            }
-
-                            if($data && $data !== []){
-
-                                $order->update(['payment_status' => 'payed', 'status' => 'approved']);
-
-                                $local_db_feda_transaction->update($data);
-                            }
-
-                        }
-
-
-                    }
-
-                }
-            });
-
-        }
-    }
 
     public static function notificationToConfirmUnconfirmedUser(User $user)
     {

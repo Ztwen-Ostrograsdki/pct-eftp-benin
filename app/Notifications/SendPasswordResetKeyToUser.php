@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Tools\ModelsRobots;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -36,9 +37,11 @@ class SendPasswordResetKeyToUser extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $salutation = ModelsRobots::greatingMessage($notifiable->getUserNamePrefix(true, false));
+        
         return (new MailMessage)
                     ->subject("Réinitialisation mot de passe utilisateur de la plateforme " . config('app.name') . " du compte " . $notifiable->email)
-                    ->greeting('Bonjour Mr/Mme ' . $notifiable->getFullName())
+                    ->greeting($salutation)
                     ->line('Vous recevez ce courriel parce que')
                     ->line('Vous avez fait une demande de réinitialisation de votre mot de passe du compte ' . $notifiable->email)
                     ->action('Réinitialiser mon mot de passe', url(route('password.reset.by.email', ['email' => $notifiable->email, 'key' => $this->key])))

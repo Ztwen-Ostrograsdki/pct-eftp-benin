@@ -45,7 +45,7 @@ return [
     ],
     
     'notifications_sections' => [
-        null => "Récentes non lues",
+        null => "Récentes",
         'unread' => "Non lues",
         'read' => "Déjà lues",
         'hidden' => "Masquées",

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,11 +40,13 @@ class NotifyAdminThatNewUserSubscribedToConfirmThisUserAccount extends Notificat
     {
         $user = $this->user_to_confirm;
 
+        $salutation = ModelsRobots::greatingMessage($notifiable->getUserNamePrefix(true, false));
+
         $since = $user->__getDateAsString($user->email_verified_at, 3, true);
 
         return (new MailMessage)
             ->subject("Nouvelle inscription sur la plateforme. Utilisateur: " . $user->getFullName())
-            ->greeting('Bonjour Mr/Mme ' . $notifiable->getFullName())
+            ->greeting($salutation)
             ->line('Vous recevez ce courriel parce que vous êtes un administrateur actif de la plateforme ' . config('app.name') . '!')
             ->line("L'utilisateur " . $user->getFullName() . " dont l'adresse mail est " . $user->email . " s'est inscrit nouvellement sur le site!")
             ->line("Son compte n'a pas encore été approuvé ou validé depuis la validation de son inscription faite le " . $since)

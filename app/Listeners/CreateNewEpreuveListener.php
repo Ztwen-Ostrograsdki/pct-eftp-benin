@@ -5,7 +5,6 @@ namespace App\Listeners;
 use App\Events\EpreuveWasCreatedSuccessfullyEvent;
 use App\Events\InitEpreuveCreationEvent;
 use App\Jobs\JobCreateNewEpreuve;
-use App\Jobs\JobOrderManager;
 use Illuminate\Bus\Batch;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

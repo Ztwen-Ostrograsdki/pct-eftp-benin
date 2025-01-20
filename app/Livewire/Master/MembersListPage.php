@@ -19,16 +19,53 @@ class MembersListPage extends Component
 
     public $counter = 2;
 
+    public $search = '';
+
+    public $paginate_page = 10;
+
+    public function updatedSearch($search)
+    {
+        $this->search = $search;
+    }
+
     public function render()
     {
         $members = Member::all();
 
-        $users = User::all();
+        $p = $this->paginate_page;
+
+        if($this->search && strlen($this->search) >= 2){
+
+            $s = '%' . $this->search . '%';
+
+            $users_ids = User::where('firstname', 'like', $s)
+                         ->orWhere('lastname', 'like', $s)
+                         ->orWhere('email', 'like', $s)
+                         ->orWhere('contacts', 'like', $s)
+                         ->orWhere('school', 'like', $s)
+                         ->orWhere('grade', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('pseudo', 'like', $s)
+                         ->orWhere('address', 'like', $s)
+                         ->orWhere('job_city', 'like', $s)
+                         ->orWhere('status', 'like', $s)
+                         ->orWhere('birth_city', 'like', $s)
+                         ->orWhere('gender', 'like', $s)
+                         ->orWhere('current_function', 'like', $s)
+                         ->orWhere('matricule', 'like', $s)
+                         ->orWhere('ability', 'like', $s)
+                         ->orWhere('graduate', 'like', $s)
+                         ->orWhere('graduate_type', 'like', $s)
+                         ->orWhere('graduate_deliver', 'like', $s)
+                         ->orWhere('marital_status', 'like', $s)
+                         ->pluck('id')->toArray();
+
+            $members = Member::whereIn('members.user_id', $users_ids)->paginate($p);
+        }
 
         return view('livewire.master.members-list-page',
             [
                 'members' => $members,
-                'users' => $users,
             ]
         );
     }

@@ -28,7 +28,7 @@ class ObserveEpreuve
             $content = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
             . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
                 
-                "L'épreuve a été publiée le " . $since . " ."
+                ". L'épreuve a été publiée le " . $since . " ."
             ;
             $title = "Validation d'une épreuve publié";
         

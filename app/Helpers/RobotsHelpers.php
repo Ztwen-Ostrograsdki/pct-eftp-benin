@@ -2,6 +2,7 @@
 
 use App\Models\Classe;
 use App\Models\Filiar;
+use App\Models\Member;
 use App\Models\Promotion;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -151,6 +152,78 @@ if(!function_exists('getFiliars')){
         else{
 
             return $data = $filiars;
+        }
+
+        return $data;
+    }
+
+}
+
+
+if(!function_exists('getMembers')){
+
+    function getMembers($associate = false, $column = null)
+    {
+        $data = [];
+
+        $members = Member::all();
+        
+        if($associate){
+
+            foreach($members as $member){
+
+                if($column){
+
+                    $column = str_replace('by ', '', $column);
+
+                    $data[$member->id] = $member->{$column};
+                }
+                else{
+
+                    $data[$member->id] = $member;
+                }
+            }
+
+        }
+        else{
+
+            return $data = $members;
+        }
+
+        return $data;
+    }
+
+}
+
+
+if(!function_exists('getTeachers')){
+
+    function getTeachers($associate = false, $column = null, $targets = null, $except = null)
+    {
+        $data = [];
+
+        $teachers = User::all();
+        
+        if($associate){
+
+            foreach($teachers as $teacher){
+
+                if($column){
+
+                    $column = str_replace('by ', '', $column);
+
+                    $data[$teacher->id] = $teacher->{$column};
+                }
+                else{
+
+                    $data[$teacher->id] = $teacher;
+                }
+            }
+
+        }
+        else{
+
+            return $data = $teachers;
         }
 
         return $data;

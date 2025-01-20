@@ -5,14 +5,12 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\Book;
-use App\Models\Epreuve;
-use Illuminate\Support\Facades\Storage;
+use App\Models\SupportFile;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EpreuvesPage extends Component
+class SupportFilesPage extends Component
 {
     use Toast, Confirm, WithPagination;
 
@@ -32,7 +30,7 @@ class EpreuvesPage extends Component
     {
         $search = $this->search;
 
-        $query = Epreuve::query()->whereNotNull('created_at');
+        $query = SupportFile::query()->whereNotNull('created_at');
 
         $ids = [
             'has' => false,
@@ -43,9 +41,9 @@ class EpreuvesPage extends Component
 
             $ids['has'] = true;
 
-            $epreuves = Epreuve::all();
+            $support_files = SupportFile::all();
 
-            foreach($epreuves as $e){
+            foreach($support_files as $e){
                 
                 foreach($this->selected_filiars as $id){
 
@@ -67,13 +65,13 @@ class EpreuvesPage extends Component
         if($ids['has']){
 
             
-            $query->whereIn('epreuves.id', $ids['items']);
+            $query->whereIn('support_files.id', $ids['items']);
 
         }
 
         if($this->selected_promotions !== []){
 
-            $query->whereIn('epreuves.promotion_id', $this->selected_promotions);
+            $query->whereIn('support_files.promotion_id', $this->selected_promotions);
 
         }
 
@@ -81,17 +79,17 @@ class EpreuvesPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find);
+            $query->where('support_files.contents_titles', 'like', $find);
 
         }
 
-        $query->where('epreuves.authorized', true);
+        $query->where('support_files.authorized', true);
 
 
 
-        return view('livewire.libraries.epreuves-page', 
+        return view('livewire.libraries.support-files-page', 
             [
-                'epreuves' => $query->paginate(6),
+                'support_files' => $query->paginate(6),
             ]
         ); 
     }
@@ -120,10 +118,10 @@ class EpreuvesPage extends Component
     {
     }
 
-    #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
-    public function newEpreuveCreated()
+    #[On('LiveSupportFileWasCreatedSuccessfullyEvent')]
+    public function newSupportFileCreated()
     {
-        $this->toast("Une nouvelle épreuve a été ajoutée", 'success');
+        $this->toast("Une nouvelle fiche de cours a été ajoutée", 'success');
 
         $this->counter = rand(12, 300);
     }
@@ -132,26 +130,26 @@ class EpreuvesPage extends Component
     {
         $this->toast("Le téléchargement lancé... patientez", 'success');
 
-        $epreuve = Epreuve::find($id);
+        $support_file = SupportFile::find($id);
 
-        $epreuve->downloadManager();
+        $support_file->downloadManager();
 
-        $path = storage_path().'/app/public/' . $epreuve->path;
+        $path = storage_path().'/app/public/' . $support_file->path;
 
         return response()->download($path);
     }
 
     public function deleteFile($id)
     {
-        $epreuve = Epreuve::find($id);
+        $support_file = SupportFile::find($id);
 
-        if($epreuve){
+        if($support_file){
 
-            $del = ModelsRobots::deleteFileFromStorageManager($epreuve->path);
+            $del = ModelsRobots::deleteFileFromStorageManager($support_file->path);
 
             if($del){
 
-                $this->toast("L'épreuve a été supprimée avec succès!", 'success');
+                $this->toast("Le support de cours a été supprimée avec succès!", 'success');
 
                 $this->counter = rand(12, 300);
 
@@ -159,7 +157,7 @@ class EpreuvesPage extends Component
             }
             else{
 
-                $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
+                $this->toast("Une erreur s'est produite lors de la suppression de $support_file->name", 'error');
 
             }
         }

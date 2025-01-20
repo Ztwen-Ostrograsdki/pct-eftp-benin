@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
-use App\Models\Classe;
-use App\Models\EpreuveResponse;
+use App\Models\Filiar;
 use App\Models\Promotion;
 use App\Models\User;
-use App\Observers\ObserveEpreuve;
+use App\Observers\ObserveSupportFile;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-#[ObservedBy(ObserveEpreuve::class)]
-class Epreuve extends Model
+#[ObservedBy(ObserveSupportFile::class)]
+class SupportFile extends Model
 {
     use DateFormattor;
 
@@ -37,7 +36,8 @@ class Epreuve extends Model
         'contents_titles',
         'seen_by',
         'extension',
-        'likes'
+        'likes',
+        'pages',
     ];
 
     protected $casts = [
@@ -47,11 +47,6 @@ class Epreuve extends Model
         'likes' => 'array',
 
     ];
-
-    public function answer()
-    {
-        return $this->hasOne(EpreuveResponse::class);
-    }
 
     public function user()
     {
@@ -83,7 +78,7 @@ class Epreuve extends Model
 
     }
 
-    public function getEpreuveSize()
+    public function getFileSize()
     {
         $file_size = $this->file_size;
 
@@ -178,17 +173,5 @@ class Epreuve extends Model
 
             return $uncown;
 
-    }
-
-
-    public function getTotalPages()
-    {
-        $path = $complete_path = storage_path().'/app/public/' . $this->path;
-
-        $gets = file_get_contents($path);
-
-        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
-
-        return $pages;
     }
 }

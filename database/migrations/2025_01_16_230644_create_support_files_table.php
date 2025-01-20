@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('epreuves', function (Blueprint $table) {
+        Schema::create('support_files', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
@@ -35,7 +33,14 @@ return new class extends Migration
             $table->json('downloaded_by')->nullable()->default(null);
             $table->json('likes')->nullable()->default(null);
             $table->string('contents_titles')->nullable()->default(null);
+        });
 
+        Schema::table('epreuves', function (Blueprint $t) {
+            $t->string('pages')->nullable()->default(null);
+        });
+
+        Schema::table('epreuve_responses', function (Blueprint $t) {
+            $t->string('pages')->nullable()->default(null);
         });
     }
 
@@ -44,6 +49,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('epreuves');
+        Schema::dropIfExists('support_files');
     }
 };

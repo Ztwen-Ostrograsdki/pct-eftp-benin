@@ -4,7 +4,7 @@ namespace App\Livewire\Libraries;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
-use App\Events\InitEpreuveCreationEvent;
+use App\Events\InitSupportFileCreationEvent;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -12,8 +12,9 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-#[Title("Publier une épreuve")]
-class EpreuvesUploader extends Component
+
+#[Title("Publier une fiche ou un support de cours")]
+class SupportFilesUploader extends Component
 {
     use WithFileUploads, Toast, Confirm;
     
@@ -29,7 +30,7 @@ class EpreuvesUploader extends Component
     public $author;
 
     #[Validate('required|file|mimes:docx,pdf|max:8000')]
-    public $file_epreuve;
+    public $support_file;
 
     public $path;
 
@@ -62,12 +63,13 @@ class EpreuvesUploader extends Component
 
         $promotions = getPromotions();
 
-        return view('livewire.libraries.epreuves-uploader', [
+        return view('livewire.libraries.support-files-uploader', [
             'classes' => $classes,
             'filiars' => $filiars,
             'promotions' => $promotions,
         ]);
     }
+
 
     public function pushIntoSelecteds($id)
     {
@@ -97,7 +99,7 @@ class EpreuvesUploader extends Component
         $this->selecteds = $selecteds;
     }
 
-    public function uploadEpreuve()
+    public function uploadSupportFile()
     {
         $this->filiars_ids = $this->selecteds;
 
@@ -111,19 +113,20 @@ class EpreuvesUploader extends Component
 
         $selecteds = $this->selecteds;
 
-        if($this->file_epreuve){
+        if($this->support_file){
 
-            $extension = $this->file_epreuve->extension();
+            $extension = $this->support_file->extension();
 
             $str = '';
 
             if($this->name){
+                
                 $str = str_replace(' ', '-', $this->name);
             }
 
-            $file_name = 'EPREUVE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::random(5);
+            $file_name = 'FICHE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::random(5);
 
-            $path = 'epreuves/' . $file_name . '.' . $extension;
+            $path = 'fiches/' . $file_name . '.' . $extension;
 
             foreach($selecteds as $fid){
 
@@ -135,14 +138,14 @@ class EpreuvesUploader extends Component
 
         $file_size = '0 Ko';
 
-        if($this->file_epreuve->getSize() >= 1048580){
+        if($this->support_file->getSize() >= 1048580){
 
-            $file_size = number_format($this->file_epreuve->getSize() / 1048576, 2) . ' Mo';
+            $file_size = number_format($this->support_file->getSize() / 1048576, 2) . ' Mo';
 
         }
         else{
 
-            $file_size = number_format($this->file_epreuve->getSize() / 1000, 2) . ' Ko';
+            $file_size = number_format($this->support_file->getSize() / 1000, 2) . ' Ko';
 
         }
 
@@ -159,34 +162,35 @@ class EpreuvesUploader extends Component
             'authorized' => 0,
         ];
 
-        $save = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
+        $save = $this->support_file->storeAs("fiches/", $file_name . '.' . $extension, ['disk' => 'public']);
 
         if($save){
 
-            InitEpreuveCreationEvent::dispatch($data, $save);
+            InitSupportFileCreationEvent::dispatch($data, $save);
 
             $this->reset();
         }
         else{
 
-            $this->toast("Une erreure est survenue", 'error');
+            $this->toast("Une erreure est survénue", 'error');
         }
         
 
     }
 
 
-    #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
-    public function newEpreuveCreated()
+    #[On('LiveSupportFileWasCreatedSuccessfullyEvent')]
+    public function newSupportFileCreated()
     {
-        $message = "Votre épreuve a été publiée avec succès. Elle sera analysée et validée par les administrateurs avant d'être visible par tous!";
+        $message = "Votre fiche de cours a été publiée avec succès. Elle sera analysée et validée par les administrateurs avant d'être visible par tous!";
 
         $this->toast($message, 'success');
 
-        to_flash('epreuve-success', $message);
+        to_flash('support-file-success', $message);
 
         $this->counter = rand(12, 300);
     }
 
-    
+        
 }
+

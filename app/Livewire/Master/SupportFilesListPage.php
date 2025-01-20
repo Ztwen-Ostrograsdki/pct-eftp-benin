@@ -6,13 +6,14 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
-use App\Models\Epreuve;
+use App\Models\SupportFile;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EpreuvesListPage extends Component
+class SupportFilesListPage extends Component
 {
+
     use Toast, Confirm, WithPagination;
 
     public $selected_filiars = [];
@@ -33,7 +34,7 @@ class EpreuvesListPage extends Component
     {
         $search = $this->search;
 
-        $query = Epreuve::query()->whereNotNull('created_at');
+        $query = SupportFile::query()->whereNotNull('created_at');
 
         $ids = [
             'has' => false,
@@ -44,9 +45,9 @@ class EpreuvesListPage extends Component
 
             $ids['has'] = true;
 
-            $epreuves = Epreuve::all();
+            $support_files = SupportFile::all();
 
-            foreach($epreuves as $e){
+            foreach($support_files as $e){
                 
                 foreach($this->selected_filiars as $id){
 
@@ -68,13 +69,13 @@ class EpreuvesListPage extends Component
         if($ids['has']){
 
             
-            $query->whereIn('epreuves.id', $ids['items']);
+            $query->whereIn('support_files.id', $ids['items']);
 
         }
 
         if($this->selected_promotions !== []){
 
-            $query->whereIn('epreuves.promotion_id', $this->selected_promotions);
+            $query->whereIn('support_files.promotion_id', $this->selected_promotions);
 
         }
 
@@ -82,17 +83,17 @@ class EpreuvesListPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find);
+            $query->where('support_files.contents_titles', 'like', $find);
 
         }
 
         if($this->authorized !== 'all'){
-            $query->where('epreuves.authorized', $this->authorized);
+            $query->where('support_files.authorized', $this->authorized);
         }
 
-        return view('livewire.master.epreuves-list-page', 
+        return view('livewire.master.support-files-list-page', 
             [
-                'epreuves' => $query->paginate(6),
+                'support_files' => $query->paginate(6),
             ]
         ); 
     }
@@ -107,31 +108,31 @@ class EpreuvesListPage extends Component
         $this->reset();
     }
 
-    public function validateEpreuve($epreuve_id)
+    public function validateSupportFile($fiche_id)
     {
-        $epreuve = Epreuve::find($epreuve_id);
+        $fiche = SupportFile::find($fiche_id);
 
-        if($epreuve){
+        if($fiche){
 
-            if(!$epreuve->authorized){
+            if(!$fiche->authorized){
 
-                $user = $epreuve->user;
+                $user = $fiche->user;
 
-                $make = $epreuve->update(['authorized' => true]);
+                $make = $fiche->update(['authorized' => true]);
 
                 if($make){
 
                     $auth = auth_user();
 
-                    $this->toast("L'épreuve $epreuve->name a été publié avec succès et est désormais visible sur la plateforme");
+                    $this->toast("La fiche de cours $fiche->name a été publié avec succès et est désormais visible sur la plateforme");
 
-                    $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
+                    $since = $fiche->__getDateAsString($fiche->created_at, 3, true);
 
-                    $object = "Validation de votre épreuve publiée sur la plateforme";
+                    $object = "Validation de votre fiche de cours publiée sur la plateforme";
 
-                    $content = "Votre $epreuve->name épreuve publiée le " . $since . " a été approuvée par les administrateurs";
+                    $content = "Votre fiche de cours $fiche->name publiée le " . $since . " a été approuvée par les administrateurs";
                     
-                    $title = "Validation d'une épreuve publié";
+                    $title = "Validation d'une fiche de cours publié";
                 
                     $data = [
                         'user_id' => $auth->id,
@@ -164,10 +165,10 @@ class EpreuvesListPage extends Component
     {
     }
 
-    #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
+    #[On('LiveSupportFileWasCreatedSuccessfullyEvent')]
     public function newEpreuveCreated()
     {
-        $this->toast("Une nouvelle épreuve a été ajoutée", 'success');
+        $this->toast("Une nouvelle fiche de cours a été ajoutée", 'success');
 
         $this->counter = rand(12, 300);
     }
@@ -176,49 +177,36 @@ class EpreuvesListPage extends Component
     {
         $this->toast("Le téléchargement lancé... patientez", 'success');
 
-        $epreuve = Epreuve::find($id);
+        $support_file = SupportFile::find($id);
 
-        $epreuve->downloadManager();
+        $support_file->downloadManager();
 
-        $path = storage_path().'/app/public/' . $epreuve->path;
+        $path = storage_path().'/app/public/' . $support_file->path;
 
         return response()->download($path);
     }
 
     public function deleteFile($id)
     {
-        $epreuve = Epreuve::find($id);
+        $support_file = SupportFile::find($id);
 
-        if($epreuve){
+        if($support_file){
 
-            $del = ModelsRobots::deleteFileFromStorageManager($epreuve->path);
+            $del = ModelsRobots::deleteFileFromStorageManager($support_file->path);
 
             if($del){
 
-                $del_from_db = $epreuve->delete();
-                
+                $this->toast("Le support de cours a été supprimée avec succès!", 'success');
 
-                if($del_from_db){
+                $this->counter = rand(12, 300);
 
-                    $this->toast("L'épreuve a été supprimée avec succès!", 'success');
-    
-                    $this->counter = rand(12, 300);
-    
-                    return false;
-                }
-                else{
-    
-                    $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
-    
-                }
+                return false;
             }
             else{
-    
-                $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
+
+                $this->toast("Une erreur s'est produite lors de la suppression de $support_file->name", 'error');
 
             }
-
-            
         }
     }
 }

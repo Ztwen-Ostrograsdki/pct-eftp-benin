@@ -3,28 +3,28 @@
 namespace App\Jobs;
 
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\Epreuve;
+use App\Models\SupportFile;
 use Illuminate\Bus\Batchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
-class JobCreateNewEpreuve implements ShouldQueue
+class JobCreateNewSupportFile implements ShouldQueue
 {
     use Queueable, Batchable;
 
     public $data = [];
 
-    public $file_epreuve;
+    public $support_file;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(array $data, $file_epreuve)
+    public function __construct(array $data, $support_file)
     {
         $this->data = $data;
 
-        $this->file_epreuve = $file_epreuve;
+        $this->support_file = $support_file;
     }
 
     /**
@@ -39,7 +39,7 @@ class JobCreateNewEpreuve implements ShouldQueue
 
         if($path){
 
-            $epreuve = Epreuve::create($data);
+            $epreuve = SupportFile::create($data);
 
             if(!$epreuve){
 
@@ -47,7 +47,6 @@ class JobCreateNewEpreuve implements ShouldQueue
 
 
             }
-
         }
         
 

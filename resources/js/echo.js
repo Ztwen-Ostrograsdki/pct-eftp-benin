@@ -34,6 +34,11 @@ e.private('confirmeds')
             Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent');
             
         })
+        .listen('SupportFileWasCreatedSuccessfullyEvent', () =>{
+
+            Livewire.dispatch('LiveSupportFileWasCreatedSuccessfullyEvent');
+            
+        })
 
     
 
@@ -60,8 +65,20 @@ e.private('admin')
         Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent', user);
         
     })
+    .listen('NewSupportFileHasBeenPublishedEvent', (user) =>{
+
+        Livewire.dispatch('LiveNewSupportFileHasBeenPublishedEvent', user);
+        
+    })
+    .listen('SupportFileWasCreatedSuccessfullyEvent', (user) =>{
+
+        Livewire.dispatch('LiveSupportFileWasCreatedSuccessfullyEvent', user);
+        
+    })
+
 
 e.private('App.Models.User.' + window.ClientUser.id)
+
     .listen('LogoutUserEvent', (ev) =>{
 
         Livewire.dispatch('LiveLogoutUserEvent', ev);

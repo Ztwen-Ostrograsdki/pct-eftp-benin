@@ -27,7 +27,7 @@
             </div>
 
             <div class="w-full mb-2">
-                <a class="bg-orange-400 border-white rounded-lg px-2 py-3 w-full inline-block" href="#">
+                <a class="bg-orange-400 border-white rounded-lg px-2 py-3 w-full inline-block" href="{{route('library.fiches')}}">
                     <span>Visiter des fiches de cours</span>
                     <span class="fa fa-book"></span>
                 </a>

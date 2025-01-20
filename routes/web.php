@@ -10,6 +10,8 @@ use App\Livewire\HomePage;
 use App\Livewire\Libraries\EpreuvesPage;
 use App\Livewire\Libraries\EpreuvesUploader;
 use App\Livewire\Libraries\LibraryHomePage;
+use App\Livewire\Libraries\SupportFilesPage;
+use App\Livewire\Libraries\SupportFilesUploader;
 use App\Livewire\Master\MembersHomePage;
 use App\Livewire\Master\MembersListPage;
 use App\Livewire\Master\UsersListPage;
@@ -40,8 +42,12 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
 
     Route::get('bibliotheque/tag=les-epreuves', EpreuvesPage::class)->name('library.epreuves');
+    
+    Route::get('bibliotheque/tag=les-fiches-de-cours', SupportFilesPage::class)->name('library.fiches');
 
     Route::get('bibliotheque/publication/tag=les-epreuves', EpreuvesUploader::class)->name('library.epreuves.uplaoder');
+
+    Route::get('bibliotheque/publication/tag=les-fiches-de-cours', SupportFilesUploader::class)->name('library.fiches.uplaoder');
     
     Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications')->middleware(['user.self']);
     

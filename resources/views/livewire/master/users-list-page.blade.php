@@ -1,5 +1,5 @@
-<div>
-    <div class="m-auto my-1 w-full bg-transparent min-h-80 p-2">
+<div class="p-2">
+    <div class="m-auto my-1 w-full z-bg-secondary-light min-h-80 p-2">
         <div class="m-auto bg-gray-700 p-0 my-3">
             <h1 class="p-4 text-gray-300 flex items-center justify-between border uppercase text-center rounded-sm">
                 <span class="text-xs letter-spacing-2">
@@ -11,7 +11,7 @@
                         Gestion des enseignants 
                         @if ($users)
                         <br>
-                        <small class="text-orange-600"> {{ numberZeroFormattor(count($users)) }} enseignants inscrits</small>
+                        <small class="text-orange-600"> {{ numberZeroFormattor(count(getTeachers())) }} enseignants inscrits</small>
                         @endif
                     </strong>
                 </span>
@@ -25,14 +25,14 @@
         <div class="relative w-full overflow-x-auto p-2 shadow-md border sm:rounded-lg">
             <div class="m-auto  w-full py-1 my-3">
                 <form class="w-full mx-auto">   
-                    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                    <label for="search-from-users-list" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                             </svg>
                         </div>
-                        <input wire:model.live="search" type="search" id="default-search" class="cursive text-cursive block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Entrer un mot clé, Pseudo, Nom, Prenoms, Email, grade, établissemnt, contacts,..." required />
+                        <input wire:model.live="search" type="search" id="search-from-users-list" class="z-bg-secondary-light letter-spacing-1 block w-full p-4 ps-10 text-sm text-sky-300 border border-gray-300 rounded-lg  focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Entrer un mot clé, Pseudo, Nom, Prenoms, Email, grade, établissement, contacts, addresse, ville, département..." required />
                         <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Rechercher</button>
                     </div>
                 </form>
@@ -80,13 +80,13 @@
                         <th scope="row" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </th>
-                        <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
-                            <a class="flex flex-col" title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
-                                {{$user->getFullName()}} 
-                                <span class="text-yellow-400 letter-spacing-2">
-                                    ({{$user->email}})
-                                </span>
-                            </a>
+                        <td class="px-6 py-4">
+                            <span class="flex gap-x-2 items-center">
+                                <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}">
+                                <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
+                                    {{$user->getFullName()}} 
+                                </a>
+                            </span>
                         </td>
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 @if(!$user->school) text-orange-400 @endif">
                             {{ $user->formatString($user->school) }}
@@ -242,10 +242,10 @@
                 </tbody>
                 
                 @else
-                    <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 text-3xl text-cursive">
+                    <h5 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 letter-spacing-2 font-semibold">
                         <span class="fas fa-trash"></span>
                         <span>Oupps aucune données trouvées!!!</span>
-                    </h4>
+                    </h5>
                 @endif
             </table>
 

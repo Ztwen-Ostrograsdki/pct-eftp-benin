@@ -16,7 +16,7 @@
         <div class="w-full m-0 p-0 mb-2 ">
             <a class="bg-blue-600 text-gray-300 border border-white rounded-lg px-2 py-3 text-lg w-full inline-block" href="{{route('library.epreuves.uplaoder')}}">
                 <span class="fa fa-send"></span>
-                <span>Envoyer des épreuves</span>
+                <span>Publier des épreuves</span>
                 <span class="fa fa-book"></span>
             </a>
         </div>
@@ -30,7 +30,7 @@
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getPromotions(true) as $p_id => $promo)
-                <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                <li wire:key="promo-epreuves-page-list-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
                   <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400  has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
                     <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class="">{{ $promo->name }}</span>
@@ -44,7 +44,7 @@
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getFiliars(true) as $f_id => $fil)
-                <li class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                <li wire:key="filiar-epreuves-page-list-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
                   <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300 has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
                     <input on wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class=" dark:text-gray-400">{{ $fil->name }}</span>
@@ -62,7 +62,7 @@
                   <select name="" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
                     <option class="py-4" value="">Trier par classe</option>
                     @foreach (getClasses(true) as $c_id => $cl)
-                      <option class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
+                      <option wire:key="classe-epreuves-page-list-list-{{$cl->id}}" class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
                     @endforeach
                   </select>
                 </div>
@@ -90,7 +90,7 @@
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+              <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
@@ -130,7 +130,7 @@
                         <span class="text-gray-300">
                           <strong>Filières :</strong> 
                           @foreach ($epreuve->getFiliars() as $f)
-                            <small class="mx-2">{{ $f->name }}</small> 
+                            <small wire:key="epreuve-filiars-list-{{$f->id}}" class="mx-2">{{ $f->name }}</small> 
                           @endforeach
                         </span>
                       </div>
@@ -150,6 +150,9 @@
                     <p class=" w-full">
                       <span class="text-green-600 text-base dark:text-green-600">
                         Taille : {{ $epreuve->file_size ? $epreuve->file_size : 'inconnue' }}
+                      </span>
+                      <span class="text-xs ml-3 text-sky-600">
+                        ({{$epreuve->getTotalPages()}} Pages)
                       </span>
                       <br>
                       <small class="text-gray-400 text-right text-sm">Publié le 
@@ -182,12 +185,14 @@
                 <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
                   Oupppps!!! Aucune épreuve n'a été trouvée
                 </h2>
+                @if($selected_promotions || $selected_classes || $selected_filiars || strlen($search) >= 3)
                 <h5 class="w-full my-6 mx-auto flex justify-center">
                   <span wire:click="clearAll" class="text-white inline-block rounded-full bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium text-sm p-5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer border">
                     <span class="fa fa-trash mr-5"></span>
-                    <span>Réinitialiser les filtres</span>
-                  </span>
-                </h5>
+                      <span>Réinitialiser les filtres</span>
+                    </span>
+                  </h5>
+                  @endif
                 
               </div>
             @endif

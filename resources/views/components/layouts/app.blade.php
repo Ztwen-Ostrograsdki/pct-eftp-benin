@@ -23,6 +23,7 @@
         <main>
             {{ $slot }}
         </main>
+        @livewire('chat.new-forum-chat-subject-modal')
         @livewire('master.modals.new-member-modal-component')
         @livewire('master.modals.new-role-modal-component')
         @livewire('master.modals.role-manager-component')
@@ -39,6 +40,8 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+
+                document.getElementById('epreuve-message-input').focus();
 
                 //document.getElementById('my-preloader-cover').remove();
 
@@ -84,7 +87,6 @@
                     modal.show();
 
                 });
-
                 
             });
 
@@ -103,7 +105,7 @@
             let drawer = new Drawer(targetEl);
 
             onClickOutside('#drawer-navigation', () => console.log('Hello'));
-            */
+           
 
 
             FedaPay.init('#pay-btn', {
@@ -111,6 +113,7 @@
                 
                 }
             )
+                 */
         </script>
     </body>
 </html>

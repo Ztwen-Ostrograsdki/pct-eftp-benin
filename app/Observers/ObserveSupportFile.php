@@ -24,8 +24,8 @@ class ObserveSupportFile
         $object = "Validation d'une fiche de cours publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
         " et d'identifiant personnel : ID = " . $user->identifiant;
 
-        $content = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer le support publiée par "
-        . $user->getUserNamePrefix() . " " . $user->getFullName(true) . ". Le support a été publiée le " . $since . " ." ;
+        $content = "Vous recevez cette notification parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer le support publiée par "
+        . $user->getUserNamePrefix() . " " . $user->getFullName(true) . ". Le support a été publié le " . $since . " ." ;
         
         $title = "Validation d'une fiche de cours publié";
         

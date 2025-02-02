@@ -27,7 +27,22 @@ Broadcast::channel('admin', function ($user) {
 
 Broadcast::channel('confirmeds', function ($user) {
 
-    return $user->confirmed_by_admin === true && $user->blocked === false && $user->emailVerified();
+    return $user->confirmed_by_admin == true && $user->blocked == false && $user->emailVerified();
 
 });
 
+
+Broadcast::channel('forumChatRoom', function ($user) {
+
+
+    if($user->confirmed_by_admin == true && $user->blocked == false && $user->emailVerified()){
+
+        return [
+            'id' => $user->id, 
+            'name' => $user->getFullName(), 
+            'email' => $user->email
+        ];
+
+    }
+
+});

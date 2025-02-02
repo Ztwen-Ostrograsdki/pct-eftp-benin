@@ -90,6 +90,64 @@ e.private('App.Models.User.' + window.ClientUser.id)
         Livewire.dispatch('LiveIHaveNewNotificationEvent', ev);
         
     })
+    .listen('YourMessageHasBeenLikedBySomeoneEvent', (data) =>{
+
+        Livewire.dispatch('LiveYourMessageHasBeenLikedBySomeoneToTheUserEvent', {liker_data: data.liker, user_data: data.user});
+        
+    })
+    .listen('ForumChatSujectHasBeenSubmittedSuccessfullyEvent', (data) =>{
+
+        Livewire.dispatch('LiveForumChatSubjectHasBeenSubmittedToAdminsEvent', { user: data.user});
+        
+    })
+
+e.join('forumChatRoom')
+
+    .here((users)  => {
+
+        console.log(users);
+
+        Livewire.dispatch('LiveConnectedUsersToForumEvent', {users: users});
+        
+    })
+
+    .joining((user)  => {
+        console.log(user);
+
+    })
+
+    .leaving((user)  => {
+        
+
+    })
+
+    .error((users)  => {
+        
+
+    })
+
+    .listen('ChatMessageHasBeenSentSuccessfullyEvent', (data) =>{
+
+        Livewire.dispatch('LiveLoadNewMessageEvent', {data: data.user});
+        
+    })
+    .listen('UserIsTypingMessageEvent', (data) =>{
+
+        Livewire.dispatch('LiveUserIsTypingMessageEvent', {user_data: data.user});
+        
+    })
+    .listen('YourMessageHasBeenLikedBySomeoneEvent', (data) =>{
+
+        Livewire.dispatch('LiveYourMessageHasBeenLikedBySomeoneEvent', {liker_data: data.liker, user_data: data.user});
+        
+    })
+    .listen('ForumChatSubjectHasBeenValidatedByAdminsEvent', (data) =>{
+
+        Livewire.dispatch('LiveForumChatSubjectHasBeenValidatedByAdminsEvent', {user: data.user});
+        
+    })
+
+    
     
 
     

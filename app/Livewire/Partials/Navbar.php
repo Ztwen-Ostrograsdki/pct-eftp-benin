@@ -4,10 +4,9 @@ namespace App\Livewire\Partials;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
-use App\Helpers\CartManager;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -15,7 +14,7 @@ class Navbar extends Component
 {
     use Toast, Confirm;
 
-    public $total_items = 0;
+    public $counter = 0;
 
     protected $listeners = [
         'LiveLogoutUserEvent' => 'logout',
@@ -26,23 +25,47 @@ class Navbar extends Component
 
     public function mount()
     {
-        $this->total_items = count(CartManager::getAllCartItemsFromCookies());
     }
 
-    #[On('UpdateCartItemsCounter')]
-    public function updateCartItemsCounter($counter)
+    
+
+    #[On('LiveYourMessageHasBeenLikedBySomeoneToTheUserEvent')]
+    public function reloadMessagesForLikes($liker_data = null)
     {
-        $this->total_items = $counter;
+        $this->counter = rand(2, 23);
+
+        $data_liker = new User($liker_data);
+
+        $liker = $data_liker->getFullName();
+
+        $this->toast("$liker a aimé votre message!", 'success');
     }
 
-    public function clearCart()
+    #[On('LiveForumChatSubjectHasBeenValidatedByAdminsEvent')]
+    public function forumChatSubjectValidated($user = null)
     {
-        $carts_items = CartManager::clearCartItemsFromCookies();
+        $this->counter = rand(2, 23);
 
-        $this->dispatch('UpdateCartItemsCounter', count($carts_items));
+        $user = new User($user);
 
+        $name = $user->getFullName();
+
+        $this->toast("Un nouveau sujet de discussion a été publié sur le forum par $name", 'success');
+    }
+    
+    #[On('LiveForumChatSubjectHasBeenValidatedByAdminsEvent')]
+    public function forumChatSubjectSubmitted($user = null)
+    {
+        $this->counter = rand(2, 23);
+
+        $user = new User($user);
+
+        $name = $user->getFullName();
+
+        $this->toast("Un nouveau sujet de discussion a été publié sur le forum par $name", 'success');
     }
 
+   
     
     public function render()
     {

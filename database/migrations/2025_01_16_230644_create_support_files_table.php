@@ -35,13 +35,7 @@ return new class extends Migration
             $table->string('contents_titles')->nullable()->default(null);
         });
 
-        Schema::table('epreuves', function (Blueprint $t) {
-            $t->string('pages')->nullable()->default(null);
-        });
-
-        Schema::table('epreuve_responses', function (Blueprint $t) {
-            $t->string('pages')->nullable()->default(null);
-        });
+        
     }
 
     /**

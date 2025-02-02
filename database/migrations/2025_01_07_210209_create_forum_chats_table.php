@@ -22,8 +22,11 @@ return new class extends Migration
             $table->string('file_extension')->nullable()->default(null);
             $table->string('file_pages')->nullable()->default(null);
             $table->string('reply_to_message_id')->nullable()->default(null);
+            $table->json('likes')->nullable()->default(null);
             $table->json('seen_by')->nullable()->default(null);
             $table->json('delete_by')->nullable()->default(null);
+            $table->boolean('authorized')->nullable()->default(true);
+            $table->boolean('reported')->nullable()->default(false);
         });
     }
 

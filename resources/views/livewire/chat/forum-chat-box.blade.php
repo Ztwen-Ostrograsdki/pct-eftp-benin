@@ -1,76 +1,142 @@
 <div>
     <div class="lg:text-lg md:text-base sm:text-sm xs:text-xs">
-        <div class="m-auto border rounded-full my-1 w-4/5 z-bg-secondary-light-opac p-0">
+        <div class="border mx-auto rounded-lg my-1 w-4/5 z-bg-secondary-light p-0">
             <div class="m-0 p-3 w-full">
-                <h4 class="text-lg text-gray-400 border shadow-2 shadow-sky-400 rounded-full p-3 border-gray-400">
-                    <span class="fa fa-message text-sky-500"></span>
-                    Forum de discussion et d'échanges
+                <h4 class="text-gray-400 letter-spacing-2 shadow-2 p-3 border-b border-sky-500 flex justify-between items-center">
+                    <span>
+                        <span class="fa fa-message text-sky-500 "></span>
+                        Forum de discussion et d'échanges
+                    </span>
+
+                    @if(session()->has('typing'))
+                        <div class="">
+                            <h6 class="text-xs letter-spacing-1 text-yellow-500 float-right text-right font-semibold animate-pulse"> {{session('typing')}} est entrain d'écrire... </h6>
+                        </div>
+                    @endif
                 </h4>
+                @if($active_chat_subject)
+                    <div class="mx-auto p-2">
+                        <h6 wire:click='toggleSubject' class="text-sky-500 letter-spacing-2 font-semibold cursor-pointer">
+                            Sujet de discussion en cours 
+
+                            @if($subject_show)
+                            <span wire:click='toggleSubject' title="Masquer le sujet de discussion" class="p-2 cursor-pointer">
+                                <span class="fas fa-eye-slash"></span>
+                            </span>
+                            @else
+                            <span wire:click='toggleSubject' title="Afficher le sujet de discussion" class="p-2 cursor-pointer">
+                                <span class="fas fa-eye"></span>
+                            </span>
+                            @endif
+                        </h6>
+                        @if($subject_show)
+                        <div class="letter-spacing-1 text-gray-500 shadow-1 shadow-sky-500 rounded-xl p-2 mt-2">
+                            <span class="">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis dolorum reprehenderit facere eaque alias accusantium voluptatum sunt sapiente exercitationem! Corporis pariatur illo voluptatem deserunt facilis ad. Perspiciatis quod architecto asperiores.
+                            </span>
+                        </div>
+                        @endif
+                    </div>
+                @else
+                <div class="mx-auto p-2">
+                    <h6 title="Créer un sujet de discussion sur le forum, attirer l'attention de tous sur une préoccupation et fermer votre discussion à tout moment!" wire:click='addNewChatSubject' class="text-sky-700 rounded-lg letter-spacing-2 font-semibold inline-block px-3 py-2 shadow-2 shadow-sky-600 cursor-pointer hover:text-sky-400 hover:bg-sky-900">
+                        Lancer un sujet de discussion
+
+                        <span class="fas fa-plus"></span>
+                        
+                    </h6>
+                </div>
+                @endif
+                <div class="flex justify-end " title="Cliquer pour voir la liste de ceux qui sont connectés présentement">
+                    <span class="ml-2 text-green-600 cursor-pointer letter-spacing-1 font-semibold">
+                        <span>
+                            <span class="fas fa-circle text-green-500 animate-pulse"></span>
+                            {{ $onlines_users }}
+                            <span class=""> en ligne(s)</span>
+                        </span>
+                    </span>
+                </div>
             </div>
         </div>
 
-        <div class="m-auto border rounded-xl my-1 w-4/5 z-bg-secondary-light-opac  p-2">
+        <div class="m-auto border rounded-xl my-1 w-4/5 z-bg-secondary-light p-2">
             <div class="p-2">
                 <div class="flex flex-col">
-                    <div class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs">
-                        <div class="rounded-xl p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 float-start shadow-2 shadow-sky-400">
-                            <div class="flex items-center gap-x-3 rounded-full p-2 shadow-2 shadow-sky-400">
-                                <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo(auth_user()) }}" alt="user photo">
-                                <h6 class="text-gray-300 letter-spacing-2 ">
-                                    {{ auth_user_fullName() }}
-                                </h6>
-                            </div>
-                            <div class="text-gray-400 letter-spacing-2">
-                                <p class="p-2">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aspernatur commodi officiis voluptate delectus in perspiciatis optio id eaque aliquid et asperiores tempore at qui accusantium aperiam, voluptatem laudantium ad.
-                                </p>
-                            </div>
-                            <div class="flex justify-end text-xs">
-                                <span class="text-orange-500 letter-spacing-2">
-                                    Envoyé le 02 Jan 2025 à 12H 45'
-                                </span>
-                            </div>
+                    @foreach ($chats as $chat)
+                        @if($chat->notHiddenFor(auth_user()->id))
+                            <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs ">
+                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 @else shadow-sky-400  @endif">
+                                    <div class="flex items-center gap-x-3 rounded-full md:p-2 sm:p-1 xs:p-1 shadow-2 @if($chat->user_id == auth_user()->id) shadow-purple-400 @else shadow-sky-400 @endif">
+                                        <img class="md:w-8 md:h-8 sm:h-4 sm:w-4 xs:h-4 xs:w-4 rounded-full @if($chat->user_id == auth_user()->id) float-right text-right @endif"  src="{{ user_profil_photo($chat->user) }}" alt="user photo">
+                                        <h6 class="text-gray-300  md:block xs:hidden sm:hidden letter-spacing-2 float-right text-right">
+                                            {{ $chat->user->getFullName() }}
+                                        </h6>
 
-                        </div>
+                                        <h6 class="text-gray-300 md:hidden sm:block letter-spacing-2 float-right text-right">
+                                            {{ $chat->user->firstname }}
+                                        </h6>
+                                    </div>
+                                    <div class="text-gray-400 letter-spacing-2">
+                                        <p class="p-2">
+                                            {{ $chat->message }}
+                                        </p>
+                                    </div>
 
-                        <div class="rounded-xl p-2 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 float-end shadow-2 mb-3  shadow-purple-400">
-                            <div class="flex items-center justify-end gap-x-3 rounded-full p-2 shadow-2 shadow-purple-400">
-                                <h6 class="text-gray-300 letter-spacing-2 float-right text-right">
-                                    {{ auth_user_fullName() }}
-                                </h6>
-                                <img class="w-8 h-8 rounded-full float-right text-right" src="{{ user_profil_photo(auth_user()) }}" alt="user photo">
-                            </div>
-                            <div class="text-gray-400 letter-spacing-2">
-                                <p class="p-2">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aspernatur commodi officiis voluptate delectus in perspiciatis optio id eaque aliquid et asperiores tempore at qui accusantium aperiam, voluptatem laudantium ad.
-                                </p>
-                            </div>
-                            <div class="flex justify-end text-xs">
-                                <span class="text-orange-500 letter-spacing-2">
-                                    Envoyé le 02 Jan 2025 à 12H 45'
-                                </span>
-                            </div>
+                                    <div class="w-full flex-col">
+                                        <div class="w-full transition translate-x-5 ease-out  float-start text-start invisible group-hover:visible group-hover:translate-x-0">
+                                            <div class="flex gap-x-2">
+                                                <span wire:click="deleteMessage({{$chat->id}})" title="supprimer ce message" class="fas fa-trash text-red-500 hover:scale-125 p-2"></span>
 
-                        </div>
-                    </div>
+                                                <label for="epreuve-message-input" wire:click="replyToMessage({{$chat->id}})" title="Répondre à ce message" class="fas cursor-pointer fa-reply text-blue-500 hover:scale-125 p-2"></label>
+
+                                                <span wire:click="likeMessage({{$chat->id}})" title="Liker ce message" class="fas fa-heart text-success-500 hover:scale-125 p-2"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex w-full justify-end text-xs">
+                                            
+                                            @if($chat->likes)
+                                            <div class="mr-2">
+                                                <span>
+                                                    <span  class="text-green-600"> {{ count($chat->likes) }}  </span>
+                                                    <span title="{{count($chat->likes)}} personnes ont aimé ce message" class="fas transition ease-in-out fa-heart text-success-500 "></span>
+                                                </span>
+                                            </div>
+                                            @endif
+                                            <div class="m-0 p-0">
+                                                <small class="text-orange-500 letter-spacing-2 transition translate-x-5 ease-out inline group-hover:hidden group-hover:translate-x-0">
+                                                    {{$chat->getDateAgoFormated(true)}}
+                                                </small>
+                                                <small class="text-orange-500 letter-spacing-2 transition translate-x-5 ease-out hidden group-hover:inline group-hover:translate-x-0">
+                                                    Posté le {{$chat->__getDateAsString($chat->created_at, 3, true)}}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
             </div>
             <div class="w-full py-1 my-3 px-3 lg:text-sm md:text-sm sm:text-xs">
-                <form class="w-full mx-auto">   
+                <form @submit.prevent class="w-full mx-auto">   
                     <label for="default-message" class="mb-2 font-medium text-gray-900 sr-only dark:text-white">Envoyer</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                             <span class="w-4 h-4 text-gray-500 fas fa-message dark:text-gray-400" aria-hidden="true" >
                             </span>
                         </div>
-                        <input wire:model.live="message" type="message" id="epreuve-message" class=" block w-full p-4 ps-10 letter-spacing-2 text-gray-900 border border-gray-300 rounded-lg bg-transparent focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus" placeholder="Tapez votre message..." />
-                        @if(!$message)
-                        <span wire:click="sendMessage" class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ">
-                            Envoyer
-                            <span class="ml-2 fas fa-paper-plane"></span>
+                        <input wire:keydown.enter="sendMessage" wire:model.live="message" type="message" id="epreuve-message-input" class=" block w-full p-4 ps-10 letter-spacing-2 border border-gray-300 rounded-lg bg-transparent focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 letter-spacing-1 focus text-gray-400 font-semibold" placeholder="Tapez votre message..." />
+                        @if($message !== '' && $message !== null)
+                        <span class="gap-x-1 items-center text-white md:inline lg:inline absolute end-2.5 bottom-2.5 focus:ring-4 mb-2 focus:outline-none focus:ring-blue-300 font-medium  ">
+                            <span wire:click="sendMessage" class=" bg-blue-700 hover:bg-blue-800 cursor-pointer focus:ring-4 focus:outline-none  px-4 py-2 dark:bg-blue-600 rounded-lg dark:hover:bg-blue-700 dark:focus:ring-blue-800 ">
+                                Envoyer
+                                <span class="ml-2 fas fa-paper-plane"></span>
+                            </span>
+                            <span wire:click="resetMessage" class="ml-1 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg  px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer ">Effacer</span>
                         </span>
-                        @else
-                        <span wire:click="resetMessage" class="text-white md:inline lg:inline absolute end-2.5 bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer ">Effacer</span>
                         @endif
                     </div>
                 </form>

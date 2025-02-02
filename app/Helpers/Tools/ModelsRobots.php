@@ -2,6 +2,7 @@
 namespace App\Helpers\Tools;
 
 use App\Models\Epreuve;
+use App\Models\ForumChatSubject;
 use App\Models\SupportFile;
 use App\Models\User;
 use App\Notifications\NotifyAdminThatBlockedUserTriedToLoginToUnblockThisUserAccount;
@@ -108,6 +109,31 @@ class ModelsRobots{
         }
     }
 
+    public static function notificationToAdminsThatNewForumChatSubjectPublished(User $user, ForumChatSubject $forumChatSubject)
+    {
+        if($user && $user->confirmed_by_admin){
+
+            $admins = self::getAllAdmins();
+
+            $since = $forumChatSubject->__getDateAsString($forumChatSubject->created_at, 3, true);
+
+            $subjet = "Validation d'un sujet de discussion publié sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
+            " et d'identifiant personnel : ID = " . $user->identifiant;
+
+            $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer le sujet de discussion publié par "
+            . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
+                
+                ". Le sujet de discussion a été publié le " . $since . " .";
+
+            foreach($admins as $admin){
+
+                $admin->notify(new SendDynamicMailToUser($subjet, $body));
+
+            }
+
+        }
+    }
+
     public static function deleteFileFromStorageManager($path)
     {
 
@@ -118,6 +144,8 @@ class ModelsRobots{
         return File::delete($complete_path);
         
     }
+
+    
 
 
 

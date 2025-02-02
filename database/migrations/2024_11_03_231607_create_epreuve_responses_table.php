@@ -32,6 +32,7 @@ return new class extends Migration
             $table->json('seen_by')->nullable()->default(null);
             $table->json('downloaded_by')->nullable()->default(null);
             $table->json('likes')->nullable()->default(null);
+            $table->string('pages')->nullable()->default(null);
         });
     }
 

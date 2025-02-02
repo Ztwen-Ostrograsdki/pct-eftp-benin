@@ -25,7 +25,7 @@ class ObserveEpreuve
             $object = "Validation d'une épreuve publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
             " et d'identifiant personnel : ID = " . $user->identifiant;
 
-            $content = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
+            $content = "Vous recevez cette notification parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
             . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
                 
                 ". L'épreuve a été publiée le " . $since . " ."

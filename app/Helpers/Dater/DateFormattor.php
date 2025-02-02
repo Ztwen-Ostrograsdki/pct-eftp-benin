@@ -305,6 +305,7 @@ trait DateFormattor{
 
             return $this->dateAgoToString;
         }
+        
         return $this->dateAgoToStringForUpdated;
     }
 

@@ -24,7 +24,7 @@
                         <label for="new-role-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">La fonction</label>
                         <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='name' type="text" name="name" id="new-role-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Le nom de la fonction">
                         @error('name')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
 
@@ -42,7 +42,7 @@
                             @endforeach
                         </select>
                         @error('user_id')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="col-span-2 sm:col-span-1">
@@ -54,7 +54,7 @@
                             @endforeach
                         </select>
                         @error('ability')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="col-span-2 sm:col-span-1">
@@ -65,21 +65,21 @@
                                 <option value="{{false}}">NON</option>
                         </select>
                         @error('is_active')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="col-span-2">
                         <label for="new-role-description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <small class="text-yellow-300">Facultative</small> </label>
                         <textarea wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='description' id="new-role-description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Décrivez brièvement cette fonction"></textarea>                    
                         @error('description')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="col-span-2">
                         <label for="tasks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Une Tâche ou prérogative <small class="text-yellow-300">Une et une seule  </small> </label>
                         <textarea wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='tasks' id="tasks" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="listez les tâches ou les prérogatives liées à cette fonction"></textarea>                    
                         @error('tasks')
-                            <small class="text-xs text-red-600 mt-2" id="email_verify_key-error">{{ $message }}</small>
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>

@@ -24,3 +24,5 @@ document.addEventListener('livewire:navigated', () =>{
 
 
 
+
+

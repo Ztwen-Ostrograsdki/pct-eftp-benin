@@ -18,6 +18,8 @@ class MembersHomePage extends Component
         'users-list' => "Les enseignants",
         'members' => "Les membres",
         'roles' => "Les Fonctions",
+        'laws' => "Les Lois",
+        'subjects' => "Les Sujets de discussion",
         'info' => "Les Communiqués",
         'epreuves' => "Les Epreuves",
         "lays" => "Les réglements intérieurs",
@@ -51,10 +53,16 @@ class MembersHomePage extends Component
         return view('livewire.master.members-home-page');
     }
 
+    #[On('LiveUpdateLawEcosystemEvent')]
+    public function reloadLawData()
+    {
+        $this->counter = getRandom();
+    }
+
 
     #[On('UpdatedMemberList')]
     public function reloadData()
     {
-        $this->counter = rand(3, 342);
+        $this->counter = getRandom();
     }
 }

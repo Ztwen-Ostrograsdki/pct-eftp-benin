@@ -4,6 +4,8 @@ namespace App\Livewire\Chat;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\ForumChatSubjectHasBeenClosedEvent;
+use App\Events\ForumChatSubjectHasBeenLikedBySomeoneEvent;
 use App\Events\NewChatMessageIntoForumEvent;
 use App\Events\UserIsTypingMessageEvent;
 use App\Events\YourMessageHasBeenLikedBySomeoneEvent;
@@ -26,7 +28,7 @@ class ForumChatBox extends Component
 
     public $counter = 0;
 
-    public $subject_show = false;
+    public $subject_show = true;
 
 
     
@@ -103,6 +105,18 @@ class ForumChatBox extends Component
     
     #[On('LiveYourMessageHasBeenLikedBySomeoneEvent')]
     public function reloadMessagesForLikes($data = null)
+    {
+        $this->counter = rand(2, 23);
+    }
+    
+    #[On('LiveForumChatSubjectHasBeenClosedEvent')]
+    public function reloadMessagesForClosedSubject($data = null)
+    {
+        $this->counter = rand(2, 23);
+    }
+    
+    #[On('LiveForumChatSubjectHasBeenLikedBySomeoneEvent')]
+    public function reloadMessagesForSubjectLiked($data = null)
     {
         $this->counter = rand(2, 23);
     }
@@ -184,6 +198,60 @@ class ForumChatBox extends Component
     {
         
     }
+
+    public function deleteSubject($subject_id = null)
+    {
+        $active_chat_subject = ForumChatSubject::where('active', true)->where('authorized', 1)->first();
+
+        if($active_chat_subject){
+
+            $closed = $active_chat_subject->update(['closed' => true, 'active' => false]);
+
+            if($closed){
+
+                ForumChatSubjectHasBeenClosedEvent::dispatch();
+            }
+
+        }
+    }
+
+    public function likeSubject($subject_id = null)
+    {
+        $user_id = auth_user()->id;
+
+        $active_chat_subject = ForumChatSubject::where('active', true)->where('authorized', 1)->first();
+
+        if($active_chat_subject){
+
+            $name = $active_chat_subject->user->getFullName();
+
+            $likes = (array)$active_chat_subject->likes;
+
+            if(!in_array($user_id, $likes)){
+
+                $likes[] = $user_id;
+
+                $active_chat_subject->update(['likes' => $likes]);
+
+                ForumChatSubjectHasBeenLikedBySomeoneEvent::dispatch(auth_user(), $active_chat_subject->user);
+
+                $this->toast("Vous avez aimé ce topic de $name!", 'success');
+
+            }
+            else{
+
+                $key = array_keys($likes, $user_id);
+
+                unset($likes[$key[0]]);
+
+                $active_chat_subject->update(['likes' => $likes]);
+
+                $this->reloadMessages();
+
+            }
+        }
+    }
+
 
 
     public function resetMessage()

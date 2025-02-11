@@ -32,7 +32,7 @@ class Navbar extends Component
     #[On('LiveYourMessageHasBeenLikedBySomeoneToTheUserEvent')]
     public function reloadMessagesForLikes($liker_data = null)
     {
-        $this->counter = rand(2, 23);
+        $this->counter = getRandom();
 
         $data_liker = new User($liker_data);
 
@@ -44,7 +44,7 @@ class Navbar extends Component
     #[On('LiveForumChatSubjectHasBeenValidatedByAdminsEvent')]
     public function forumChatSubjectValidated($user = null)
     {
-        $this->counter = rand(2, 23);
+        $this->counter = getRandom();
 
         $user = new User($user);
 
@@ -56,13 +56,19 @@ class Navbar extends Component
     #[On('LiveForumChatSubjectHasBeenValidatedByAdminsEvent')]
     public function forumChatSubjectSubmitted($user = null)
     {
-        $this->counter = rand(2, 23);
+        $this->counter = getRandom();
 
         $user = new User($user);
 
         $name = $user->getFullName();
 
         $this->toast("Un nouveau sujet de discussion a été publié sur le forum par $name", 'success');
+    }
+    
+    #[On('LiveUpdateLawEcosystemEvent')]
+    public function reloadLawData()
+    {
+        $this->counter = getRandom();
     }
 
    
@@ -74,6 +80,8 @@ class Navbar extends Component
 
     public function newNotification($user = null)
     {
+        $this->counter = getRandom();
+
         $this->toast("Vous avez reçu une nouvelle notification!!!");
     }
 

@@ -1,5 +1,5 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
-    <div class="py-2 mb-4 text-center shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5">
+    <div class="py-2 mb-4 text-center shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5 mt-14">
         <div class="w-full px-2">
             <h4 class="py-3 font-bold letter-spacing-2">
                 <span class="text-sky-400">

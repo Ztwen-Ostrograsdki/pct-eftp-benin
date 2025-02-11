@@ -158,7 +158,7 @@
             @elseif($search)
               <div>
                 <h5 class="text-gray-400 letter-spacing-1 shadow-inner rounded-lg shadow-sky-500 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-sm animate-pulse text-center py-4 my-4">
-                  <span>Désolée aucune résultat trouvé avec 
+                  <span>Désolée aucun résultat trouvé avec 
                     <b class="text-red-600 underline">
                       {{ $search }}
                     </b>

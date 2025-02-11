@@ -45,9 +45,17 @@
                 <div>
                     @livewire('master.roles-list-page')
                 </div>
-                @elseif($member_section == "epreuves")
-            <div>
+            @elseif($member_section == "epreuves")
+                <div>
                     @livewire('master.epreuves-list-page')
+                </div>
+            @elseif($member_section == "subjects")
+                <div>
+                    @livewire('master.forum-chat-subjects-list')
+                </div>
+            @elseif($member_section == "laws")
+                <div>
+                    @livewire('master.laws-page')
                 </div>
             @endif
         </div>

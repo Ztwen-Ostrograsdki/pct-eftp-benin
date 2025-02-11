@@ -39,6 +39,11 @@ e.private('confirmeds')
             Livewire.dispatch('LiveSupportFileWasCreatedSuccessfullyEvent');
             
         })
+        .listen('UpdateLawEcosystemEvent', () =>{
+
+            Livewire.dispatch('LiveUpdateLawEcosystemEvent');
+            
+        })
 
     
 
@@ -73,6 +78,11 @@ e.private('admin')
     .listen('SupportFileWasCreatedSuccessfullyEvent', (user) =>{
 
         Livewire.dispatch('LiveSupportFileWasCreatedSuccessfullyEvent', user);
+        
+    })
+    .listen('ForumChatSubjectHasBeenClosedEvent', (data) =>{
+
+        Livewire.dispatch('LiveForumChatSubjectHasBeenClosedEvent');
         
     })
 
@@ -144,6 +154,16 @@ e.join('forumChatRoom')
     .listen('ForumChatSubjectHasBeenValidatedByAdminsEvent', (data) =>{
 
         Livewire.dispatch('LiveForumChatSubjectHasBeenValidatedByAdminsEvent', {user: data.user});
+        
+    })
+    .listen('ForumChatSubjectHasBeenClosedEvent', (data) =>{
+
+        Livewire.dispatch('LiveForumChatSubjectHasBeenClosedEvent');
+        
+    })
+    .listen('ForumChatSubjectHasBeenLikedBySomeoneEvent', (data) =>{
+
+        Livewire.dispatch('LiveForumChatSubjectHasBeenLikedBySomeoneEvent');
         
     })
 

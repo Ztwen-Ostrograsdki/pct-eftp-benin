@@ -335,6 +335,42 @@ if(!function_exists('findFiliars')){
     }
 }
 
+if(!function_exists('getRand')){
+
+    function getRand($min = 2, $max = 234)
+    {
+        return rand($min, $max);
+    }
+
+}
+
+if(!function_exists('getRandom')){
+
+    function getRandom($min = 2, $max = 234)
+    {
+        return rand($min, $max);
+    }
+
+}
+
+if(!function_exists('randomNumber')){
+
+    function randomNumber($min = 2, $max = 234)
+    {
+        return rand($min, $max);
+    }
+
+}
+
+if(!function_exists('randNumber')){
+
+    function randNumber($min = 2, $max = 234)
+    {
+        return rand($min, $max);
+    }
+
+}
+
 
 
 

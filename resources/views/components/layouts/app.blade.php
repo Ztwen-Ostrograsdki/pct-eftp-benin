@@ -20,11 +20,14 @@
         </div>
         
         @livewire('partials.navbar')
-        <main>
+        <main class="pt-20 bg-inherit">
             {{ $slot }}
         </main>
         @livewire('chat.new-forum-chat-subject-modal')
         @livewire('master.modals.new-member-modal-component')
+        @livewire('master.modals.new-law-modal')
+        @livewire('master.modals.new-chapter-modal')
+        @livewire('master.modals.new-article-modal')
         @livewire('master.modals.new-role-modal-component')
         @livewire('master.modals.role-manager-component')
         @livewire('master.modals.open-user-profil-photo-view-component')

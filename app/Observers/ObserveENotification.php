@@ -3,7 +3,9 @@
 namespace App\Observers;
 
 use App\Events\IHaveNewNotificationEvent;
+use App\Events\ToasterMessagesEvent;
 use App\Models\ENotification;
+use Illuminate\Support\Str;
 
 class ObserveENotification
 {
@@ -12,12 +14,16 @@ class ObserveENotification
      */
     public function created(ENotification $eNotification): void
     {
+
         $receivers = $eNotification->getReceivers();
 
         foreach($receivers as $user){
+
+            ToasterMessagesEvent::dispatch(Str::random(14), "Un sujet de discussion a été publié", 'success', 'check', $user->id);
             
             IHaveNewNotificationEvent::dispatch($user);
         }
+        
     }
 
     /**

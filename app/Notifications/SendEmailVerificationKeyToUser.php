@@ -46,7 +46,7 @@ class SendEmailVerificationKeyToUser extends Notification
                     ->line("Vous avez lancer l'inscription sur " . config('app.name') . " avec l'addresse : " . $notifiable->email)
                     ->action('Confirmez votre compte ', url(route('email.verification', ['email' => $notifiable->email, 'key' => $this->key])))
                     ->line('La clé est : ' . $this->key)
-                    ->line("Ensemble développons de notre communauté scientifique !!!");
+                    ->line("Ensemble développons notre communauté scientifique !!!");
     }
 
     /**

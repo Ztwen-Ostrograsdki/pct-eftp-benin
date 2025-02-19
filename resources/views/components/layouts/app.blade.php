@@ -21,6 +21,7 @@
         
         @livewire('partials.navbar')
         <main class="pt-20 bg-inherit">
+            @livewire("live-toaster")
             {{ $slot }}
         </main>
         @livewire('chat.new-forum-chat-subject-modal')

@@ -2,9 +2,11 @@
 
 namespace App\Observers;
 
+use App\Events\ToasterMessagesEvent;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\ForumChatSubject;
+use Illuminate\Support\Str;
 
 class ObserveForumChatSubject
 {
@@ -39,6 +41,8 @@ class ObserveForumChatSubject
         ];
 
         ENotification::create($data);
+
+        
     }
 
     /**

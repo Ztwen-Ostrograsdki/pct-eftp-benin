@@ -46,7 +46,7 @@ class SendPasswordResetKeyToUser extends Notification
                     ->line('Vous avez fait une demande de réinitialisation de votre mot de passe du compte ' . $notifiable->email)
                     ->action('Réinitialiser mon mot de passe', url(route('password.reset.by.email', ['email' => $notifiable->email, 'key' => $this->key])))
                     ->line('La clé est : ' . $this->key)
-                    ->line("Ensemble développons de notre communauté scientifique !!!");
+                    ->line("Ensemble développons notre communauté scientifique !!!");
     }
 
     /**

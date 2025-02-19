@@ -48,7 +48,7 @@ class SendDynamicMailToUser extends Notification
                     ->subject(__($this->sub))
                     ->line(__($this->bod))
                     ->line(__('Merci de prendre en compte ce mail'))
-                    ->line("Ensemble développons de notre communauté scientifique !!!");
+                    ->line("Ensemble développons notre communauté scientifique !!!");
     }
 
     /**

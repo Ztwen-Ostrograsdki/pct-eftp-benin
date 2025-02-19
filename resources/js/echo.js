@@ -110,19 +110,21 @@ e.private('App.Models.User.' + window.ClientUser.id)
         Livewire.dispatch('LiveForumChatSubjectHasBeenSubmittedToAdminsEvent', { user: data.user});
         
     })
+    .listen('ToasterMessagesEvent', (data) =>{
+
+        Livewire.dispatch('LiveToasterMessagesEvent', { toaster_data: data.toaster_data});
+        
+    })
 
 e.join('forumChatRoom')
 
     .here((users)  => {
-
-        console.log(users);
 
         Livewire.dispatch('LiveConnectedUsersToForumEvent', {users: users});
         
     })
 
     .joining((user)  => {
-        console.log(user);
 
     })
 

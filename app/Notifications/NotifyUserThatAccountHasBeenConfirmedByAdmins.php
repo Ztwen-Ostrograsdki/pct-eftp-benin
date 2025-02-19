@@ -47,7 +47,7 @@ class NotifyUserThatAccountHasBeenConfirmedByAdmins extends Notification
         ->line("Votre identifiant unique de la plateforme est " . $notifiable->identifiant . " !")
         ->line("Vous pouvez à présent vous connecter !")
         ->action('Je me connecte ' , url(route('login', ['email' => $notifiable->email])))
-        ->line("Ensemble développons de notre communauté scientifique !!!");
+        ->line("Ensemble développons notre communauté scientifique !!!");
     }
 
     /**

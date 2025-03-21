@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('law_chapters', function (Blueprint $table) {
             $table->id();
             $table->string('chapter');
+            $table->string('slug')->unique();
             $table->text('description')->nullable()->default(null);
             $table->foreignId('law_id')->constrained('laws')->cascadeOnDelete();
             $table->text('content')->nullable()->default(null);

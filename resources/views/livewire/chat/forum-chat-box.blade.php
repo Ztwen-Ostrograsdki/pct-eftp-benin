@@ -94,13 +94,13 @@
                 </div>
                 @endif
                 <div class="flex justify-end " title="Cliquer pour voir la liste de ceux qui sont connectés présentement">
-                    <span class="ml-2 text-green-600 cursor-pointer letter-spacing-1 font-semibold">
+                    <a href="#" title="Afficher les enseignants ou membres connectés"  class="ml-2 lg:text-sm xl:text-sm md:text-sm sm:text-xs xs:text-xs text-green-600 letter-spacing-1 font-semibold" data-drawer-target="drawer-online-users" data-drawer-hide="drawer-online-users" data-drawer-show="drawer-online-users" aria-controls="drawer-online-users" data-drawer-backdrop="false" data-drawer-placement="right" data-drawer-body-scrolling="true" type="button">
                         <span>
                             <span class="fas fa-circle text-green-500 animate-pulse"></span>
-                            {{ $onlines_users }}
+                            Voir ceux qui sont
                             <span class=""> en ligne(s)</span>
                         </span>
-                    </span>
+                    </a>
                 </div>
             </div>
         </div>

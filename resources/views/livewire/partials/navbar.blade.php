@@ -1,6 +1,6 @@
 <nav class="bg-white border-b top-0 start-0 fixed border-sky-600 dark:bg-gray-900 w-full z-50">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-  <a href="#" data-drawer-hide="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation" data-drawer-backdrop="false" class="flex items-center space-x-3 rtl:space-x-reverse">
+  <a href="#" data-drawer-hide="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation" data-drawer-body-scrolling="true" type="button" data-drawer-backdrop="false" class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="{{asset(env('APP_LOGO'))}}" alt="" class="h-9 rounded-full animate-pulse hover:animate-none" alt="{{config('app.name')}}">
       
       <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 hidden animate-spin hover:animate-none" alt="{{config('app.name')}}" />
@@ -138,6 +138,8 @@
     </ul>
   </div>
   </div>
+
+  <!-- DRAWER MENU -->
   <div id="drawer-navigation" class="fixed border-r top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-auto dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-navigation-label">
     <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
     <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white" >
@@ -246,4 +248,5 @@
       </ul>
    </div>
 </div>
+@livewire('chat.online-users')
 </nav>

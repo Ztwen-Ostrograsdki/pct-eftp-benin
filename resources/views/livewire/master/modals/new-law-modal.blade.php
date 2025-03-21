@@ -8,7 +8,7 @@
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Ajouter une nouvelle loi
+                    @if($editing_law) Mise à jour  @else Création @endif de loi
                 </h3>
                 <button wire:click='hideModal' type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -37,7 +37,10 @@
                     </div>
                 </div>
                 <span wire:click="insert" class="border mx-auto cursor-pointer flex items-center text-center justify-center w-3/5 bg-blue-700 text-gray-100 hover:bg-blue-600 px-5 py-2 rounded-full">
-                    <span wire:loading.remove wire:target='insert'>Insérer</span>
+                    <span wire:loading.remove wire:target='insert'>
+                        
+                        @if($editing_law) Mettre à jour @else Insérer @endif
+                    </span>
                     <span wire:loading wire:target='insert' class="">Traitement en cours...</span>
                     <span wire:loading wire:target='insert' class="fas fa-rotate animate-spin"></span>
                 </span>

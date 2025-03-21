@@ -285,6 +285,17 @@ trait UserTrait{
                         if(in_array($this->id, $hide_for)) $data[] = $f;
 
                     }
+                    elseif($options == 'news'){
+
+                        $created = $f->created_at;
+
+                        $date_timestamp = Carbon::parse($created);
+
+                        $now_timestamp = Carbon::now();
+
+                        if($now_timestamp->diffInHours($date_timestamp) < 72) $data[] = $f;
+
+                    }
                     
                 }
             }

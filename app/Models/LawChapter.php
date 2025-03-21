@@ -16,6 +16,7 @@ class LawChapter extends Model
     
     protected $fillable = [
         'chapter',
+        'slug',
         'description',
         'law_id'
 

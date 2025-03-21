@@ -37,6 +37,10 @@
                 <div>
                     @livewire('master.members-list-page')
                 </div>
+            @elseif($member_section == "members-cards")
+                <div>
+                    @livewire('master.members-cards-list')
+                </div>
             @elseif($member_section == "users-list")
                 <div>
                     @livewire('master.users-list-page')

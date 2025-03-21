@@ -11,20 +11,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateLawEcosystemEvent implements ShouldBroadcast
+class NotificationsDeletingEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
 
+    public $data;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(?User $user)
+    public function __construct(User $user, array $data)
     {
-        if(!$user) $user = auth_user();
-
         $this->user = $user;
+
+        $this->data = $data;
     }
 
     /**
@@ -34,19 +36,8 @@ class UpdateLawEcosystemEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        if($this->user){
-            return [
-                new PrivateChannel('confirmeds'),
-                
-                new PrivateChannel('App.Models.User.' . $this->user->id),
-            ];
-        }
-        else{
-            return [
-                new PrivateChannel('confirmeds'),
-                
-            ];
-    
-        }
+        return [
+            new PrivateChannel('App.Models.User.' . $this->user->id),
+        ];
     }
 }

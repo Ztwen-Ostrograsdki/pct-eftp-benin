@@ -44,6 +44,11 @@ e.private('confirmeds')
             Livewire.dispatch('LiveUpdateLawEcosystemEvent');
             
         })
+        .listen('LawChaptersCreationCompletedEvent', () =>{
+
+            Livewire.dispatch('LiveLawChaptersCreationCompletedEvent');
+            
+        })
 
     
 
@@ -113,6 +118,11 @@ e.private('App.Models.User.' + window.ClientUser.id)
     .listen('ToasterMessagesEvent', (data) =>{
 
         Livewire.dispatch('LiveToasterMessagesEvent', { toaster_data: data.toaster_data});
+        
+    })
+    .listen('NotificationsDeletedSuccessfullyEvent', (data) =>{
+
+        Livewire.dispatch('LiveNotificationsDeletedSuccessfullyEvent');
         
     })
 

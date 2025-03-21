@@ -12,9 +12,12 @@ use App\Livewire\Libraries\EpreuvesUploader;
 use App\Livewire\Libraries\LibraryHomePage;
 use App\Livewire\Libraries\SupportFilesPage;
 use App\Livewire\Libraries\SupportFilesUploader;
+use App\Livewire\Master\LawChapterProfilPage;
+use App\Livewire\Master\LawProfilPage;
 use App\Livewire\Master\MembersHomePage;
 use App\Livewire\Master\MembersListPage;
 use App\Livewire\Master\UsersListPage;
+use App\Livewire\User\CardMemberComponent;
 use App\Livewire\User\MemberProfil;
 use App\Livewire\User\MyNotificationsPage;
 use App\Livewire\User\UserEditionPage;
@@ -32,10 +35,17 @@ Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 
     Route::get('administration/aesp-eftp/les-membres', MembersListPage::class)->name('master.members.list');
 
+    Route::get('administration/aesp-eftp/carte-de-membre/membre={identifiant}', CardMemberComponent::class)->name('master.card.member');
+
 
 });
 
 Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->group(function(){
+
+    
+    Route::get('association/details-loi/Loi={slug}', LawProfilPage::class)->name('law.profil');
+
+    Route::get('association/details-loi/Loi={slug}/chapitre={chapter_slug}', LawChapterProfilPage::class)->name('law.profil.chapter');
 
     Route::get('chat/forum/', ForumChatBox::class)->name('forum.chat');
 

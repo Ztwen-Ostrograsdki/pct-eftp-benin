@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\MemberCard;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -31,5 +32,10 @@ class Member extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function card()
+    {
+        return $this->hasOne(MemberCard::class);
     }
 }

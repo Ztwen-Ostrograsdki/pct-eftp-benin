@@ -17,9 +17,11 @@ class ObserveENotification
 
         $receivers = $eNotification->getReceivers();
 
+        $content = "Une nouvelle notification: " . Str::substr($eNotification->object, 0, 10) . " ...";
+
         foreach($receivers as $user){
 
-            ToasterMessagesEvent::dispatch(Str::random(14), "Un sujet de discussion a été publié", 'success', 'check', $user->id);
+            ToasterMessagesEvent::dispatch(Str::random(14), $content, 'success', 'check', $user->id);
             
             IHaveNewNotificationEvent::dispatch($user);
         }

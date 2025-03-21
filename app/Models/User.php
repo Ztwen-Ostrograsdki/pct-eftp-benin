@@ -151,6 +151,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Member::class);
     }
+    
+    public function my_member()
+    {
+        return $this->hasOne(Member::class);
+    }
 
 
 }

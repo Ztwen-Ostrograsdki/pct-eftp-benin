@@ -45,7 +45,7 @@
             <div class="grid gap-2 gap-y-2">
               <div class="w-full bg-transparent rounded-md shadow ">
                 <div class="w-full grid ">
-                  <input wire:keydown.enter='searcher' wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-2.5 ps-10 text-sm letter-spacing-2 border  bg-transparent rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 focus text-sky-200" placeholder="Lister les notifications par : un mot clé, un titre, un objet..." />
+                  <input wire:keydown.enter='searcher' wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-2.5 ps-10 text-sm letter-spacing-2 border  bg-transparent rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 focus text-sky-200" placeholder="Filtrer les sujets par : un mot clé, un titre, un objet..." />
                 </div>
               </div>
 
@@ -68,7 +68,9 @@
                 <div class="flex flex-wrap items-center justify-between pb-4 mb-2 space-x-2 border-b dark:border-gray-700">
                   <div class="flex items-center px-6 mb-2 md:mb-0 ">
                     <div class="flex mr-2 rounded-full">
+                     
                       <a title="Charger le profil de {{ $subject->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $subject->user->identifiant]) }}">
+                          
                           @if($subject->user->profil_photo)
                               <img src="{{ url('storage', $subject->user->profil_photo) }}" alt="" class="object-cover w-12 h-12 rounded-full shadow-1 shadow-sky-400">
                           @else
@@ -79,6 +81,7 @@
                       </a>
                   </div>
                     <div>
+                      <h6 class="text-green-400 text-sm letter-spacing-1 font-semibold">Publié par:  </h6>
                       <a class="text-xs letter-spacing-1" title="Charger le profil de {{ $subject->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $subject->user->identifiant]) }}">
                           <h5 class="font-semibold text-sky-400">
                               {{ $subject->user->getFullName() }}
@@ -89,12 +92,15 @@
                       </a>
                     </div>
                   </div>
-                  <p class="px-6 text-xs text-gray-600 dark:text-gray-400"> Inscrit depuis, {{ $subject->user->__getDateAsString($subject->user->created_at) }}
-                  </p>
+                  <div class="flex justify-end flex-col px-4">
+                    <p class="text-xs text-gray-600 dark:text-gray-400 hidden"> Inscrit depuis, {{ $subject->user->__getDateAsString($subject->user->created_at) }}
+                    </p>
+                    <span class="text-xs font-semibold letter-spacing-1 text-gray-600 dark:text-yellow-600 ">Sujet N° 00{{ $subject->id }}</span>
+                  </div>
                 </div>
                 <div class="flex flex-col px-6 mb-6 text-xs text-gray-400">
+                  <strong class="text-yellow-600 font-bold letter-spacing-2">Contenu du sujet de discussion:</strong>
                   <div class="shadow-1 shadow-sky-400 rounded-lg border-gray-600 my-2 p-2">
-                      <strong class="text-yellow-600 font-bold letter-spacing-2">Contenu du sujet de discussion:</strong>
                       <p class="letter-spacing-1">
                           {{ $subject->subject }}
                       </p>
@@ -164,7 +170,7 @@
               @endif
 
             <div class="flex justify-end mt-6">
-                {{$subjects->links()}} 
+                 
             </div>
               
             </div>

@@ -18,16 +18,8 @@
           <div class="w-full mx-auto">
             <div class="text-left w-full">
               <div class="relative flex flex-col">
-                <div class="w-full mx-auto">
-                    @if(auth()->user()->profil_photo)
-                        <span class="rounded-full p-0 m-0 px-3 mb-2 mx-auto flex items-center justify-end">
-                        <span class="text-green-600 text-center"> 
-                            <img class="h-10 w-10 text-center border mx-auto rounded-full m-0 p-0  text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1" src="{{ url('storage', auth()->user()->profil_photo) }}" alt="Photo de profil">
-                            <b>{{ auth()->user()->pseudo }}</b> <br>
-                            <small class="text-green-600">Vous êtes connecté</small>
-                        </span>
-                        </span>
-                    @endif
+                <div class="w-full mx-auto hidden">
+                    
                 </div>
                 <h4 class="font-bold dark:text-gray-200"> 
                     Mes <span class="text-blue-500"> Notifications</span> 
@@ -58,7 +50,7 @@
             </div>
 
             <div class="py-3 w-full bg-transparent shadow ">
-              <div class="w-full flex justify-start">
+              <div class="w-full flex justify-between">
                 <form action="" class="w-3/5 flex justify-start">
                   <select  class="z-bg-secondary-light  font-semibold letter-spacing-1 rounded-lg shadow-1 shadow-sky-400 text-sky-300 py-3 w-full px-2" wire:model.live='sectionned' id="user_e_notifications_section">
                     @foreach ($notif_sections as $key => $sec)
@@ -66,6 +58,17 @@
                     @endforeach
                   </select>
                 </form>
+
+                
+                <div class="flex items-center justify-end gap-x-2">
+                  <span wire:click='markAllAsRead' title="Marquées toutes les notifications lues..." class="hover:scale-110 rounded-md shadow-1 shadow-sky-500 py-2 flex items-center cursor-pointer  text-sky-600">
+                    <span class="fas fa-pen px-4"></span>
+                  </span>
+  
+                  <span wire:click='deleteNotifications' title="Suprimer les notifications de la section en cours..." class="hover:scale-110 rounded-md flex items-center cursor-pointer shadow-1 shadow-sky-500 py-2  text-red-600">
+                    <span class="fas fa-trash px-4"></span>
+                  </span>
+                </div>
               </div>
             </div>
             
@@ -88,6 +91,7 @@
                 </div>
                   <div>
                     <a class="text-xs letter-spacing-1" title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $notif->user->identifiant]) }}">
+                        <h6 class="text-green-400 letter-spacing-1 font-semibold">Publié par:  </h6>
                         <h5 class="font-semibold text-sky-400">
                             {{ $notif->user->getFullName() }}
                         </h5>
@@ -97,8 +101,11 @@
                     </a>
                   </div>
                 </div>
-                <p class="px-6 text-xs text-gray-600 dark:text-gray-400"> Inscrit depuis, {{ $notif->user->__getDateAsString($notif->user->created_at) }}
-                </p>
+                <div class="flex justify-end flex-col px-4">
+                  <p class="text-xs text-gray-600 dark:text-gray-400 hidden"> Inscrit depuis, {{ $notif->user->__getDateAsString($notif->user->created_at) }}
+                  </p>
+                  <span class="text-xs font-semibold letter-spacing-1 text-gray-600 dark:text-yellow-600 ">Notification N° 0000{{ $notif->id }}</span>
+                </div>
               </div>
               <div class="flex flex-col px-6 mb-6 text-xs text-gray-400">
                 <div class="w-full">
@@ -108,7 +115,7 @@
                     </h4>
                 </div>
                 <div class="flex justify-end">
-                    <h4 class="text-green-400 letter-spacing-1">
+                    <h4 class="text-green-400 letter-spacing-1 hidden">
                         <strong>Objet:</strong>
                         <span> {{ $notif->object }} </span>
                     </h4>
@@ -134,20 +141,19 @@
                 <div class="flex items-center px-6 space-x-1 text-gray-400">
                   <div class="flex items-center text-xs">
                     <div class="flex gap-x-2 mr-3 float-right justify-end  text-gray-700 dark:text-gray-400">
-                        <div class="float-right">
+                        <div class="float-right @if($sectionned == 'read') hidden @endif ">
                           <span class="border cursor-pointer bg-purple-300 text-purple-700 hover:bg-purple-400 hover:shadow-lg hover:shadow-sky-600 px-3 py-2 rounded ">
                               <span class="fas fa-eye"></span>
                               <span>Lu</span>
                           </span>
                         </div>
-                      <div class="float-right">
-                        <span wire:click="deleteNotif({{$notif->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:shadow-lg hover:shadow-sky-600 hover:bg-red-400 px-3 py-2 rounded ">
-                            <span class="fas fa-trash"></span>
-                            <span class="sm:hidden xs:hidden md:inline " wire:loading.remove wire:target='deleteNotif({{$notif->id}})'>Supprimer</span>
-                            <span wire:loading wire:target='deleteNotif({{$notif->id}})' class="fas fa-rotate animate-spin"></span>
-                        </span>
-                      </div>
-                      
+                        <div class="float-right">
+                          <span wire:click="deleteNotif({{$notif->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:shadow-lg hover:shadow-sky-600 hover:bg-red-400 px-3 py-2 rounded ">
+                              <span class="fas fa-trash"></span>
+                              <span class="sm:hidden xs:hidden md:inline " wire:loading.remove wire:target='deleteNotif({{$notif->id}})'>Supprimer</span>
+                              <span wire:loading wire:target='deleteNotif({{$notif->id}})' class="fas fa-rotate animate-spin"></span>
+                          </span>
+                        </div>
                     </div>
                     
                   </div>

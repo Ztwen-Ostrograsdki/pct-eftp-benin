@@ -15,6 +15,7 @@ class MembersHomePage extends Component
 
     public $member_sections = [
         'members-list' => "Liste",
+        'members-cards' => "Cartes de membres",
         'users-list' => "Les enseignants",
         'members' => "Les membres",
         'roles' => "Les Fonctions",

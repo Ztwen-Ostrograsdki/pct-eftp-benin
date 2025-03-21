@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Law;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,18 +12,24 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateLawEcosystemEvent implements ShouldBroadcast
+class InitLawChaptersCreationEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $law;
+
+    public $data = [];
 
     public $user;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(?User $user)
+    public function __construct(Law $law, array $data, User $user)
     {
-        if(!$user) $user = auth_user();
+        $this->law = $law;
+
+        $this->data = $data;
 
         $this->user = $user;
     }
@@ -34,19 +41,8 @@ class UpdateLawEcosystemEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        if($this->user){
-            return [
-                new PrivateChannel('confirmeds'),
-                
-                new PrivateChannel('App.Models.User.' . $this->user->id),
-            ];
-        }
-        else{
-            return [
-                new PrivateChannel('confirmeds'),
-                
-            ];
-    
-        }
+        return [
+            new PrivateChannel('App.Models.User.' . $this->user->id),
+        ];
     }
 }

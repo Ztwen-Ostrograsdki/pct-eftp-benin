@@ -17,7 +17,9 @@ class Law extends Model
     
     protected $fillable = [
         'name',
-        'description'
+        'slug',
+        'description',
+        'identifiant',
 
     ];
 

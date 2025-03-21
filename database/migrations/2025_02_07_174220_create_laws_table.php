@@ -15,6 +15,8 @@ return new class extends Migration
         Schema::create('laws', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->string('identifiant')->unique();
             $table->text('description')->nullable()->default(null);
             $table->timestamps();
         });

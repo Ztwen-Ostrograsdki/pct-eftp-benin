@@ -95,7 +95,7 @@ class ForumChatSubjectsList extends Component
         }
 
         return view('livewire.master.forum-chat-subjects-list', [
-            'subjects' => $subjects->paginate(3),
+            'subjects' => $subjects->get(),
             'all_subjects' => $allSubjects
         ]);
     }

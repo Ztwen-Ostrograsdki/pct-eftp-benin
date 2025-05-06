@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
             $table->string('visibity')->nullable()->default('public');
+            $table->boolean('is_exam')->nullable()->default(false);
+            $table->string('exam_type')->nullable()->default(null);
             $table->boolean('hidden')->nullable()->default(true);
             $table->text('description')->nullable()->default(null);
             $table->string('pages')->nullable()->default(null);
@@ -30,6 +32,7 @@ return new class extends Migration
             $table->json('filiars_id')->nullable()->default(null);
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->foreignId('promotion_id')->constrained('promotions')->cascadeOnDelete();
+            $table->unsignedBigInteger('lycee_id')->nullable()->default(null);
             $table->unsignedBigInteger('downloaded')->nullable()->default(0);
             $table->json('seen_by')->nullable()->default(null);
             $table->json('downloaded_by')->nullable()->default(null);

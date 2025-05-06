@@ -22,11 +22,6 @@ class Filiar extends Model
         return $this->hasMany(EpreuveResponse::class);
     }
 
-    public function books()
-    {
-        return $this->hasMany(Book::class);
-    }
-
     public function classes()
     {
         return $this->hasMany(Classe::class);

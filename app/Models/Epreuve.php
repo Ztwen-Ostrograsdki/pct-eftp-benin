@@ -19,6 +19,11 @@ class Epreuve extends Model
 
     protected $fillable = [
         'name', 
+        'is_exam',
+        'exam_type',
+        'exam_department',
+        'is_normal_exam',
+        'lycee_id',
         'description', 
         'filiars_id', 
         'file_size',
@@ -47,6 +52,40 @@ class Epreuve extends Model
         'likes' => 'array',
 
     ];
+
+    public function lycee()
+    {
+        $lycee = null;
+
+        if($this->lycee_id){
+
+            $lycee = Lycee::find($this->lycee_id);
+
+            if($lycee) return $lycee;
+
+            else return null;
+
+        }
+
+        return $lycee;
+    }
+
+    public function getLycee()
+    {
+        $lycee = null;
+
+        if($this->lycee_id){
+
+            $lycee = Lycee::find($this->lycee_id);
+
+            if($lycee) return $lycee;
+
+            else return null;
+
+        }
+
+        return $lycee;
+    }
 
     public function answer()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\EpreuveHasBeenCreatedSuccessfullyEvent;
 use App\Events\EpreuveWasCreatedSuccessfullyEvent;
 use App\Events\InitEpreuveCreationEvent;
 use App\Jobs\JobCreateNewEpreuve;
@@ -21,7 +22,7 @@ class CreateNewEpreuveListener
 
             ])->then(function(Batch $batch) use ($event){
 
-                EpreuveWasCreatedSuccessfullyEvent::dispatch();
+                EpreuveHasBeenCreatedSuccessfullyEvent::dispatch();
 
             })
             ->catch(function(Batch $batch, Throwable $er) use ($event){

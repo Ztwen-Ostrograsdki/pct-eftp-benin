@@ -18,18 +18,40 @@
     </div>
 
     <div class="mx-auto my-2 mt-11 w-full">
-        <div class=" w-full mt-4 text-gray-200">
+        <div class=" w-full mt-4 text-gray-900">
             <div class="w-full mb-2 ">
-                <a class="bg-blue-800 border-white rounded-lg px-2 py-3 w-full inline-block" href="{{route('library.epreuves')}}">
-                    <span>Visiter des épreuves</span>
+                <a class="bg-blue-300 border-white rounded-lg px-2 py-3 w-full flex justify-between" href="{{route('library.epreuves')}}">
+                    <span>
+                        <span>Visiter les épreuves</span>
                     <span class="fa fa-book"></span>
+                    </span>
+                    <span class="">
+                        {{ numberZeroFormattor(count(getEpreuves(null, false))) }} épreuves(s) disponible(s)
+                    </span>
                 </a>
             </div>
 
             <div class="w-full mb-2">
-                <a class="bg-orange-400 border-white rounded-lg px-2 py-3 w-full inline-block" href="{{route('library.fiches')}}">
-                    <span>Visiter des fiches de cours</span>
+                <a class="bg-orange-400 border-white rounded-lg px-2 py-3 w-full flex justify-between " href="{{route('library.fiches')}}">
+                    <span>
+                        <span>Visiter des fiches de cours</span>
                     <span class="fa fa-book"></span>
+                    </span>
+                    <span class="">
+                        {{ numberZeroFormattor(count(getSupportFiles())) }} fiches(s) de cours disponible(s)
+                    </span>
+                </a>
+            </div>
+
+            <div class="w-full mb-2">
+                <a class="bg-yellow-400 border-white rounded-lg px-2  py-3 w-full flex justify-between" href="{{route('library.epreuves.examens')}}">
+                    <span>
+                        <span>Visiter les épreuves d'examens</span>
+                    <span class="fa fa-book"></span>
+                    </span>
+                    <span class="">
+                        {{ numberZeroFormattor(count(getEpreuves(null, true))) }} épreuves(s) d'examens disponible(s)
+                    </span>
                 </a>
             </div>
 

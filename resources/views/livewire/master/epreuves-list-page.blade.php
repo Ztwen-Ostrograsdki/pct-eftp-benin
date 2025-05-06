@@ -63,12 +63,31 @@
           </div>
           <div class="w-full xs:col-span-4 sm:col-span-4 lg:col-span-3 lg:grid-cols-4">
             <div class="px-3 mb-4">
-              <div class="items-center justify-between hidden px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg sm:flex">
-                <div class="flex items-center w-2/5 justify-between">
-                  <select name="" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
-                    <option class="py-4" value="">Trier par classe</option>
-                    @foreach (getClasses(true) as $c_id => $cl)
-                      <option class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
+              <div class="items-center flex justify-between border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg gap-x-4">
+                <div class="">
+                  <select wire:model.live='selected_year' class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <option class="py-4" value="">Trier par Années</option>
+                    @foreach (getYears() as $year_val => $year)
+                      <option wire:key="par-annee-epreuves-page-admin-list-list-{{$year}}" class="py-4 px-3" value="{{$year}}"> 
+                        Les épreuves de l'année {{ $year }} 
+                        <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                          ({{ numberZeroFormattor(count(getYearEpreuves($year))) }})
+                        </span>
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+
+                <div class="">
+                  <select wire:model.live='selected_lycee_id' class="w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <option class="py-4" value="">Trier par Lycée ou Centre</option>
+                    @foreach ($lycees as $lycee)
+                      <option wire:key="par-lycee-epreuves-page-admin-list-list-{{$lycee->id}}" class="py-4 px-3" value="{{$lycee->id}}"> 
+                        Les épreuves de {{ $lycee->name }} 
+                        <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                          ({{ numberZeroFormattor(count(getLyceeEpreuves($lycee->id))) }})
+                        </span>
+                      </option>
                     @endforeach
                   </select>
                 </div>
@@ -180,6 +199,12 @@
                       <span class="text-xs ml-3 text-sky-600">
                         ({{$epreuve->getTotalPages()}} Pages)
                       </span>
+                      @if($epreuve->lycee_id)
+                      <br>
+                      <small class="text-gray-600 text-right text-sm">Lycée ou Centre :  
+                         {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
+                      </small>
+                      @endif
                       <br>
                       <small class="text-gray-400 text-right text-sm">Publié le 
                          {{$epreuve->__getDateAsString($epreuve->created_at)}}
@@ -211,7 +236,7 @@
                 <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
                   Oupppps!!! Aucune épreuve n'a été trouvée
                 </h2>
-                @if($selected_promotions || $selected_classes || $selected_filiars || strlen($search) >= 3)
+                @if($selected_promotions || $selected_lycee_id || $selected_filiars || strlen($search) >= 3)
                 <h5 class="w-full my-6 mx-auto flex justify-center">
                   <span wire:click="clearAll" class="text-white inline-block rounded-full bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium text-sm p-5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800 cursor-pointer border">
                     <span class="fa fa-trash mr-5"></span>

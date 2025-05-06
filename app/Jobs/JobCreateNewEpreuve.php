@@ -39,18 +39,26 @@ class JobCreateNewEpreuve implements ShouldQueue
 
         if($path){
 
+            $is_exam = $data['is_exam'];
+
+            if($is_exam){
+
+                $exam_type = $data['exam_type'];
+
+                $promotion_id = getExamPromotions($exam_type, true);
+
+                $data['promotion_id'] = $promotion_id;
+
+            }
+
             $epreuve = Epreuve::create($data);
 
             if(!$epreuve){
 
                 ModelsRobots::deleteFileFromStorageManager($path);
 
-
             }
 
         }
-        
-
-        
     }
 }

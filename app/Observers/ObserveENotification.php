@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Events\IHaveNewNotificationEvent;
 use App\Events\ToasterMessagesEvent;
 use App\Models\ENotification;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Str;
 
 class ObserveENotification
@@ -17,11 +18,11 @@ class ObserveENotification
 
         $receivers = $eNotification->getReceivers();
 
-        $content = "Une nouvelle notification: " . Str::substr($eNotification->object, 0, 10) . " ...";
+        $content = "Une nouvelle notification: " . string_cutter($eNotification->object, 10);
 
         foreach($receivers as $user){
 
-            ToasterMessagesEvent::dispatch(Str::random(14), $content, 'success', 'check', $user->id);
+            $user->notify(new RealTimeNotificationGetToUser($content));
             
             IHaveNewNotificationEvent::dispatch($user);
         }

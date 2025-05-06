@@ -52,10 +52,18 @@
             @elseif($member_section == "epreuves")
                 <div>
                     @livewire('master.epreuves-list-page')
+                </div> 
+            @elseif($member_section == "epreuves-exams-list")
+                <div>
+                    @livewire('libraries.epreuves-examens-page')
                 </div>
             @elseif($member_section == "subjects")
                 <div>
                     @livewire('master.forum-chat-subjects-list')
+                </div>
+            @elseif($member_section == "lycees")
+                <div>
+                    @livewire('master.lycees-listing-page')
                 </div>
             @elseif($member_section == "laws")
                 <div>

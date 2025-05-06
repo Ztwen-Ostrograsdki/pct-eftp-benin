@@ -5,6 +5,8 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitEpreuveCreationEvent;
+use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Models\Lycee;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -19,7 +21,6 @@ class EpreuvesUploader extends Component
     
     public $counter = 0;
 
-    #[Validate('string|max:60')]
     public $name;
 
     public $selecteds = [];
@@ -28,29 +29,39 @@ class EpreuvesUploader extends Component
 
     public $author;
 
-    #[Validate('required|file|mimes:docx,pdf|max:8000')]
     public $file_epreuve;
 
     public $path;
 
+    public $year;
+
     public $images;
 
-    #[Validate('required|string')]
     public $contents_titles;
 
-    #[Validate('required')]
     public $filiars_ids = [];
 
-    #[Validate('required')]
     public $promotion_id;
+
+    public $lycee_id;
 
     public $user_id;
 
+    public $epreuve_type;
 
-    public function mount()
+    public $exam_type = null;
+
+    public $is_exam = false;
+
+    public $exam_department = null;
+
+    public $exam_session = 'normal';
+
+    public function mount($type)
     {
-        if(auth_user()) 
-            $this->author = auth_user_fullName();
+        if($type) $this->epreuve_type = $type;
+
+        if(auth_user()) $this->author = auth_user_fullName();
 
     }
 
@@ -62,11 +73,32 @@ class EpreuvesUploader extends Component
 
         $promotions = getPromotions();
 
+        $types = config('app.examen_types');
+
+        $departments = RobotsBeninHelpers::getDepartments();
+
+        $lycees = Lycee::all();
+
+        if(!$this->year) $this->year = date('Y');
+
         return view('livewire.libraries.epreuves-uploader', [
             'classes' => $classes,
             'filiars' => $filiars,
             'promotions' => $promotions,
+            'types' => $types,
+            'departments' => $departments,
+            'lycees' => $lycees,
         ]);
+    }
+
+    public function updatedDescription($description)
+    {
+        $this->resetErrorBag();
+    }
+
+    public function updatedContentsTitles($contents_titles)
+    {
+        $this->resetErrorBag();
     }
 
     public function pushIntoSelecteds($id)
@@ -80,12 +112,16 @@ class EpreuvesUploader extends Component
             $selecteds[$id] = $id;
         }
 
+        $this->resetErrorBag();
+
         $this->selecteds = $selecteds;
     }
 
     public function retrieveFromSelecteds($id)
     {
         $tables = [];
+
+        $this->resetErrorBag();
 
         $selecteds = $this->selecteds;
 
@@ -99,14 +135,37 @@ class EpreuvesUploader extends Component
 
     public function uploadEpreuve()
     {
+        $this->resetErrorBag();
+
         $this->filiars_ids = $this->selecteds;
 
         $filiars = [];
 
-        if(!$this->name) $this->name = Str::random(8);
+        if($this->epreuve_type !== 'examen' && !$this->name) $this->name = 'epreuve-' . Str::lower(Str::random(8));
 
-        $this->validate();
+        if($this->epreuve_type == 'examen' && !$this->name) $this->name = 'Examen-';
+        
+        if($this->epreuve_type == 'simple'){
 
+            $this->validate([
+                'contents_titles' => 'required|string',
+                'file_epreuve' => 'required|file|mimes:docx,pdf|max:8000',
+                'filiars_ids' => 'required',
+                'promotion_id' => 'required',
+                'name' => 'string|max:60',
+            ]);
+        }
+        elseif($this->epreuve_type == 'examen'){
+            
+            $this->validate([
+                'file_epreuve' => 'required|file|mimes:docx,pdf|max:8000',
+                'filiars_ids' => 'required',
+                'exam_department' => 'required',
+                'exam_session' => 'required',
+                'name' => 'string|max:60',
+            ]);
+        }
+        
         $path = null;
 
         $selecteds = $this->selecteds;
@@ -121,7 +180,25 @@ class EpreuvesUploader extends Component
                 $str = str_replace(' ', '-', $this->name);
             }
 
-            $file_name = 'EPREUVE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::random(5);
+           if($this->epreuve_type == 'simple'){
+
+                $file_name = 'EPREUVE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::lower(Str::random(5));
+
+                $this->is_exam = false;
+
+                $this->exam_type = null;
+           }
+           elseif($this->epreuve_type == 'examen'){
+
+                $this->name = str_replace(' ', '-', 'Examen-' . $this->exam_type . '-' . $this->year);
+
+                $file_name = $this->name . '-' . Str::lower(Str::random(5));
+
+                $this->is_exam = true;
+
+                $this->name = Str::upper($this->name);
+                
+           }
 
             $path = 'epreuves/' . $file_name . '.' . $extension;
 
@@ -146,8 +223,21 @@ class EpreuvesUploader extends Component
 
         }
 
+        if(!$this->year) $this->year = date('Y');
+
+        $is_normal_exam = null;
+
+        if($this->exam_session == 'normal') $is_normal_exam = true;
+
+        elseif($this->exam_session == 'blanc') $is_normal_exam = false;
+
         $data = [
             'name' => $this->name,
+            'exam_type' => $this->exam_type,
+            'is_exam' => $this->is_exam,
+            'exam_department' => $this->exam_department,
+            'is_normal_exam' => $is_normal_exam,
+            'school_year' => $this->year,
             'user_id' => auth_user()->id,
             'contents_titles' => $this->contents_titles,
             'description' => $this->description,
@@ -156,14 +246,15 @@ class EpreuvesUploader extends Component
             'extension' => "." . $extension,
             'file_size' => $file_size,
             'path' => $path,
+            'lycee_id' => $this->lycee_id,
             'authorized' => 0,
         ];
 
-        $save = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
+        $file_epreuve_saved_path = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
 
-        if($save){
+        if($file_epreuve_saved_path){
 
-            InitEpreuveCreationEvent::dispatch($data, $save);
+            InitEpreuveCreationEvent::dispatch($data, $file_epreuve_saved_path);
 
             $this->reset();
         }
@@ -171,7 +262,6 @@ class EpreuvesUploader extends Component
 
             $this->toast("Une erreure est survenue", 'error');
         }
-        
 
     }
 

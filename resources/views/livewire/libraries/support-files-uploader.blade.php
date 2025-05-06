@@ -113,13 +113,13 @@
                                 @if(count($filiars) > 0)
                                 <thead class="text-xs text-gray-900 uppercase bg-gray-50 dark:bg-blue-900 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left float-left">
+                                        <th scope="col" class="px-6 py-3 text-left">
                                             N°
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                            Filière
                                         </th>
-                                        <th scope="col" class="px-6 py-3 xs:hidden lg:inline">
+                                        <th scope="col" class="px-6 py-3 xs:hidden lg:inline-block">
                                             Option
                                          </th>
                                         <th scope="col" class="px-6 py-3 float-right text-right">
@@ -137,7 +137,7 @@
                                         <td class="px-6 py-4">
                                             {{$filiar->name}} 
                                         </td>
-                                        <td class="px-6 py-4 xs:hidden lg:inline">
+                                        <td class="px-6 py-4 xs:hidden lg:inline-block">
                                             {{$filiar->option}} 
                                         </td>
                                         <td class="px-6 py-4 float-right">

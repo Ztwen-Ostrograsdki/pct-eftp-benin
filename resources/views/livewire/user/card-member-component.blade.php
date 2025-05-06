@@ -33,13 +33,13 @@
 
         @livewire('user.card-module', ['member' => $member, 'identifiant' => $identifiant])
 
-        <div class="mx-auto my-4 text-gray-300 font-bold letter-spacing-1 text-center flex items-center justify-center w-3/5">
-            <span wire:click="sendCardToMember('{{$member->id}}')" class="bg-sky-800 hover:bg-sky-900 py-2 px-3 border rounded-lg cursor-pointer w-full">
-                <span wire:loading.remove wire:target="sendCardToMember('{{$member->id}}')">
-                    <span class="hidden lg:inline">Générer et envoyer la carte</span>
+        <div class="mx-auto my-4 text-gray-300 font-bold letter-spacing-1 text-center flex items-center justify-center w-3/5  sm:text-sm sm:font-semibold xs:text-xs xs:font-semibold">
+            <span wire:click="generateCardMember('{{$member->id}}')" class="bg-sky-800 hover:bg-sky-900 py-2 px-3 border rounded-lg cursor-pointer w-full">
+                <span wire:loading.remove wire:target="generateCardMember('{{$member->id}}')">
+                    <span class="lg:inline">Générer et envoyer la carte</span>
                     <span class="fa fa-book"></span>
                 </span>
-                <span wire:loading wire:target="sendCardToMember('{{$member->id}}')">
+                <span wire:loading wire:target="generateCardMember('{{$member->id}}')">
                     <span>En cours...</span>
                     <span class="fas fa-rotate animate-spin"></span>
                 </span>

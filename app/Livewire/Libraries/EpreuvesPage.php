@@ -5,8 +5,9 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\Book;
 use App\Models\Epreuve;
+use App\Models\Lycee;
+use Hamcrest\Type\IsInteger;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -20,7 +21,9 @@ class EpreuvesPage extends Component
 
     public $selected_promotions = [];
 
-    public $selected_classes = [];
+    public $selected_lycee_id;
+
+    public $selected_year;
 
     public $counter = 0;
 
@@ -32,7 +35,9 @@ class EpreuvesPage extends Component
     {
         $search = $this->search;
 
-        $query = Epreuve::query()->whereNotNull('created_at');
+        $query = Epreuve::query()->where('epreuves.authorized', true)->where('epreuves.exam_type', null)->where('epreuves.is_exam', false);
+
+        $lycees = Lycee::all();
 
         $ids = [
             'has' => false,
@@ -58,9 +63,9 @@ class EpreuvesPage extends Component
 
         }
 
-        if($this->selected_classes){
+        if($this->selected_lycee_id){
 
-
+            $query->where('epreuves.lycee_id', $this->selected_lycee_id);
 
         }
 
@@ -81,17 +86,18 @@ class EpreuvesPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find);
+            $query->where('epreuves.contents_titles', 'like', $find)
+                  ->orWhere('epreuves.school_year', 'like', $find);
+
 
         }
 
-        $query->where('epreuves.authorized', true);
-
-
+        if($this->selected_year) $query->where('epreuves.school_year', $this->selected_year);
 
         return view('livewire.libraries.epreuves-page', 
             [
                 'epreuves' => $query->paginate(6),
+                'lycees' => $lycees,
             ]
         ); 
     }
@@ -110,6 +116,12 @@ class EpreuvesPage extends Component
 
     public function updatedSearch($search)
     {
+        if(strlen($search) == 4 && is_numeric($search)) $this->selected_year = (int)$search;
+    }
+
+    public function updatedSelectedYear($year)
+    {
+
     }
 
     public function updatedSelectedPromotions($values)

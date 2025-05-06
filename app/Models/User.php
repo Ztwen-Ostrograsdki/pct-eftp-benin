@@ -11,6 +11,7 @@ use App\Models\Member;
 use App\Observers\ObserveUser;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -89,6 +90,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'birth_date' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -144,7 +146,72 @@ class User extends Authenticatable
 
     public function getNotifications()
     {
-        return ENotification::all();
+        $data = [];
+
+        $all = ENotification::all();
+
+        foreach($all as $notif){
+
+            $receivers = (array)$notif->receivers;
+
+            $seens = (array)$notif->seen_by;
+
+            if($receivers){
+
+                if(in_array($this->id, $receivers)){
+
+                    $data[] = $notif;
+    
+                }
+
+            }
+            else{
+
+                if(!in_array($this->id, $seens)){
+
+                    $data[] = $notif;
+    
+                }
+
+            }
+        }
+
+        return $data;
+    }
+
+    public function getUnreadNotifications()
+    {
+        $data = [];
+
+        $all = ENotification::all();
+
+        foreach($all as $notif){
+
+            $receivers = (array)$notif->receivers;
+
+            $seens = (array)$notif->seen_by;
+
+            if($receivers){
+
+                if(in_array($this->id, $receivers) && !in_array($this->id, $seens)){
+
+                    $data[] = $notif;
+    
+                }
+
+            }
+            else{
+
+                if(!in_array($this->id, $seens)){
+
+                    $data[] = $notif;
+    
+                }
+
+            }
+        }
+
+        return $data;
     }
 
     public function member()

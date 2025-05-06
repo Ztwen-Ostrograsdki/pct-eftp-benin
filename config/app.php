@@ -135,6 +135,15 @@ return [
         'approved' => "Approuvée"
     ],
 
+    'examen_types' => [
+        'cap' => 'CAP', 
+        'dt' => 'DT', 
+        'bac f1' => 'BAC F1', 
+        'bac f234' => "BAC F2-3-4",
+    ],
+
+    
+
 
 
 

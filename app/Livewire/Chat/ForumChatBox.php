@@ -12,10 +12,14 @@ use App\Events\YourMessageHasBeenLikedBySomeoneEvent;
 use App\Models\ForumChat;
 use App\Models\ForumChatSubject;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
+use App\Observers\ObserveChatForumMessage;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
+#[ObservedBy(ObserveChatForumMessage::class)]
 class ForumChatBox extends Component
 {
 
@@ -29,6 +33,10 @@ class ForumChatBox extends Component
     public $counter = 0;
 
     public $subject_show = true;
+
+    public $targeted_message_id = null;
+
+    public $targeted_message = null;
 
 
     
@@ -62,12 +70,17 @@ class ForumChatBox extends Component
         $data = [
             'user_id' => auth_user()->id,
             'message' => $message,
-            'seen_by' => auth_user()->id
+            'seen_by' => auth_user()->id,
+            'reply_to_message_id' => $this->targeted_message_id,
         ];
         
         NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
 
+
+
         $this->reset();
+
+        $this->message = '';
     }
 
 
@@ -177,8 +190,14 @@ class ForumChatBox extends Component
 
                 YourMessageHasBeenLikedBySomeoneEvent::dispatch(auth_user(), $chat->user);
 
-                $this->toast("Vous avez aimé le message de $name!", 'success');
+                if($user_id !== $chat->user->id){
 
+                    $liker_name = auth_user_fullName();
+
+                    $chat->user->notify(new RealTimeNotificationGetToUser($liker_name . " a aimé votre message dans le forum!"));
+                }
+
+                $this->toast("Vous avez aimé le message de $name!", 'success');
             }
             else{
 
@@ -196,8 +215,19 @@ class ForumChatBox extends Component
 
     public function replyToMessage($message_id)
     {
-        
+        $this->targeted_message_id = $message_id;
+
+        $this->targeted_message = ForumChat::find($message_id);
+
+
     }
+
+    public function cancelReply()
+    {
+        $this->targeted_message_id = null;
+    }
+
+
 
     public function deleteSubject($subject_id = null)
     {
@@ -256,7 +286,7 @@ class ForumChatBox extends Component
 
     public function resetMessage()
     {
-        $this->reset('message');
+        $this->message = '';
     }
 
     public function addNewChatSubject()

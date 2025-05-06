@@ -7,20 +7,25 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class EpreuveWasCreatedSuccessfullyEvent implements ShouldBroadcastNow
+class InitNewLyceeDataInsertionEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $data = [];
+
+    public $editing_lycee_id = null;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct($data, $editing_lycee_id = null)
     {
-        //
+        $this->data = $data;
+
+        $this->editing_lycee_id = $editing_lycee_id;
     }
 
     /**

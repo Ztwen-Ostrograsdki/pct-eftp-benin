@@ -11,11 +11,6 @@ class Promotion extends Model
     protected $fillable = ['name', 'description', 'slug'];
 
 
-    public function books()
-    {
-        return $this->hasMany(Book::class);
-    }
-
     public function classes()
     {
         return $this->hasMany(Classe::class);

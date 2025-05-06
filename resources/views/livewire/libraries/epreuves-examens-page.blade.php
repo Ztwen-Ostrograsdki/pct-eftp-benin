@@ -1,4 +1,11 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
+<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500 ">
+  <div class="w-1/2 m-0 p-0 mb-2 lg:text-lg xl:text-lg sm:text-xs md:text-xs xs:text-xs">
+    <a class="bg-sky-600 text-gray-300 border border-sky-900 shadow-sky-800 rounded-lg px-2 py-3 w-full inline-block hover:bg-sky-700 hover:text-sky-950 hover:shadow-2 hover:shadow-sky-400" href="{{route('library.epreuves.uplaoder', ['type' => 'examen'])}}">
+        <span class="fa fa-send"></span>
+        <span>Publier des épreuves d'examen</span>
+        <span class="fa fa-share"></span>
+    </a>
+</div>
     <div class="py-2 mb-4 shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5">
         <div class="w-full px-2 font-semibold letter-spacing-2">
             <h4 class="py-3 xs:text-xs lg:text-base">
@@ -12,92 +19,92 @@
             </h4>
         </div>
     </div>
-    <div class="w-full p-0 m-0 flex gap-x-3">
-        <div class="m-0 p-0 mb-2 ">
-            <a class="bg-blue-600 text-gray-300 border border-white rounded-lg px-2 py-2 w-full inline-block" href="{{route('library.epreuves.uplaoder', ['type' => 'simple'])}}">
-                <span>Publier</span>
-                <span class="fa fa-share"></span>
-            </a>
+    <div class="w-full p-0 m-0 flex gap-x-2 justify-between">
+      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0">
+        <div class="flex items-center justify-between mx-0 px-0">
+          <select wire:model.live='is_normal_exams' name="is_normal_exams" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+            <option class="py-4" value="twice">Tous les examens</option>
+              <option class="py-4 px-3" value="{{true}}"> 
+                Les examens session normale 
+              </option>
+              <option class="py-4 px-3" value="{{false}}"> 
+                Les examens blancs
+              </option>
+          </select>
         </div>
-        <div class="items-center justify-between px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg">
-          <div class="items-center flex justify-between border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg gap-x-4">
-            <div class="">
-              <select wire:model.live='selected_year' class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
-                <option class="py-4" value="">Trier par Années</option>
-                @foreach (getYears() as $year_val => $year)
-                  <option wire:key="par-annee-epreuves-page-admin-list-list-{{$year}}" class="py-4 px-3" value="{{$year}}"> 
-                    Les épreuves de l'année {{ $year }} 
-                    <span class="text-orange font-semibold letter-spacing-1 ml-3">
-                      ({{ numberZeroFormattor(count(getYearEpreuves($year))) }})
-                    </span>
-                  </option>
-                @endforeach
-              </select>
-            </div>
-
-            <div class="">
-              <select wire:model.live='selected_lycee_id' class="w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
-                <option class="py-4" value="">Trier par Lycée ou Centre</option>
-                @foreach ($lycees as $lycee)
-                  <option wire:key="par-lycee-epreuves-page-admin-list-list-{{$lycee->id}}" class="py-4 px-3" value="{{$lycee->id}}"> 
-                    Les épreuves de {{ $lycee->name }} 
-                    <span class="text-orange font-semibold letter-spacing-1 ml-3">
-                      ({{ numberZeroFormattor(count(getLyceeEpreuves($lycee->id))) }})
-                    </span>
-                  </option>
-                @endforeach
-              </select>
-            </div>
-          </div>
+      </div>
+      @if($is_normal_exams == false || $is_normal_exams == 'twice')
+      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0">
+        <div class="flex items-center justify-between mx-0 px-0">
+          <select wire:model.live='selected_department' name="selected_department" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+            <option class="py-4" value="">Trier par department</option>
+            @foreach ($departments as $department_value => $dpvl)
+              <option wire:key="par-type-epreuves-departement-f-page-{{$department_value}}" class="py-4 px-3" value="{{$dpvl}}"> 
+                Les examens blancs du département {{ $dpvl }} 
+                <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                  
+                </span>
+              </option>
+            @endforeach
+          </select>
         </div>
+      </div>
+      @endif
     </div>
-    <section class="py-3 bg-gray-50 font-poppins bg-transparent rounded-lg">
-      <div class="px-4 mx-auto max-w-7xl lg:py-6 md:px-6">
-        <div class="grid lg:grid-cols-4  mb-24 -mx-3">
-          <div class="pr-2 sm:col-span-4 xs:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
-            <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
-              <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400"> Par Promotion</h2>
-              <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
-              <ul>
-                @foreach(getPromotions(true) as $p_id => $promo)
-                <li wire:key="promo-epreuves-page-list-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
-                  <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400  has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
-                    <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
-                    <span class="">{{ $promo->name }}</span>
-                  </label>
-                </li>
-                @endforeach
-              </ul>
-            </div>
-            <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
-              <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400">Par Filières</h2>
-              <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
-              <ul>
-                @foreach(getFiliars(true) as $f_id => $fil)
-                <li wire:key="filiar-epreuves-page-list-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
-                  <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300 has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
-                    <input wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
-                    <span class=" dark:text-gray-400">{{ $fil->name }}</span>
-                  </label>
-                </li>
-                @endforeach
-              </ul>
-            </div>
-            
-          </div>
-          <div class="w-full xs:col-span-4 sm:col-span-4 lg:col-span-3 lg:grid-cols-4">
-            <div class="px-3 mb-4 hidden">
-              <div class="items-center justify-between px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg sm:flex">
-                <div class="flex items-center w-2/5 justify-between">
-                  <select name="" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
-                    <option class="py-4" value="">Trier par classe</option>
-                    @foreach (getClasses(true) as $c_id => $cl)
-                      <option wire:key="classe-epreuves-page-list-list-{{$cl->id}}" class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
+    <section class="py-3 bg-gray-50 font-poppins bg-transparent rounded-lg mx-0">
+      <div class=" mx-auto max-w-7xl lg:py-6">
+        <div class="flex px-0 gap-x-3 justify-between mx-0">
+          
+            <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3 mx-0">
+                <div class="flex items-center justify-between mx-0 px-0">
+                  <select wire:model.live='selected_type' name="selected_type" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <option class="py-4" value="">Trier par type</option>
+                    @foreach ($types as $type_value => $type)
+                      <option wire:key="par-type-epreuves-examens-page-{{$type}}" class="py-4 px-3" value="{{$type}}"> 
+                        Les examens de {{ $type }} 
+                        <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                          
+                        </span>
+                      </option>
                     @endforeach
                   </select>
                 </div>
-              </div>
             </div>
+            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3">
+                <div class="flex items-center justify-between ">
+                  <select wire:model.live='selected_year' name="selected_year" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <option class="py-4" value="">Trier par Année</option>
+                    @foreach (getYears() as $year_val => $year)
+                      <option wire:key="par-annee-epreuves-examens-page-list-list-{{$year}}" class="py-4 px-3" value="{{$year}}"> 
+                        Les épreuves de l'année {{ $year }} 
+                        <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                          ({{ numberZeroFormattor(count(getYearEpreuves($year, true))) }})
+                        </span>
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+            </div>
+            @if($is_normal_exams == false || $is_normal_exams == 'twice')
+            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3">
+                <div class="flex items-center justify-between ">
+                  <select wire:model.live='selected_lycee_id' class="w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <option class="py-4" value="">Trier par Lycée ou Centre</option>
+                    @foreach ($lycees as $lycee)
+                      <option wire:key="lister-par-lycee-epreuves-page-admin-list-list-{{$lycee->id}}" class="py-4 px-3" value="{{$lycee->id}}"> 
+                        Les épreuves de {{ $lycee->name }} 
+                        <span class="text-orange font-semibold letter-spacing-1 ml-3">
+                          ({{ numberZeroFormattor(count(getLyceeEpreuves($lycee->id))) }})
+                        </span>
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+            </div>
+            @endif
+        </div>
+        <div class="grid lg:grid-cols-4  mb-24 -mx-3">
+          <div class="w-full col-span-4 ">
             <div class="w-full py-1 my-3 px-3">
               <form class="w-full mx-auto">   
                   <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
@@ -120,7 +127,7 @@
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+              <div wire:key="epreuves-examens-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
@@ -153,6 +160,12 @@
                         <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
                         <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$epreuve->name}}</span>
+                          @if($epreuve->is_normal_exam)
+                            <span class="ml-2 text-green-500 letter-spacing-1">(Session normal)</span>
+                          @else
+                            <span class="ml-2 text-green-200 letter-spacing-1">(Examen blanc)</span>
+                          @endif
+                          <span></span>
                         </h5>
                       </div>
                       
@@ -164,12 +177,20 @@
                           @endforeach
                         </span>
                       </div>
-                      <div class="w-full">
+                      <div class="w-full hidden">
                         <span class="text-cyan-300">
                           <strong>Promotion :</strong> 
                           {{ $epreuve->getPromotion() }}
                         </span>
                       </div>
+                      @if(!$epreuve->is_normal_exam)
+                      <div class="w-full ">
+                        <span class="text-cyan-300">
+                          <strong>Département :</strong> 
+                          {{ $epreuve->exam_department }}
+                        </span>
+                      </div>
+                      @endif
                       <div class="w-full">
                         <span class="text-yellow-300">
                           <strong>Contenus :</strong> 
@@ -187,13 +208,6 @@
                       <span class="text-xs ml-3 text-yellow-600">
                         (cette épreuve est conçue en {{$epreuve->school_year}})
                       </span>
-
-                      @if($epreuve->lycee_id)
-                      <br>
-                      <small class="text-gray-600 text-right text-sm">Lycée ou Centre :  
-                         {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
-                      </small>
-                      @endif
                       <br>
                       <small class="text-gray-400 text-right text-sm">Publié le 
                          {{$epreuve->__getDateAsString($epreuve->created_at)}}

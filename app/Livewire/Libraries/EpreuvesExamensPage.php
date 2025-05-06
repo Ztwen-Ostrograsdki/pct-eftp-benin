@@ -1,44 +1,52 @@
 <?php
 
-namespace App\Livewire\Master;
+namespace App\Livewire\Libraries;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\ENotification;
+use App\Helpers\Tools\RobotsBeninHelpers;
 use App\Models\Epreuve;
 use App\Models\Lycee;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EpreuvesListPage extends Component
+class EpreuvesExamensPage extends Component
 {
+    
     use Toast, Confirm, WithPagination;
 
     public $selected_filiars = [];
 
     public $selected_promotions = [];
 
+    public $selected_year;
+
+    public $selected_type;
+
     public $selected_lycee_id;
 
-    public $selected_year;
+    public $selected_department = null;
+
+    public $is_normal_exams = 'twice';
 
     public $counter = 0;
 
-    public $authorized = 'all';
-
     public $search = '';
-
 
 
     public function render()
     {
         $search = $this->search;
 
-        $lycees = Lycee::all();
+        $query = Epreuve::query()->where('epreuves.authorized', true)->where('epreuves.is_exam', true);
 
-        $query = Epreuve::query()->whereNotNull('created_at');
+        $types = config('app.examen_types');
+
+        $departments = RobotsBeninHelpers::getDepartments();
+
+        $lycees = Lycee::all();
 
         $ids = [
             'has' => false,
@@ -64,18 +72,31 @@ class EpreuvesListPage extends Component
 
         }
 
-        if($this->selected_lycee_id){
+        if($this->selected_type){
 
-            $query->where('epreuves.lycee_id', $this->selected_lycee_id);
+            $query->where('exam_type', $this->selected_type);
 
         }
-        if($this->selected_year){
 
-            $query->where('epreuves.school_year', $this->selected_year);
+        if($this->selected_department){
+
+            $query->where('exam_department', $this->selected_department);
+
+        }
+        if($this->selected_lycee_id){
+
+            $query->where('lycee_id', $this->selected_lycee_id);
+
+        }
+
+        if($this->is_normal_exams !== 'twice'){
+
+            $query->where('is_normal_exam', $this->is_normal_exams);
 
         }
 
         if($ids['has']){
+
             
             $query->whereIn('epreuves.id', $ids['items']);
 
@@ -91,18 +112,19 @@ class EpreuvesListPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find);
+            $query->where('epreuves.contents_titles', 'like', $find)
+                  ->orWhere('epreuves.school_year', 'like', $find);
+
 
         }
 
-        if($this->authorized !== 'all'){
-            
-            $query->where('epreuves.authorized', $this->authorized);
-        }
+        if($this->selected_year) $query->where('epreuves.school_year', $this->selected_year);
 
-        return view('livewire.master.epreuves-list-page', 
+        return view('livewire.libraries.epreuves-examens-page', 
             [
                 'epreuves' => $query->paginate(6),
+                'types' => $types,
+                'departments' => $departments,
                 'lycees' => $lycees,
             ]
         ); 
@@ -118,53 +140,22 @@ class EpreuvesListPage extends Component
         $this->reset();
     }
 
-    public function validateEpreuve($epreuve_id)
+    public function updatedIsNormalExams($value)
     {
-        $epreuve = Epreuve::find($epreuve_id);
-
-        if($epreuve){
-
-            if(!$epreuve->authorized){
-
-                $user = $epreuve->user;
-
-                $make = $epreuve->update(['authorized' => true]);
-
-                if($make){
-
-                    $auth = auth_user();
-
-                    $this->toast("L'épreuve $epreuve->name a été publié avec succès et est désormais visible sur la plateforme");
-
-                    $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
-
-                    $object = "Validation de votre épreuve publiée sur la plateforme";
-
-                    $content = "Votre $epreuve->name épreuve publiée le " . $since . " a été approuvée par les administrateurs";
-                    
-                    $title = "Validation d'une épreuve publié";
-                
-                    $data = [
-                        'user_id' => $auth->id,
-                        'content' => $content,
-                        'title' => $title,
-                        'object' => $object,
-                        'receivers' => [$user->id],
-
-                    ];
-
-                    $enotif = ENotification::create($data);
-                }
-
-            }
-
-        }
+        if($value === true && $value !== 'twice') $this->reset('selected_lycee_id');
+        
     }
 
 
 
     public function updatedSearch($search)
     {
+        if(strlen($search) == 4 && is_numeric($search)) $this->selected_year = (int)$search;
+    }
+
+    public function updatedSelectedYear($year)
+    {
+
     }
 
     public function updatedSelectedPromotions($values)
@@ -175,7 +166,7 @@ class EpreuvesListPage extends Component
     {
     }
 
-    #[On('LiveEpreuveHasBeenCreatedSuccessfullyEvent')]
+    #[On('LiveEpreuveWasCreatedSuccessfullyEvent')]
     public function newEpreuveCreated()
     {
         $this->toast("Une nouvelle épreuve a été ajoutée", 'success');
@@ -206,30 +197,18 @@ class EpreuvesListPage extends Component
 
             if($del){
 
-                $del_from_db = $epreuve->delete();
-                
+                $this->toast("L'épreuve a été supprimée avec succès!", 'success');
 
-                if($del_from_db){
+                $this->counter = rand(12, 300);
 
-                    $this->toast("L'épreuve a été supprimée avec succès!", 'success');
-    
-                    $this->counter = rand(12, 300);
-    
-                    return false;
-                }
-                else{
-    
-                    $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
-    
-                }
+                return false;
             }
             else{
-    
+
                 $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
 
             }
-
-            
         }
     }
 }
+

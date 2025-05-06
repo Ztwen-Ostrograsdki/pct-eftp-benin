@@ -20,7 +20,7 @@
         </div>
         
         @livewire('partials.navbar')
-        <main class="pt-20 bg-inherit">
+        <main class="pt-20 bg-inherit px-2">
             @livewire("live-toaster")
             {{ $slot }}
         </main>
@@ -32,6 +32,9 @@
         @livewire('master.modals.new-role-modal-component')
         @livewire('master.modals.role-manager-component')
         @livewire('master.modals.open-user-profil-photo-view-component')
+        @livewire('master.modals.lycee-manager-modal')
+        @livewire('master.modals.lycee-filiars-manager-modal')
+        @livewire('master.modals.lycee-promotions-manager-modal')
         @livewire('partials.footer')
         
 

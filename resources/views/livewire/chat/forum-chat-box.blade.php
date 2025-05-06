@@ -111,7 +111,7 @@
                     @foreach ($chats as $chat)
                         @if($chat->notHiddenFor(auth_user()->id))
                             <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs ">
-                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 @else shadow-sky-400  @endif">
+                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="@if($targeted_message_id && $targeted_message_id == $chat->id) shadow-3 shadow-yellow-200 @endif  rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 @else shadow-sky-400  @endif">
                                     <div class="flex items-center gap-x-3 rounded-full md:p-2 sm:p-1 xs:p-1 shadow-2 @if($chat->user_id == auth_user()->id) shadow-purple-400 @else shadow-sky-400 @endif">
                                         <img class="md:w-8 md:h-8 sm:h-4 sm:w-4 xs:h-4 xs:w-4 rounded-full @if($chat->user_id == auth_user()->id) float-right text-right @endif"  src="{{ user_profil_photo($chat->user) }}" alt="user photo">
                                         <h6 class="text-gray-300  md:block xs:hidden sm:hidden letter-spacing-2 float-right text-right">
@@ -122,6 +122,29 @@
                                             {{ $chat->user->firstname }}
                                         </h6>
                                     </div>
+                                    @if($chat->reply_to_message_id)
+                                        @php
+                                            $replying = getMessageById($chat->reply_to_message_id);
+                                        @endphp
+                                        <div class="bg-gray-400 letter-spacing-1 font-semibold text-sm xs:text-xs px-4 z-50 my-1 rounded-lg inline-block py-1 w-auto ml-3">
+                                            @if($replying)
+                                            <span class="text-yellow-300 flex items-center gap-x-3">
+                                                Ceci est une réponse au message de {{ $replying->user->getFullName() }} 
+                                                
+                                            </span>
+                                            <span class="px-3">
+                                                {{ $replying->message }}
+                                            </span>
+                                            @else
+                                            <span class="text-gray-900 flex items-center gap-x-3">
+                                                Ceci est une réponse à un message  
+                                            </span>
+                                            <span class="px-3">
+                                                -- Inconnu --
+                                            </span>
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="text-gray-400 letter-spacing-2">
                                         <p class="p-2">
                                             {{ $chat->message }}
@@ -166,7 +189,21 @@
                     @endforeach
                 </div>
             </div>
+            
             <div class="w-full py-1 my-3 px-3 lg:text-sm md:text-sm sm:text-xs">
+                @if($targeted_message_id)
+                    <div class="bg-gray-400 letter-spacing-1 font-semibold text-sm xs:text-xs px-4 z-50 mb-1 rounded-lg inline-block py-1 w-auto">
+                        <span class="text-yellow-300 flex items-center gap-x-3">
+                            <span class="fas fa-reply"></span>
+                            Répondre au message envoyé par {{ Str::substr($targeted_message->user->getFullName(), 0, 8) }} ...
+                            <span wire:click='cancelReply' title="Annuler la réponse au message" class="p-2 text-white border bg-red-500 rounded-md hover:bg-red-300 mr-5 cursor-pointer">Annuler</span>
+                        </span>
+                        <span class="px-3">
+                            {{ Str::substr($targeted_message->message, 0, 200) }} ...
+                        </span>
+                        
+                    </div>
+                @endif
                 <form @submit.prevent class="w-full mx-auto">   
                     <label for="default-message" class="mb-2 font-medium text-gray-900 sr-only dark:text-white">Envoyer</label>
                     <div class="relative">
@@ -174,9 +211,9 @@
                             <span class="w-4 h-4 text-gray-500 fas fa-message dark:text-gray-400" aria-hidden="true" >
                             </span>
                         </div>
-                        <input wire:keydown.enter="sendMessage" wire:model.live="message" type="message" id="epreuve-message-input" class=" block w-full p-4 ps-10 letter-spacing-2 border border-gray-300 rounded-lg bg-transparent focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 letter-spacing-1 focus text-gray-400 font-semibold" placeholder="Tapez votre message..." />
+                        <input wire:keydown.enter="sendMessage" wire:model.live="message" type="message" id="epreuve-message-input" class=" block w-full p-4 ps-10 letter-spacing-2 border border-gray-300 rounded-lg bg-transparent focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 letter-spacing-1 focus text-gray-400 font-semibold sm:pr-32 md:pr-32 xs:pr-32 lg:pr-60" placeholder="Tapez votre message..." />
                         @if($message !== '' && $message !== null)
-                        <span class="gap-x-1 items-center text-white md:inline lg:inline absolute end-2.5 bottom-2.5 focus:ring-4 mb-2 focus:outline-none focus:ring-blue-300 font-medium  ">
+                        <span class="gap-x-1 items-center text-white md:inline lg:inline absolute end-2.5 bottom-2.5 focus:ring-4 mb-2 focus:outline-none focus:ring-blue-300 font-medium ">
                             <span wire:click="sendMessage" class=" bg-blue-700 hover:bg-blue-800 cursor-pointer focus:ring-4 focus:outline-none  px-4 py-2 dark:bg-blue-600 rounded-lg dark:hover:bg-blue-700 dark:focus:ring-blue-800 ">
                                 
                                 <span class="sm:hidden xs:hidden md:hidden lg:inline xl:inline mr-1">Envoyer</span>

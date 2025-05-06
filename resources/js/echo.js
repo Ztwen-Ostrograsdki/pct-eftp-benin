@@ -70,9 +70,9 @@ e.private('admin')
         Livewire.dispatch('LiveNewEpreuveHasBeenPublishedEvent', user);
         
     })
-    .listen('EpreuveWasCreatedSuccessfullyEvent', (user) =>{
+    .listen('EpreuveHasBeenCreatedSuccessfullyEvent', () =>{
 
-        Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent', user);
+        Livewire.dispatch('LiveEpreuveHasBeenCreatedSuccessfullyEvent');
         
     })
     .listen('NewSupportFileHasBeenPublishedEvent', (user) =>{
@@ -90,9 +90,19 @@ e.private('admin')
         Livewire.dispatch('LiveForumChatSubjectHasBeenClosedEvent');
         
     })
+    .listen('NewLyceeCreatedSuccessfullyEvent', (data) =>{
+
+        Livewire.dispatch('LiveNewLyceeCreatedSuccessfullyEvent', data);
+        
+    })
 
 
 e.private('App.Models.User.' + window.ClientUser.id)
+
+    .notification((notification) => {
+
+
+    })
 
     .listen('LogoutUserEvent', (ev) =>{
 
@@ -115,11 +125,7 @@ e.private('App.Models.User.' + window.ClientUser.id)
         Livewire.dispatch('LiveForumChatSubjectHasBeenSubmittedToAdminsEvent', { user: data.user});
         
     })
-    .listen('ToasterMessagesEvent', (data) =>{
-
-        Livewire.dispatch('LiveToasterMessagesEvent', { toaster_data: data.toaster_data});
-        
-    })
+    
     .listen('NotificationsDeletedSuccessfullyEvent', (data) =>{
 
         Livewire.dispatch('LiveNotificationsDeletedSuccessfullyEvent');
@@ -144,7 +150,6 @@ e.join('forumChatRoom')
     })
 
     .error((users)  => {
-        
 
     })
 

@@ -19,10 +19,12 @@ class MembersHomePage extends Component
         'users-list' => "Les enseignants",
         'members' => "Les membres",
         'roles' => "Les Fonctions",
+        'lycees' => "Les Lycées",
         'laws' => "Les Lois",
         'subjects' => "Les Sujets de discussion",
         'info' => "Les Communiqués",
         'epreuves' => "Les Epreuves",
+        'epreuves-exams-list' => "Les Epreuves d'examens",
         "lays" => "Les réglements intérieurs",
         "history" => "Historique",
         'cv' => "CV de l'association"

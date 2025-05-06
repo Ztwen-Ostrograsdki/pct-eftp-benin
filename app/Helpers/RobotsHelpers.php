@@ -1,11 +1,16 @@
 <?php
 
 use App\Models\Classe;
+use App\Models\Epreuve;
 use App\Models\Filiar;
+use App\Models\ForumChat;
 use App\Models\Member;
 use App\Models\Promotion;
+use App\Models\SupportFile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use PhpParser\Node\Expr\Instanceof_;
 
 if(!function_exists('__arrayAllTruesValues')){
 
@@ -31,10 +36,52 @@ if(!function_exists('numberZeroFormattor')){
     function numberZeroFormattor($number, $string = false)
     {
         if(is_array($number)) $number = count($number);
-        
+
         if($string && $number == 0) return "Aucune donnée"; 
         
         return $number >= 10 ? $number : '0' . $number;
+    }
+
+}
+
+if(!function_exists('substringer')){
+
+    function substringer($string, $length = 8)
+    {
+
+        if(strlen($string) <= $length) return $string;
+
+        else
+
+            return Str::substr($string, 0, $length) . " ...";
+    }
+
+}
+
+if(!function_exists('string_cutter')){
+
+    function string_cutter($string, $length = 8)
+    {
+
+        if(strlen($string) <= $length) return $string;
+
+        else
+
+            return Str::substr($string, 0, $length) . " ...";
+    }
+
+}
+
+if(!function_exists('cutter')){
+
+    function cutter($string, $length = 8)
+    {
+
+        if(strlen($string) <= $length) return $string;
+
+        else
+
+            return Str::substr($string, 0, $length) . " ...";
     }
 
 }
@@ -266,6 +313,96 @@ if(!function_exists('getClasses')){
 
 }
 
+if(!function_exists('getYears')){
+
+    function getYears($big_to_small = true, $start = null, $end = null)
+    {
+        $data = [];
+
+        $first = 1990;
+
+        $last = date('Y');
+
+        if($start) $first = $start;
+
+        if($end && $end > $start) $last = $end;
+
+        for ($i = $first; $i <= $last; $i++) { 
+            
+            $data[$i] = $i;
+        } 
+
+        return $big_to_small ? array_reverse($data) : $data;
+    }
+
+}
+
+if(!function_exists('getYearEpreuves')){
+
+    function getYearEpreuves($year, $is_exam = false)
+    {
+        return Epreuve::where('authorized', true)->where('school_year', $year)->where('is_exam', $is_exam)->get();
+    }
+
+}
+
+if(!function_exists('getEpreuves')){
+
+    function getEpreuves($year = null, $is_exam = false)
+    {
+        if($year){
+
+            if($is_exam !== 'twice'){
+
+                return Epreuve::where('authorized', true)->where('school_year', $year)->where('is_exam', $is_exam)->get();
+            }
+            else{
+
+                return Epreuve::where('authorized', true)->where('school_year', $year)->get();
+            }
+        }
+        else{
+
+            if($is_exam !== 'twice'){
+
+                return Epreuve::where('authorized', true)->where('is_exam', $is_exam)->get();
+            }
+            else{
+
+                return Epreuve::where('authorized', true)->get();
+            }
+        }
+    }
+
+}
+
+if(!function_exists('getSupportFiles')){
+
+    function getSupportFiles()
+    {
+        return SupportFile::where('authorized', true)->get();
+    }
+
+}
+
+if(!function_exists('getMessageById')){
+
+    function getMessageById($message_id)
+    {
+        return ForumChat::find($message_id);
+    }
+
+}
+
+if(!function_exists('getLyceeEpreuves')){
+
+    function getLyceeEpreuves($lycee_id, $is_exam = false)
+    {
+        return Epreuve::where('authorized', true)->where('lycee_id', $lycee_id)->where('is_exam', $is_exam)->get();
+    }
+
+}
+
 
 if(!function_exists('findPromotions')){
 
@@ -457,6 +594,49 @@ if(!function_exists('__selfUser')){
     function __selfUser($user)
     {
         return $user->id === auth_user()->id;
+    }
+
+}
+
+if(!function_exists('getExamPromotions')){
+
+    function getExamPromotions($exam_type, $only_ids = false)
+    {
+        if($exam_type == 'cap'){
+
+            if($only_ids){
+
+                $promotion = Promotion::where('name', 'like', '%trois%')
+                                   ->orWhere('name', 'like', '%premi%')->first();
+
+                if($promotion) return $promotion->id;
+            }
+            else{
+
+                return Promotion::where('name', 'like', '%trois%')
+                                   ->orWhere('name', 'like', '%premi%')
+                                   ->first();
+            }
+
+        }
+        else{
+
+            if($only_ids){
+
+                $promotion = Promotion::where('name', 'like', '%termi%')->first();
+
+                if($promotion) return $promotion->id;
+
+            }
+            else{
+
+                return Promotion::where('name', 'like', '%termi%')->first();
+            }
+
+        }
+
+        return null;
+
     }
 
 }

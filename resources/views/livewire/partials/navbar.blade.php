@@ -40,17 +40,17 @@
               Gestion utilisateurs
             </a>
           </li>
-          @if(count(auth()->user()->getNotifications()))
+          
           <li>
             <a wire:navigate href="{{route('user.notifications')}}" class="block {{request()->route()->named('user.notifications') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes notification
               <span class="py-0.5 float-right px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
-                {{ count(auth()->user()->getNotifications()) }}
+                {{ count(auth()->user()->getUnreadNotifications()) }}
                 </span>
             </a>
           </li>
           @endif
-          @endif
+          
           @if(auth_user()->member)
           <li>
             <a wire:navigate href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.profil') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
@@ -109,6 +109,9 @@
       <li>
         <a wire:navigate href="{{route('library.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('library.home') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Bibliothèque</a>
       </li>
+      <li>
+        <a wire:navigate href="{{route('lycee.listing')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('lycee.listing') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Lycées et centres</a>
+      </li>
       
 
       @auth
@@ -161,6 +164,12 @@
             </a>
          </li>
          @endif
+         <li>
+          <a wire:navigate href="{{route('lycee.listing')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('lycee.listing') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+             <span class="fas fa-school"></span>
+             <span class="ms-3">Les lycées et centres</span>
+          </a>
+       </li>
          <li class="">
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
@@ -191,7 +200,7 @@
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Mes notifications</span>
                <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                  {{ count(auth()->user()->getNotifications()) }}
+                  {{ count(auth()->user()->getUnreadNotifications()) }}
                </span>
             </a>
          </li>

@@ -156,6 +156,8 @@ e.join('forumChatRoom')
     .listen('ChatMessageHasBeenSentSuccessfullyEvent', (data) =>{
 
         Livewire.dispatch('LiveLoadNewMessageEvent', {data: data.user});
+
+        Livewire.dispatch('LiveNewMessageHasBeenSentIntoForum');
         
     })
     .listen('UserIsTypingMessageEvent', (data) =>{

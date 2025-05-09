@@ -64,7 +64,7 @@
                 </thead>
                 <tbody>
                     @foreach($members as $key => $member)
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <tr class="odd:bg-white admin-member-list-tr odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </th>

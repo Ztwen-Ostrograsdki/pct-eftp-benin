@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                     @foreach($users as $key => $user)
-                    <tr wire:key="list-users-admin-{{$user->id}}" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <tr wire:key="list-users-admin-{{$user->id}}" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 admin-user-list-tr">
                         <th scope="row" class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </th>

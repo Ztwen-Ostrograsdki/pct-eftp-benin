@@ -24,24 +24,24 @@
                 </div>
               </div>
               <p class=" my-0 text-center text-gray-200">
-                <div class="my-3 text-lg letter-spacing-2 py-2 text-sky-500 shadow-2 shadow-sky-400 rounded-2xl">
+                <div class="my-3 text-lg letter-spacing-2 py-2 text-sky-500 shadow-2 shadow-sky-400 rounded-2xl association-objectives-card">
                     <span>NOS OBJECTIFS</span>
                 </div>
                 <div class="text-gray-100 text-left py-3">
                     <ul class="flex flex-col gap-y-2">
-                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2 association-objectives-card">
                             <span class="fas fa-circle text-sky-400 mr-2 animate-pulse"></span>
                             <span class="">
                                 Renforcer la qualité de l'enseignement des Sciences Physiques dans le sous-secteur de l'EFTP;
                             </span>
                         </li>
-                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2 association-objectives-card">
                             <span class="fas fa-circle text-sky-600 mr-2 animate-pulse"></span>
                             <span>
                                 Oeuvrer à l'élaboration des cours de sciences Physiques adaptés aux différents offres de formation selon le programme en vigueur;
                             </span>
                         </li>
-                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2">
+                        <li class="shadow-1 shadow-sky-400 rounded-2xl p-2 association-objectives-card">
                             <span class="fas fa-circle text-sky-800 mr-2 animate-pulse"></span>
                            <span>
                                 Contribuer à l'amélioration des résultats des apprenants en sciences Physiques dans le sous-secteur de l'EFTP
@@ -65,12 +65,12 @@
             
           
             @if(count($members))
-                <div class="my-3 text-lg letter-spacing-2 py-2 text-center text-sky-500 shadow-2 shadow-sky-400 rounded-2xl">
+                <div class="my-3 text-lg letter-spacing-2 py-2 text-center text-sky-500 shadow-2 shadow-sky-400 rounded-2xl association-objectives-card">
                     <span>NOS MEMBRES</span>
                 </div>
                 <div class="grid gap-6 md:grid-cols-2  sm:grid-cols-1 ">
                 @foreach($members as $key => $member)
-                    <div class="">
+                    <div class="association-objectives-card">
                         <div class="py-6 bg-inherit border rounded-md shadow-3 shadow-sky-400">
                         <div class=" pb-4 mb-6 w-full">
                             <a href="{{ route('member.profil', ['identifiant' => $member->user->identifiant]) }}" class="flex items-center px-6 mb-2 md:mb-0 hover:text-blue-500">

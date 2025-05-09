@@ -30,13 +30,13 @@
     <section class="py-3 font-poppins bg-transparent rounded-lg">
       <div class="px-4 mx-auto lg:py-6 md:px-6">
         <div class="grid lg:grid-cols-4  mb-24 -mx-3">
-          <div class="pr-2 sm:col-span-4 xs:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
+          <div class="library-option-ul-card pr-2 sm:col-span-4 xs:col-span-4 lg:col-span-1 grid md:grid-cols-4 lg:grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 lg:block xs:text-xs lg:text-base">
             <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
               <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400"> Par Promotion</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getPromotions(true) as $p_id => $promo)
-                <li wire:key="promotion-support-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                <li wire:key="promotion-support-list-{{$promo->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800 library-option-li-card">
                   <label for="promo{{$promo->id}}" class="flex items-center cursor-pointer dark:text-gray-400  has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
                     <input wire:model.change='selected_promotions' value="{{$promo->id}}" id="promo{{$promo->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class="">{{ $promo->name }}</span>
@@ -45,12 +45,12 @@
                 @endforeach
               </ul>
             </div>
-            <div class="p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
+            <div class="library-option-ul-card p-4 mb-5 xs:col-span-2 sm:col-span-2 lg:col-span-1  border border-sky-700 bg-transparent shadow-1 shadow-sky-400">
               <h2 class="xs:text-sm lg:text-base font-bold dark:text-gray-400">Par Filières</h2>
               <div class="w-16 pb-2 mb-6 border-b border-rose-600 dark:border-gray-400"></div>
               <ul>
                 @foreach(getFiliars(true) as $f_id => $fil)
-                <li wire:key="filiar-support-list-{{$fil->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800">
+                <li wire:key="filiar-support-list-{{$fil->id}}" class="mb-1 py-2 px-2 rounded-lg cursor-pointer hover:bg-gray-800 library-option-li-card">
                   <label for="filli{{$fil->id}}" class="flex items-center cursor-pointer dark:text-gray-300 has-[:checked]:shadow-2 has-[:checked]:shadow-sky-400 has-[:checked]:rounded-full has-[:checked]:px-2 has-[:checked]:py-1">
                     <input on wire:model.change='selected_filiars' value="{{$fil->id}}" id="filli{{$fil->id}}" type="checkbox" class="w-4 h-4 mr-2 checked:rounded-full">
                     <span class=" dark:text-gray-400">{{ $fil->name }}</span>
@@ -96,7 +96,7 @@
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($support_files as $fiche)
-              <div wire:key="support-admin-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+              <div wire:key="support-admin-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2 epreuve-card">
                 <div class="border transition-opacity rounded-lg  @if($fiche->authorized) shadow-gray-300 shadow-3 @else shadow-red-500 shadow-2 opacity-75 p-1 @endif border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">

@@ -10,17 +10,17 @@
             <div class="lg:col-span-3 md:col-span-3 lg:text-sm sm:col-span-5 sm:text-xs xs:col-span-5 xs:text-xs">
                 <div class="flex flex-wrap gap-2 text-center justify-start">
                     @foreach($member_sections as $section => $sec_title)
-                    <span wire:click="$set('member_section', '{{$section}}')" class="border hover:bg-blue-600 cursor-pointer @if($member_section == $section) shadow-2 shadow-sky-400 bg-blue-800 @endif bg-blue-400 text-gray-50 rounded-xl py-2 px-3">
+                    <span wire:click="$set('member_section', '{{$section}}')" class="admin-panel-widget border hover:bg-blue-600 cursor-pointer @if($member_section == $section) shadow-2 shadow-sky-400 bg-blue-800 @endif bg-blue-400 text-gray-50 rounded-xl py-2 px-3">
                         {{$sec_title}}
                     </span>
                     @endforeach
                     @if(__isAdminAs())
-                    <button title="Ajouter un nouveau membre à l'association" data-modal-target="new-member-modal" data-modal-toggle="new-member-modal" type="button" class="border cursor-pointer bg-blue-500 text-gray-100 rounded-xl hover:bg-blue-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button title="Ajouter un nouveau membre à l'association" data-modal-target="new-member-modal" data-modal-toggle="new-member-modal" type="button" class="admin-panel-widget border cursor-pointer bg-blue-500 text-gray-100 rounded-xl hover:bg-blue-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <span>Ajouter un membre</span>
                         <span class="fas fa-plus hover:animate-spin"></span>
                     </button>
     
-                    <button title="Ajouter une nouvelle fonction de membre à l'association" data-modal-target="new-role-modal" data-modal-toggle="new-role-modal" type="button" class="border cursor-pointer bg-green-500 text-gray-100 rounded-xl hover:bg-green-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800">
+                    <button title="Ajouter une nouvelle fonction de membre à l'association" data-modal-target="new-role-modal" data-modal-toggle="new-role-modal" type="button" class="admin-panel-widget border cursor-pointer bg-green-500 text-gray-100 rounded-xl hover:bg-green-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800">
                         <span>Ajouter un role</span>
                         <span class="fas fa-plus hover:animate-spin"></span>
                     </button>

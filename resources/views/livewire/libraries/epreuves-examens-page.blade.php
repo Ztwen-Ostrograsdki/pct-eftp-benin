@@ -19,8 +19,8 @@
             </h4>
         </div>
     </div>
-    <div class="w-full p-0 m-0 flex gap-x-2 justify-between">
-      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0">
+    <div class="w-full p-0 m-0 flex gap-x-2 justify-between ">
+      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0 card-reveal">
         <div class="flex items-center justify-between mx-0 px-0">
           <select wire:model.live='is_normal_exams' name="is_normal_exams" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
             <option class="py-4" value="twice">Tous les examens</option>
@@ -34,7 +34,7 @@
         </div>
       </div>
       @if($is_normal_exams == false || $is_normal_exams == 'twice')
-      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0">
+      <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0 card-reveal">
         <div class="flex items-center justify-between mx-0 px-0">
           <select wire:model.live='selected_department' name="selected_department" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
             <option class="py-4" value="">Trier par department</option>
@@ -55,7 +55,7 @@
       <div class=" mx-auto max-w-7xl lg:py-6">
         <div class="flex px-0 gap-x-3 justify-between mx-0">
           
-            <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3 mx-0">
+            <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3 mx-0 card-reveal">
                 <div class="flex items-center justify-between mx-0 px-0">
                   <select wire:model.live='selected_type' name="selected_type" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
                     <option class="py-4" value="">Trier par type</option>
@@ -70,7 +70,7 @@
                   </select>
                 </div>
             </div>
-            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3">
+            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3 card-reveal">
                 <div class="flex items-center justify-between ">
                   <select wire:model.live='selected_year' name="selected_year" id="epreuves-listing-by-year" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
                     <option class="py-4" value="">Trier par Année</option>
@@ -86,7 +86,7 @@
                 </div>
             </div>
             @if($is_normal_exams == false || $is_normal_exams == 'twice')
-            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3">
+            <div class="items-center justify-between px-0 mx-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/3 card-reveal">
                 <div class="flex items-center justify-between ">
                   <select wire:model.live='selected_lycee_id' class="w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-4 rounded-lg text-sky-300 font-semibold letter-spacing-1">
                     <option class="py-4" value="">Trier par Lycée ou Centre</option>
@@ -105,7 +105,7 @@
         </div>
         <div class="grid lg:grid-cols-4  mb-24 -mx-3">
           <div class="w-full col-span-4 ">
-            <div class="w-full py-1 my-3 px-3">
+            <div class="w-full py-1 my-3 px-3 card-reveal">
               <form class="w-full mx-auto">   
                   <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
                   <div class="relative">
@@ -127,7 +127,7 @@
             <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div wire:key="epreuves-examens-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+              <div wire:key="epreuves-examens-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2 epreuve-card">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">

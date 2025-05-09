@@ -11,6 +11,15 @@
         @livewireStyles
         
 
+        {{-- <script src="https://unpkg.com/scrollreveal"></script> --}}
+        <script src="{{asset('js/myscrollreveal.js')}}"></script>
+        <script>
+            ScrollReveal({ reset: true });
+        </script>
+
+
+        
+
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">
 
@@ -120,7 +129,10 @@
                 
                 }
             )
-                 */
+        */
+        
+		
         </script>
+        <script src="{{asset('js/revealmanagerfile.js')}}"></script>
     </body>
 </html>

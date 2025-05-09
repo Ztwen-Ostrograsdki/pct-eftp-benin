@@ -19,7 +19,7 @@
 
     <div class="mx-auto my-2 mt-11 w-full">
         <div class=" w-full mt-4 text-gray-900">
-            <div class="w-full mb-2 ">
+            <div class="w-full mb-2 library-widget-card">
                 <a class="bg-blue-300 border-white rounded-lg px-2 py-3 w-full flex justify-between" href="{{route('library.epreuves')}}">
                     <span>
                         <span>Visiter les épreuves</span>
@@ -31,7 +31,7 @@
                 </a>
             </div>
 
-            <div class="w-full mb-2">
+            <div class="w-full mb-2 library-widget-card">
                 <a class="bg-orange-400 border-white rounded-lg px-2 py-3 w-full flex justify-between " href="{{route('library.fiches')}}">
                     <span>
                         <span>Visiter des fiches de cours</span>
@@ -43,7 +43,7 @@
                 </a>
             </div>
 
-            <div class="w-full mb-2">
+            <div class="w-full mb-2 library-widget-card">
                 <a class="bg-yellow-400 border-white rounded-lg px-2  py-3 w-full flex justify-between" href="{{route('library.epreuves.examens')}}">
                     <span>
                         <span>Visiter les épreuves d'examens</span>
@@ -55,7 +55,7 @@
                 </a>
             </div>
 
-            <div class="w-full mb-2">
+            <div class="w-full mb-2 library-widget-card">
                 <a class="bg-green-600 border-white rounded-lg px-2 py-3 w-full inline-block" href="#">
                     <span>Visiter des documents scientifiques publiés</span>
                     <span class="fa fa-book"></span>

@@ -25,6 +25,7 @@ class Navbar extends Component
 
     public function mount()
     {
+
     }
 
     
@@ -67,6 +68,12 @@ class Navbar extends Component
     
     #[On('LiveUpdateLawEcosystemEvent')]
     public function reloadLawData()
+    {
+        $this->counter = getRandom();
+    }
+    
+    #[On('LiveNewMessageHasBeenSentIntoForum')]
+    public function newMessageIntoForum()
     {
         $this->counter = getRandom();
     }

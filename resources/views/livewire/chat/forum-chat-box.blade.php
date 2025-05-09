@@ -111,7 +111,7 @@
                     @foreach ($chats as $chat)
                         @if($chat->notHiddenFor(auth_user()->id))
                             <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs ">
-                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="@if($targeted_message_id && $targeted_message_id == $chat->id) shadow-3 shadow-yellow-200 @endif  rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 @else shadow-sky-400  @endif">
+                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="@if($targeted_message_id && $targeted_message_id == $chat->id) shadow-3 shadow-yellow-200 @endif  rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 chat-message-of-self @else shadow-sky-400 chat-message-of-other  @endif">
                                     <div class="flex items-center gap-x-3 rounded-full md:p-2 sm:p-1 xs:p-1 shadow-2 @if($chat->user_id == auth_user()->id) shadow-purple-400 @else shadow-sky-400 @endif">
                                         <img class="md:w-8 md:h-8 sm:h-4 sm:w-4 xs:h-4 xs:w-4 rounded-full @if($chat->user_id == auth_user()->id) float-right text-right @endif"  src="{{ user_profil_photo($chat->user) }}" alt="user photo">
                                         <h6 class="text-gray-300  md:block xs:hidden sm:hidden letter-spacing-2 float-right text-right">

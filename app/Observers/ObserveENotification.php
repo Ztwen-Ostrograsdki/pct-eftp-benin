@@ -3,10 +3,8 @@
 namespace App\Observers;
 
 use App\Events\IHaveNewNotificationEvent;
-use App\Events\ToasterMessagesEvent;
 use App\Models\ENotification;
 use App\Notifications\RealTimeNotificationGetToUser;
-use Illuminate\Support\Str;
 
 class ObserveENotification
 {

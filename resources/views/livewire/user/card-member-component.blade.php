@@ -31,8 +31,8 @@
         </h1>
 
         @include('pdftemplates.card', [
-            'reverse_name' => $user->getFullName(false),
-            'name' => $user->getFullName(true),
+            'reverse_name' => $user->getFullName(true),
+            'name' => $user->getFullName(false),
             'email' =>  $user->email,
             'identifiant' =>  $user->identifiant,
             'address' =>  Str::upper($user->address),

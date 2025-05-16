@@ -33,6 +33,11 @@ class RolesListPage extends Component
         );
     }
 
+    public function refreshAllPosts()
+    {
+        
+    }
+
     public function editRole($role_id)
     {
         $this->dispatch('OpenMemberModalForEditEvent', $role_id);

@@ -30,8 +30,19 @@
             
         </h1>
 
+        @include('pdftemplates.card', [
+            'reverse_name' => $user->getFullName(false),
+            'name' => $user->getFullName(true),
+            'email' =>  $user->email,
+            'identifiant' =>  $user->identifiant,
+            'address' =>  Str::upper($user->address),
+            'role' =>  $user->member->role->name,
+            'photo' =>  user_profil_photo($user),
+            'contacts' =>  $user->contacts,
 
-        @livewire('user.card-module', ['member' => $member, 'identifiant' => $identifiant])
+        ])
+
+        {{-- @livewire('user.card-module', ['member' => $member, 'identifiant' => $identifiant]) --}}
 
         <div class="mx-auto my-4 text-gray-300 font-bold letter-spacing-1 text-center flex items-center justify-center w-3/5  sm:text-sm sm:font-semibold xs:text-xs xs:font-semibold">
             <span wire:click="generateCardMember('{{$member->id}}')" class="bg-sky-800 hover:bg-sky-900 py-2 px-3 border rounded-lg cursor-pointer w-full">

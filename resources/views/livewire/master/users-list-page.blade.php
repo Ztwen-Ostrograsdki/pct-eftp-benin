@@ -164,7 +164,7 @@
                         
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
                             
-                            <div class="flex justify-end px-4 pt-4">
+                            <div style="z-index: 5000" class="flex justify-end px-4 pt-4 hidden">
                                 <button id="dropdownButton-{{$user->id}}" data-dropdown-toggle="dropdown-{{$user->id}}" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg p-1.5" type="button">
                                     <span class="sr-only">Open dropdown</span>
                                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
@@ -172,7 +172,7 @@
                                     </svg>
                                 </button>
                                 <!-- Dropdown menu -->
-                                <div id="dropdown-{{$user->id}}" class="z-10 hidden lg:text-sm sm:text-xs md:text-xs xs:text-xs list-none bg-white divide-y divide-gray-100 rounded-lg shadow-2 shadow-sky-500 w-56 z-bg-secondary-light border border-sky-500">
+                                <div id="dropdown-{{$user->id}}" class=" hidden lg:text-sm sm:text-xs md:text-xs xs:text-xs list-none bg-white divide-y divide-gray-100 rounded-lg shadow-2 shadow-sky-500 w-56 z-bg-secondary-light border border-sky-500" style="z-index: 5000">
                                     <ul class="py-2" aria-labelledby="dropdownButton-{{$user->id}}">
                                         <li>
                                             <a href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">

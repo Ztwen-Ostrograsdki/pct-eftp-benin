@@ -23,7 +23,7 @@
         "flag-icons": "^7.2.3",
         "flowbite": "^2.5.2",
         "preline": "^2.5.1",
-        "puppeteer": "^24.6.0",
+        "puppeteer": "^24.8.2",
         "scrollreveal": "^4.0.9",
         "tw-elements": "^2.0.0"
     }

@@ -15,6 +15,19 @@ import { Modal } from 'flowbite';
 import { Drawer } from 'flowbite';
 
 
+// import puppeteer from '/node_modules/puppeteer';
+
+// (async() => {
+
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.goto('/');
+//   await page.pdf({path: 'example.pdf', format: 'A4'});
+
+//   await browser.close();
+// })
+
+
 
 
 

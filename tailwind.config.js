@@ -10,7 +10,9 @@ export default {
         './resources/**/*.vue',
         'node_modules/preline/dist/*.js',
         './node_modules/tw-elements/js/**/*.js',
-        './vendor/bezhansalleh/filament-language-switch/resources/views/language-switch.blade.php',
+        './resources/views/**/*.blade.php',
+        './resources/js/**/*.js',
+        // './vendor/bezhansalleh/filament-language-switch/resources/views/language-switch.blade.php',
     ],
     theme: {
         extend: {

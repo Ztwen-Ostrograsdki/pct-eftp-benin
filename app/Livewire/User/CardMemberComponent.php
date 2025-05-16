@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Livewire\Component;
 use Spatie\Browsershot\Browsershot;
+use Illuminate\Support\Str;
 
 class CardMemberComponent extends Component
 {
@@ -55,7 +56,7 @@ class CardMemberComponent extends Component
             }
 
         }
-        return view('livewire.user.card-member-component');
+        return view('livewire.user.card-member-component', compact('user'));
     }
 
     public function sendCardToMember($member_id)
@@ -63,7 +64,75 @@ class CardMemberComponent extends Component
         
     }
 
-    public function generateCardMember($member_id)
+    public function generateCardMember($id)
+    {
+        $member = Member::find($id);
+
+        $user = $member->user;
+
+        $data = [
+            'name' => $user->getFullName(),
+            'reverse_name' => $user->getFullName(true),
+            'email' =>  $user->email,
+            'identifiant' =>  $user->identifiant,
+            'address' =>  Str::upper($user->address),
+            'role' =>  $member->role->name,
+            'photo' =>  user_profil_photo($user),
+            'contacts' =>  $user->contacts,
+
+        ];
+
+        $html = View::make('pdftemplates.card', $data)->render();
+
+        $rand = random_int(13136636, 89999938872);
+
+        $pdfPath = storage_path("app/public/carte-de-membre-{$rand}-{$user->identifiant}.pdf");
+
+        
+
+        ini_set("max_execution_time", 45);
+
+        Browsershot::html($html)
+            ->setNodeBinary('C:\Program Files\nodejs\node.exe')
+            ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')
+            ->setIncludePath(public_path('build/assets'))
+            ->showBackground()
+            ->waitUntilNetworkIdle()
+            ->ignoreHttpsErrors()
+            ->format('A4')
+            ->margins(15, 15, 15, 15)
+            ->timeout(120)
+            ->save($pdfPath);
+
+        return response()->download($pdfPath);
+    }
+
+
+    public function ttgenerateCardMember($member_id = null)
+    {
+        $htmlContent = View::make('livewire.user.my-card')->render();
+    
+        // Generate PDF with Browsershot
+        $pdfPath =  public_path().'/app/public/users/membre.pdf';
+
+        // $pdf = Browsershot::html($htmlContent)
+        //     ->format('A4')
+        //     ->margins(10, 10, 10, 10)
+        //     ->save("membre3.pdf");
+
+        Browsershot::html($htmlContent)->ignoreHttpsErrors()->waitUntilNetworkIdle()
+                                       ->showBackground()
+                                       ->setOption('addStyleTag', json_encode(['path' => asset('css/card.css')]))
+                                       ->margins(5, 5, 5, 5)
+                                       ->save("ma-carte.pdf");
+
+            
+
+
+        
+    }
+
+    public function generattorCardMember($member_id)
     {
         // Retrieve the order by ID
         $member = Member::find($member_id);

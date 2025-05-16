@@ -89,6 +89,19 @@
                     </span>
                 </span>
 
+                <div class="m-0 p-0 mx-auto mt-4 mb-2">
+                    @if($user->member)
+                        <h6 class="m-0 p-0 font-semibold letter-spacing-1 ">
+                            <a href="{{route('member.profil', ['identifiant' => $user->identifiant])}}" class=" px-4 py-2 bg-gray-400 text-gray-800 hover:bg-slate-500">
+                                <span class="mr-2 fa fa-user-check">
+                                    
+                                </span>
+                                Voir Profil membre
+                            </a>
+                        </h6>
+                    @endif
+                </div>
+
                 <div class="w-full p-2">
                     <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 rounded-full px-3 my-3 text-blue-500" data-inactive-classes="text-gray-500 dark:text-gray-400">
                         <h2 id="accordion-flush-heading-1 px-3 ">
@@ -462,7 +475,7 @@
                     @if($user->id == auth_user()->id)
                         <a href="{{route('user.profil.edition', ['identifiant' => $user->identifiant, 'auth_token' => $user->auth_token])}}" class="py-2 px-4 ms-2 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-success-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-success-700">
                             <span class="fas fa-edit"></span>
-                            Editer
+                            Page d'édition de profil
                         </a>
                     @endif
                 </div>

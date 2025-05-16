@@ -1,29 +1,39 @@
 <div>
-    <section class="py-14 font-poppins">
-        <div class="max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
-          <div class="max-w-xl mx-auto">
-            <div class="text-center ">
-              <div class="relative flex flex-col items-center">
-                <h1 class="text-xl font-bold dark:text-gray-200 "> 
-                    Les Postes disponibles de 
-                    <span class="text-blue-500">l'association</span> 
+    <section class="py-14">
+        <div class="w-full px-4 py-6 mx-auto lg:py-4 md:px-6 z-bg-secondary-light-opac border rounded my-1">
+            <div class="m-auto  p-0 my-3 font-semibold">
+                <h1 class="p-4 text-gray-300 flex justify-between border uppercase rounded-sm">
+                    <span class="lg:text-sm letter-spacing-2 sm:text-xs xs:text-xs">
+                        <span class="">
+                            Administration :
+                        </span>
+        
+                        <strong class="text-gray-200">
+                            Gestion des postes disponibles au sein de l'association 
+                            @if ($roles)
+                            <br>
+                            <small class="text-orange-600"> {{ numberZeroFormattor(count($roles)) }} Postes actifs</small>
+                            @endif
+                        </strong>
+                    </span>
+    
+                    <div class="flex gap-x-2 lg:text-sm items-center letter-spacing-2 sm:text-xs xs:text-xs">
+                        <span wire:click="refreshAllPosts" class="text-gray-200 font-semibold px-3 py-3 cursor-pointer hover:bg-red-500 letter-spacing-1 rounded-lg border bg-red-700">
+                            <span wire:loading.remove wire:target='refreshAllPosts'>
+                                <span class="fas fa-trash"></span>
+                                <span>Rafraichir tous les postes occupés</span>
+                            </span>
+                            <span wire:loading wire:target='refreshAllPosts'>
+                                <span class="fas fa-rotate animate-spin"></span>
+                                <span>Opération en cours...</span>
+                            </span>
+                        </span>
+                    </div>
                 </h1>
-                <div class="flex w-96 mt-2 mb-6 overflow-hidden rounded">
-                  <div class="flex-1 h-2 bg-blue-200"></div>
-                  <div class="flex-1 h-2 bg-blue-400"></div>
-                  <div class="flex-1 h-2 bg-blue-600"></div>
-                </div>
-              </div>
-              <p class="mb-12 text-base text-center text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
-                Pariatur
-                numquam, odio quod nobis ipsum ex cupiditate?
-              </p>
             </div>
-          </div>
           
             @if($roles)
-                <div class="grid gap-6 md:grid-cols-2  sm:grid-cols-1 ">
+                <div class="grid gap-6 md:grid-cols-3  sm:grid-cols-1 ">
                 @foreach($roles as $key => $role)
                     <div class="">
                         @php
@@ -36,7 +46,6 @@
                             
                             <h2 class="lg:text-2xl md:text-base xs:text-lg font-semibold text-gray-900 dark:text-gray-300 hover:text-blue-500 w-full text-center border-b flex items-center justify-center pb-2 mb-2 z-bg-secondary-light-opac py-2">
                                 {{ $role->name }}
-                                
                             </h2>
                             <div class="flex justify-end pr-2">
                                 <button id="dropdownButton-from-role-{{$role->id}}" data-dropdown-toggle="dropdown-from-role-{{$role->id}}" class="inline-block border text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
@@ -49,7 +58,6 @@
                                 <div id="dropdown-from-role-{{$role->id}}" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
                                     <ul class="py-2" aria-labelledby="dropdownButton-from-role-{{$role->id}}">
                                         @if( __isAdminAs())
-
                                             <li>
                                                 <a wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Editer cette fonction</a>
                                             </li>
@@ -135,6 +143,29 @@
                                     </h5>
                                 </div>
                                 @endif
+
+                                <div class="mx-auto w-full flex gap-x-2 px-3 my-0 py-0 font-semibold letter-spacing-1 text-gray-200 lg:text-sm md:text-sm sm:text-sm xs:text-xs">
+                                    @if( __isAdminAs())
+                                        <h6>
+                                            <span wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})"  class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Modifier</span>
+                                        </h6>
+                                        @if($role->member)
+                                            <h6>
+                                                <span wire:click="$dispatch('OpenMemberModalForEditEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Un nouveau membre</span>
+                                            </h6>
+                                        @endif
+                                        @if($role->member && __isAdminAs())
+                                            <h6>
+                                                <span wire:click="removeUserFormMembers('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
+                                            </h6>
+                                            <h6>
+                                                <span wire:click="confirmedUserBlockOrUnblocked('{{$role->member->user->id}}')" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">
+                                                    {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
+                                                </span>
+                                            </h6>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
                             <div class="mx-auto m-0 p-2">
                                 <h5 class="w-full m-0 flex items-center justify-between px-2 mx-auto text-center text-xs lg:text-lg  text-orange-400 letter-spacing-2 py-2 border-b border-t border-gray-500 z-bg-secondary-light">

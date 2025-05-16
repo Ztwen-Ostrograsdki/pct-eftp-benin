@@ -7,6 +7,10 @@
         <title>{{ $title ?? config('app.name') }}</title>
         <link rel="stylesheet" href="@sweetalert2/themes/dark/dark.css">
         <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+
+        {{-- <link href="{{ mix('resources/css/app.css') }}" rel="stylesheet">
+        <script src="{{ mix('resources/js/app.js') }}"></script> --}}
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
         
@@ -16,10 +20,7 @@
         <script>
             ScrollReveal({ reset: true });
         </script>
-
-
         
-
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">
 
@@ -131,8 +132,11 @@
             )
         */
         
-		
+            
         </script>
         <script src="{{asset('js/revealmanagerfile.js')}}"></script>
+
+
+
     </body>
 </html>

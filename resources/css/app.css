@@ -34,7 +34,7 @@ input:-webkit-autofill:active{
   }
 
   
-  .z-table tr.z-table-body:nth-child(odd) {
+.z-table tr.z-table-body:nth-child(odd) {
     background: #333;
 }
 

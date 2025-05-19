@@ -18,6 +18,7 @@ class MembersHomePage extends Component
         'members-cards' => "Cartes de membres",
         'users-list' => "Les enseignants",
         'members' => "Profil des membres",
+        'payments' => "Les cotisations",
         'roles' => "Les Fonctions",
         'lycees' => "Les Lycées",
         'laws' => "Les Lois",
@@ -27,7 +28,7 @@ class MembersHomePage extends Component
         'epreuves-exams-list' => "Les Epreuves d'examens",
         "lays" => "Les réglements intérieurs",
         "history" => "Historique",
-        'cv' => "CV de l'association"
+        'cv' => "Description de l'association"
 
     ];
 

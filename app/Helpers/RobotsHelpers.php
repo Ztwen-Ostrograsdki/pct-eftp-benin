@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Classe;
+use App\Models\Cotisation;
 use App\Models\Epreuve;
 use App\Models\Filiar;
 use App\Models\ForumChat;
@@ -13,6 +14,41 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\Instanceof_;
+
+if(!function_exists('getMonths')){
+
+    function getMonths($index = null)
+    {
+        $months = [
+            1 => 'Janvier',
+            2 => 'Février',
+            3 => 'Mars',
+            4 => 'Avril',
+            5 => 'Mai',
+            6 => 'Juin',
+            7 => 'Juillet',
+            8 => 'Août',
+            9 => 'Septembre',
+            10 => 'Octobre',
+            11 => 'Novembre',
+            12 => 'Décembre',
+        ];
+
+        return $index ? $months[$index] : $months;
+    }
+
+}
+
+if(!function_exists('getCurrentMonth')){
+
+    function getCurrentMonth()
+    {
+        $index = date('n');
+
+        return getMonths($index);
+    }
+
+}
 
 if(!function_exists('__isConnectedToInternet')){
 
@@ -29,6 +65,7 @@ if(!function_exists('__isConnectedToInternet')){
     }
 
 }
+
 if(!function_exists('__greatingMessager')){
 
     function __greatingMessager($name)
@@ -606,6 +643,15 @@ if(!function_exists('getPromotion')){
 
 }
 
+if(!function_exists('getMemberCotisationOfMonthYear')){
+
+    function getMemberCotisationOfMonthYear($member_id, $month, $year)
+    {
+        return Cotisation::where('member_id', $member_id)->where('month', $month)->where('year', $year)->first();
+    }
+
+}
+
 
 if(!function_exists('getFiliar')){
 
@@ -621,6 +667,24 @@ if(!function_exists('getUser')){
     function getUser($value, $column = "id")
     {
         return User::where($column, $value)->first();
+    }
+
+}
+
+if(!function_exists('getMember')){
+
+    function getMember($value, $column = "id")
+    {
+        return Member::where($column, $value)->first();
+    }
+
+}
+
+if(!function_exists('findMember')){
+
+    function findMember($id)
+    {
+        return Member::find($id);
     }
 
 }
@@ -642,6 +706,30 @@ if(!function_exists('__formatDate')){
         $formatted = ucfirst(Carbon::parse($date)->translatedFormat('d F Y'));
         
         return $formatted;
+    }
+
+}
+
+if(!function_exists('__formatDateTime')){
+
+    function __formatDateTime($datetime)
+    {
+        Carbon::setLocale('fr');
+
+        if(!$datetime) $datetime = Carbon::now();
+
+        $formatted = ucwords(Carbon::parse($datetime)->translatedFormat('l j F Y \à H\h i\m s\s'));
+
+        return $formatted;
+    }
+
+}
+
+if(!function_exists('__moneyFormat')){
+
+    function __moneyFormat($amount)
+    {
+        return number_format($amount, 0, ',', ' ');
     }
 
 }

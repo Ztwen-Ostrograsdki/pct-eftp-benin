@@ -29,6 +29,11 @@ if (window.User) {
 e.private('master')
 
 e.private('confirmeds')
+        .listen('MembersCardCreationCompletedEvent', () =>{
+
+            Livewire.dispatch('LiveMembersCardCreationCompletedEvent');
+            
+        })
         .listen('EpreuveWasCreatedSuccessfullyEvent', () =>{
 
             Livewire.dispatch('LiveEpreuveWasCreatedSuccessfullyEvent');
@@ -54,9 +59,15 @@ e.private('confirmeds')
 
 e.private('admin')
 
-    .listen('UserHasBeenBlockedSuccessfullyEvent', () =>{
+    .listen('UserHasBeenBlockedSuccessfullyEvent', (data) =>{
 
         Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent');
+        
+    })
+    
+    .listen('MemberPaymentRequestCompletedEvent', () =>{
+
+        Livewire.dispatch('LiveMemberPaymentRequestCompletedEvent');
         
     })
     
@@ -142,8 +153,6 @@ e.private('App.Models.User.' + window.ClientUser.id)
 
         Livewire.dispatch('LiveMembersCardCreationCompletedEvent', member);
 
-        console.log(member);
-        
     })
 
     .listen('MembersCardCreationFailedEvent', (data) =>{

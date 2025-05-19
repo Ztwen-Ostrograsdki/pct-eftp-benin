@@ -57,12 +57,19 @@
               Statut membre
             </a>
           </li>
-          @endif
-          <li class="hidden">
-            <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
-              Association
+          <li>
+            <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.payements') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+              Mes cotisations
             </a>
           </li>
+          @endif
+          @if(__isAdminAs())
+          <li class="hidden">
+            <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+              Administration
+            </a>
+          </li>
+          @endif
           <li>
             <a href="{{route('library.home')}}" class="block px-4 py-2 text-sm  hover:bg-gray-100 dark:hover:bg-gray-600 {{request()->route()->named('library.home') ? 'text-blue-600' : 'text-gray-400' }} ">
               Bibliothèque

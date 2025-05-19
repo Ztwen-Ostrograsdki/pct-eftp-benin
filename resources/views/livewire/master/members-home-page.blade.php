@@ -68,6 +68,10 @@
             @elseif($member_section == "laws")
                 <div>
                     @livewire('master.laws-page')
+                </div> 
+            @elseif($member_section == "payments")
+                <div>
+                    @livewire('master.members-monthlies-payments')
                 </div>
             @endif
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MembersCardCreationCompletedEvent implements ShouldBroadcast
+class MemberPaymentRequestCompletedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -18,13 +19,13 @@ class MembersCardCreationCompletedEvent implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public $member,
-        public $admin_generator,
+        public ?User $admin = null,
+        public ?array $data = null,
     )
     {
-        $this->member = $member;
+        $this->admin = $admin;
 
-        $this->admin_generator = $admin_generator;
+        $this->data = $data;
     }
 
     /**
@@ -34,9 +35,15 @@ class MembersCardCreationCompletedEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        if($this->admin){
+            return [
+                new PrivateChannel('App.Models.User.' . $this->admin->id),
+                new PrivateChannel('admin'),
+            ];
+        }
+
         return [
-           new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
-           new PrivateChannel('admin'),
+            new PrivateChannel('admin'),
         ];
     }
 }

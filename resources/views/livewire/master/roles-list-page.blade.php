@@ -256,12 +256,12 @@
                         </div>
                     </div>
                 @endforeach
+                </div>
             @else
                 <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 text-base text-cursive">
                     <span class="fas fa-trash"></span>
                     <span>Oupps aucune données trouvées!!!</span>
                 </h4>
-                </div>
             @endif
         </div>
     </section>

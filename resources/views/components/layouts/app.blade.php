@@ -45,6 +45,7 @@
         @livewire('master.modals.lycee-manager-modal')
         @livewire('master.modals.lycee-filiars-manager-modal')
         @livewire('master.modals.lycee-promotions-manager-modal')
+        @livewire('master.modals.member-payments-modal-manager')
         @livewire('partials.footer')
         
 

@@ -143,5 +143,11 @@ class MembersCardsList extends Component
     {
         $this->counter = rand(3, 342);
     }
+    
+    #[On('LiveMembersCardCreationCompletedEvent')]
+    public function reloadDataForNew()
+    {
+        $this->counter = rand(3, 342);
+    }
 }
 

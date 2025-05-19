@@ -21,6 +21,7 @@ use App\Livewire\Master\MembersListPage;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\User\CardMemberComponent;
 use App\Livewire\User\MemberProfil;
+use App\Livewire\User\MyMonthlyPayments;
 use App\Livewire\User\MyNotificationsPage;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
@@ -72,6 +73,8 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     Route::get('profil/IDX={identifiant}', UserProfil::class)->name('user.profil')->middleware(['user.self']);
     
     Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['user.self']);
+    
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self']);
 
 
 });

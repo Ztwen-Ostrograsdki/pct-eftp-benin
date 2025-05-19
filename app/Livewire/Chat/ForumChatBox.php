@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use App\Observers\ObserveChatForumMessage;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -190,11 +191,13 @@ class ForumChatBox extends Component
 
                 YourMessageHasBeenLikedBySomeoneEvent::dispatch(auth_user(), $chat->user);
 
-                if($user_id !== $chat->user->id){
+                if(true){
 
                     $liker_name = auth_user_fullName();
 
-                    $chat->user->notify(new RealTimeNotificationGetToUser($liker_name . " a aimé votre message dans le forum!"));
+                    Notification::sendNow([$chat->user], new RealTimeNotificationGetToUser($liker_name . " a aimé votre message dans le forum!","message.liked"));
+
+                    // $chat->user->notify(new RealTimeNotificationGetToUser($liker_name . " a aimé votre message dans le forum!", $chat->user));
                 }
 
                 $this->toast("Vous avez aimé le message de $name!", 'success');

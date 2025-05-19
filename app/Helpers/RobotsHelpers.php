@@ -8,10 +8,46 @@ use App\Models\Member;
 use App\Models\Promotion;
 use App\Models\SupportFile;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\Instanceof_;
 
+if(!function_exists('__isConnectedToInternet')){
+
+    function __isConnectedToInternet()
+    {
+        try {
+
+           return @fsockopen("www.google.com", 80) !== false;
+
+        } catch (\Exception $e) {
+
+            return false;
+        }
+    }
+
+}
+if(!function_exists('__greatingMessager')){
+
+    function __greatingMessager($name)
+    {
+        $hour = date('G');
+        
+        if($hour >= 0 && $hour <= 12){
+
+            $greating = "Bonjour ";
+        }
+        else{
+
+            $greating = "Bonsoir ";
+        }
+
+        return $name  ? $greating . ' ' . $name : $greating;
+    }
+
+}
 if(!function_exists('__arrayAllTruesValues')){
 
     function __arrayAllTruesValues($data)
@@ -594,6 +630,30 @@ if(!function_exists('__selfUser')){
     function __selfUser($user)
     {
         return $user->id === auth_user()->id;
+    }
+
+}
+if(!function_exists('__formatDate')){
+
+    function __formatDate($date)
+    {
+        Carbon::setLocale('fr');
+
+        $formatted = ucfirst(Carbon::parse($date)->translatedFormat('d F Y'));
+        
+        return $formatted;
+    }
+
+}
+
+if(!function_exists('deleteFileIfExists')){
+
+    function deleteFileIfExists($path)
+    {
+        if(File::exists($path)){
+
+            File::delete($path);
+        }
     }
 
 }

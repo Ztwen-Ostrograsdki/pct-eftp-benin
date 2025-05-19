@@ -4,8 +4,10 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\InitMemberCardSchemaEvent;
 use App\Models\Member;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -73,9 +75,15 @@ class MembersCardsList extends Component
         $this->dispatch('OpenMemberModalForEditEvent', $member_id);
     }
 
-    public function sendMemberCard($member_id)
+    public function generateCardMember($member_id)
     {
+        $member = Member::find($member_id);
 
+        $key = Str::random(4);
+
+        $admin_generator = auth_user();
+
+        InitMemberCardSchemaEvent::dispatch($member, $key, $admin_generator);
     }
     
     public function showMemberCard($member_id)

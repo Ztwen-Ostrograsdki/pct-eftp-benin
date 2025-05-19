@@ -12,6 +12,7 @@
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "simplesoftwareio/simple-qrcode": "*",
         "spatie/browsershot": "*"
     },
     "require-dev": {

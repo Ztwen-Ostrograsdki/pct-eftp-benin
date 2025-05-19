@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
+use App\Models\CardMember;
 use App\Models\ENotification;
 use App\Models\Member;
 use App\Observers\ObserveUser;
@@ -106,6 +107,8 @@ class User extends Authenticatable
     {
         
     }
+
+    
 
 
     public function getGender($gender = null)

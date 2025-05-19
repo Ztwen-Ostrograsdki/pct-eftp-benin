@@ -101,6 +101,12 @@ e.private('App.Models.User.' + window.ClientUser.id)
 
     .notification((notification) => {
 
+        Livewire.dispatch('LiveNewLiveNotificationEvent');
+
+        if(notification.type == 'new.notification'){
+
+            
+        }
 
     })
 
@@ -117,7 +123,7 @@ e.private('App.Models.User.' + window.ClientUser.id)
     })
     .listen('YourMessageHasBeenLikedBySomeoneEvent', (data) =>{
 
-        Livewire.dispatch('LiveYourMessageHasBeenLikedBySomeoneToTheUserEvent', {liker_data: data.liker, user_data: data.user});
+        // Livewire.dispatch('LiveYourMessageHasBeenLikedBySomeoneToTheUserEvent', {liker_data: data.liker, user_data: data.user});
         
     })
     .listen('ForumChatSujectHasBeenSubmittedSuccessfullyEvent', (data) =>{
@@ -129,6 +135,22 @@ e.private('App.Models.User.' + window.ClientUser.id)
     .listen('NotificationsDeletedSuccessfullyEvent', (data) =>{
 
         Livewire.dispatch('LiveNotificationsDeletedSuccessfullyEvent');
+        
+    })
+
+    .listen('MembersCardCreationCompletedEvent', (member) =>{
+
+        Livewire.dispatch('LiveMembersCardCreationCompletedEvent', member);
+
+        console.log(member);
+        
+    })
+
+    .listen('MembersCardCreationFailedEvent', (data) =>{
+
+        Livewire.dispatch('LiveMembersCardCreationFailedEvent', data);
+
+        console.log(data);
         
     })
 

@@ -5,7 +5,12 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
+use App\Mail\YourCardMemberIsReadyMail;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -44,6 +49,68 @@ class MemberProfil extends Component
     public function render()
     {
         return view('livewire.user.member-profil');
+    }
+
+    public function downloadMyCard()
+    {
+        $member = $this->member;
+
+        $has_card = $member->card();
+
+        if($has_card){
+
+            if($has_card->isPrintable()){
+
+                if(!$has_card->max_print_attempt()){
+
+                    $user = $member->user;
+
+                    $path = $has_card->status;
+
+                    $up = $has_card->total_print + 1;
+
+                    $now = Carbon::now();
+
+                    if(__isConnectedToInternet()){
+
+                        $sent = Mail::to($user->email)->send(new YourCardMemberIsReadyMail($user, $path));
+
+                        if($sent){
+
+                            $message_to_user = "Veuillez vérifier votre boite mail: votre carte vous a été envoyée par couriel!";
+
+                            Notification::sendNow([$user], new RealTimeNotificationGetToUser($message_to_user));
+
+                            $this->member->update(['card_sent_by_mail' => true]);
+                        
+                            $has_card->update(['card_sent_by_mail' => true]);
+
+                            $has_card->update(['total_print' => $up, 'last_print_date' => $now]);
+                        }
+                    
+                    }
+                    else{
+
+                        $message_to_user = "Veuillez vous connecter à internet pour télécharger votre carte!";
+
+                        Notification::sendNow([$user], new RealTimeNotificationGetToUser($message_to_user));
+
+                    }
+
+                }
+                else{
+
+                    return $this->toast("Vous avez déjà atteint le nombre maximal d'impressions de votre carte de membre!", 'info');
+                }
+
+            }
+            else{
+
+                return $this->toast("Cette carte ne peut être imprimée, Veuillez contacter les administrateurs!", 'info');
+
+
+            }
+        }
     }
 
     public function confirmedUserIdentification()

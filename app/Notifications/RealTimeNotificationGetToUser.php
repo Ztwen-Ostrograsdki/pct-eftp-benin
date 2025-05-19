@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,10 +20,14 @@ class RealTimeNotificationGetToUser extends Notification implements ShouldBroadc
      */
     public function __construct(
         public $message = "Vous avez reçu une notification",
+        public $notif_type = null
 
     )
     {
-        //
+        $this->message = $message;
+
+        $this->notif_type = $notif_type;
+
     }
 
     /**
@@ -49,7 +55,16 @@ class RealTimeNotificationGetToUser extends Notification implements ShouldBroadc
     public function toArray(object $notifiable): array
     {
         return [
-            'message' => $this->message
+            'message' => $this->message,
+            'notif_type' => $this->notif_type,
         ];
+    }
+
+
+    
+    
+    public function broadcastType()
+    {
+        return $this->notif_type;
     }
 }

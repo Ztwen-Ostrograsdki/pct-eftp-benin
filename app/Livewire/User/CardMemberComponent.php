@@ -4,14 +4,14 @@ namespace App\Livewire\User;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\InitMemberCardSchemaEvent;
 use App\Models\Member;
 use App\Models\User;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
-use Livewire\Component;
-use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Str;
+use Livewire\Component;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Spatie\Browsershot\Browsershot;
 
 class CardMemberComponent extends Component
 {
@@ -24,6 +24,9 @@ class CardMemberComponent extends Component
 
     public $member;
 
+    public $card_number;
+
+    public $expired_at;
 
 
     public function mount($identifiant)
@@ -53,10 +56,16 @@ class CardMemberComponent extends Component
 
                 $this->member_id = $user->member->id; 
 
+                $card_number = date('Y') . '' . random_int(10000002, 999999999999);
+
+                $qrcode = QrCode::size(80)->generate('ID:' . $user->identifiant . '@Tel:' . $user->contacts . 'N°:' . $card_number);
+
+                
+
             }
 
         }
-        return view('livewire.user.card-member-component', compact('user'));
+        return view('livewire.user.card-member-component', compact('user', 'qrcode', 'card_number'));
     }
 
     public function sendCardToMember($member_id)
@@ -64,7 +73,20 @@ class CardMemberComponent extends Component
         
     }
 
+
     public function generateCardMember($id)
+    {
+
+        $member = Member::find($id);
+
+        $key = Str::random(4);
+
+        $admin_generator = auth_user();
+
+        InitMemberCardSchemaEvent::dispatch($member, $key, $admin_generator);
+    }
+
+    public function __f_generateCardMember($id)
     {
         $member = Member::find($id);
 
@@ -79,6 +101,7 @@ class CardMemberComponent extends Component
             'role' =>  $member->role->name,
             'photo' =>  user_profil_photo($user),
             'contacts' =>  $user->contacts,
+            'card_number' => $this->card_number
 
         ];
 
@@ -88,9 +111,7 @@ class CardMemberComponent extends Component
 
         $pdfPath = storage_path("app/public/carte-de-membre-{$rand}-{$user->identifiant}.pdf");
 
-        
-
-        ini_set("max_execution_time", 45);
+        // ini_set("max_execution_time", 45);
 
         Browsershot::html($html)
             ->setNodeBinary('C:\Program Files\nodejs\node.exe')
@@ -108,62 +129,7 @@ class CardMemberComponent extends Component
     }
 
 
-    public function ttgenerateCardMember($member_id = null)
-    {
-        $htmlContent = View::make('livewire.user.my-card')->render();
     
-        // Generate PDF with Browsershot
-        $pdfPath =  public_path().'/app/public/users/membre.pdf';
 
-        // $pdf = Browsershot::html($htmlContent)
-        //     ->format('A4')
-        //     ->margins(10, 10, 10, 10)
-        //     ->save("membre3.pdf");
-
-        Browsershot::html($htmlContent)->ignoreHttpsErrors()->waitUntilNetworkIdle()
-                                       ->showBackground()
-                                       ->setOption('addStyleTag', json_encode(['path' => asset('css/card.css')]))
-                                       ->margins(5, 5, 5, 5)
-                                       ->save("ma-carte.pdf");
-
-            
-
-
-        
-    }
-
-    public function generattorCardMember($member_id)
-    {
-        // Retrieve the order by ID
-        $member = Member::find($member_id);
-
-        if($member){
-
-            $user = $member->user;
-
-            $identifiant = $user->identifiant;
-
-            $time = Carbon::now()->timestamp;
-
-            ini_set("max_execution_time", 120);
-
-            // Pass data to the view
-            $htmlContent = View::make('livewire.user.card-module', compact('member', 'identifiant'))->render();
     
-            // Generate PDF with Browsershot
-            $pdfPath =  public_path().'/app/public/users/membre.pdf';
-
-            $pdf = Browsershot::html($htmlContent)
-                ->format('A4')
-                ->margins(10, 10, 10, 10)
-                ->pdf();
-
-
-            Storage::put('users/membre.pdf', $pdf, ['disk' => "public"]);
-    
-            //return response()->download($pdfPath);
-        }
- 
-        
-    }
 }

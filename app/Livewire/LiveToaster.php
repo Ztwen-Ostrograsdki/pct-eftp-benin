@@ -39,12 +39,24 @@ class LiveToaster extends Component
     {
         $this->counter = getRandom();
     }
+    
+    
+    #[On("LiveNewLiveNotificationEvent")]
+    public function realodToaster()
+    {
+        $this->counter = getRandom();
+    }
 
 
     public function deleteNotification($id)
     {
 
-        $notif = User::find(auth_user()->id)->unreadNotifications()->where('id', $id)->first()->markAsRead();
+        $notif = $notif = User::find(auth_user()->id)->unreadNotifications()->where('id', $id)->first();
+
+        if($notif){
+            
+            $notif->markAsRead();
+        }
 
         $this->counter = getRandom();
 

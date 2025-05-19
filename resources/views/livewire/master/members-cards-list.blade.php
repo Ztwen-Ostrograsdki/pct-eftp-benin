@@ -51,18 +51,25 @@
                            Nom et Prénoms
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Statut membre
+                            Poste
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Statut carte
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Impressions
                         </th>
-
                         <th scope="col" class="px-6 py-3">
                             Dernière Impression
                         </th>
-                        
                         <th scope="col" class="px-6 py-3">
+                            Expire Le
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center">
                             Actions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Envoyé ?
                         </th>
                     </tr>
                 </thead>
@@ -85,21 +92,26 @@
                             {{$member->user->formatString($member->role->name)}}
                         </td>
                         <td class="px-6 py-4">
-                            00
+                            {{ $member->getMemberCardCreationDate() ? "Emise depuis le " . $member->getMemberCardCreationDate() : "Non prête" }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $member->getMemberCardPrints() ? $member->getMemberCardPrints() : "Non prête" }}
                         </td>
                         
                         <td class="px-6 py-4">
-                            {{$member->user->__getDateAsString($member->created_at)}}
+                            {{ $member->getMemberCardLastDatePrint() ? $member->getMemberCardLastDatePrint() : "Aucune" }}
                         </td>
-                        
+                        <td class="px-6 py-4">
+                            {{ $member->getMemberCardExpirationDate() ? $member->getMemberCardExpirationDate() : "Non prête" }}
+                        </td>
                         <td class="px-6 py-4">
                             <span class="text-white flex gap-x-2">
-                                <span wire:click="sendMemberCard('{{$member->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
-                                    <span wire:loading.remove wire:target="sendMemberCard('{{$member->id}}')">
-                                        <span title="Choisir un nouveau {{$member->role->name}}" class="hidden lg:inline">Changer</span>
-                                        <span class="fa fa-recycle"></span>
+                                <span wire:click="generateCardMember('{{$member->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="generateCardMember('{{$member->id}}')">
+                                        <span title="Générer la carte de membre de {{$member->user->getFullName()}}" class="hidden lg:inline">Générer</span>
+                                        <span class="fa fa-card"></span>
                                     </span>
-                                    <span wire:loading wire:target="sendMemberCard('{{$member->id}}')">
+                                    <span wire:loading wire:target="generateCardMember('{{$member->id}}')">
                                         <span>Chargement</span>
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
@@ -124,8 +136,18 @@
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>
-                                
                             </span> 
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if($member->card_sent_by_mail)
+                                <span title="Déjà envoyée par mail" class="fas fa-envelope-circle-check text-green-600 font-semibold"></span>
+                            @else
+                                <span title="Non envoyée par mail">
+                                    <span class="fas fa-x text-red-600 font-semibold"></span>
+                                    <span class="fas fa-envelope text-red-600 font-semibold"></span>
+                                    <span class="fas fa-x text-red-600 font-semibold"></span>
+                                </span>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

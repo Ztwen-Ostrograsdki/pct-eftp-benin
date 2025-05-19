@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CardMember;
 use App\Models\MemberCard;
 use App\Models\Role;
 use App\Models\User;
@@ -16,6 +17,7 @@ class Member extends Model
         'ability',
         'authorized',
         'tasks',
+        'card_sent_by_mail',
 
     ];
 
@@ -34,8 +36,53 @@ class Member extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function cards()
+    {
+        return $this->hasMany(CardMember::class);
+    }
+
     public function card()
     {
-        return $this->hasOne(MemberCard::class);
+        $cards = $this->cards()->orderBy('created_at', 'desc')->get();
+
+        if(count($cards) > 0) return $cards[0];
+
+        else return null;
+    }
+
+    public function getMemberCardPrints()
+    {
+        $card = $this->card();
+
+        if($card) return numberZeroFormattor($card->total_print);
+
+        else return null;
+    }
+
+    public function getMemberCardLastDatePrint()
+    {
+        $card = $this->card();
+
+        if($card && $card->last_print_date) return __formatDate($card->last_print_date);
+
+        else return null;
+    }
+
+    public function getMemberCardExpirationDate()
+    {
+        $card = $this->card();
+
+        if($card) return __formatDate($card->expired_at);
+
+        else return null;
+    }
+
+    public function getMemberCardCreationDate()
+    {
+        $card = $this->card();
+
+        if($card) return __formatDate($card->created_at);
+
+        else return null;
     }
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('tasks')->nullable()->default(null);
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
+            $table->boolean('card_sent_by_mail')->nullable()->default(false);
         });
     }
 

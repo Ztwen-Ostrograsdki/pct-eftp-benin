@@ -64,11 +64,11 @@
 </head>
 
 <body>
-	<div style="width: 620px; height: 580px;" class="my-2 mx-auto p-2 shadow-3 bg-gray-100">
-		<div class="border-2 border-red-600 p-1">
-			<div class="border-2 border-green-600 p-1">
-				<div class="border-2 border-yellow-600 p-1">
-					<div class="text-center mx-auto my-4 px-3">
+	<div style="width: 620px; height: 550px;" class="my-2 mx-auto p-2 shadow-3 bg-gray-100">
+		<div class="border-2 border-green-600 p-1">
+			<div class="border-2 border-yellow-300 p-1">
+				<div class="border-2 border-red-600 p-1">
+					<div class="text-center mx-auto mt-2 px-3">
 						<h6 class="letter-spacing-2 flex flex-col items-center gap-y-1">
 							<div class="text-sky-400 flex w-full">
 								<img src="{{asset(env('APP_LOGO'))}}" alt="" style="height: 60px; " class="border rounded-full float-right">
@@ -104,17 +104,13 @@
 							<h1 class="text-gray-900 lg:text-3xl xl:text-3xl sm:text-base sm:font-semibold font-bold letter-spacing-1">
 								{{ $reverse_name }}
 							</h1>
-							<h6 class="bg-blue-800 text-gray-200 font-bold letter-spacing-1 p-1">
+							<h6 class="bg-blue-800 text-gray-200 font-bold letter-spacing-1 p-1 font-mono">
 								{{ $role }}
 							</h6>
 				
 							<div class="flex flex-col text-start w-3/5 mx-auto text-gray-900 letter-spacing-1 font-semibold sm:text-xs">
 								<h6>
-									<span>
-										<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-										<path d="M7.978 4a2.553 2.553 0 0 0-1.926.877C4.233 6.7 3.699 8.751 4.153 10.814c.44 1.995 1.778 3.893 3.456 5.572 1.68 1.679 3.577 3.018 5.57 3.459 2.062.456 4.115-.073 5.94-1.885a2.556 2.556 0 0 0 .001-3.861l-1.21-1.21a2.689 2.689 0 0 0-3.802 0l-.617.618a.806.806 0 0 1-1.14 0l-1.854-1.855a.807.807 0 0 1 0-1.14l.618-.62a2.692 2.692 0 0 0 0-3.803l-1.21-1.211A2.555 2.555 0 0 0 7.978 4Z"/>
-										</svg>
-									</span>
+									<span class="fas fa-phone"></span>
 									<span>
 										{{ $contacts }}
 									</span>
@@ -144,24 +140,31 @@
 						</div>
 				
 						<div class="col-span-3 flex flex-col gap-y-3 items-center mb-4">
-							<img style="width: 200px" class="h-52 border-gray-950 border-2" src="{{ $photo }}" alt="Photo de profil de {{ $name }}"/>
+							<h6 class="font-semibold letter-spacing-1">
+								N° {{ $card_number ? $card_number : 'Numero de la carte' }}
+							</h6>
+							<img style="width: 150px; height: 150px;" class=" border-gray-950 border-2" src="{{ $photo }}" alt="Photo de profil de {{ $name }}"/>
 				
-							<h6 class="text-gray-800 letter-spacing-1 font-sans">
+							<h6 class="text-gray-800 letter-spacing-1 font-mono">
 								Signature
 							</h6>
 						</div>
 					</div>
 				
-					<div class="mx-auto w-full text-center my-2 mt-5">
-						<span class="text-sm font-semibold letter-spacing-1">#Identifiant membre</span>
-						<h1 class="text-gray-600 text-3xl font-bold letter-spacing-1">
-							{{ $identifiant }}
-						</h1>
+					<div class="mx-auto w-full text-center mt-3 flex items-center justify-between">
+						<span style="" class="ml-4">
+							{{ $qrcode ? $qrcode : 'QR code' }}
+						</span>
+						<div class="mr-20">
+							<h6 class="text-sm font-mono">
+								Notre mission, faire de l'Enseignement technique au Benin, Un socle pour un développement garanti et durable!
+							</h6>
+						</div>
+						<span></span>
 					</div>
 				
-					<h6 class="text-yellow-500 letter-spacing-1 font-sans text-xs text-right px-4">
-						
-						Cette carte expirera le 22 Janv 2026
+					<h6 class="text-purple-500 letter-spacing-1 font-sans text-xs text-right font-semibold px-4">
+						Expire {{ $expired_at ? __formatDate($expired_at) : "Date d'expiration de la carte (1an)" }}
 					</h6>
 				</div>
 			</div>

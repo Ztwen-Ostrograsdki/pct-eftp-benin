@@ -77,6 +77,22 @@
                     <span class="fas fa-user"></span>
                     <span>{{ $member->role->name }}</span>
                 </span>
+                <div class="m-0 p-0 mx-auto mt-4 mb-2">
+                    @if($user->member)
+                        <h6 wire:click="downloadMyCard" class="m-0 p-0 font-semibold letter-spacing-1 cursor-pointer">
+                            <span class=" px-4 py-2 bg-green-600 text-gray-900 hover:bg-green-500">
+                                <span wire:loading wire:target='downloadMyCard'>
+                                    <span>Téléchargement en cours...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                                <span wire:loading.remove wire:target='downloadMyCard'>
+                                    <span class="mr-2 fa fa-download"></span>
+                                    <span>Télécharger ma carte</span>
+                                </span>
+                            </span>
+                        </h6>
+                    @endif
+                </div>
                 <div class="mt-2 md:mt-2 w-full mx-auto">
                     <h4 class="text-orange-400 py-2 letter-spacing-2 text-center border-t border-b">Prérogatives</h4>
                     <div class="flex w-full items-center text-center mx-auto">

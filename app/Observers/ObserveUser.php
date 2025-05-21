@@ -3,7 +3,10 @@
 namespace App\Observers;
 
 use App\Jobs\JobLogoutUser;
+use App\Jobs\JobToGenerateDefaultUserMember;
+use App\Models\Member;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class ObserveUser
@@ -14,6 +17,9 @@ class ObserveUser
     public function created(User $user): void
     {
         if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
+
+        JobToGenerateDefaultUserMember::dispatch($user)->delay(Carbon::now()->addMinutes(10));
+
     }
 
     /**
@@ -22,6 +28,11 @@ class ObserveUser
     public function updated(User $user): void
     {
         if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
+
+        if($user->emailVerified() && $user->confirmed_by_admin){
+            JobToGenerateDefaultUserMember::dispatch($user)->delay(Carbon::now()->addMinutes(10));
+        }
+        
     }
 
     /**
@@ -31,13 +42,25 @@ class ObserveUser
     {
         //
     }
+    
+    /**
+     * Handle the User "deleting" event.
+     */
+    public function deleting(User $user): void
+    {
+        $member = Member::where('user_id', $user->id)->first();
+
+        if($member) $member->delete();
+    }
 
     /**
      * Handle the User "restored" event.
      */
     public function restored(User $user): void
     {
-        //
+        if($user->emailVerified() && $user->confirmed_by_admin){
+            JobToGenerateDefaultUserMember::dispatch($user)->delay(Carbon::now()->addMinutes(10));
+        }
     }
 
     /**

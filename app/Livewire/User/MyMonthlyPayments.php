@@ -9,6 +9,7 @@ use App\Models\Cotisation;
 use App\Models\Member;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -31,7 +32,6 @@ class MyMonthlyPayments extends Component
 
     public $all_year = 3000000000000000;
 
-    public $search = '';
 
 
     public function mount($identifiant)
@@ -94,7 +94,8 @@ class MyMonthlyPayments extends Component
 
     public function editMemberPayment($cotisation_id)
     {
-        
+        if(!__isAdminAs()) return false;
+
         $cotisation = Cotisation::find($cotisation_id);
 
         if($cotisation){
@@ -104,20 +105,23 @@ class MyMonthlyPayments extends Component
         }
     }
     
-    public function addMemberPayment($member_id)
+    public function addMemberPayment($month = null)
     {
+        if(!__isAdminAs()) return false;
+
         $options = [];
 
-        if($this->selected_month) $options['month'] = $this->selected_month;
+        if($month) $options['month'] = $month;
 
         if($this->selected_year && $this->selected_year != $this->all_year) $options['year'] = $this->selected_year;
 
-        $this->dispatch('OpenMemberPaymentsManagerModalEvent', $member_id, null, $options);
+        $this->dispatch('OpenMemberPaymentsManagerModalEvent', $this->member->id, null, $options);
     }
 
     public function deleteMemberPayment($cotisation_id)
     {
-
+        if(!__isAdminAs()) return false;
+        
         $cotisation = Cotisation::find($cotisation_id);
 
         if($cotisation){
@@ -166,36 +170,43 @@ class MyMonthlyPayments extends Component
 
     }
 
-    public function printMembersCotisations()
+    public function printMemberCotisations()
     {
-
-        $month = $this->selected_month;
 
         $year = $this->selected_year;
 
         $print_date = __formatDateTime(Carbon::now());
 
-        $total_amount = 0;
+        $name = $this->member->user->getFullName();
 
-        foreach($this->printingData as $d){
+        $total_amount = $this->member->getTotalCotisationOfYear($year);
 
-            if($d && isset($d->amount)){
+        $root = storage_path("app/public/cotisations/membres/". $year);
 
-                $total_amount = $total_amount + $d->amount;
-            }
+        if(!File::isDirectory($root)){
+
+            $directory_make = File::makeDirectory($root, 0777, true, true);
+
         }
 
-        $pdfPath = storage_path("app/public/cotisation-de-membre-de-". $month . '-' . $year . '-' . time() . '.pdf');
+        if(!File::isDirectory($root) && !$directory_make){
+
+            Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+        }
+
+        $pdfPath = storage_path("app/public/cotisations/membres/". $year . "/Fiches-de-cotisation-membre-de-". $name . '-de-' . $year . '.pdf');
 
         $data = [
-            'payment_data' => $this->printingData, 
-            'the_month' => $month,
+            'member' => $this->member, 
+            'months' => getMonths(),
             'the_year' => $year,
             'total_amount' => $total_amount,
             'print_date' => $print_date,
+            'name' => $name,
         ];
 
-        $view_path = "pdftemplates.members-cotisation";
+        $view_path = "pdftemplates.once-member-cotisation";
 
         InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, auth_user());
 

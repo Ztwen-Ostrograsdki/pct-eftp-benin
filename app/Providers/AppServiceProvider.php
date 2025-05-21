@@ -8,6 +8,7 @@ use App\Listeners\BlockedUserTryingToLoginListener;
 use App\Listeners\BlockUserListener;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         require_once app_path('Helpers/RobotsHelpers.php');
+
+        Gate::define('is_self_user', function($auth, $user_id){
+
+            return $user_id == $auth->id;
+        });
 
 
     }

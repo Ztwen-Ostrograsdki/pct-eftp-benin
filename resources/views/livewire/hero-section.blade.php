@@ -99,6 +99,53 @@
         </div>
         <!-- End Col -->
       </div>
+      {{-- REVIEWS SECTION --}}
+      <div>
+        <div class="swiper mySwiper max-w-4xl mx-auto">
+            <h3 class="font-semibold letter-spacing-1 py-3 text-sky-600 text-lg" >Quelques pensées de nos membres</h3>
+            <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            @foreach (getUsers() as $user)
+                <div class="swiper-slide bg-sky-100 p-6 rounded-2xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                <img src="{{user_profil_photo($user)}}" class="w-24 h-24 rounded-full border-2 border-cyan-700" />
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">
+                    {{ $user->getFullName(true) }}
+                    </h3>
+                    <span class="flex flex-col">
+                        <a href="#" class="text-sm text-cyan-600 hover:underline">
+                            <span class="fas fa-person"></span>
+                            @if($user->member)
+                              {{ $user->member->role ? $user->member->role->name : 'Un membre actif' }}
+                            @else
+                              Un enseignant actif
+                            @endif
+                        </a>
+                        <a href="mailto:{{$user->email}}" class="text-sm text-cyan-600 hover:underline">
+                            <span class="fas fa-envelope"></span>
+                            {{ $user->email }}
+                        </a>
+                        <a href="#" class="text-sm text-cyan-600 hover:underline">
+                            <span class="fas fa-phone"></span>
+                            {{ $user->contacts ? $user->contacts : 'Non renseigné' }}
+                        </a>
+                        <a href="#" class="text-sm text-cyan-600 hover:underline">
+                            <span class="fas fa-home"></span>
+                            {{ $user->address ? $user->address : 'Non renseignée' }}
+                        </a>
+                    </span>
+                </div>
+                </div>
+                <blockquote class="text-gray-600 italic border-l-4 border-cyan-600 pl-4">
+                “{{ $user->getSingleQuote() }}”
+                </blockquote>
+            </div>
+            @endforeach
+            </div>
+        </div>
+    </div>
+    {{-- END REVIEWS SECTION --}}
       @livewire('partials.home-carrousel-component')
       <!-- End Grid -->
     </div>

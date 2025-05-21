@@ -38,7 +38,7 @@
                         <select wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='user_id' id="user_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option selected="">Sélectionner l'utilisateur</option>
                             @foreach ($users as $user)
-                              <option @if($user->member) disabled title="{{$user->getFullName()}} exerce déjà en tant que {{$user->member->role->name}} de l'association"  @endif  value="{{$user->id}}">{{ $user->getFullName() }}</option>
+                              <option @if($user->member && $user->member->role) disabled title="{{$user->getFullName()}} exerce déjà en tant que {{$user->member->role->name}} de l'association"  @endif  value="{{$user->id}}">{{ $user->getFullName() }}</option>
                             @endforeach
                         </select>
                         @error('user_id')

@@ -9,6 +9,7 @@ use App\Helpers\TraitsManagers\UserTrait;
 use App\Models\CardMember;
 use App\Models\ENotification;
 use App\Models\Member;
+use App\Models\Quote;
 use App\Observers\ObserveUser;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -106,6 +107,20 @@ class User extends Authenticatable
     public function epreuves()
     {
         
+    }
+
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    public function getSingleQuote()
+    {
+        $quote = $this->quotes()->inRandomOrder()->first();
+
+        if($quote) return $quote->content;
+
+        else return " Aucune citation publiée pour l'instant!";
     }
 
     

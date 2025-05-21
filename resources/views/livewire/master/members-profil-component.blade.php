@@ -65,10 +65,10 @@
             
           
             @if(count($members))
-                <div class="my-3 text-lg letter-spacing-2 py-2 text-center text-sky-500 shadow-2 shadow-sky-400 rounded-2xl association-objectives-card">
+                <div class="hidden my-3 text-lg letter-spacing-2 py-2 text-center text-sky-500 shadow-2 shadow-sky-400 rounded-2xl association-objectives-card">
                     <span>NOS MEMBRES</span>
                 </div>
-                <div class="grid gap-6 md:grid-cols-2  sm:grid-cols-1 ">
+                <div class="grid gap-6 md:grid-cols-2  sm:grid-cols-1 hidden">
                 @foreach($members as $key => $member)
                     <div class="association-objectives-card">
                         <div class="py-6 bg-inherit border rounded-md shadow-3 shadow-sky-400">
@@ -118,8 +118,7 @@
                             </div>
                         </div>
                         <p class="px-6 mb-6 text-base text-gray-500 dark:text-gray-400">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem cupiditate similique,
-                            iure minus sed fugit obcaecati minima quam reiciendis dicta!
+                            {{ $member->user->getSingleQuote() }}
                         </p>
                         <div class="flex flex-wrap justify-between pt-4 border-t dark:border-gray-700">
                             <div class="flex px-6 mb-2 md:mb-0">

@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Models\CardMember;
+use App\Models\Cotisation;
 use App\Models\MemberCard;
 use App\Models\Role;
 use App\Models\User;
+use App\Observers\ObserveMember;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ObserveMember::class)]
 class Member extends Model
 {
     protected $fillable = [
@@ -40,7 +44,7 @@ class Member extends Model
     {
         return $this->hasMany(CardMember::class);
     }
-
+    
     public function card()
     {
         $cards = $this->cards()->orderBy('created_at', 'desc')->get();
@@ -85,4 +89,12 @@ class Member extends Model
 
         else return null;
     }
+
+    public function getTotalCotisationOfYear($year) : float
+    {
+        $totals = Cotisation::where('member_id', $this->id)->where('year', $year)->pluck('amount')->toArray();
+
+        return count($totals) > 0 ? (float)array_sum($totals) : 0.0 ;
+    }
 }
+

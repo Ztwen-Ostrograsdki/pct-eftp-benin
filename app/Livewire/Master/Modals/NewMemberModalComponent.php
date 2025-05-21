@@ -4,6 +4,7 @@ namespace App\Livewire\Master\Modals;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\MemberCreationOrUpdatingManagerEvent;
 use App\Models\Member;
 use App\Models\Role;
 use App\Models\User;
@@ -27,11 +28,11 @@ class NewMemberModalComponent extends Component
 
     public $role;
 
-    public $for_update = false;
-
     public $member = null;
 
     public $counter = 1;
+
+    public $default_role = 99999999999999999999;
 
 
     public function render()
@@ -59,167 +60,93 @@ class NewMemberModalComponent extends Component
 
     public function insert()
     {
+        $this->validate();
 
-        if(!$this->for_update){
+        $admin = auth_user();
 
-            return self::forCreation();
+        $user = User::find($this->user_id);
+
+        if($this->role_id == $this->default_role) $this->role_id = null;
+
+        $data = ['role_id' => $this->role_id];
+
+        $member = $this->member;
+
+        if(!$this->member) $member = $user->member;
+
+        $dispatched = MemberCreationOrUpdatingManagerEvent::dispatch($admin, $user, $data, $member);
+        
+        if($dispatched){
+
+            $this->reset();
+
+            $this->toast("Le proccessus a été lancé!", 'success');
+
+            return self::hideModal();
+            
         }
-        else{
 
-            return self::forEdition();
-
-        }
-
-
+        
     }
 
 
-    public function forCreation()
+    #[On('OpenModalToChangeTheMemberOfThisRoleEvent')]
+    public function openModalToChangeMember($role_id)
     {
-        $this->validate();
+        $this->reset();
 
-        $role = Role::find($this->role_id);
+        $role = Role::find($role_id);
 
         if($role){
 
-            if($this->user_id){
+            $this->role = $role;
 
-                $user = User::find($this->user_id);
+            $this->description = $role->description;
 
-                if($user){
+            $this->role_id = $role->id;
 
-                    if(!$user->member){
+            if($role->member){
 
-                        $m_data = [
+                $member = $role->member;
 
-                            'user_id' => $user->id,
-                            'role_id' => $role->id,
-                            'tasks' => $role->tasks,
-                            'ability' => $role->ability
-                        ];
+                if($member){
 
-                        $member = Member::create($m_data);
-
-                        if($member){
-
-                            $this->toast("Le proccessus c'est bien déroulé!", 'success');
-
-                            return self::hideModal();
-                            
-                        }
-
-                    }
-                    else{
-
-                        return $this->toast("Cet utilisateur joue déjà le role de " . $user->member->role->name, 'warning');
-                    }
-
-                }
-                else{
-
-                    return $this->toast("L'utilisateur est innexistant!", 'error');
-                }
-
-            }
-
-        }
-        else{
-
-            return $this->toast("La fonction sélectionnée est innexistante!", 'error');
-        }
-    }
-
-    public function forEdition()
-    {
-        $this->validate();
-
-        $role = Role::find($this->role_id);
-
-        if($role){
-
-            if($this->user_id){
-
-                $user = User::find($this->user_id);
-
-                if($user){
-
-                    if(!$user->member){
-
-                        $m_data = [
-                            'user_id' => $user->id,
-                        ];
-
-                        $member = $this->update($m_data);
-
-                        if($member){
-
-                            $this->reset();
-
-                            $this->toast("Le proccessus c'est bien déroulé!", 'success');
-
-                            $this->dispatch('UpdatedMemberList');
-
-                            return self::hideModal();
-
-                            
-                        }
-
-                    }
-                    else{
-
-                        return $this->toast("Cet utilisateur joue déjà le role de " . $user->member->role->name, 'warning');
-                    }
-
-                }
-                else{
-
-                    return $this->toast("L'utilisateur est innexistant!", 'error');
-                }
-
-            }
-
-        }
-        else{
-
-            return $this->toast("La fonction sélectionnée est innexistante!", 'error');
-        }
-    }
-
-
-    #[On('OpenMemberModalForEditEvent')]
-    public function openModal($role_id = null)
-    {
-        $this->for_update = true;
-
-        if($role_id){
-
-            $role = Role::find($role_id);
-
-            if($role){
-
-                $this->role = $role;
-
-                $this->description = $role->description;
+                    $this->user_id = $member->user_id;
     
-                $this->role_id = $role->id;
-
-                if($role->member){
-
-                    $member = $role->member;
-
-                    if($member){
-
-                        $this->member = $member;
-        
-                        $this->user_id = $member->user_id;
-        
-                        $this->email = $member->user->email;
-        
-                    }
-
+                    $this->email = $member->user->email;
+    
                 }
+
             }
         }
+
+        $this->dispatch('OpenModalEvent', '#new-member-modal');
+    }
+    
+    #[On('OpenModalToChangeTheRoleOfThisMemberEvent')]
+    public function openModalToChangeRole($member_id)
+    {
+        $this->reset();
+
+        $member = Member::find($member_id);
+
+        if($member){
+
+            $this->member = $member;
+
+            $this->user_id = $member->user_id;
+
+            $this->email = $member->user->email;
+
+        }
+
+        $this->dispatch('OpenModalEvent', '#new-member-modal');
+    }
+
+    #[On('OpenModalToJoinMemberToRole')]
+    public function openModal()
+    {
+        $this->reset();
 
         $this->dispatch('OpenModalEvent', '#new-member-modal');
     }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers\TraitsManagers;
 
+use App\Jobs\JobToSendEmailToIdentifiedUser;
 use App\Models\ENotification;
 use App\Models\User;
 use App\Notifications\NotifyUserThatAccountHasBeenConfirmedByAdmins;
@@ -78,7 +79,7 @@ trait UserTrait{
         return $this;
     }
 
-    public function sendPasswordResetKeyToUser(string $key = null)
+    public function sendPasswordResetKeyToUser(?string $key = null)
     {
         $password_reset_key = Str::random(6);
         
@@ -123,31 +124,15 @@ trait UserTrait{
         return $reverse ? $this->lastname . ' ' . $this->firstname : $this->firstname . ' ' . $this->lastname;
     }
 
-    public function confirmedThisUserIdentification()
+    public function confirmedThisUserIdentification($user)
     {
-        $identified = $this->forceFill([
+        $identified = $user->forceFill([
             'confirmed_by_admin' => true
         ])->save();
 
         if($identified){
 
-            $auth = User::find(auth_user()->id);
-
-            $subjet = "Confirmation de l'identification utilisateur de la plateforme" . config('app.name') . " du compte " . $this->email;
-
-            $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous avez confirmé l'identification de l'utilisateur " 
-                . $this->getFullName(true) . 
-                " dont l'addresse mail est "
-                . $this->email . 
-                " et dont l'identifiant unique utilisateur est "
-                . $this->identifiant .
-                "La confirmation s'est déroulée avec success et l'utilisateur pourra se connecter à son compte."
-            ;
-
-            $this->notify(new NotifyUserThatAccountHasBeenConfirmedByAdmins(true));
-
-            $auth->notify(new SendDynamicMailToUser($subjet, $body));
-
+            JobToSendEmailToIdentifiedUser::dispatch($this, $user);
         }
     }
     

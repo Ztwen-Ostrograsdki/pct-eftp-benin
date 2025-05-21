@@ -9,6 +9,7 @@ use App\Models\Cotisation;
 use App\Models\Member;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Livewire\Attributes\On;
@@ -185,6 +186,7 @@ class MembersMonthliesPayments extends Component
 
     public function editMemberPayment($cotisation_id)
     {
+        if(!__isAdminAs()) return false;
         
         $cotisation = Cotisation::find($cotisation_id);
 
@@ -197,6 +199,8 @@ class MembersMonthliesPayments extends Component
     
     public function addMemberPayment($member_id)
     {
+        if(!__isAdminAs()) return false;
+
         $options = [];
 
         if($this->selected_month) $options['month'] = $this->selected_month;
@@ -208,6 +212,8 @@ class MembersMonthliesPayments extends Component
 
     public function deleteMemberPayment($cotisation_id)
     {
+
+        if(!__isAdminAs()) return false;
 
         $cotisation = Cotisation::find($cotisation_id);
 
@@ -260,6 +266,8 @@ class MembersMonthliesPayments extends Component
     public function printMembersCotisations()
     {
 
+        if(!__isAdminAs()) return false;
+
         $month = $this->selected_month;
 
         $year = $this->selected_year;
@@ -276,7 +284,21 @@ class MembersMonthliesPayments extends Component
             }
         }
 
-        $pdfPath = storage_path("app/public/cotisation-de-membre-de-". $month . '-' . $year . '-' . time() . '.pdf');
+        $root = storage_path("app/public/cotisations/membres/". $month . '-' . $year);
+
+        if(!File::isDirectory($root)){
+
+            $directory_make = File::makeDirectory($root, 0777, true, true);
+
+        }
+
+        if(!File::isDirectory($root) && !$directory_make){
+
+            Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+        }
+
+        $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-de-membre-de-". $month . '-' . $year . '.pdf');
 
         $data = [
             'payment_data' => $this->printingData, 

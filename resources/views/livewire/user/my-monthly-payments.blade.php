@@ -1,44 +1,56 @@
 <div class="p-6 max-w-6xl mx-auto z-bg-secondary-light-opac shadow-2 shadow-sky-500">
     <div class="mb-6">
         <div class="flex items-center justify-between gap-x-2 mb-6">
-            <h2 class="lg:text-lg md:text-lg sm:text-sm  font-semibold letter-spacing-1 uppercase text-sky-500">Fiche des cotisations mensuelles de {{ $member->user->getFullName() }}
-
-                <span class="text-yellow-500 float-right ml-5">
-                    {{  $selected_year }}
-                </span>
+            <h2 class="lg:text-lg md:text-lg sm:text-sm  font-semibold letter-spacing-1 uppercase text-sky-500">Fiche des cotisations mensuelles 
+              
             </h2>
             <div class="flex justify-end gap-x-2">
+                @if(__isAdminAs())
                 <div class="flex items-center">
                     <button
-                        wire:click="memberPaymentsManager"
+                        wire:click="addMemberPayment"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-gray-800 transition"
                     >
-                        <span wire:loading.remove wire:target='memberPaymentsManager'>
+                        <span wire:loading.remove wire:target='addMemberPayment'>
                             Enregistrer un paiement
                         </span>
-                        <span wire:target='memberPaymentsManager' wire:loading>
+                        <span wire:target='addMemberPayment' wire:loading>
                             <span>Chargement en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
                 </div>
+                @endif
                 <div class="flex items-center">
                     <button
-                        wire:click="printMembersCotisations"
+                        wire:click="printMemberCotisations"
                         class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-800 hover:text-gray-900 transition"
                     >
-                        <span wire:loading.remove wire:target='printMembersCotisations'>
+                        <span wire:loading.remove wire:target='printMemberCotisations'>
                             Imprimer
                         </span>
-                        <span wire:target='printMembersCotisations' wire:loading>
+                        <span wire:target='printMemberCotisations' wire:loading>
                             <span>Impression en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
                 </div>
             </div>
-
         </div>
+        <div class="flex items-center w-full justify-center">
+              <h6 class="w-full items-center flex justify-center gap-x-9 py-3 font-semibold letter-spacing-1 text-yellow-400">
+                <span>
+                    <span class="text-gray-300">Membre : </span>
+                    <span>{{ $member->user->getFullName() }}</span>
+                </span>
+
+                <span>
+                    <span class="text-gray-300">Année :</span>
+                    <span>{{  $selected_year }}</span>
+                </span>
+                
+              </h6>
+            </div>
         <hr class="border-sky-600 mb-2">
 
         <div class="w-full flex justify-between items-center">
@@ -147,14 +159,16 @@
           <th class="px-3 py-3 text-left">Montant Payé (FCFA)</th>
           <th class="px-3 py-3 text-left">Cotisation de </th>
           <th class="px-3 py-3 text-left">Date de payement</th>
+          @if(__isAdminAs())
           <th class="px-3 py-3 text-center">Actions</th>
+          @endif
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100" id="payments-tbody">
         
             @foreach ($months as $mk => $month)
 
-              <tr wire:key='list-des-cotisations-mensuelles-{{$member->id}}-{{$mk}}'>
+              <tr class="admin-user-list-tr" wire:key='list-des-cotisations-mensuelles-{{$member->id}}-{{$mk}}'>
                   @php
 
                     $cotisation = getMemberCotisationOfMonthYear($member->id, $month, $selected_year);
@@ -196,6 +210,7 @@
                         
                       @endif
                     </td>
+                    @if(__isAdminAs())
                     <td class="px-3 py-4 text-center">
                       @if($cotisation)
                         <span class="flex gap-x-3 w-full justify-center items-center">
@@ -210,13 +225,14 @@
                         </span>
                       @else
                         <span class="flex gap-x-3 w-full justify-center items-center">
-                            <span wire:click="addMemberPayment({{$member->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Editer cette cotisation enregistrée au nom de {{ $member->user->getFullName() }}">
+                            <span wire:click="addMemberPayment('{{$month}}')" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Editer cette cotisation enregistrée au nom de {{ $member->user->getFullName() }}">
                                 <span class="fas fa-edit"></span>
                                 <span>Editer</span>
                             </span>
                         </span>
                       @endif
                     </td>
+                    @endif
                 </tr>
             @endforeach
         <!-- Lignes dynamiques -->

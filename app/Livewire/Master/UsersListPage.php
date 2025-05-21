@@ -64,18 +64,47 @@ class UsersListPage extends Component
         $this->search = $search;
     }
 
-    public function confirmedUserIdentification($user_id)
+
+    public function marksUserAsIdentifiedOrNot($user_id)
     {
+
+        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
 
         $user = User::find($user_id);
 
         if($user){
 
-            if($user->confirmed_by_admin) return $this->toast("Cet utilisateur est déjà identifié", 'success');
+            $name = $user->getFullName();
 
-            $options = ['event' => 'confirmedTheUserIdentification', 'data' => ['user_id' => $user_id]];
+            $email = $user->email;
 
-            $this->confirm("Confirmation l'indentification de " . $user->getFullName(true), "Cette action est irréversible", $options);
+            if(!$user->confirmed_by_admin){
+
+                $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                                <p>Voulez-vous vraiment confirmer l'indentification de l'utilisateur</p>
+                                <p class='text-sky-600 py-0 my-0 font-semibold'> Mr/Mme {$name} </p>
+                                <p class='text-yellow-300 py-0 my-0 font-semibold'> Mr/Mme {$email} </p>
+                        </h6>";
+
+                $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est réversible! </p>";
+
+                $options = ['event' => 'confirmedTheUserIdentification', 'confirmButtonText' => 'Identification confirmée', 'cancelButtonText' => 'Annulé', 'data' => ['user_id' => $user_id]];
+            }
+            else{
+
+                $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                                <p>Voulez-vous vraiment annuler l'indentification de l'utilisateur</p>
+                                <p class='text-sky-600 py-0 my-0 font-semibold'> Mr/Mme {$name} </p>
+                                <p class='text-yellow-300 py-0 my-0 font-semibold'> Email:  {$email} </p>
+                        </h6>";
+
+                $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est réversible! </p>";
+
+                $options = ['event' => 'confirmedTheUserIdentification', 'confirmButtonText' => 'Identification non confirmée', 'cancelButtonText' => 'Annulé', 'data' => ['user_id' => $user_id]];
+
+            }
+
+            $this->confirm($html, $noback, $options);
         }
 
     }
@@ -83,6 +112,7 @@ class UsersListPage extends Component
     #[On('confirmedTheUserIdentification')]
     public function onConfirmationTheUserIdentification($data)
     {
+        $admin = auth_user();
 
         if($data){
 
@@ -90,22 +120,8 @@ class UsersListPage extends Component
 
             $user = User::find($user_id);
 
-            $user = $user->confirmedThisUserIdentification();
-
-            if($user){
-
-                $message = "L'identification a été confirmée avec success!";
-
-                $this->toast($message, 'success');
-
-                session()->flash('success', $message);
-
-            }
-            else{
-
-                $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
-
-            }
+            User::find($admin->id)->confirmedThisUserIdentification($user);
+           
         }
 
     }
@@ -267,6 +283,11 @@ class UsersListPage extends Component
 
             }
         }
+
+    }
+
+    public function deleteUserAccount($user_id)
+    {
 
     }
 }

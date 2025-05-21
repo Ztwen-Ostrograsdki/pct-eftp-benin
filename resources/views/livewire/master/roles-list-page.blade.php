@@ -47,49 +47,7 @@
                             <h2 class="lg:text-2xl md:text-base xs:text-lg font-semibold text-gray-900 dark:text-gray-300 hover:text-blue-500 w-full text-center border-b flex items-center justify-center pb-2 mb-2 z-bg-secondary-light-opac py-2">
                                 {{ $role->name }}
                             </h2>
-                            <div class="flex justify-end pr-2">
-                                <button id="dropdownButton-from-role-{{$role->id}}" data-dropdown-toggle="dropdown-from-role-{{$role->id}}" class="inline-block border text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
-                                    <span class="sr-only">Open dropdown</span>
-                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
-                                        <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
-                                    </svg>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div id="dropdown-from-role-{{$role->id}}" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
-                                    <ul class="py-2" aria-labelledby="dropdownButton-from-role-{{$role->id}}">
-                                        @if( __isAdminAs())
-                                            <li>
-                                                <a wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Editer cette fonction</a>
-                                            </li>
-                                            @if($role->member)
-                                                <li>
-                                                    <a href="#" wire:click="$dispatch('OpenMemberModalForEditEvent', {role_id: {{$role->id}}})" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Choisir un nouveau membre</a>
-                                                </li>
-                                            @endif
-                                        @endif
-                                        @if($role->member)
-                                        <li>
-                                            <a href="{{route('user.profil', ['identifiant' => $user->identifiant])}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profil utilisateur</a>
-                                        </li>
-                                        @else
-                                        <li>
-                                            <a href="#" title="Ajouter un nouveau membre à l'association" wire:click="$dispatch('OpenMemberModalForEditEvent', {role_id: {{$role->id}}})" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Choisir le nouveau {{$role->name}}</a>
-                                        </li>
-                                        @endif
-                                        @if($role->member && __isAdminAs())
-                                            <li>
-                                                <a wire:click="removeUserFormMembers('{{$role->member->id}}')" href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
-                                            </li>
-                                            <li>
-                                                <a wire:click="confirmedUserBlockOrUnblocked('{{$role->member->user->id}}')" href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
-                                                </a>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </div>
-                                
-                            </div>
+                            
                             <div class=" pb-4 mb-1 w-full">
                                 @if($role->member)
                                 <h5 class="text-center w-full text-gray-400">
@@ -147,16 +105,20 @@
                                 <div class="mx-auto w-full flex gap-x-2 px-3 my-0 py-0 font-semibold letter-spacing-1 text-gray-200 lg:text-sm md:text-sm sm:text-sm xs:text-xs">
                                     @if( __isAdminAs())
                                         <h6>
-                                            <span wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})"  class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Modifier</span>
+                                            <span wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})"  class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Editer</span>
                                         </h6>
                                         @if($role->member)
                                             <h6>
-                                                <span wire:click="$dispatch('OpenMemberModalForEditEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Un nouveau membre</span>
+                                                <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Modifier membre</span>
                                             </h6>
+                                        @else
+                                        <h6>
+                                            <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Choisir le membre</span>
+                                        </h6>
                                         @endif
                                         @if($role->member && __isAdminAs())
                                             <h6>
-                                                <span wire:click="removeUserFormMembers('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
+                                                <span wire:click="resetMemberRoleToNull('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
                                             </h6>
                                             <h6>
                                                 <span wire:click="confirmedUserBlockOrUnblocked('{{$role->member->user->id}}')" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">

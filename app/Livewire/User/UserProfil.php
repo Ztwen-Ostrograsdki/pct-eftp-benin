@@ -277,6 +277,12 @@ class UserProfil extends Component
     #[On('UserProfilUpdated')]
     public function reloadData()
     {
-        $this->counter = rand(3, 133);
+        $this->counter = getRand();
+    }
+
+    #[On('LiveUpdateMembersListEvent')]
+    public function reloadDataForMembersListUpdated()
+    {
+        $this->counter = getRand();
     }
 }

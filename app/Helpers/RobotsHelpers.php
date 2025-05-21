@@ -671,6 +671,15 @@ if(!function_exists('getUser')){
 
 }
 
+if(!function_exists('getUsers')){
+
+    function getUsers()
+    {
+        return User::all();
+    }
+
+}
+
 if(!function_exists('getMember')){
 
     function getMember($value, $column = "id")

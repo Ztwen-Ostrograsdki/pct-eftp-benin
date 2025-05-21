@@ -38,4 +38,16 @@ class MembersProfilComponent extends Component
     {
         $this->counter = rand(3, 342);
     }
+
+    #[On('LiveMemberQuotesUpdatedEvent')]
+    public function reloadDataForNewQuotes($data = null)
+    {
+        $this->counter = getRand();
+    }
+
+    #[On('LiveUpdateMembersListEvent')]
+    public function reloadDataForMembersListUpdated()
+    {
+        $this->counter = getRand();
+    }
 }

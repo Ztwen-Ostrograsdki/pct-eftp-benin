@@ -58,8 +58,13 @@
             </a>
           </li>
           <li>
-            <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.payements') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.payments') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes cotisations
+            </a>
+          </li>
+          <li>
+            <a wire:navigate href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.quotes') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+              Mes citations
             </a>
           </li>
           @endif

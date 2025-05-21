@@ -19,7 +19,7 @@ class MembersHomePage extends Component
         'users-list' => "Les enseignants",
         'members' => "Profil des membres",
         'payments' => "Les cotisations",
-        'roles' => "Les Fonctions",
+        'roles' => "Les Postes",
         'lycees' => "Les Lycées",
         'laws' => "Les Lois",
         'subjects' => "Les Sujets de discussion",
@@ -69,4 +69,11 @@ class MembersHomePage extends Component
     {
         $this->counter = getRandom();
     }
+
+    public function joinMemberToRole()
+    {
+        $this->dispatch('OpenModalToJoinMemberToRole');
+    }
+
+    
 }

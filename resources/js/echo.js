@@ -54,6 +54,12 @@ e.private('confirmeds')
             Livewire.dispatch('LiveLawChaptersCreationCompletedEvent');
             
         })
+        .listen('UpdateMembersListEvent', () =>{
+
+            Livewire.dispatch('LiveUpdateMembersListEvent');
+            
+        })
+
 
     
 
@@ -64,6 +70,14 @@ e.private('admin')
         Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent');
         
     })
+    
+    .listen('MemberQuotesUpdatedEvent', (data) =>{
+
+        Livewire.dispatch('LiveMemberQuotesUpdatedEvent');
+        
+    })
+
+
     
     .listen('MemberPaymentRequestCompletedEvent', () =>{
 
@@ -107,6 +121,8 @@ e.private('admin')
         
     })
 
+    
+
 
 e.private('App.Models.User.' + window.ClientUser.id)
 
@@ -116,7 +132,6 @@ e.private('App.Models.User.' + window.ClientUser.id)
 
         if(notification.type == 'new.notification'){
 
-            
         }
 
     })
@@ -159,7 +174,11 @@ e.private('App.Models.User.' + window.ClientUser.id)
 
         Livewire.dispatch('LiveMembersCardCreationFailedEvent', data);
 
-        console.log(data);
+    })
+
+    .listen('MemberQuotesUpdatedEvent', (data) =>{
+
+        Livewire.dispatch('LiveMemberQuotesUpdatedEvent');
         
     })
 

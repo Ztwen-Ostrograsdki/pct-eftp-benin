@@ -80,6 +80,9 @@
 		table {
 			border-collapse: collapse;
 		}
+		th, td{
+			border: thin solid black !important;
+		}
 	</style>
 </head>
 <body class="">
@@ -136,45 +139,45 @@
 
                 @if($cotisation && isset($cotisation->id))
                     <tr wire:key='list-des-cotisations-mensuelles-{{$cotisation->id}}'>
-                        <td class="px-3 py-4 text-gray-900 text-center">
+                        <td class="px-3 py-2 text-gray-900 text-center">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </td>
-                        <td class="px-3 py-4 text-gray-900 font-medium">{{ $cotisation->member->user->getFullName() }}</td>
-                        <td class="px-3 py-4 text-gray-800">
+                        <td class="px-3 py-2 text-gray-900 font-medium">{{ $cotisation->member->user->getFullName() }}</td>
+                        <td class="px-3 py-2 text-gray-800">
                             {{ $cotisation->description ? $cotisation->description : 'Non précisée' }}
                         </td>
-                        <td class="px-3 py-4 text-gray-950 font-semibold">
+                        <td class="px-3 py-2 text-gray-950 font-semibold">
                             {{ __moneyFormat($cotisation->amount) }} FCFA
                         </td>
-                        <td class="px-3 py-4 text-gray-800">
+                        <td class="px-3 py-2 text-gray-800">
                             {{ $cotisation->getCotisationMonthYear()}}
                         </td>
-                        <td class="px-3 py-4 text-gray-900">
+                        <td class="px-3 py-2 text-gray-900">
                             {{ __formatDate($cotisation->payment_date) }}
                         </td>
-                        <td class="px-3 py-4 text-center">
+                        <td class="px-3 py-2 text-center">
                             
                         </td>
                     </tr>
                 @else
                     <tr wire:key='list-des-cotisations-mensuelles-{{getRand(2999, 8888888)}}'>
-                    <td class="px-3 py-4 text-gray-800 text-center">
+                    <td class="px-3 py-2 text-gray-800 text-center">
                         {{ numberZeroFormattor($loop->iteration) }}
                     </td>
-                    <td class="px-3 py-4 text-gray-800 font-medium">{{ $member->user->getFullName() }}</td>
-                    <td class="px-3 py-4 text-gray-800 text-center">
+                    <td class="px-3 py-2 text-gray-800 font-medium">{{ $member->user->getFullName() }}</td>
+                    <td class="px-3 py-2 text-gray-800 text-center">
                         Non payé
                     </td>
-                    <td class="px-3 py-4 text-green-900 text-right font-semibold">
+                    <td class="px-3 py-2 text-green-900 text-right font-semibold">
                         ..............FCFA
                     </td>
-                    <td class="px-3 py-4 text-gray-900">
+                    <td class="px-3 py-2 text-gray-900">
                         {{  $the_month }} {{  $the_year }}
                     </td>
-                    <td class="px-3 py-4 text-gray-900">
+                    <td class="px-3 py-2 text-gray-900">
                         
                     </td>
-                    <td class="px-3 py-4 text-center">
+                    <td class="px-3 py-2 text-center">
                         
                     </td>
                 </tr>
@@ -184,7 +187,7 @@
       </tbody>
     </table>
 	<div class="text-gray-950 w-full">
-		<h4 class="w-full font-semibold text-2xl text-center items-center py-4 mt-2 flex justify-center gap-x-9">
+		<h4 class="w-full font-semibold text-2xl text-center items-center py-2 mt-2 flex justify-center gap-x-9">
 			<span>
 				Montant total enregistré: 
 			</span>
@@ -194,7 +197,7 @@
 		</h4>
 	</div>
     @else
-        <div class="w-full text-center py-4 border-none bg-red-300 text-red-600 text-base">
+        <div class="w-full text-center py-2 border-none bg-red-300 text-red-600 text-base">
             <span class="fas fa-trash"></span>
             <span>Oupps aucune données trouvées!!!</span>
         </div>

@@ -28,7 +28,7 @@ class SendWelcomeEmail extends Command
         }
 
         // Récupérer le HTML
-        $html = file_get_contents(resource_path('maizzle/build_production/welcome.html'));
+        $html = file_get_contents(resource_path('maizzle/build_production/transactional.html'));
 
         // Remplacer les variables
         $html = str_replace(['{{ name }}', '{{ url }}'], [$user->name, url('/')], $html);

@@ -144,7 +144,7 @@
                         </td>
                         
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
-                            <span wire:click.prevent="confirmedUserIdentification({{$user->id}})" @if(!$user->confirmed_by_admin) title="Cliquer pour confirmer l'identification de {{ $user->getFullName() }}" @endif>
+                            <span>
                                 <span class=" @if($user->confirmed_by_admin) fas fa-user-check text-green-600 @else fas fa-user-slash text-red-500 @endif"></span>
                                 <span class="@if($user->confirmed_by_admin) text-green-600 @else text-red-500 @endif">{{$user->confirmed_by_admin ? 'identifié' : 'non identifié'}}</span>
                             </span>
@@ -163,78 +163,39 @@
                         </td>
                         
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
-                            
-                            <div style="z-index: 5000" class="flex justify-end px-4 pt-4 hidden">
-                                <button id="dropdownButton-{{$user->id}}" data-dropdown-toggle="dropdown-{{$user->id}}" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg p-1.5" type="button">
-                                    <span class="sr-only">Open dropdown</span>
-                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
-                                        <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
-                                    </svg>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div id="dropdown-{{$user->id}}" class=" hidden lg:text-sm sm:text-xs md:text-xs xs:text-xs list-none bg-white divide-y divide-gray-100 rounded-lg shadow-2 shadow-sky-500 w-56 z-bg-secondary-light border border-sky-500" style="z-index: 5000">
-                                    <ul class="py-2" aria-labelledby="dropdownButton-{{$user->id}}">
-                                        <li>
-                                            <a href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                <span class="fas fa-user"></span>
-                                                <b>{{ $user->getFilamentName() }}</b>
-                                                <br>
-                                                <small class="text-orange-400">
-                                                    {{ $user->email }}
-                                                </small>
-                                            </a>
-                                        </li>
+                            <span class="text-white flex gap-x-2">
+                                <span wire:click="marksUserAsIdentifiedOrNot({{$user->id}})" wire:target="marksUserAsIdentifiedOrNot({{$user->id}})" @if(!$user->confirmed_by_admin) title="Cliquer pour confirmer l'identification de {{ $user->getFullName() }}" @endif class="@if(!$user->confirmed_by_admin) bg-orange-500 hover:bg-orange-700 @else  bg-blue-500 hover:bg-blue-700 @endif py-2 px-3 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
+                                        @if(!$user->confirmed_by_admin)
+                                        <span class="fa fa-user-check"></span>
+                                        <span title="Marquer {{$user->getFullName()}} comme identifié" class="lg:inline">
+                                            Identifié
+                                        </span>
+                                        @else
+                                        <span class="fa fa-user-xmark"></span>
+                                        <span title="Marquer {{$user->getFullName()}} comme non identifié" class="lg:inline">
+                                            Non Identifié
+                                        </span>
                                         
-                                        <li class="hidden">
-                                            <a href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-wrap">
-                                                Opérations sur
-                                                <br>
-                                                <span class="fas fa-user"></span>
-                                                <b>{{ $user->pseudo }}</b>
-                                                <br>
-                                                <small class="text-orange-400">
-                                                    {{ $user->email }}
-                                                </small>
-                                            </a>
-                                        </li>
-                                        @if(__selfUser($user))
-                                            <li>
-                                                <a href="{{route('user.profil.edition', ['identifiant' => $user->identifiant, 'auth_token' => $user->auth_token])}}" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Editer</a>
-                                            </li>
                                         @endif
-                                        <li>
-                                            <a wire:click="$dispatch('OpenUserProfilPhotoEvent', {user_id: {{$user->id}}})" type="button" title="Zoomer la photo de profil" href="#" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Zoomer la photo de profil</a>
-                                        </li>
-                                        @if($user->member)
-                                        <li>
-                                            <a href="{{route('member.profil', ['identifiant' => $user->identifiant])}}" class="block px-4 py-2  text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profil membre</a>
-                                        </li>
-                                        @endif
-                                        @if(__isAdminAs() && !__selfUser($user))
-                                            <li>
-                                                <a href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Supprimer</a>
-                                            </li>
-                                            <li>
-                                                <a wire:click='confirmedUserBlockOrUnblocked' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
-                                                </a>
-                                            </li>
-                                            @if(!$user->confirmed_by_admin)
-                                            <li>
-                                                <a wire:click='confirmedUserIdentification' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Confirmer l'identification</a>
-                                            </li>
-                                            @endif
-                                            @if(!$user->email_verified_at)
-                                            <li>
-                                                <a wire:click='confirmedUserEmailVerification' href="#" class="block px-4 py-2  text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    {{ $user->email_verified_at ? "Marquer email non vérifié" : "Marquer email vérifié" }}
-                                                </a>
-                                            </li>
-                                            @endif
-                                        @endif
-                                    </ul>
-                                </div>
-                            </div>
+                                    </span>
+                                    <span wire:loading wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
+                                        <span>Chargement</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
+                                <span wire:click="deleteUserAccount('{{$user->id}}')" wire:target="deleteUserAccount('{{$user->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="deleteUserAccount('{{$user->id}}')">
+                                        <span class="hidden lg:inline">Suppr.</span>
+                                        <span class="fa fa-trash"></span>
+                                    </span>
+                                    <span wire:loading wire:target="deleteUserAccount('{{$user->id}}')">
+                                        <span>Suppr compte...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
+                                
+                            </span> 
                         </td>
                     </tr>
                     @endforeach

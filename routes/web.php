@@ -23,6 +23,7 @@ use App\Livewire\User\CardMemberComponent;
 use App\Livewire\User\MemberProfil;
 use App\Livewire\User\MyMonthlyPayments;
 use App\Livewire\User\MyNotificationsPage;
+use App\Livewire\User\MyQuotes;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
 use Illuminate\Support\Facades\Route;
@@ -74,7 +75,9 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     
     Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['user.self']);
     
-    Route::get('profil/statut=membre/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self']);
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self', 'master']);
+    
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['user.self', 'master']);
 
 
 });

@@ -13,6 +13,8 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
         
 
         {{-- <script src="https://unpkg.com/scrollreveal"></script> --}}
@@ -20,6 +22,12 @@
         <script>
             ScrollReveal({ reset: true });
         </script>
+
+        <style>
+            .swiper {
+                padding: 2rem;
+            }
+        </style>
         
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">
@@ -46,6 +54,7 @@
         @livewire('master.modals.lycee-filiars-manager-modal')
         @livewire('master.modals.lycee-promotions-manager-modal')
         @livewire('master.modals.member-payments-modal-manager')
+        @livewire('user.quotes-manager-modal')
         @livewire('partials.footer')
         
 
@@ -54,9 +63,14 @@
         <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
         <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
         @livewireSweetalertScripts
 
+
         <script>
+
             document.addEventListener('DOMContentLoaded', () => {
 
                 document.getElementById('epreuve-message-input').focus();
@@ -72,6 +86,16 @@
             window.User = { 
                 id: {{optional(auth()->user())->id}},
             }
+
+            const swiper = new Swiper(".mySwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                spaceBetween: 30,
+                grabCursor: true,
+            });
 
             
             document.addEventListener('livewire:init', () => {
@@ -132,6 +156,8 @@
                 }
             )
         */
+
+        
         
             
         </script>

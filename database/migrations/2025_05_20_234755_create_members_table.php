@@ -15,12 +15,12 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->boolean('authorized')->default(false);
+            $table->boolean('authorized')->default(true);
             $table->string('ability')->nullable()->default(null);
             $table->text('description')->nullable()->default(null);
             $table->json('tasks')->nullable()->default(null);
-            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
-            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('role_id')->nullable()->constrained('roles')->cascadeOnDelete()->nullOnDelete()->default(null);
             $table->boolean('card_sent_by_mail')->nullable()->default(false);
         });
     }

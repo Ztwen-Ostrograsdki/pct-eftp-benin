@@ -4,6 +4,7 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\MemberCreationOrUpdatingManagerEvent;
 use App\Models\Member;
 use App\Models\User;
 use Livewire\Attributes\On;
@@ -70,12 +71,19 @@ class MembersListPage extends Component
         );
     }
 
-    public function editRole($member_id)
+    public function changeTheMemberOfThisRole($role_id)
     {
-        $this->dispatch('OpenMemberModalForEditEvent', $member_id);
+        $this->dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', $role_id);
     }
 
-    public function removeUserFormMembers($member_id)
+    
+    
+    public function changeTheRoleOfThisMember($member_id)
+    {
+        $this->dispatch('OpenModalToChangeTheRoleOfThisMemberEvent', $member_id);
+    }
+
+    public function resetMemberRoleToNull($member_id)
     {
         if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
 
@@ -83,11 +91,19 @@ class MembersListPage extends Component
 
         if($member){
 
-            $this->deleting_member = $member;
+            $name = $member->user->getFullName();
 
-            $options = ['event' => 'confirmedMemberRetrieving'];
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Voulez-vous vraiment Réinitialiser le poste de  </p>
+                            <p class='text-sky-600 py-0 my-0 font-semibold'> Mr/Mme {$name} </p>
+                    </h6>";
 
-            $this->confirm("Confirmation de la suppression ou du retrait de " . $member->user->getFullName(true) . " de la liste des membres!", "Cette action est irréversible", $options);
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est réversible! </p>";
+
+            $options = ['event' => 'confirmedMemberRoleReseting', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['member_id' => $member_id]];
+
+            $this->confirm($html, $noback, $options);
+            
         }
         else{
 
@@ -95,23 +111,41 @@ class MembersListPage extends Component
         }
     }
 
-    #[On('confirmedMemberRetrieving')]
-    public function onConfirmationMemberRetrieving()
+
+
+    #[On('confirmedMemberRoleReseting')]
+    public function onConfirmationMemberRoleReseting($data)
     {
-        $del = $this->deleting_member->delete();
+        if($data){
 
-        if($del){
+            $member_id = $data['member_id'];
 
-            $message = "La suppression est terminée.";
+            $member = Member::find($member_id);
 
-            $this->toast($message, 'success');
+            if($member){
 
-            $this->dispatch("UpdatedMemberList");
+                $admin = auth_user();
 
-        }
-        else{
+                $user = $member->user;
 
-            $this->toast( "La suppression a échoué! Veuillez réessayer!", 'error');
+                $data = ['role_id' => null];
+
+                $dispatched = MemberCreationOrUpdatingManagerEvent::dispatch($admin, $user, $data, $member);
+
+                if($dispatched){
+
+                    $this->reset();
+
+                    $this->toast("Le proccessus a été lancé!", 'success');
+
+                    
+                }
+
+            }
+            else{
+
+                $this->toast( "Erreur membre introuvabel!", 'error');
+            }
 
         }
 
@@ -120,6 +154,12 @@ class MembersListPage extends Component
     #[On('UpdatedMemberList')]
     public function reloadData()
     {
-        $this->counter = rand(3, 342);
+        $this->counter = getRand();
+    }
+    
+    #[On('LiveUpdateMembersListEvent')]
+    public function reloadDataForMembersListUpdated()
+    {
+        $this->counter = getRand();
     }
 }

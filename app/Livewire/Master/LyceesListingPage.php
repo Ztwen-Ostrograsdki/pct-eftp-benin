@@ -5,7 +5,9 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Jobs\JobToGenerateDefaultUserMember;
 use App\Models\Lycee;
+use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -31,6 +33,7 @@ class LyceesListingPage extends Component
         $filiars = [];
 
         $promotions = [];
+
 
         if(session()->has('selected_lycee_profil')){
 

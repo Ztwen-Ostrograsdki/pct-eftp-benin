@@ -5,8 +5,10 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\MemberCreationOrUpdatingManagerEvent;
+use App\Mail\ConfirmationAdhesion;
 use App\Models\Member;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -161,5 +163,20 @@ class MembersListPage extends Component
     public function reloadDataForMembersListUpdated()
     {
         $this->counter = getRand();
+    }
+
+    public function sendMailConfirmationForAdded($user_id)
+    {
+        $user = User::find($user_id);
+
+        $html = file_get_contents(base_path('resources/maizzle/build_production/member-confirmation.html'));
+
+        Mail::to($user->email)->send(new ConfirmationAdhesion(
+            nom: $user->name,
+            poste: 'Secrétaire général',
+            association: 'Association des Enseignants Techniques',
+            lien: url('/espace-membre'),
+            html: $html
+        ));
     }
 }

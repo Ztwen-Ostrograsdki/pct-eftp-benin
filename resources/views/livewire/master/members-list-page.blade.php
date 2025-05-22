@@ -57,7 +57,7 @@
                             Membre depuis
                         </th>
                         
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-6 text-center py-3">
                             Actions
                         </th>
                     </tr>
@@ -65,10 +65,10 @@
                 <tbody>
                     @foreach($members as $key => $member)
                     <tr class="odd:bg-white admin-member-list-tr odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                        <th scope="row" class="px-6 py-2 text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </th>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-2">
                             <span class="flex gap-x-2 items-center">
                                 <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($member->user) }}" alt="Photo de profil de {{ $member->user->getFullName() }}">
                                 <a title="Charger le profil du statut membre de {{$member->user->getFullName()}}" class="" href="{{ route('member.profil', ['identifiant' => $member->user->identifiant]) }}">
@@ -77,19 +77,19 @@
                             </span>
                         </td>
                         
-                        <td class="px-6 py-4  @if($member->user->status) uppercase @else text-orange-400 @endif">
+                        <td class="px-6 py-2  @if($member->role) uppercase text-sky-500 @else text-orange-400 @endif">
                             @if($member->role)
                                 {{$member->user->formatString($member->role->name)}}
                             @else
                                 Membre
                             @endif
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-2">
                             {{$member->user->__getDateAsString($member->created_at)}}
                         </td>
                         
-                        <td class="px-6 py-4">
-                            <span class="text-white flex gap-x-2">
+                        <td class="px-6 py-2">
+                            <span class="text-white flex justify-center gap-x-2">
                                 @if($member->role)
                                 <span wire:click="changeTheMemberOfThisRole('{{$member->role->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="changeTheMemberOfThisRole('{{$member->id}}')">
@@ -123,6 +123,17 @@
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>
+
+                                <span wire:click="sendMailConfirmationForAdded('{{$member->user->id}}')" class="bg-green-500 hover:bg-green-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="sendMailConfirmationForAdded('{{$member->user->id}}')">
+                                        <span class="hidden lg:inline">Message</span>
+                                        <span class="fa fa-send "></span>
+                                    </span>
+                                    <span wire:loading wire:target="sendMailConfirmationForAdded('{{$member->user->id}}')">
+                                        <span>En cours...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
                                 
                             </span> 
                         </td>
@@ -131,7 +142,7 @@
                     
                 </tbody>
                 @else
-                    <h4 class="w-full animate-pulse text-center py-4 border rounded-lg bg-red-300 text-red-600 lg:text-lg sm:text-base">
+                    <h4 class="w-full animate-pulse text-center py-2 border rounded-lg bg-red-300 text-red-600 lg:text-lg sm:text-base">
                         <span class="fas fa-trash"></span>
                         <span>Oupps aucune données trouvées!!!</span>
                     </h4>

@@ -8,4 +8,11 @@ module.exports = {
     './emails/**/*.html',
     './layouts/**/*.html',
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        roboto: ['Roboto', 'Arial', 'sans-serif'],
+      },
+    },
+  },
 }

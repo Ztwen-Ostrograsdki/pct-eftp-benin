@@ -40,7 +40,7 @@
                         </p>
                         @if(auth_user()->member)
                            <p class="text-xs text-yellow-500">
-                              {{ auth_user()->member->role->name }}
+                              {{auth_user()->member->role ? auth_user()->member->role->name : 'Membre' }}
                            </p>
                         @endif
                      </a>
@@ -95,7 +95,7 @@
                            </p>
                            @if($user->member)
                               <p class="text-xs text-yellow-500">
-                                 {{ $user->member->role->name }}
+                                 {{ $user->member->role ? $user->member->role->name : 'Membre' }}
                               </p>
                            @endif
                         </a>

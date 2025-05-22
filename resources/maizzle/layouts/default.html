@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+      /* Pour Outlook */
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      a { text-decoration: none; }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans">
+    <center class="w-full bg-gray-100">
+      <!--[if mso | IE]>
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center">
+        <tr><td>
+      <![endif]-->
+
+      <div class="max-w-[600px] mx-auto bg-white">
+        {% include "partials/header.html" %}
+
+        <table class="w-full px-6 sm:px-8" role="presentation">
+          <tr>
+            <td class="py-8">
+              {{ content | safe }}
+            </td>
+          </tr>
+        </table>
+
+        {% include "partials/footer.html" %}
+      </div>
+
+      <!--[if mso | IE]>
+        </td></tr></table>
+      <![endif]-->
+    </center>
+  </body>
+</html>

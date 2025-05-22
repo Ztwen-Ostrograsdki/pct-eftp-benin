@@ -79,7 +79,7 @@
                                 </div>
                                 <div>
                                     <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-300 hover:text-blue-500">
-                                        {{ $member->role->name }}
+                                        {{ $member->role ? $member->role->name : 'Membre' }}
                                     </h2>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 hover:text-blue-500">
                                         {{ auth_user_fullName(true, $member->user) }}

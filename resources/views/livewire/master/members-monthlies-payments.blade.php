@@ -1,4 +1,26 @@
 <div class="p-6 w-full mx-auto z-bg-secondary-light-opac shadow-2 shadow-sky-500">
+    <style>
+      tr{
+			border: thin solid white !important;
+      }
+
+      tr:nth-child(odd) {
+        
+      }
+
+      tr:nth-child(even) {
+      background: #141b32;
+      }
+      
+
+      table {
+        border-collapse: collapse;
+      }
+
+      th, td{
+        border: thin solid rgb(177, 167, 167) !important;
+      }
+    </style>
     <div class="mb-6">
         <div class="flex items-center justify-between gap-x-2 mb-6">
             <h2 class="lg:text-lg md:text-lg sm:text-sm  font-semibold letter-spacing-1 uppercase text-sky-500">Gestion des cotisations mensuelles de l'association
@@ -152,13 +174,13 @@
     <table class="min-w-full divide-y divide-gray-200 text-sm">
       <thead class="bg-gray-900 text-gray-300 font-semibold">
         <tr>
-          <th class="px-3 py-3 text-center">#N°</th>
-          <th class="px-3 py-3 text-left">Membre</th>
-          <th class="px-3 py-3 text-left">Description</th>
-          <th class="px-3 py-3 text-left">Montant (FCFA)</th>
-          <th class="px-3 py-3 text-left">Cotisation de </th>
-          <th class="px-3 py-3 text-left">Date de payement</th>
-          <th class="px-3 py-3 text-center">Actions</th>
+          <th class="px-3 py-4 text-center">#N°</th>
+          <th class="px-3 py-4 text-left">Membre</th>
+          <th class="px-3 py-4 text-left">Description</th>
+          <th class="px-3 py-4 text-left">Montant (FCFA)</th>
+          <th class="px-3 py-4 text-left">Cotisation de </th>
+          <th class="px-3 py-4 text-left">Date de payement</th>
+          <th class="px-3 py-4 text-center">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100" id="payments-tbody">
@@ -171,23 +193,23 @@
 
                 @if($cotisation && isset($cotisation->id))
                     <tr wire:key='list-des-cotisations-mensuelles-{{$cotisation->id}}'>
-                        <td class="px-3 py-4 text-gray-400 text-center">
+                        <td class="px-3 py-2 text-gray-400 text-center">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </td>
-                        <td class="px-3 py-4 text-gray-300 font-medium">{{ $cotisation->member->user->getFullName() }}</td>
-                        <td class="px-3 py-4 text-gray-400">
+                        <td class="px-3 py-2 text-gray-300 font-medium">{{ $cotisation->member->user->getFullName() }}</td>
+                        <td class="px-3 py-2 text-gray-400">
                             {{ $cotisation->description ? $cotisation->description : 'Non précisée' }}
                         </td>
-                        <td class="px-3 py-4 text-green-600 font-semibold">
+                        <td class="px-3 py-2 text-green-600 font-semibold">
                             {{ __moneyFormat($cotisation->amount) }} FCFA
                         </td>
-                        <td class="px-3 py-4 text-yellow-600">
+                        <td class="px-3 py-2 text-yellow-600">
                             {{ $cotisation->getCotisationMonthYear()}}
                         </td>
-                        <td class="px-3 py-4 text-gray-300">
+                        <td class="px-3 py-2 text-gray-300">
                             {{ __formatDate($cotisation->payment_date) }}
                         </td>
-                        <td class="px-3 py-4 text-center">
+                        <td class="px-3 py-2 text-center">
                             <span class="flex gap-x-3 w-full justify-center items-center">
                                 <span wire:click="editMemberPayment({{$cotisation->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Editer cette cotisation enregistrée au nom de {{ $cotisation->member->user->getFullName() }}">
                                     <span class="fas fa-edit"></span>
@@ -202,23 +224,23 @@
                     </tr>
                 @else
                     <tr wire:key='list-des-cotisations-mensuelles-{{getRand(2999, 8888888)}}'>
-                    <td class="px-3 py-4 text-gray-400 text-center">
+                    <td class="px-3 py-2 text-gray-400 text-center">
                         {{ numberZeroFormattor($loop->iteration) }}
                     </td>
-                    <td class="px-3 py-4 text-gray-300 font-medium">{{ $member->user->getFullName() }}</td>
-                    <td class="px-3 py-4 text-gray-400">
+                    <td class="px-3 py-2 text-gray-300 font-medium">{{ $member->user->getFullName() }}</td>
+                    <td class="px-3 py-2 text-gray-400">
                         Non payé
                     </td>
-                    <td class="px-3 py-4 text-green-600 font-semibold">
+                    <td class="px-3 py-2 text-green-600 font-semibold">
                         0 FCFA
                     </td>
-                    <td class="px-3 py-4 text-yellow-600">
+                    <td class="px-3 py-2 text-yellow-600">
                         {{  $selected_month }} {{  $selected_year }}
                     </td>
-                    <td class="px-3 py-4 text-gray-300">
+                    <td class="px-3 py-2 text-gray-300">
                         Non Payé
                     </td>
-                    <td class="px-3 py-4 text-center">
+                    <td class="px-3 py-2 text-center">
                         <span class="flex gap-x-3 w-full justify-center items-center">
                             <span wire:click="addMemberPayment({{$member->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Editer cette cotisation enregistrée au nom de {{ $member->user->getFullName() }}">
                                 <span class="fas fa-edit"></span>

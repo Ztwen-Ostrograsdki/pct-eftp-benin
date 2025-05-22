@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-bold text-gray-800">
 
                 @php
-                    $salutation = __greatingMessager(auth()->user()->getUserNamePrefix(true, false));
+                    $salutation = __greatingMessager($user->getUserNamePrefix(true, false));
 
                 @endphp
                 {{ $salutation }}

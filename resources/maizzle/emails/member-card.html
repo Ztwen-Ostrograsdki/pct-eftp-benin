@@ -1,50 +1,60 @@
 <x-main class="bg-gray-100 text-gray-800 flex items-center justify-center">
-  <table class="max-w-6xl font-roboto sm:w-5/6 xs:w-5/6 mx-auto bg-white my-5 rounded-xl shadow-lg overflow-hidden" cellpadding="0" cellspacing="0">
-    <tr>
-      <td class="bg-blue-700 text-white text-center p-6">
-        <img src="../images/logo.jpg" alt="Logo Association" class="h-28 w-28 rounded-full mx-auto mb-2">
+  <div class="max-w-6xl font-roboto sm:w-5/6 xs:w-5/6 mx-auto bg-white my-5 rounded-xl shadow-lg overflow-hidden border border-gray-800" cellpadding="0" cellspacing="0">
+    <div class="w-full m-0 mx-auto ">
+      <div class="bg-blue-700 text-white text-center p-6">
+        <img src="{{ logo_url }}" alt="Logo Association" class="h-28 w-28 rounded-full mx-auto mb-2">
         <h1 class="text-2xl font-bold my-0">AESP-PCT BENIN</h1>
         <h6 class=" my-0 py-2">Association des Enseignants de PCT du BENIN</h6>
-      </td>
-    </tr>
-    <tr>
-      <td class="p-6">
-        <h2 class="text-xl font-semibold mb-4">Bonjour {{ $nom }},</h2>
-        <p class="mb-4">
-          Nous sommes ravis de vous compter parmi nous!
-        </p>
+      </div>
+    </div>
+    <div>
+      <div class="p-6">
+        <h2 class="text-xl mb-4 my-0">Carte de membre</h2>
+        <h3 class="mb-4 flex flex-col">
+          <h3 class="my-0 py-0">
+            <span>Membre : </span>
+            <span class="font-semibold text-orange-400">{{ name }}</span>
+          </h3>
+          <h3 class="my-0 py-0">
+            <span>Email : </span>
+            <span class="font-semibold text-green-300">{{ email }}</span>
+          </h3>
+          <h3 class="my-0 py-0">
+            <span>#Identifiant : </span>
+            <span class="font-semibold text-gray-700">{{ identifiant }}</span>
+          </h3>
+          <h3 class="my-0 py-0">
+            <span>Statut  : </span>
+            <span class="font-semibold text-sky-700">{{ poste }}</span>
+          </h3>
+        </h3>
 
-        <div class="text-center my-6 flex flex-col">
-          <span>Vous faites parti de AESP-PCT en tant que </span>
-          <span class="block bg-green-100 text-green-800 text-lg font-bold px-4 py-2 rounded-full border border-green-300">
-            {{ $poste }}
-          </span>
-          <span>de l'Association</span>
+        <div class="mx-auto w-full my-3 mb-3">
+          <p class="my-0 py-0">
+            Nous comptons sur votre engagement et votre enthousiasme pour contribuer à nos missions.
+          </p>
+
+          <p class="my-0">
+            Si vous avez des questions ou souhaitez plus d’informations, n’hésitez pas à nous les administrateurs.
+          </p>
         </div>
 
-        <p class="mb-4">
-          Nous comptons sur votre engagement et votre enthousiasme pour contribuer à nos missions.
-        </p>
-
-        <p class="mb-6">
-          Si vous avez des questions ou souhaitez plus d’informations, n’hésitez pas à nous les administrateurs.
-        </p>
-
-        <div class="text-center">
-          <a href="{{ $lien }}" class="inline-block bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-800 transition no-underline">
+        <div class="text-center my-4 mx-auto">
+          <a href="{{ lien }}" class="inline-block text-base bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-800 transition no-underline">
             Accéder à votre profil
           </a>
         </div>
-      </td>
-    </tr>
+      </div>
+    </div>
 
-    <tr>
-      <td class="bg-gray-100 text-center p-4 text-sm text-gray-500 flex flex-col items-center">
-        <span><img src="../images/logo.jpg" alt="Logo décoratif" class="h-10 w-10 rounded-full mx-auto mb-2">
-        &copy; {{ now()->year }} {{ $association }}. </span>
-        <span>Tous droits réservés.</span>
-      </td>
-    </tr>
-  </table>
+    <div>
+      <div class="bg-gray-100 text-center p-4 text-gray-500 w-full mx-auto">
+        <p class="text-center mx-auto w-full text-xs">
+          &copy; {{ date }} {{ association }}. 
+          Tous droits réservés.
+        </p>
+      </div>
+    </div>
+  </div>
 </x-main>
 

@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link href="{{ mix('resources/css/app.css') }}" rel="stylesheet">
 	<script src="https://cdn.tailwindcss.com"></script>
-	<title>Document</title>
+	<title>{{ $document_title }}</title>
 	<style>
 		.bg-hover-secondary {
 		background-color: #334 !important;
@@ -185,7 +185,7 @@
     </table>
     
 	<div class="text-gray-950 w-full">
-		<h4 class="w-full font-semibold text-2xl text-center items-center py-2 mt-2 flex justify-center gap-x-9">
+		<h4 class="w-full font-semibold uppercase text-lg text-center items-center py-2 mt-2 flex justify-center gap-x-9">
 			<span>
 				Montant total enregistré: 
 			</span>
@@ -201,8 +201,6 @@
         </div>
     @endif
 </div>
-<p class="mt-3 text-right text-sm text-gray-800 font-mono">
-	Imprimé le {{ $print_date }} sur la plateforme {{ env('APP_NAME') }}
-</p>
+
 </body>
 </html>

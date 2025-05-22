@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Observers\ObserveMember;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 #[ObservedBy(ObserveMember::class)]
 class Member extends Model
@@ -47,7 +48,15 @@ class Member extends Model
     
     public function card()
     {
-        $cards = $this->cards()->orderBy('created_at', 'desc')->get();
+        $year = (int)date('Y'); 
+
+        $duration = $year . '-' . $year + 3;
+
+        $path = Str::replace(' ', '-', $this->user->getFullName()) . "-" . $duration . '.pdf';
+
+        $pdfPath = storage_path("app/public/cartes/carte-de-membre-de-". $path);
+
+        $cards = $this->cards()->where('card_path', $pdfPath)->orderBy('created_at', 'desc')->get();
 
         if(count($cards) > 0) return $cards[0];
 
@@ -95,6 +104,13 @@ class Member extends Model
         $totals = Cotisation::where('member_id', $this->id)->where('year', $year)->pluck('amount')->toArray();
 
         return count($totals) > 0 ? (float)array_sum($totals) : 0.0 ;
+    }
+
+    public function getMemberRoleName()
+    {
+        if($this->role) return $this->role->name;
+
+        else return "Membre";
     }
 }
 

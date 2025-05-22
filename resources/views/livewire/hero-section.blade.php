@@ -106,7 +106,7 @@
             <div class="swiper-wrapper">
             <!-- Slide 1 -->
             @foreach (getUsers() as $user)
-                <div class="swiper-slide bg-sky-100 p-6 rounded-2xl shadow-lg">
+                <div wire:key='defilement-reviews-membre-{{$user->id}}' class="swiper-slide bg-sky-100 p-6 rounded-2xl shadow-lg">
                 <div class="flex items-center space-x-4 mb-4">
                 <img src="{{user_profil_photo($user)}}" class="w-24 h-24 rounded-full border-2 border-cyan-700" />
                 <div>

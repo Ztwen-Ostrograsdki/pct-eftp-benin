@@ -175,8 +175,6 @@ class MyMonthlyPayments extends Component
 
         $year = $this->selected_year;
 
-        $print_date = __formatDateTime(Carbon::now());
-
         $name = $this->member->user->getFullName();
 
         $total_amount = $this->member->getTotalCotisationOfYear($year);
@@ -197,13 +195,15 @@ class MyMonthlyPayments extends Component
 
         $pdfPath = storage_path("app/public/cotisations/membres/". $year . "/Fiches-de-cotisation-membre-de-". $name . '-de-' . $year . '.pdf');
 
+        $document_title = "FICHE DE COTISATION DE $name DE $year";
+
         $data = [
             'member' => $this->member, 
             'months' => getMonths(),
             'the_year' => $year,
             'total_amount' => $total_amount,
-            'print_date' => $print_date,
             'name' => $name,
+            'document_title' => $document_title,
         ];
 
         $view_path = "pdftemplates.once-member-cotisation";

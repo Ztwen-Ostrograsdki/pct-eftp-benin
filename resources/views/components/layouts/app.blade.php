@@ -8,9 +8,6 @@
         <link rel="stylesheet" href="@sweetalert2/themes/dark/dark.css">
         <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
 
-        {{-- <link href="{{ mix('resources/css/app.css') }}" rel="stylesheet">
-        <script src="{{ mix('resources/js/app.js') }}"></script> --}}
-
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
 

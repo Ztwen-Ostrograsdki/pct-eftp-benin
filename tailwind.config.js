@@ -3,16 +3,11 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
         './resources/**/*.blade.php',
-        './resources/**/*.js',
         './resources/**/*.vue',
-        'node_modules/preline/dist/*.js',
-        './node_modules/tw-elements/js/**/*.js',
-        './resources/views/**/*.blade.php',
         './resources/js/**/*.js',
-        // './vendor/bezhansalleh/filament-language-switch/resources/views/language-switch.blade.php',
+        './storage/framework/views/*.php',
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     ],
     theme: {
         extend: {

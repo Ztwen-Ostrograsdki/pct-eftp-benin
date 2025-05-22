@@ -89,7 +89,7 @@
                         </td>
                         
                         <td class="px-6 py-4  @if($member->user->status) uppercase @else text-orange-400 @endif">
-                            {{$member->user->formatString($member->role->name)}}
+                            {{ $member->role ? $member->user->formatString($member->role->name) : "Membre" }}
                         </td>
                         <td class="px-6 py-4">
                             {{ $member->getMemberCardCreationDate() ? "Emise depuis le " . $member->getMemberCardCreationDate() : "Non prête" }}

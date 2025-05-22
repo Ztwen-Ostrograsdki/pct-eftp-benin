@@ -242,5 +242,12 @@ class User extends Authenticatable
         return $this->hasOne(Member::class);
     }
 
+    public function getMemberRoleName()
+    {
+        if($this->member->role) return $this->member->role->name;
+
+        else return "Membre";
+    }
+
 
 }

@@ -51,11 +51,28 @@ class LiveToaster extends Component
     public function deleteNotification($id)
     {
 
-        $notif = $notif = User::find(auth_user()->id)->unreadNotifications()->where('id', $id)->first();
+        $notif = User::find(auth_user()->id)->unreadNotifications()->where('id', $id)->first();
 
         if($notif){
             
             $notif->markAsRead();
+        }
+
+        $this->counter = getRandom();
+
+    }
+    
+    public function deleteAllNotifications()
+    {
+
+        $notifs  = User::find(auth_user()->id)->unreadNotifications();
+
+        foreach($notifs as $notif){
+
+            $notif->delete();
+
+            $this->counter = getRandom();
+
         }
 
         $this->counter = getRandom();

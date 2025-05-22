@@ -18,16 +18,12 @@ class ObserveCardMember
 
         $member = $cardMember->member;
 
-        $message_to_creator = "La carte de " . $member->user->getFullName() . " a été finalisée et envoyée avec succès!";
-
-        $message_to_member = "Veuillez vérifier votre boite mail: votre carte vous a été envoyée par couriel!";
-
+        $message_to_creator = "La carte de " . $member->user->getFullName() . " a été finalisée et les données ont été enregistrées dans la base de données!";
 
         NewCardMemberHasBeenCreatedEvent::dispatch($cardMember->member, $admin_generator);
 
         $admin_generator->notify(new RealTimeNotificationGetToUser($message_to_creator));
 
-        // $member->user->notify(new RealTimeNotificationGetToUser($message_to_member));
     }
 
     /**
@@ -35,7 +31,7 @@ class ObserveCardMember
      */
     public function updated(CardMember $cardMember): void
     {
-        //
+        
     }
 
     /**

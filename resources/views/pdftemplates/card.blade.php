@@ -6,7 +6,8 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link href="{{ mix('resources/css/app.css') }}" rel="stylesheet">
 	<script src="https://cdn.tailwindcss.com"></script>
-	<title>Document</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<title>Carte de membre de {{ $reverse_name }} </title>
 
 	<style>
 		.bg-hover-secondary {
@@ -89,7 +90,7 @@
 									<h4 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="text-blue-800 uppercase letter-spacing-1 fas fa-2x">
 										Carte de membre
 									</h4>  
-									<small class="text-orange-400 h-6 letter-spacing-1">
+									<small class="text-gray-900 h-6 letter-spacing-1">
 										{{ env('APP_NAME') }}
 									</small>
 								</span>
@@ -99,8 +100,8 @@
 						<hr class="text-gray-500 bg-gray-500 my-2 ">
 					</div>
 				
-					<div style="width: 600px" class="grid grid-cols-6 gap-x-2 items-center ">
-						<div class="col-span-3 text-right">
+					<div style="width: 600px" class="grid grid-cols-7 gap-x-2 items-center ">
+						<div class="col-span-4 text-right">
 							<h1 class="text-gray-900 lg:text-3xl xl:text-3xl sm:text-base sm:font-semibold font-bold letter-spacing-1">
 								{{ $reverse_name }}
 							</h1>

@@ -272,8 +272,6 @@ class MembersMonthliesPayments extends Component
 
         $year = $this->selected_year;
 
-        $print_date = __formatDateTime(Carbon::now());
-
         $total_amount = 0;
 
         foreach($this->printingData as $d){
@@ -300,12 +298,14 @@ class MembersMonthliesPayments extends Component
 
         $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-de-membre-de-". $month . '-' . $year . '.pdf');
 
+        $document_title = "FICHE DE COTISATION DE $month $year";
+
         $data = [
             'payment_data' => $this->printingData, 
             'the_month' => $month,
             'the_year' => $year,
             'total_amount' => $total_amount,
-            'print_date' => $print_date,
+            'document_title' => $document_title,
         ];
 
         $view_path = "pdftemplates.members-cotisation";

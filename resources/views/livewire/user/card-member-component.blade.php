@@ -7,7 +7,7 @@
                     Carte de membre  
                 </strong>
                 <small class="text-orange-400 letter-spacing-1">
-                    {{ $member->role->name }}
+                    {{ $member->getMemberRoleName() }}
                 </small>
             </span>
     
@@ -36,7 +36,7 @@
             'email' =>  $user->email,
             'identifiant' =>  $user->identifiant,
             'address' =>  Str::upper($user->address),
-            'role' =>  $user->member->role->name,
+            'role' =>  $user->member->getMemberRoleName(),
             'photo' =>  user_profil_photo($user),
             'contacts' =>  $user->contacts,
 

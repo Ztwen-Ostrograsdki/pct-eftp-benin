@@ -1,5 +1,27 @@
 <div class="p-6 max-w-6xl mx-auto z-bg-secondary-light-opac shadow-2 shadow-sky-500">
-    <div class="mb-6">
+    <style>
+      tr{
+			border: thin solid white !important;
+      }
+
+      tr:nth-child(odd) {
+        
+      }
+
+      tr:nth-child(even) {
+      background: #141b32;
+      }
+      
+
+      table {
+        border-collapse: collapse;
+      }
+
+      th, td{
+        border: thin solid rgb(177, 167, 167) !important;
+      }
+    </style>
+  <div class="mb-6">
         <div class="flex items-center justify-between gap-x-2 mb-6">
             <h2 class="lg:text-lg md:text-lg sm:text-sm  font-semibold letter-spacing-1 uppercase text-sky-500">Fiche des cotisations mensuelles 
               
@@ -152,15 +174,15 @@
   <div class="overflow-x-auto shadow border border-gray-200 z-bg-secondary-light">
     
     <table class="min-w-full divide-y divide-gray-200 text-sm">
-      <thead class="bg-gray-900 text-gray-300 font-semibold">
-        <tr>
-          <th class="px-3 py-3 text-center">Mois</th>
-          <th class="px-3 py-3 text-left">Description</th>
-          <th class="px-3 py-3 text-left">Montant Payé (FCFA)</th>
-          <th class="px-3 py-3 text-left">Cotisation de </th>
-          <th class="px-3 py-3 text-left">Date de payement</th>
+      <thead class="bg-gray-900 text-gray-300 font-semibold ">
+        <tr style="" class="border-b border-b-gray-400">
+          <th class="px-3 py-4 text-center">Mois</th>
+          <th class="px-3 py-4 text-left">Description</th>
+          <th class="px-3 py-4 text-left">Montant Payé (FCFA)</th>
+          <th class="px-3 py-4 text-left">Cotisation de </th>
+          <th class="px-3 py-4 text-left">Date de payement</th>
           @if(__isAdminAs())
-          <th class="px-3 py-3 text-center">Actions</th>
+          <th class="px-3 py-4 text-center">Actions</th>
           @endif
         </tr>
       </thead>
@@ -174,8 +196,8 @@
                     $cotisation = getMemberCotisationOfMonthYear($member->id, $month, $selected_year);
 
                   @endphp
-                    <td class="px-3 py-4 text-gray-300 font-medium">{{ $month }}</td>
-                    <td class="px-3 py-4 text-gray-400">
+                    <td class="px-3 py-2 text-gray-300 font-medium">{{ $month }}</td>
+                    <td class="px-3 py-2 text-gray-400">
                         @if($cotisation)
 
                           {{ $cotisation->description ? $cotisation->description : 'Non précisée' }}
@@ -186,7 +208,7 @@
 
                         @endif
                     </td>
-                    <td class="px-3 py-4 text-green-600 font-semibold">
+                    <td class="px-3 py-2 text-green-600 font-semibold">
 
                         @if($cotisation)
 
@@ -198,12 +220,12 @@
                           
                         @endif
                     </td>
-                    <td class="px-3 py-4 text-yellow-600">
+                    <td class="px-3 py-2 text-yellow-600">
 
                       {{ $month }} {{ $selected_year }}
                       
                     </td>
-                    <td class="px-3 py-4 text-gray-300">
+                    <td class="px-3 py-2 text-gray-300">
                       @if($cotisation)
                         {{ __formatDate($cotisation->payment_date) }}
                       @else
@@ -211,7 +233,7 @@
                       @endif
                     </td>
                     @if(__isAdminAs())
-                    <td class="px-3 py-4 text-center">
+                    <td class="px-3 py-2 text-center">
                       @if($cotisation)
                         <span class="flex gap-x-3 w-full justify-center items-center">
                             <span wire:click="editMemberPayment({{$cotisation->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Editer cette cotisation enregistrée au nom de {{ $member->user->getFullName() }}">

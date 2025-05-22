@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class YourCardMemberIsReadyMail extends Mailable
+class YourCardMemberIsReadyMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -20,11 +20,24 @@ class YourCardMemberIsReadyMail extends Mailable
     public function __construct(
         public $user,
         public $card_path,
+        public $html,
     )
     {
         $this->user = $user;
 
+        $this->html = $html;
+
         $this->card_path = $card_path;
+    }
+
+    public function build()
+    {
+        $user = $this->user;
+
+        $name = $user->getFullName(true);
+
+        return $this->subject("Bonjour  $name")
+                    ->html($this->html);
     }
 
     /**
@@ -37,16 +50,7 @@ class YourCardMemberIsReadyMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.member-card-ready',
-        );
-    }
-
+   
     /**
      * Get the attachments for the message.
      *

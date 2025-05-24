@@ -13,6 +13,8 @@ use App\Livewire\Libraries\EpreuvesUploader;
 use App\Livewire\Libraries\LibraryHomePage;
 use App\Livewire\Libraries\SupportFilesPage;
 use App\Livewire\Libraries\SupportFilesUploader;
+use App\Livewire\Master\CommuniqueComponent;
+use App\Livewire\Master\CommuniquesDispatchedToAll;
 use App\Livewire\Master\LawChapterProfilPage;
 use App\Livewire\Master\LawProfilPage;
 use App\Livewire\Master\LyceesListingPage;
@@ -29,6 +31,8 @@ use App\Livewire\User\UserProfil;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class)->name('home');
+
+Route::get('communiques/page', CommuniquesDispatchedToAll::class)->name('communique.dispatched');
 
 Route::get('/les-lycees-et-centre-de-formations-du-benin', LyceesListingPage::class)->name('lycee.listing');
 
@@ -78,6 +82,8 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     Route::get('profil/statut=membre/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self', 'master']);
     
     Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['user.self', 'master']);
+
+    Route::get('communiques/communique/id={id}', CommuniqueComponent::class)->name('communique.profil');
 
 
 });

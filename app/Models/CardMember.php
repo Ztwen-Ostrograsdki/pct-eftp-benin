@@ -65,4 +65,13 @@ class CardMember extends Model
         return $this->total_print >= self::MAX_PRINT;
     }
 
+    public function markAsSendToMemberByEmail()
+    {
+        $this->member->update(['card_sent_by_mail' => true]);
+            
+        $this->update(['card_sent_by_mail' => true]);
+
+        return true;
+    }
+
 }

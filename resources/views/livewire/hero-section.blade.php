@@ -144,7 +144,7 @@
             @endforeach
             </div>
         </div>
-    </div>
+      </div>
     {{-- END REVIEWS SECTION --}}
       @livewire('partials.home-carrousel-component')
       <!-- End Grid -->

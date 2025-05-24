@@ -4,6 +4,7 @@ namespace App\Livewire\Partials;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Models\Communique;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -82,7 +83,9 @@ class Navbar extends Component
     
     public function render()
     {
-        return view('livewire.partials.navbar');
+        $communiques = Communique::where('hidden', false)->get();
+        
+        return view('livewire.partials.navbar', compact('communiques'));
     }
 
     public function newNotification($user = null)

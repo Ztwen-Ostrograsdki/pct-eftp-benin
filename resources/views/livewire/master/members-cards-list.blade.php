@@ -16,8 +16,19 @@
                     </strong>
                 </span>
 
-                <div class="flex gap-x-2">
-                    
+                <div class="flex gap-x-2 lg:text-base sm:text-xs xs:text-xs">
+                    <span wire:click="generateMembersCards" class="bg-green-500 hover:bg-green-700 py-2 px-3 text-gray-950 border rounded-lg cursor-pointer">
+                        <span wire:loading.remove wire:target="generateMembersCards">
+                            <span title="Générer les carte des membre" class="">
+                                Générer les cartes de membres non disponibles
+                            </span>
+                            <span class="fa fa-tools"></span>
+                        </span>
+                        <span class="text-xs" wire:loading wire:target="generateMembersCards">
+                            <span>Création des cartes...</span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </span>
                 </div>
             </h1>
         </div>
@@ -108,11 +119,17 @@
                             <span class="text-white flex gap-x-2">
                                 <span wire:click="generateCardMember('{{$member->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="generateCardMember('{{$member->id}}')">
-                                        <span title="Générer la carte de membre de {{$member->user->getFullName()}}" class="hidden lg:inline">Générer</span>
+                                        <span title="@if($member->card_sent_by_mail)Regénérer @else Générer @endif la carte de membre de {{$member->user->getFullName()}}" class="">
+                                            @if($member->card_sent_by_mail)
+                                            Regénérer
+                                            @else
+                                            Générer
+                                            @endif
+                                        </span>
                                         <span class="fa fa-card"></span>
                                     </span>
-                                    <span wire:loading wire:target="generateCardMember('{{$member->id}}')">
-                                        <span>Chargement</span>
+                                    <span class="text-xs" wire:loading wire:target="generateCardMember('{{$member->id}}')">
+                                        <span>Création de la carte...</span>
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>

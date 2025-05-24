@@ -121,6 +121,11 @@
       <li>
         <a wire:navigate href="{{route('library.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('library.home') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Bibliothèque</a>
       </li>
+      @if(count($communiques) > 0)
+      <li>
+        <a wire:navigate href="{{route('communique.dispatched')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('communique.dispatched') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Communiques</a>
+      </li>
+      @endif
       <li>
         <a wire:navigate href="{{route('lycee.listing')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('lycee.listing') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Lycées et centres</a>
       </li>

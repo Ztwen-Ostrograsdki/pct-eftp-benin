@@ -73,6 +73,10 @@
                 <div>
                     @livewire('master.members-monthlies-payments')
                 </div>
+            @elseif($member_section == "infos")
+                <div>
+                    @livewire('master.communiques-listing')
+                </div>
             @endif
         </div>
     </div>

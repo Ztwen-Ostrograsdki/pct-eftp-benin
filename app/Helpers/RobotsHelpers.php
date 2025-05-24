@@ -66,6 +66,15 @@ if(!function_exists('__isConnectedToInternet')){
 
 }
 
+if(!function_exists('getAppFullName')){
+
+    function getAppFullName()
+    {
+        return env('APP_FULL_NAME');
+    }
+
+}
+
 if(!function_exists('__greatingMessager')){
 
     function __greatingMessager($name)

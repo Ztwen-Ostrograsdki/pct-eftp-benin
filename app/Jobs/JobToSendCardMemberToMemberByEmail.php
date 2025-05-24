@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Services\EmailTemplateBuilder;
 use App\Mail\YourCardMemberIsReadyMail;
 use App\Models\Member;
 use App\Models\User;
@@ -32,7 +33,7 @@ class JobToSendCardMemberToMemberByEmail implements ShouldQueue
     public function handle()
     {
 
-        if(self::isConnectedToInternet()){
+        if(__isConnectedToInternet()){
 
             $send_mail = self::sendCardToMemberByEmail();
 
@@ -41,6 +42,13 @@ class JobToSendCardMemberToMemberByEmail implements ShouldQueue
                 $message_to_creator = "La carte de " . $this->member->user->getFullName() . " a été envoyée avec succès!";
 
                 Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message_to_creator));
+            }
+            else{
+
+                $message_to_creator = "Une erreur s'est produite: la carte de " . $this->member->user->getFullName() . " n'a pas été envoyée!";
+
+                Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message_to_creator));
+
             }
             
         }
@@ -55,26 +63,9 @@ class JobToSendCardMemberToMemberByEmail implements ShouldQueue
         
     }
 
-    public function isConnectedToInternet() : bool
-    {
-        try {
-
-           return @fsockopen("www.google.com", 80) !== false;
-
-        } catch (\Exception $e) {
-
-            return false;
-        }
-    }
-
-
-    
 
     public function sendCardToMemberByEmail()
     {
-        $message_to_creator = "Envoi de carte de membre de " . $this->member->user->getFullName() . " en cours...";
-
-        Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message_to_creator));
 
         $user = $this->member->user;
 
@@ -82,45 +73,26 @@ class JobToSendCardMemberToMemberByEmail implements ShouldQueue
 
         if($card){
 
-            $pdfPath = $card->card_path;
-
-            $formattedDate = date('Y');
-
-            $card_created = $card;
-
-            $html = file_get_contents(base_path('resources/maizzle/build_production/member-card.html'));
-
-            $name = $user->getFullName(true);
-
-            $email = $user->email;
-
-            $identifiant = $user->identifiant;
-
-            $poste = $user->getMemberRoleName();
-
             $association = env('APP_NAME');
 
-            $logo_path = public_path('images/logo.jpg');
+            $lien = route('user.profil', ['identifiant' => $user->identifiant]);
 
-            $type = pathinfo($logo_path, PATHINFO_EXTENSION);
+            $html = EmailTemplateBuilder::render('member-card', [
+                'name' => $user->getFullName(true),
+                'poste' => $user->getMemberRoleName(),
+                'association' => $association,
+                'lien' => $lien,
+                'email' => $user->email,
+                'identifiant' => $user->identifiant
+            ]);
 
-            $data = file_get_contents($logo_path);
+            $send = Mail::to($user->email)->send(new YourCardMemberIsReadyMail($user, $card->card_path, $html));
 
-            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-
-            $lien = route('user.profil', ['identifiant' => $identifiant]);
-
-            $html = str_replace(['{{ name }}', '{{ poste }}', '{{ association }}', '{{ lien }}', '{{ date }}', '{{ email }}', '{{ identifiant }}', '{{ logo_url }}'], [$name, $poste, $association, $lien, $formattedDate, $email, $identifiant, $base64], $html);
-
-            $send = Mail::to($user->email)->send(new YourCardMemberIsReadyMail($user, $pdfPath, $html));
 
             if($send){
 
-                $this->member->update(['card_sent_by_mail' => true]);
-            
-                $card_created->update(['card_sent_by_mail' => true]);
+                return $card->markAsSendToMemberByEmail();
 
-                return true;
             }
 
         }

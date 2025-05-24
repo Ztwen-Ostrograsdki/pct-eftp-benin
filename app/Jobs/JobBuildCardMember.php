@@ -26,6 +26,7 @@ class JobBuildCardMember implements ShouldQueue
     use Queueable, Batchable;
 
     public $tries = 3;
+
     public $timeout = 300;
 
     /**
@@ -61,7 +62,7 @@ class JobBuildCardMember implements ShouldQueue
                 'user_id' => $this->member->user->id ?? null,
             ]);
 
-            $message = "Erreur lors de la génération de la carte de " . $this->member->user->getFullName() . " : " . $e->getMessage();
+            $message = "Erreur lors de la génération de la carte de " . $this->member->user->getFullName();
 
             Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message));
 
@@ -77,13 +78,11 @@ class JobBuildCardMember implements ShouldQueue
 
         $user = $member->user;
 
-        $card_number = date('Y') . '' . random_int(10000002, 999999999999);
+        $card_number = date('Y') . '' . Str::random(6);
 
         $qr_value = 'ID:' . $user->identifiant . '@Tel:' . $user->contacts . 'N°:' . $card_number;
 
         $qrcode = QrCode::size(80)->generate($qr_value);
-
-        $card_number = date('Y') . '' . random_int(10000002, 999999999999);
 
         $expired_at = Carbon::now()->addYears(3);
 
@@ -151,10 +150,10 @@ class JobBuildCardMember implements ShouldQueue
 
         $path = Str::replace(' ', '-', $user->getFullName()) . "-" . $duration . '.pdf';
 
+        ini_set("max_execution_time", 300);
+
         
         $pdfPath = storage_path("app/public/cartes/carte-de-membre-de-". $path);
-
-        ini_set("max_execution_time", 120);
 
         Browsershot::html($html)
             ->waitUntilNetworkIdle()
@@ -174,7 +173,7 @@ class JobBuildCardMember implements ShouldQueue
 
         if($done){
 
-            $key = $this->key;
+            $key = Str::random(4);
 
             $card_of_this_year_existed = $member->card();
 
@@ -203,7 +202,7 @@ class JobBuildCardMember implements ShouldQueue
                     'total_print' => 0,
                     'card_path' => $pdfPath,
                     'print_blocked' => false,
-                    'key' => Hash::make($key),
+                    'key' => $key,
 
                 ];
 

@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
 use App\Models\CardMember;
+use App\Models\Communique;
 use App\Models\ENotification;
 use App\Models\Member;
 use App\Models\Quote;
@@ -95,6 +96,11 @@ class User extends Authenticatable
             'birth_date' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function communiques()
+    {
+        return $this->hasMany(Communique::class);
     }
 
 

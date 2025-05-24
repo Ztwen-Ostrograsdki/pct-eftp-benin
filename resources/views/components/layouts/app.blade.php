@@ -52,6 +52,7 @@
         @livewire('master.modals.lycee-promotions-manager-modal')
         @livewire('master.modals.member-payments-modal-manager')
         @livewire('user.quotes-manager-modal')
+        @livewire('master.modals.communique-manager-modal')
         @livewire('partials.footer')
         
 
@@ -90,7 +91,18 @@
                     delay: 5000,
                     disableOnInteraction: false,
                 },
-                spaceBetween: 30,
+                spaceBetween: 40,
+                grabCursor: true,
+            });
+
+
+            const swiper2 = new Swiper(".MyCommuniquesSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 20000,
+                    disableOnInteraction: false,
+                },
+                spaceBetween: 50,
                 grabCursor: true,
             });
 

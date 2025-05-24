@@ -57,7 +57,7 @@
 
     <div class="mt-5 sm:mt-12 grid gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
       <div class="flex justify-between items-center footer-element">
-        <p class="text-sm text-gray-400">© {{ date('M') . ' - ' . date('Y') }} {{ config('app.name') }}. {{__('Tout droits réservés')}}.</p>
+        <p class="text-sm text-gray-400">© {{ $date }} {{ config('app.name') }}. {{__('Tout droits réservés')}}.</p>
       </div>
       <!-- End Col -->
 

@@ -26,6 +26,14 @@ if (window.User) {
 
 
 
+e.channel('public')
+
+        .listen("UpdateCommuniquesListEvent", () => {
+            
+            Livewire.dispatch('LiveUpdateCommuniquesListEvent')
+
+        })
+
 e.private('master')
 
 e.private('confirmeds')

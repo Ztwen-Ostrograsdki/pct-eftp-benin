@@ -1,29 +1,52 @@
 <div class="p-6 w-full mx-auto z-bg-secondary-light-opac shadow-2 shadow-sky-500">
-    @if(__isAdminAs())
+    @if(auth()->user() && __isAdminAs())
     <div class="text-center mx-auto flex justify-end gap-x-3 mt-2 border-2 border-gray-900 p-3 max-w-7xl lg:px-6 md:px-4 sm:px-1 xs:px-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-        <span class="border cursor-pointer rounded-lg py-2 px-3 bg-green-500 hover:bg-green-800 text-white">
-            <span class="">Publier par mail</span>
-            <span class="fa fa-envelope"></span>
+        <span wire:click="sendCommuniqueToMemberByEmail({{$communique->id}})" class="border cursor-pointer rounded-lg py-2 px-3 bg-green-700 hover:bg-green-800 text-white">
+            <span wire:target='sendCommuniqueToMemberByEmail({{$communique->id}})' wire:loading.remove="sendCommuniqueToMemberByEmail({{$communique->id}})">
+                <span class="">Publier par mail</span>
+                <span class="fa fa-envelope"></span>
+            </span>
+            <span wire:target='sendCommuniqueToMemberByEmail({{$communique->id}})' wire:loading="sendCommuniqueToMemberByEmail({{$communique->id}})">
+                <span>En cours...</span>
+                <span class="fas fa-rotate animate-spin"></span>
+            </span>
         </span>
         
-        <span class="border cursor-pointer rounded-lg py-2 px-3 bg-blue-700 hover:bg-blue-800 text-white">
-            <span class="">Modifier</span>
-            <span class="fa fa-pen"></span>
+        <span wire:click="manageCommnunique({{$communique->id}})" class="border cursor-pointer rounded-lg py-2 px-3 bg-blue-700 hover:bg-blue-800 text-white">
+            <span wire:target='manageCommnunique({{$communique->id}})' wire:loading.remove="manageCommnunique({{$communique->id}})">
+                <span class="">Modifier</span>
+                <span class="fa fa-pen"></span>
+            </span>
+            <span wire:target='manageCommnunique({{$communique->id}})' wire:loading="manageCommnunique({{$communique->id}})">
+                <span>En cours...</span>
+                <span class="fas fa-rotate animate-spin"></span>
+            </span>
         </span>
 
-        <span class="border cursor-pointer rounded-lg py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white">
-            <span class="">Masquer</span>
-            <span class="fa fa-eye-slash"></span>
+        <span  wire:click="hideOrUnHideCommunique({{$communique->id}})" class="border cursor-pointer rounded-lg py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white">
+            <span wire:target='hideOrUnHideCommunique({{$communique->id}})' wire:loading.remove="hideOrUnHideCommunique({{$communique->id}})">
+                <span class="">@if($communique->hidden)Rendre visible @else Masquer @endif</span>
+                <span class="fa fa-eye-slash"></span>
+            </span>
+            <span wire:target='hideOrUnHideCommunique({{$communique->id}})' wire:loading="hideOrUnHideCommunique({{$communique->id}})">
+                <span>En cours...</span>
+                <span class="fas fa-rotate animate-spin"></span>
+            </span>
         </span>
 
-        <span class="border cursor-pointer rounded-lg py-2 px-3 bg-red-700 hover:bg-red-800 text-white">
-            <span class="">Supprimer</span>
-            <span class="fa fa-trash"></span>
+        <span title="Supprimer le communiqué {{$communique->getCommuniqueFormattedName()}} " wire:click="deleteCommunique({{$communique->id}})" class="border cursor-pointer rounded-lg py-2 px-3 bg-red-700 hover:bg-red-800 text-white">
+            <span wire:target='deleteCommunique({{$communique->id}})' wire:loading.remove="deleteCommunique({{$communique->id}})">
+                <span class="">Supprimer</span>
+                <span class="fa fa-trash"></span>
+            </span>
+            <span wire:target="deleteCommunique({{$communique->id}})" wire:loading="deleteCommunique({{$communique->id}})">
+                <span>Suppression en cours...</span>
+                <span class="fas fa-rotate animate-spin"></span>
+            </span>
         </span>
 
     </div>
     @endif
-    
     
     <div class="text-center mx-auto mt-2 border-2 border-gray-900 p-3 bg-gray-100 max-w-7xl lg:px-6 md:px-4 sm:px-1 xs:px-1">
         

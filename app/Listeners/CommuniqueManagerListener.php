@@ -24,7 +24,7 @@ class CommuniqueManagerListener
     {
         $batch = Bus::batch([
 
-            new JobToManageCommunique($event->admin_generator, $event->data)
+            new JobToManageCommunique($event->admin_generator, $event->data, $event->communique)
             ])->then(function(Batch $batch) use ($event){
 
                 $admins = ModelsRobots::getAllAdmins();
@@ -34,9 +34,9 @@ class CommuniqueManagerListener
             })
             ->catch(function(Batch $batch, Throwable $er) use ($event){
 
-                $communique = Communique::where('description', $event->communique_key)->first();
+                // $communique = Communique::where('description', $event->communique_key)->first();
 
-                if($communique) $communique->delete();
+                // if($communique) $communique->delete();
 
                 Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("La génération du document a échoué!"));
 

@@ -5,6 +5,7 @@ namespace App\Livewire\Master\Modals;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitCommuniqueManagerEvent;
+use App\Models\Communique;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -21,10 +22,15 @@ class CommuniqueManagerModal extends Component
     #[Validate('required|string')]
     public $objet;
 
-     #[Validate('required|string')]
+    #[Validate('required|string')]
     public $content;
+    
+    #[Validate('required|string')]
+    public $from;
 
     public $user_id;
+
+    public $communique;
 
     public $counter = 2;
 
@@ -46,16 +52,25 @@ class CommuniqueManagerModal extends Component
 
         $communique_key = Str::random(30);
 
+        $string = $this->title . '-' . $this->objet;
+
+        $slug = Str::lower(Str::slug($string));
+
         $data = [
             'title' => $this->title,
             'objet' => $this->objet,
             'content' => $this->content,
+            'from' => $this->from,
+            'slug' => $slug,
             'user_id' => $admin->id,
             'description' => $communique_key,
         ];
 
-        InitCommuniqueManagerEvent::dispatch($admin, $data, $communique_key);
+        InitCommuniqueManagerEvent::dispatch($admin, $data, $communique_key, $this->communique);
 
+        $this->hideModal();
+
+        $this->reset();
         
     }
 
@@ -63,6 +78,22 @@ class CommuniqueManagerModal extends Component
     public function openModal($communique_id = null)
     {
         if($communique_id){
+
+            $communique = Communique::find($communique_id);
+
+            if($communique){
+
+                $this->communique = $communique;
+
+                $this->content = $communique->content;
+
+                $this->objet = $communique->objet;
+
+                $this->title = $communique->title;
+
+                $this->from = $communique->from;
+
+            }
 
             
         }

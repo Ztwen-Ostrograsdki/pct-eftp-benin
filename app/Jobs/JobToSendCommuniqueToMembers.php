@@ -79,7 +79,7 @@ class JobToSendCommuniqueToMembers implements ShouldQueue
 
             $lien = route('user.profil', ['identifiant' => $user->identifiant]);
 
-            $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false));
+            $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";
 
             $html = EmailTemplateBuilder::render('communique', [
                 'name' => $user->getFullName(true),

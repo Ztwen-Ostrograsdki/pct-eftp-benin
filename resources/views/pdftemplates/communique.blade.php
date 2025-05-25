@@ -10,10 +10,10 @@
 	
 </head>
 <body class="">
-	<div class="text-center mx-auto mt-2 border-2 border-gray-900 p-3 bg-gray-100 max-w-7xl lg:px-6 md:px-4 sm:px-1 xs:px-1">
-		<h6 class="letter-spacing-2 flex flex-col items-center gap-y-1 px-4 mt-8">
-			<div class="text-sky-400 flex w-full lg:px-7 md:px-3 sm:px-1 xs:px-1">
-				<img src="{{asset(env('APP_LOGO'))}}" alt="" style="height: 80px; " class="border rounded-full float-right">
+	<div class="text-center mx-auto bg-white w-full m-0 p-0">
+		<h6 class="letter-spacing-2 flex flex-col items-center w-full gap-y-1">
+			<div class="text-sky-400 flex w-full ">
+				<img src="{{asset(env('APP_LOGO'))}}" alt="" style="height: 60px; " class="border rounded-full float-right">
 				<span class="flex flex-col font-bold mx-auto">
 					<span class="uppercase text-orange-600">
 						République du Bénin
@@ -39,11 +39,11 @@
 					</h4>  
 					
 				</span>
-				<img src="{{asset(env('APP_LOGO'))}}" style="height: 80px" alt="" class="rounded-full float-end border">
+				<img src="{{asset(env('APP_LOGO'))}}" style="height: 60px" alt="" class="rounded-full float-end border">
 			</div>
 		</h6>
 
-        <div class="mx-auto w-10/12 mt-6 lg:px-6 md:px-4 sm:px-1 xs:px-1 mb-32">
+        <div class="mx-auto w-full mt-6 mb-32">
 
             <div class="flex justify-between items-center w-full mt-5">
                 <div>
@@ -92,22 +92,6 @@
             </div>
             
         </div>
-        <span class="mx-auto inline-block w-8/12 mt-1">
-            <span class="w-full flex mx-auto ">
-                <span class="bg-green-500 inline-block p-0.5 w-1/3"></span>
-                <span class="bg-yellow-500 inline-block p-0.5 w-1/3"></span>
-                <span class="bg-red-600 inline-block p-0.5 w-1/3"></span>
-            </span>
-        </span>
-        
 	</div>
-    <span class="mx-auto inline-block w-full mt-1">
-        <span class="w-full flex mx-auto ">
-            <span class="bg-green-500 inline-block p-0.5 w-1/3"></span>
-            <span class="bg-yellow-500 inline-block p-0.5 w-1/3"></span>
-            <span class="bg-red-600 inline-block p-0.5 w-1/3"></span>
-        </span>
-    </span>
-
 </body>
 </html>

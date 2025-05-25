@@ -21,6 +21,14 @@
             <form wire:ignore.self class="p-4 md:p-5">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
+                        <label for="from" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Instance de publication</label>
+                        <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='from' type="text" name="from" id="from" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="L'Instance publiant le communiqué: La direction, le Président, le commité de gestion...">
+                        @error('from')
+                            <small class="text-xs text-red-600 mt-2">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-span-2">
                         <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Le titre du communiqué</label>
                         <input wire:loading.class='disabled opacity-50' wire:target='insert' wire:model.live='title' type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Le titre du communiqué">
                         @error('title')

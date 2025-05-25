@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\UpdateCommuniquesListEvent;
 use App\Models\Communique;
 
 class ObserveCommunique
@@ -11,7 +12,7 @@ class ObserveCommunique
      */
     public function created(Communique $communique): void
     {
-        //
+        UpdateCommuniquesListEvent::dispatch();
     }
 
     /**
@@ -19,7 +20,7 @@ class ObserveCommunique
      */
     public function updated(Communique $communique): void
     {
-        //
+        UpdateCommuniquesListEvent::dispatch();
     }
 
     /**
@@ -27,7 +28,7 @@ class ObserveCommunique
      */
     public function deleted(Communique $communique): void
     {
-        //
+        UpdateCommuniquesListEvent::dispatch();
     }
 
     /**

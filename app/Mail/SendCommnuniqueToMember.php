@@ -13,7 +13,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendCommnuniqueToMember extends Mailable
+class SendCommnuniqueToMember extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -23,7 +23,7 @@ class SendCommnuniqueToMember extends Mailable
     public function __construct(
         public User $user,
         public Communique $communique,
-        public string $html,
+        public $html,
     )
     {
         $this->user = $user;
@@ -38,19 +38,19 @@ class SendCommnuniqueToMember extends Mailable
      */
     public function envelope(): Envelope
     {
+        $subjet = $this->communique->getCommuniqueFormattedName() . ' : ' . $this->communique->objet;
+
         return new Envelope(
-            subject: ($this->communique && $this->communique->objet) ? $this->communique->objet : "Un Communiqué",
+            subject: $subjet
         );
     }
 
 
     public function build()
     {
-        $subject = "Un communiqué";
+        $subjet = $this->communique->getCommuniqueFormattedName() . ' : ' . $this->communique->objet;
 
-        if($this->communique && $this->communique->objet) $subject = $this->communique->objet;
-
-        return $this->subject($subject)
+        return $this->subject($subjet)
                     ->html($this->html);
     }
 

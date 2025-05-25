@@ -30,12 +30,15 @@ class JobToManageCommunique implements ShouldQueue
      */
     public function __construct(
         public User $admin_generator,
-        public $data
+        public $data,
+        public ?Communique $targeted_communique = null,
     )
     {
         $this->admin_generator = $admin_generator;
 
         $this->data = $data;
+
+        $this->targeted_communique = $targeted_communique;
     }
 
     /**
@@ -53,10 +56,16 @@ class JobToManageCommunique implements ShouldQueue
 
             if($communique){
 
-                $this->communique = $communique;
+                if($this->targeted_communique){
 
-                self::generatePdf($communique);
+                    $this->communique = $this->targeted_communique;
+                }
+                else{
 
+                    $this->communique = $communique;
+                }
+
+                self::generatePdf($this->communique);
 
             }
 
@@ -70,6 +79,8 @@ class JobToManageCommunique implements ShouldQueue
         if($communique){
 
             $admin = $this->admin_generator;
+
+            $footer_colors = view('pdftemplates.footer-colors')->render();
 
             // Configure la locale française
             Carbon::setLocale('fr');
@@ -85,16 +96,23 @@ class JobToManageCommunique implements ShouldQueue
                 . ' à ' 
                 . $now->isoFormat('HH\H mm\min ss\s'); // Ex: 10H 15min 24s
 
-            $header_title = " COMMUNIQUE " . $communique->title . "Généré et imprimé sur la plateforme " . $plateforme_name;
+            $header_title = " COMMUNIQUE " . $communique->title . " Généré et imprimé sur la plateforme " . $plateforme_name;
 
             $headerHtml = '<div style="font-size:10px; width:100%; text-align:center; color:gray;">'
                 . $header_title
                 . '</div>';
 
-            $footerHtml = '<div style="font-size:10px; width:100%; text-align:center; color:black;">'
+            $footerHtml =  '<div style="font-size:10px; width:100%; text-align:center; color:black;">'
+            . $footer_colors . ''
             . $formattedDate
             . ' | Page <span class="pageNumber"></span> / <span class="totalPages"></span>'
-            . '</div>';
+            . 
+            ' <span style="display: flex; width: 100%; justify: center; " class="w-full flex mx-auto ">
+                <span  style="display: inline-block; width: 33,33%; background-color: green; padding: 0.5px"></span>
+                <span style="display: inline-block; width: 33,33%; background-color: yellow; padding: 0.5px"></span>
+                <span style="display: inline-block; width: 33,33%; background-color: red; padding: 0.5px"></span>
+            </span>
+            </div>';
 
 
             $data = [
@@ -153,6 +171,7 @@ class JobToManageCommunique implements ShouldQueue
 
     protected function insertIntoDB($data)
     {
+        if($this->targeted_communique) return $this->targeted_communique->update($data);
         return Communique::create($data);
     }
 }

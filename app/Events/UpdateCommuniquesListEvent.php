@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Communique;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,28 +10,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitCommuniqueManagerEvent implements ShouldBroadcast
+class UpdateCommuniquesListEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public User $admin_generator,
-        public array $data,
-        public $communique_key,
-        public ?Communique $communique = null,
-
-    )
+    public function __construct()
     {
-        $this->admin_generator = $admin_generator;
-
-        $this->data = $data;
-
-        $this->communique_key = $communique_key;
-
-        $this->communique = $communique;
+        //
     }
 
     /**
@@ -44,9 +30,8 @@ class InitCommuniqueManagerEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-
-            new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
-
+            new Channel('public'),
+            new PrivateChannel('admin'),
         ];
     }
 }

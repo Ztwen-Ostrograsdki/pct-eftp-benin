@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('objet')->nullable()->default(null);
             $table->boolean('hidden')->nullable()->default(false);
             $table->string('from')->nullable()->default(null);
+            $table->text('slug');
             $table->string('pdf_path')->nullable()->default(null);
             $table->text('description')->nullable()->default(null);
             $table->text('content')->nullable()->default(null);

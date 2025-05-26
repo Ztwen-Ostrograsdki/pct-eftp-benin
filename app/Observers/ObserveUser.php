@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\UpdateUsersListToComponentsEvent;
 use App\Jobs\JobLogoutUser;
 use App\Jobs\JobToGenerateDefaultUserMember;
 use App\Models\Member;
@@ -40,7 +41,7 @@ class ObserveUser
      */
     public function deleted(User $user): void
     {
-        //
+        UpdateUsersListToComponentsEvent::dispatch();
     }
     
     /**
@@ -48,9 +49,7 @@ class ObserveUser
      */
     public function deleting(User $user): void
     {
-        $member = Member::where('user_id', $user->id)->first();
-
-        if($member) $member->delete();
+        
     }
 
     /**
@@ -68,6 +67,6 @@ class ObserveUser
      */
     public function forceDeleted(User $user): void
     {
-        //
+        UpdateUsersListToComponentsEvent::dispatch();
     }
 }

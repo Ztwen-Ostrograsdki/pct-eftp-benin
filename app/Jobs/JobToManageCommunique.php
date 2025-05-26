@@ -8,7 +8,9 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
@@ -52,8 +54,20 @@ class JobToManageCommunique implements ShouldQueue
 
         if($data){
 
+            self::robotBuilder($data);
+
+        }
+    }
+
+    protected function robotBuilder($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Création ou mise à jour du communiqué
             $communique = self::insertIntoDB($data);
 
+            // Génération du PDF avec Browsershot
             if($communique){
 
                 if($this->targeted_communique){
@@ -69,7 +83,16 @@ class JobToManageCommunique implements ShouldQueue
 
             }
 
+            DB::commit(); // Tout s’est bien passé
 
+        } catch (\Throwable $e) {
+
+            DB::rollBack(); // Annule tout
+
+            Log::error("Erreur lors de la génération du communiqué : " . $e->getMessage());
+
+            // Lancer l’exception pour marquer la Job comme échouée
+            throw $e;
         }
     }
 
@@ -79,8 +102,6 @@ class JobToManageCommunique implements ShouldQueue
         if($communique){
 
             $admin = $this->admin_generator;
-
-            $footer_colors = view('pdftemplates.footer-colors')->render();
 
             // Configure la locale française
             Carbon::setLocale('fr');
@@ -103,7 +124,6 @@ class JobToManageCommunique implements ShouldQueue
                 . '</div>';
 
             $footerHtml =  '<div style="font-size:10px; width:100%; text-align:center; color:black;">'
-            . $footer_colors . ''
             . $formattedDate
             . ' | Page <span class="pageNumber"></span> / <span class="totalPages"></span>'
             . 

@@ -10,7 +10,7 @@
                 <div class="swiper-wrapper">
                 <!-- Slide 1 -->
                 @foreach ($communiques as $communique)
-                    <div wire:key='defilement-reviews-membre-{{$communique->id}}' class="swiper-slide bg-sky-100 p-6 shadow-lg">
+                    <div wire:key='defilement-reviews-membre-{{$communique->id}}' class="swiper-slide bg-transparent">
                         @livewire('master.communique-component',['id' => $communique->id, 'slug' => $communique->slug])
                     </div>
                 @endforeach

@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
+use App\Events\InitUserAccountDeletionEvent;
 use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -86,7 +87,7 @@ class UsersListPage extends Component
                                 <p class='text-yellow-300 py-0 my-0 font-semibold'> Mr/Mme {$email} </p>
                         </h6>";
 
-                $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est réversible! </p>";
+                $noback = "Après cette action {$user->getFullName()} pourra avoir accès à son compte et deviendra officiellement un membre actif ed la plateforme!";
 
                 $options = ['event' => 'confirmedTheUserIdentification', 'confirmButtonText' => 'Identification confirmée', 'cancelButtonText' => 'Annulé', 'data' => ['user_id' => $user_id]];
             }
@@ -98,7 +99,7 @@ class UsersListPage extends Component
                                 <p class='text-yellow-300 py-0 my-0 font-semibold'> Email:  {$email} </p>
                         </h6>";
 
-                $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est réversible! </p>";
+                $noback = "Si vous confirmez cette action {$user->getFullName()} ne pourra ni avoir accès à son compte ni se connecter!";
 
                 $options = ['event' => 'confirmedTheUserIdentification', 'confirmButtonText' => 'Identification non confirmée', 'cancelButtonText' => 'Annulé', 'data' => ['user_id' => $user_id]];
 
@@ -286,8 +287,63 @@ class UsersListPage extends Component
 
     }
 
+
     public function deleteUserAccount($user_id)
     {
+
+        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+
+        $user = User::find($user_id);
+
+        if($user){
+
+            $name = $user->getFullName();
+
+            $email = $user->email;
+
+
+            $html = "<h6 class='font-semibold flex flex-col gap-y-0 text-base text-orange-400 py-0 my-0'>
+                            <span>Voulez-vous vraiment confirmer la suppression du compte de l'utilisateur</span>
+                            <span class='text-sky-600 py-0 my-0 font-semibold'> Mr/Mme {$name} </span>
+                            <span class='text-yellow-300 py-0 my-0 font-semibold'> Email: {$email} </span>
+                            <span class='text-red-600 py-0 my-0 font-semibold'> Cette action est irréversible: le compte sera définitivement supprimé! </span>
+                    </h6>";
+
+            $noback = "";
+
+            $options = ['event' => 'confirmedAccountDeletion', 'confirmButtonText' => 'Supprimer compte', 'cancelButtonText' => 'Annulé', 'data' => ['user_id' => $user_id]];
+
+            $this->confirm($html, $noback, $options);
+        }
+
+    }
+
+    #[On('confirmedAccountDeletion')]
+    public function onConfirmedAccountDeletion($data)
+    {
+        $admin = auth_user();
+
+        if($data){
+
+            $user_id = $data['user_id'];
+        
+            if($user_id){
+
+                $user = findUser($user_id);
+
+                if($user){
+
+                    $dispatched = InitUserAccountDeletionEvent::dispatch($admin, [$user_id]);
+
+                    if($dispatched){
+
+                    }
+                }
+
+
+            }
+           
+        }
 
     }
 }

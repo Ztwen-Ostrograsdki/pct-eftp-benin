@@ -680,6 +680,15 @@ if(!function_exists('getUser')){
 
 }
 
+if(!function_exists('findUser')){
+
+    function findUser($id)
+    {
+        return User::find($id);
+    }
+
+}
+
 if(!function_exists('getUsers')){
 
     function getUsers()

@@ -61,6 +61,9 @@ class EmailVerificationPage extends Component
         return view('livewire.auth.email-verification-page');
     }
 
+
+    
+
     public function confirmEmail()
     {
         $status = false;

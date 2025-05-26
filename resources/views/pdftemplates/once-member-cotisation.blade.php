@@ -108,9 +108,12 @@
 					<h4 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="text-gray-900 my-0 uppercase letter-spacing-1 fas fa-2x">
 						Fiche de cotisation de l'année {{ $the_year }} de {{ $name }}
 					</h4>  
-					<small class="text-orange-400 h-6 letter-spacing-1">
-						{{ env('APP_NAME') }}
-					</small>
+					<h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="text-gray-800 fas fa-2x letter-spacing-1 flex flex-col">
+						<span>{{ env('APP_NAME') }}</span>
+                        <span class="text-xs font-mono letter-spacing-1">
+                            {{ getAppFullName() }}
+                        </span>
+					</h3>
 				</span>
 				<img src="{{asset(env('APP_LOGO'))}}" style="height: 60px" alt="" class="rounded-full float-end border">
 			</div>

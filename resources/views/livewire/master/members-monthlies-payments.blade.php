@@ -30,13 +30,26 @@
                 </span>
             </h2>
             <div class="flex justify-end gap-x-2 w-full mt-2">
+                <button
+                    wire:click="toggleSelectionsCases"
+                    class="bg-zinc-600 text-white px-4 py-2 rounded-lg hover:bg-zinc-700 hover:text-gray-500 transition"
+                >
+                    <span wire:loading.remove wire:target='toggleSelectionsCases'>
+                        <span class="fas fa-check"></span>
+                        <span>De/Cocher</span>
+                    </span>
+                    <span wire:target='toggleSelectionsCases' wire:loading>
+                        <span class="fas fa-rotate animate-spin"></span>
+                    </span>
+                </button>
                 <div class="flex items-center">
                     <button
                         wire:click="memberPaymentsManager"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-gray-800 transition"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
                     >
                         <span wire:loading.remove wire:target='memberPaymentsManager'>
-                            Enregistrer un paiement
+                            <span class="fas fa-save"></span>
+                            <span>Enregistrer un paiement</span>
                         </span>
                         <span wire:target='memberPaymentsManager' wire:loading>
                             <span>Chargement en cours...</span>
@@ -44,19 +57,35 @@
                         </span>
                     </button>
                 </div>
-                <div class="flex items-center">
+                <div class="flex gap-x-2 items-center">
                     <button
                         wire:click="printMembersCotisations"
-                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-800 hover:text-gray-900 transition"
+                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
                     >
                         <span wire:loading.remove wire:target='printMembersCotisations'>
-                            Imprimer
+                            <span>Imprimer</span>
+                            <span class="fas fa-print"></span>
                         </span>
                         <span wire:target='printMembersCotisations' wire:loading>
                             <span>Impression en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
+                    @if($selected_month && $selected_year)
+                    <button
+                        wire:click="buildAndSendToMembersByMail"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 hover:text-gray-900 transition"
+                    >
+                        <span wire:loading.remove wire:target='buildAndSendToMembersByMail'>
+                            <span>Générer et envoyés en masse</span>
+                            <span class="fas fa-envelope"></span>
+                        </span>
+                        <span wire:target='buildAndSendToMembersByMail' wire:loading>
+                            <span>Impression en cours...</span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </button>
+                    @endif
                 </div>
             </div>
 
@@ -109,27 +138,27 @@
             </div>
         </div>
         <div
-            id="filter-panel"
+            id="members-filter-panel"
             class="mt-3 w-full text-gray-200 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
             style="transition-property: max-height, opacity;"
         >
-            <form id="filter-form" class="bg-transparent border border-gray-300 rounded p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form id="members-filter-form" class="bg-transparent border border-gray-300 rounded p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <label for="filter-member" class="block  font-medium mb-1">Membre</label>
+                <label for="members-filter-member" class="block  font-medium mb-1">Membre</label>
                 <input
                 type="text"
-                id="filter-member"
-                name="filter-member"
-                placeholder="Nom du membre"
+                id="members-filter-member"
+                name="members-filter-member"
+                placeholder="Nom ou prénoms du membre"
                 class="w-full border rounded bg-transparent px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
             <div>
-                <label for="filter-amount-min" class="block  font-medium mb-1">Montant min (FCFA)</label>
+                <label for="members-filter-amount-min" class="block  font-medium mb-1">Montant min (FCFA)</label>
                 <input
                 type="number"
-                id="filter-amount-min"
-                name="filter-amount-min"
+                id="members-filter-amount-min"
+                name="members-filter-amount-min"
                 step="0.01"
                 min="0"
                 placeholder="0.00"
@@ -137,11 +166,11 @@
                 />
             </div>
             <div>
-                <label for="filter-amount-max" class="block  font-medium mb-1">Montant max (FCFA)</label>
+                <label for="members-filter-amount-max" class="block  font-medium mb-1">Montant max (FCFA)</label>
                 <input
                 type="number"
-                id="filter-amount-max"
-                name="filter-amount-max"
+                id="members-filter-amount-max"
+                name="members-filter-amount-max"
                 step="0.01"
                 min="0"
                 placeholder="100.00"
@@ -149,18 +178,18 @@
                 />
             </div>
             <div>
-                <label for="filter-date" class="block  font-medium mb-1">Date</label>
+                <label for="members-filter-date" class="block  font-medium mb-1">Date</label>
                 <input
                 type="date"
-                id="filter-date"
-                name="filter-date"
+                id="members-filter-date"
+                name="members-filter-date"
                 class="w-full border rounded bg-transparent px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
             <div class="md:col-span-4 flex justify-end gap-3 mt-2">
                 <button
                 type="reset"
-                id="filter-reset-btn"
+                id="members-filter-reset-btn"
                 class="px-4 py-2 border rounded  hover:bg-primary-800 transition"
                 >Réinitialiser</button>
             </div>
@@ -181,6 +210,9 @@
           <th class="px-3 py-4 text-left">Cotisation de </th>
           <th class="px-3 py-4 text-left">Date de payement</th>
           <th class="px-3 py-4 text-center">Actions</th>
+          @if($display_select_cases)
+          <th class="px-3 py-4 text-center">Selections</th>
+          @endif
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100" id="payments-tbody">
@@ -225,6 +257,17 @@
                                 </span>
                             </span>
                         </td>
+                        @if($display_select_cases)
+                        <td>
+                            <span wire:click="pushOrRetrieveFromSelectedMembers({{$member->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">
+                                @if(in_array($member->id, $selected_members))
+                                    <span class="fas fa-check text-green-600"></span>
+                                @else
+                                    <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
+                                @endif
+                            </span>
+                        </td>
+                        @endif
                     </tr>
                 @else
                     <tr wire:key='list-des-cotisations-mensuelles-{{getRand(2999, 8888888)}}'>
@@ -265,8 +308,18 @@
                                 </span>
                             </span>
                         </span>
-                        
                     </td>
+                    @if($display_select_cases)
+                    <td>
+                        <span wire:click="pushOrRetrieveFromSelectedMembers({{$member->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">
+                            @if(in_array($member->id, $selected_members))
+                                <span class="fas fa-check text-green-600"></span>
+                            @else
+                                <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
+                            @endif
+                        </span>
+                    </td>
+                    @endif
                 </tr>
                 @endif
             @endforeach
@@ -288,9 +341,9 @@
 <!-- Script minimal pour ouvrir/fermer modal et soumettre formulaire -->
 <script>
   const filterToggleBtn = document.getElementById('filter-toggle-btn');
-  const filterPanel = document.getElementById('filter-panel');
-  const filterForm = document.getElementById('filter-form');
-  const resetBtn = document.getElementById('filter-reset-btn');
+  const filterPanel = document.getElementById('members-filter-panel');
+  const filterForm = document.getElementById('members-filter-form');
+  const resetBtn = document.getElementById('members-filter-reset-btn');
 
   filterToggleBtn.addEventListener('click', () => {
     const isOpen = filterPanel.style.maxHeight && filterPanel.style.maxHeight !== '0px';
@@ -307,10 +360,10 @@
   });
 
   function applyFilter() {
-    const memberFilter = filterForm['filter-member'].value.toLowerCase();
-    const minAmount = parseFloat(filterForm['filter-amount-min'].value) || 0;
-    const maxAmount = parseFloat(filterForm['filter-amount-max'].value) || Infinity;
-    const dateFilter = filterForm['filter-date'].value;
+    const memberFilter = filterForm['members-filter-member'].value.toLowerCase();
+    const minAmount = parseFloat(filterForm['members-filter-amount-min'].value) || 0;
+    const maxAmount = parseFloat(filterForm['members-filter-amount-max'].value) || Infinity;
+    const dateFilter = filterForm['members-filter-date'].value;
 
     const rows = document.querySelectorAll('#payments-tbody tr');
 
@@ -331,7 +384,7 @@
   }
 
   // Appliquer filtre à chaque changement de champ
-  ['filter-member', 'filter-amount-min', 'filter-amount-max', 'filter-date'].forEach(id => {
+  ['members-filter-member', 'members-filter-amount-min', 'members-filter-amount-max', 'members-filter-date'].forEach(id => {
     filterForm[id].addEventListener('input', applyFilter);
   });
 

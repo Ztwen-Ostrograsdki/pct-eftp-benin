@@ -5,23 +5,22 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
+use App\Events\InitProcessToGenerateAndSendDocumentToMemberEvent;
 use App\Models\Cotisation;
-use App\Models\Member;
 use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Browsershot\Browsershot;
 
 class MembersMonthliesPayments extends Component
 {
 
     use Toast, Confirm, WithPagination;
+
+    public $display_select_cases = false;
 
     public $selected_year;
 
@@ -31,9 +30,11 @@ class MembersMonthliesPayments extends Component
 
     public $counter = 0;
 
-    public $all_year = 3000000000000000;
+    public $all_year = 3000000;
 
     public $search = '';
+
+    public $selected_members = [];
 
 
     public function mount()
@@ -207,14 +208,95 @@ class MembersMonthliesPayments extends Component
         }
     }
 
-    public function generateAndSendDetailsToMember($member_id)
+    public function pushOrRetrieveFromSelectedMembers($id)
+    {
+        $selecteds = $this->selected_members;
+
+        if(!in_array($id, $selecteds)){
+
+            $selecteds[$id] = $id;
+        }
+        elseif(in_array($id, $selecteds)){
+
+            unset($selecteds[$id]);
+        }
+
+        $this->resetErrorBag();
+
+        $this->selected_members = $selecteds;
+    }
+
+    public function toggleSelectionsCases()
+    {
+        return $this->display_select_cases = !$this->display_select_cases;
+    }
+
+    
+
+    public function updatedSelectedMembers()
     {
 
     }
 
+    public function generateAndSendDetailsToMember($member_id)
+    {
+        $admin = auth_user();
+
+        $member = findMember($member_id);
+
+        $data = [];
+
+        if($member){
+
+            $user = $member->user;
+
+            $year = $this->selected_year;
+
+            $name = $user->getFullName();
+
+            $total_amount = $member->getTotalCotisationOfYear($year);
+
+            $root = storage_path("app/public/cotisations/membres/". $year);
+
+            if(!File::isDirectory($root)){
+
+                $directory_make = File::makeDirectory($root, 0777, true, true);
+
+            }
+
+            if(!File::isDirectory($root) && !$directory_make){
+
+                Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+            }
+
+            $pdfPath = storage_path("app/public/cotisations/membres/". $year . "/Fiches-de-cotisation-membre-de-". $name . '-de-' . $year . '.pdf');
+
+            $document_title = "FICHE DE COTISATION DE $name DE $year";
+
+            $data[$user->id] = [
+                'data' => [
+                    'member' => $member, 
+                    'months' => getMonths(),
+                    'the_year' => $year,
+                    'total_amount' => $total_amount,
+                    'name' => $name,
+                    'document_title' => $document_title,
+                ],
+                'document_path' => $pdfPath,
+            ];
+
+            $view_path = "pdftemplates.once-member-cotisation";
+
+            InitProcessToGenerateAndSendDocumentToMemberEvent::dispatch($view_path, $data, [$user], true, $admin);
 
 
-    
+        }
+    }
+
+
+
+
     
     public function addMemberPayment($member_id)
     {

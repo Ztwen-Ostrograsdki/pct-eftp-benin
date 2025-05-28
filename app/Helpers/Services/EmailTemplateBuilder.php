@@ -26,6 +26,10 @@ class EmailTemplateBuilder
 
         $templates_data['date'] = $date;
 
+        $templates_data['app_full_name'] = env('APP_FULL_NAME');
+
+        $templates_data['association'] = env('APP_NAME');
+
         // Remplace chaque variable {{ var }}
         foreach ($templates_data as $key => $value) {
 

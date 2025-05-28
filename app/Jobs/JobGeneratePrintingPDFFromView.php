@@ -2,12 +2,19 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Services\EmailTemplateBuilder;
+use App\Helpers\Tools\ModelsRobots;
+use App\Mail\SendDocumentToMemberMail;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Spatie\Browsershot\Browsershot;
 
@@ -22,7 +29,9 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
         public $view_path,
         public array $data,
         public $path,
-        public ?User $user = null
+        public ?User $user = null,
+        public bool $send_by_mail = false,
+        public ?User $admin_generator = null
 
 
     )
@@ -34,12 +43,56 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
         $this->view_path = $view_path;
 
         $this->data = $data;
+
+        $this->send_by_mail = $send_by_mail;
+
+        $this->admin_generator = $admin_generator;
     }
 
     /**
      * Execute the job.
      */
     public function handle(): void
+    {
+        
+        try {
+            $document_done = self::pdfBuilder();
+
+            if($document_done){
+
+                if($this->send_by_mail){
+
+                    self::sendDocumentToMemberByEmail();
+
+                }
+
+
+            }
+            else{
+
+                $this->fail();
+
+            }
+
+
+        } catch (\Throwable $e) {
+
+            Log::error("Erreur dans JobGeneratePrintingPDFFromView: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'member_id' => $this->user->member->id,
+                'user_id' => $this->member->user->id ?? null,
+            ]);
+
+            $message = "Erreur lors de la génération du document " . $this->data['document_title'] . " de " . $this->user->getFullName();
+
+            Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message));
+
+            $this->fail($e); 
+        }
+    }
+
+
+    protected function pdfBuilder()
     {
         $html = View::make($this->view_path, $this->data
         )->render();
@@ -88,7 +141,34 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
             ->footerHtml($footerHtml)
             ->save($pdfPath);
 
-        $done = File::exists($pdfPath);
+        return File::exists($pdfPath);
+    }
 
+
+    protected function sendDocumentToMemberByEmail()
+    {
+
+        $user = $this->user;
+
+        $pdf = $this->path;
+
+        if($pdf){
+
+            $association = env('APP_NAME');
+
+            $lien = route('user.profil', ['identifiant' => $user->identifiant]);
+
+            $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";
+
+            $html = EmailTemplateBuilder::render('template-document', [
+                'name' => $user->getFullName(true),
+                'lien' => $lien,
+                'objet' => $this->data['document_title'],
+                'greating' => $greating,
+            ]);
+
+            return Mail::to($user->email)->send(new SendDocumentToMemberMail($user, $this->path, $this->data['document_title'], $html));
+
+        }
     }
 }

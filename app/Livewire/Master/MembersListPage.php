@@ -33,7 +33,7 @@ class MembersListPage extends Component
 
     public function render()
     {
-        $members = Member::all();
+        $members = [];
 
         $p = $this->paginate_page;
 
@@ -61,9 +61,20 @@ class MembersListPage extends Component
                          ->orWhere('graduate_type', 'like', $s)
                          ->orWhere('graduate_deliver', 'like', $s)
                          ->orWhere('marital_status', 'like', $s)
+                         ->orderBy('firstname', 'asc')->orderBy('lastname', 'asc')
                          ->pluck('id')->toArray();
 
             $members = Member::whereIn('members.user_id', $users_ids)->paginate($p);
+        }
+        else{
+            $users = User::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get();
+
+            foreach($users as $user){
+
+                $members[] = $user->member;
+
+
+            }
         }
 
         return view('livewire.master.members-list-page',

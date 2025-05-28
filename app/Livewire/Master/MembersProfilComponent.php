@@ -20,9 +20,16 @@ class MembersProfilComponent extends Component
 
     public function render()
     {
-        $members = Member::all();
+        $members = [];
         
-        $users = User::all();
+        $users = User::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get();
+
+        foreach($users as $user){
+
+            $members[] = $user->member;
+
+
+        }
 
         return view('livewire.master.members-profil-component', 
             [

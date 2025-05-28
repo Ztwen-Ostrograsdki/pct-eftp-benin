@@ -81,7 +81,7 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     
     Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['user.self']);
     
-    Route::get('profil/statut=membre/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self', 'master']);
+    Route::get('profil/statut=membre/cotisations/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self', 'master']);
     
     Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['user.self', 'master']);
 

@@ -1,7 +1,7 @@
 <div>
     <div class="lg:text-lg md:text-base sm:text-sm xs:text-xs">
-        <div class="border mx-auto rounded-lg my-1 max-w-6xl z-bg-secondary-light p-0">
-            <div class="m-0 p-3 w-full max-w-6xl">
+        <div class="border mx-auto rounded-lg my-1 w-4/5 z-bg-secondary-light p-0">
+            <div class="m-0 p-3 w-full">
                 <h4 class="text-gray-400 letter-spacing-2 shadow-2 p-3 border-b border-sky-500 flex justify-between items-center">
                     <span>
                         <span class="fa fa-message text-sky-500 "></span>
@@ -38,7 +38,7 @@
                             </span>
                         </h6>
                         @if($subject_show)
-                        <div class="letter-spacing-1 text-gray-500 shadow-1 shadow-sky-500 rounded-xl p-2 mt-3 ">
+                        <div class="letter-spacing-1 text-gray-500 shadow-1 shadow-sky-500 rounded-xl p-2 mt-3">
                             <div title="Double-cliquez pour aimer ce topic" x-on:dblclick="$wire.likeSubject" class="mb-2 group cursor-pointer">
                                 <div class="flex justify-between">
                                     <span class="text-sky-300">
@@ -105,80 +105,87 @@
             </div>
         </div>
 
-        @php
-            // dd($allMessages);
-        @endphp
-
-        <div class="m-auto border rounded-xl my-1 max-w-6xl z-bg-secondary-light p-2">
+        <div class="m-auto border rounded-xl my-1 w-4/5 z-bg-secondary-light p-2">
             <div class="p-2">
                 <div class="flex flex-col">
-                    @foreach($allMessages as $date => $chats)
+                    @foreach ($chats as $chat)
+                        @if($chat->notHiddenFor(auth_user()->id))
+                            <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs ">
+                                <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="@if($targeted_message_id && $targeted_message_id == $chat->id) shadow-3 shadow-yellow-200 @endif  rounded-xl group shadow-2 p-2 mb-3 lg:w-3/5 md:w-4/5 sm:w-4/5 xs:w-4/5 cursor-pointer @if($chat->user_id == auth_user()->id) float-end  shadow-purple-400 chat-message-of-self @else shadow-sky-400 chat-message-of-other  @endif">
+                                    <div class="flex items-center gap-x-3 rounded-full md:p-2 sm:p-1 xs:p-1 shadow-2 @if($chat->user_id == auth_user()->id) shadow-purple-400 @else shadow-sky-400 @endif">
+                                        <img class="md:w-8 md:h-8 sm:h-4 sm:w-4 xs:h-4 xs:w-4 rounded-full @if($chat->user_id == auth_user()->id) float-right text-right @endif"  src="{{ user_profil_photo($chat->user) }}" alt="user photo">
+                                        <h6 class="text-gray-300  md:block xs:hidden sm:hidden letter-spacing-2 float-right text-right">
+                                            {{ $chat->user->getFullName() }}
+                                        </h6>
 
-                        @if(\Carbon\Carbon::parse($date)->isToday())
-                            <h6 class="text-center py-1 text-xs my-2 border-y-2 border-y-gray-600 letter-spacing-2"> Aujourd'hui </h6>
-                        @elseif(\Carbon\Carbon::parse($date)->isYesterday())
-                            <h6 class="text-center py-1 text-xs my-2 border-y-2 border-y-gray-600 letter-spacing-2"> Hier </h6>
-                        @else
-                            <h6 class="text-center py-1 text-xs my-2 border-y-2 border-y-gray-600 letter-spacing-2">  {{__formatDate($date)}} </h6>
-                        @endif
-
-                        @foreach ($chats as $chat)
-                            @if($chat->notHiddenFor(auth_user()->id))
-                                <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs mb-4">
-                                    <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="flex items-start @if($chat->user_id == auth_user()->id) float-end   @endif cursor-pointer gap-2.5 gap-y-3">
-                                        <img class="w-8 h-8 rounded-full" src="{{user_profil_photo($chat->user)}}" alt="Jese image">
-                                        <div class="flex flex-col gap-1 w-full max-w-[320px]">
-                                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                                <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                                                    {{ $chat->user->getFullName() }}
-                                                </span>
-                                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                        <h6 class="text-gray-300 md:hidden sm:block letter-spacing-2 float-right text-right">
+                                            {{ $chat->user->firstname }}
+                                        </h6>
+                                    </div>
+                                    @if($chat->reply_to_message_id)
+                                        @php
+                                            $replying = getMessageById($chat->reply_to_message_id);
+                                        @endphp
+                                        <div class="bg-gray-400 letter-spacing-1 font-semibold text-sm xs:text-xs px-4 z-50 my-1 rounded-lg inline-block py-1 w-auto ml-3">
+                                            @if($replying)
+                                            <span class="text-yellow-300 flex items-center gap-x-3">
+                                                Ceci est une réponse au message de {{ $replying->user->getFullName() }} 
                                                 
+                                            </span>
+                                            <span class="px-3">
+                                                {{ $replying->message }}
+                                            </span>
+                                            @else
+                                            <span class="text-gray-900 flex items-center gap-x-3">
+                                                Ceci est une réponse à un message  
+                                            </span>
+                                            <span class="px-3">
+                                                -- Inconnu --
+                                            </span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    <div class="text-gray-400 letter-spacing-2">
+                                        <p class="p-2">
+                                            {{ $chat->message }}
+                                        </p>
+                                    </div>
+
+                                    <div class="w-full flex-col">
+                                        <div class="w-full transition translate-x-5 ease-out  float-start text-start invisible group-hover:visible group-hover:translate-x-0">
+                                            <div class="flex gap-x-2">
+                                                <span wire:click="deleteMessage({{$chat->id}})" title="supprimer ce message" class="fas fa-trash text-red-500 hover:scale-125 p-2"></span>
+
+                                                <label for="epreuve-message-input" wire:click="replyToMessage({{$chat->id}})" title="Répondre à ce message" class="fas cursor-pointer fa-reply text-blue-500 hover:scale-125 p-2"></label>
+
+                                                <span wire:click="likeMessage({{$chat->id}})" title="Liker ce message" class="fas fa-heart text-success-500 hover:scale-125 p-2"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex w-full justify-end text-xs">
+                                            
+                                            @if($chat->likes)
+                                            <div class="mr-2">
+                                                <span>
+                                                    <span  class="text-green-600"> {{ count($chat->likes) }}  </span>
+                                                    <span title="{{count($chat->likes)}} personnes ont aimé ce message" class="fas transition ease-in-out fa-heart text-success-500 "></span>
                                                 </span>
                                             </div>
-                                            <div class="flex flex-col leading-1.5 p-4 border-gray-200 rounded-e-xl rounded-es-xl @if($chat->user_id == auth_user()->id) bg-indigo-700  @else bg-gray-500  @endif ">
-                                                <p class="text-sm font-normal text-gray-900 dark:text-white"> 
-                                                    {{ $chat->message }}
-                                                </p>
+                                            @endif
+                                            <div class="m-0 p-0">
+                                                <small class="text-orange-500 letter-spacing-2 transition translate-x-5 ease-out inline group-hover:hidden group-hover:translate-x-0">
+                                                    {{$chat->getDateAgoFormated(true)}}
+                                                </small>
+                                                <small class="text-orange-500 letter-spacing-2 transition translate-x-5 ease-out hidden group-hover:inline group-hover:translate-x-0">
+                                                    Posté le {{$chat->__getDateAsString($chat->created_at, 3, true)}}
+                                                </small>
                                             </div>
-                                            <span class="text-xs font-normal text-gray-500 dark:text-gray-400 text-right float-right">
-                                                @if($chat->likes)
-                                                <div class="mr-2">
-                                                    <span class="">
-                                                        <span  class="text-green-600"> {{ count($chat->likes) }}  </span>
-                                                        <span title="{{count($chat->likes)}} personnes ont aimé ce message" class="fas transition ease-in-out fa-heart text-success-500 "></span>
-                                                    </span>
-                                                </div>
-                                                @endif
-                                                {{ __formatDateTime($chat->created_at) }}
-                                            </span>
-                                        </div>
-                                        <button id="dropdownMenuIconButton{{$chat->id}}" data-dropdown-toggle="dropdownDots{{$chat->id}}" data-dropdown-placement="bottom-start" class="inline-flex self-center items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-gray-600" type="button">
-                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-                                                <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                                            </svg>
-                                        </button>
-                                        <div id="dropdownDots{{$chat->id}}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-40 dark:bg-gray-700 dark:divide-gray-600">
-                                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton{{$chat->id}}">
-                                                <li>
-                                                    <span for="epreuve-message-input" wire:click="replyToMessage({{$chat->id}})" title="Répondre à ce message" class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Repondre</span>
-                                                </li>
-                                                <li>
-                                                    <span  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Copié</span>
-                                                </li>
-                                                <li>
-                                                    <span  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Signaler</span>
-                                                </li>
-                                                <li>
-                                                    <span  wire:click="deleteMessage({{$chat->id}})" title="supprimer ce message"   class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Supprimer</span>
-                                                </li>
-                                            </ul>
                                         </div>
                                     </div>
 
                                 </div>
-                            @endif
-                        @endforeach
+                            </div>
+                        @endif
                     @endforeach
                 </div>
             </div>

@@ -47,9 +47,16 @@ class ForumChatBox extends Component
 
         $chats = ForumChat::all();
 
+        $allMessages = ForumChat::orderBy('created_at')->get()->groupBy(function ($message){
+
+            return $message->created_at->format('Y-m-d');
+
+        });
+
         return view('livewire.chat.forum-chat-box', [
             'active_chat_subject' => $active_chat_subject,
             'chats' => $chats,
+            'allMessages' => $allMessages
         ]);
 
     }
@@ -87,7 +94,7 @@ class ForumChatBox extends Component
 
     public function updatedMessage($message)
     {
-        UserIsTypingMessageEvent::dispatchIf(strlen($message) > 3,  auth_user());
+        // UserIsTypingMessageEvent::dispatchIf(strlen($message) > 3,  auth_user());
     }
 
 

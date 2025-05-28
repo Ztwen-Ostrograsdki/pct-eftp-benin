@@ -19,6 +19,7 @@
         <script>
             ScrollReveal({ reset: true });
         </script>
+        
 
         <style>
             .swiper {
@@ -140,39 +141,12 @@
                 });
                 
             });
-
-            /*const onClickOutside = (element, callback) => {
-
-                document.addEventListener('click', (e) => {
-
-                    if (!element.contains(e.target)) callback();
-
-                });
-            };
-
-
-            let targetEl = document.getElementById('drawer-navigation');
-
-            let drawer = new Drawer(targetEl);
-
-            onClickOutside('#drawer-navigation', () => console.log('Hello'));
-           
-
-
-            FedaPay.init('#pay-btn', {
-                public_key: 'pk_sandbox_lf7ed0OyC_S-JmIEL3RvCE1R',
-                
-                }
-            )
-        */
-
-        
-        
             
         </script>
+        
         <script src="{{asset('js/revealmanagerfile.js')}}"></script>
 
 
-
+        {{-- <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script> --}}
     </body>
 </html>

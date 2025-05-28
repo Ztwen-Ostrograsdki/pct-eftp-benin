@@ -28,7 +28,7 @@ class UsersListPage extends Component
     {
         $p = $this->paginate_page;
 
-        $users = User::paginate($p);
+        $users = User::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->paginate($p);
 
         if($this->search && strlen($this->search) >= 2){
 
@@ -54,6 +54,7 @@ class UsersListPage extends Component
                          ->orWhere('graduate_type', 'like', $s)
                          ->orWhere('graduate_deliver', 'like', $s)
                          ->orWhere('marital_status', 'like', $s)
+                         ->orderBy('firstname', 'asc')->orderBy('lastname', 'asc')
                          ->paginate($p);
         }
         

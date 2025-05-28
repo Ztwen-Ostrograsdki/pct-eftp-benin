@@ -7,6 +7,7 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
 use App\Models\Cotisation;
 use App\Models\Member;
+use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -62,11 +63,20 @@ class MembersMonthliesPayments extends Component
     {
         $months = getMonths();
 
+        $members = [];
+
         $payment_data = [];
 
         $cotisations = Cotisation::all();
 
-        $members = Member::all();
+        $users = User::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get();
+
+        foreach($users as $user){
+
+            $members[] = $user->member;
+
+
+        }
 
         if($this->selected_month){
 
@@ -196,6 +206,15 @@ class MembersMonthliesPayments extends Component
 
         }
     }
+
+    public function generateAndSendDetailsToMember($member_id)
+    {
+
+    }
+
+
+
+    
     
     public function addMemberPayment($member_id)
     {

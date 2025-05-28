@@ -7,6 +7,7 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Spatie\Browsershot\Browsershot;
 
@@ -87,6 +88,7 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
             ->footerHtml($footerHtml)
             ->save($pdfPath);
 
-        $done = response()->download($pdfPath);
+        $done = File::exists($pdfPath);
+
     }
 }

@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
 use App\Events\InitProcessToGenerateAndSendDocumentToMemberEvent;
+use App\Jobs\JobGetMembersDataToInitAProcessForBuildingAndSendingDocumentToMembers;
 use App\Models\Cotisation;
 use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
@@ -226,6 +227,34 @@ class MembersMonthliesPayments extends Component
         $this->selected_members = $selecteds;
     }
 
+
+    public function toggleSelectAll()
+    {
+        $selecteds = $this->selected_members;
+
+        $members = getMembers();
+
+        if((count($selecteds) > 0 && count($selecteds) < count($members)) || count($selecteds) == 0){
+
+            foreach($members as $member){
+
+                if(!in_array($member->id, $selecteds)){
+
+                    $selecteds[$member->id] = $member->id;
+                }
+
+            }
+
+        }
+        else{
+
+            $selecteds = [];
+
+        }
+
+        $this->selected_members = $selecteds;
+    }
+
     public function toggleSelectionsCases()
     {
         return $this->display_select_cases = !$this->display_select_cases;
@@ -311,6 +340,84 @@ class MembersMonthliesPayments extends Component
         $this->dispatch('OpenMemberPaymentsManagerModalEvent', $member_id, null, $options);
     }
 
+    public function buildAndSendToMembersByMail()
+    {
+
+        if(!__isAdminAs()) return false;
+
+
+        $members = $this->selected_members;
+
+        $date = $this->selected_month . ' ' . $this->selected_year;
+
+        if(count($members) == 0){
+
+            $members = getMembers();
+        }
+
+        $total = count($members);
+
+        $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                        <p> Vous êtes sur le point de générer et d'envoyer la fiche des détails de cotisations individuelles à {$total} membre(s) </p>
+                        
+                </h6>";
+
+        $options = ['event' => 'confirmBuildAndSendToMembersByMail', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé'];
+
+        $this->confirm($html, '', $options);
+
+    }
+
+    #[On('confirmBuildAndSendToMembersByMail')]
+    public function onConfirmBuildAndSendToMembersByMail($data = [])
+    {
+        $members = $this->selected_members;
+
+        $admin_generator = auth_user();
+
+        $view_path = "pdftemplates.once-member-cotisation";
+
+        $year = $this->selected_year;
+
+        $root = storage_path("app/public/cotisations/membres/". $year);
+
+        if(!File::isDirectory($root)){
+
+            $directory_make = File::makeDirectory($root, 0777, true, true);
+
+        }
+
+        if(!File::isDirectory($root) && !$directory_make){
+
+            Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+        }
+
+        $default_pdf_path = storage_path("app/public/cotisations/membres/". $year . "/Fiches-de-cotisation-membre-de-NOM-DU-MEMBRE-de-" . $year . ".pdf");
+
+        $default_document_title = "FICHE DE COTISATION DE NOM-DU-MEMBRE DE $year";
+
+        $data = [
+            'root' => $root,
+            'pdf_path' => $default_pdf_path,
+            'document_title' => $default_document_title,
+            'year' => $year,
+        ];
+
+        if($members){
+
+            JobGetMembersDataToInitAProcessForBuildingAndSendingDocumentToMembers::dispatch($members, $admin_generator, $view_path, $data);
+
+            $this->toast( "Le processus  a été lancé avec succès!", 'success');
+
+        }
+        else{
+
+            $this->toast( "Le processus a échoué! Veuillez réessayer!", 'error');
+        }
+
+    }
+    
     public function deleteMemberPayment($cotisation_id)
     {
 

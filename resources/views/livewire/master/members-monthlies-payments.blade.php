@@ -18,7 +18,7 @@
       }
 
       th, td{
-        border: thin solid rgb(177, 167, 167) !important;
+        border: thin solid rgb(177, 167, 167);
       }
     </style>
     <div class="mb-6">
@@ -29,7 +29,7 @@
                     {{  $selected_month }} {{  $selected_year }}
                 </span>
             </h2>
-            <div class="flex justify-end gap-x-2 w-full mt-2">
+            <div class="flex justify-end gap-x-2 w-full mt-2 lg:text-base md:text-lg sm:text-xs xs:text-xs">
                 <button
                     wire:click="toggleSelectionsCases"
                     class="bg-zinc-600 text-white px-4 py-2 rounded-lg hover:bg-zinc-700 hover:text-gray-500 transition"
@@ -72,19 +72,21 @@
                         </span>
                     </button>
                     @if($selected_month && $selected_year)
-                    <button
-                        wire:click="buildAndSendToMembersByMail"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 hover:text-gray-900 transition"
-                    >
-                        <span wire:loading.remove wire:target='buildAndSendToMembersByMail'>
-                            <span>Générer et envoyés en masse</span>
-                            <span class="fas fa-envelope"></span>
-                        </span>
-                        <span wire:target='buildAndSendToMembersByMail' wire:loading>
-                            <span>Impression en cours...</span>
-                            <span class="fas fa-rotate animate-spin"></span>
-                        </span>
-                    </button>
+                        @if($selected_members AND count($selected_members) > 0)
+                            <button
+                                wire:click="buildAndSendToMembersByMail"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 hover:text-gray-900 transition"
+                            >
+                                <span wire:loading.remove wire:target='buildAndSendToMembersByMail'>
+                                    <span>Générer et envoyés en masse</span>
+                                    <span class="fas fa-envelope"></span>
+                                </span>
+                                <span wire:target='buildAndSendToMembersByMail' wire:loading>
+                                    <span>Impression en cours...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -200,18 +202,39 @@
   <!-- Tableau des paiements -->
   <div class="overflow-x-auto rounded-lg shadow border border-gray-200 z-bg-secondary-light">
     @if (count($payment_data) > 0)
+
+    @if($selected_members AND count($selected_members) > 0)
+        <h6 class="w-full text-zinc-400 text-right font-semibold letter-spacing-2 p-2">
+            <span class="text-yellow-400">
+                {{ numberZeroFormattor(count($selected_members)) }}
+            </span> membres sélectionnés
+        </h6>
+    @endif
     <table class="min-w-full divide-y divide-gray-200 text-sm">
       <thead class="bg-gray-900 text-gray-300 font-semibold">
         <tr>
-          <th class="px-3 py-4 text-center">#N°</th>
-          <th class="px-3 py-4 text-left">Membre</th>
-          <th class="px-3 py-4 text-left">Description</th>
-          <th class="px-3 py-4 text-left">Montant (FCFA)</th>
-          <th class="px-3 py-4 text-left">Cotisation de </th>
-          <th class="px-3 py-4 text-left">Date de payement</th>
-          <th class="px-3 py-4 text-center">Actions</th>
-          @if($display_select_cases)
-          <th class="px-3 py-4 text-center">Selections</th>
+            <th class="px-3 py-4 text-center">#N°</th>
+            <th class="px-3 py-4 text-left">Membre</th>
+            <th class="px-3 py-4 text-left">Description</th>
+            <th class="px-3 py-4 text-left">Montant (FCFA)</th>
+            <th class="px-3 py-4 text-left">Cotisation de </th>
+            <th class="px-3 py-4 text-left">Date de payement</th>
+            <th class="px-3 py-4 text-center">Actions</th>
+            @if($display_select_cases)
+            <th class="px-3 py-4 text-center">
+                <button
+                        wire:click="toggleSelectAll"
+                        class="bg-zinc-600 text-white px-4 py-2 rounded-lg hover:bg-zinc-700 hover:text-gray-500 transition"
+                    >
+                    <span wire:loading.remove wire:target='toggleSelectAll'>
+                        <span class="fas fa-check-double"></span>
+                        <span>Tout dé/cocher</span>
+                    </span>
+                    <span wire:target='toggleSelectAll' wire:loading>
+                        <span class="fas fa-rotate animate-spin"></span>
+                    </span>
+                </button>
+            </th>
           @endif
         </tr>
       </thead>
@@ -225,7 +248,7 @@
 
                 @if($cotisation && isset($cotisation->id))
                     <tr wire:key='list-des-cotisations-mensuelles-{{$cotisation->id}}'>
-                        <td class="px-2 py-2 text-gray-400 text-center">
+                        <td class="px-2 py-2 text-gray-400 text-center @if(in_array($member->id, $selected_members)) bg-green-500 text-gray-900 @endif ">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </td>
                         <td class="px-2 py-2 text-gray-300 font-medium">
@@ -261,7 +284,7 @@
                         <td>
                             <span wire:click="pushOrRetrieveFromSelectedMembers({{$member->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">
                                 @if(in_array($member->id, $selected_members))
-                                    <span class="fas fa-check text-green-600"></span>
+                                    <span class="fas fa-user-check text-green-600"></span>
                                 @else
                                     <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
                                 @endif
@@ -271,7 +294,7 @@
                     </tr>
                 @else
                     <tr wire:key='list-des-cotisations-mensuelles-{{getRand(2999, 8888888)}}'>
-                    <td class="px-2 py-2 text-gray-400 text-center">
+                    <td class="px-2 py-2 text-gray-400 text-center @if(in_array($member->id, $selected_members)) bg-green-500 text-gray-900 border-gray-900 border @endif ">
                         {{ numberZeroFormattor($loop->iteration) }}
                     </td>
                     <td class="px-2 py-2 text-gray-300 font-medium">
@@ -313,7 +336,7 @@
                     <td>
                         <span wire:click="pushOrRetrieveFromSelectedMembers({{$member->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">
                             @if(in_array($member->id, $selected_members))
-                                <span class="fas fa-check text-green-600"></span>
+                                <span class="fas fa-user-check text-green-600"></span>
                             @else
                                 <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
                             @endif

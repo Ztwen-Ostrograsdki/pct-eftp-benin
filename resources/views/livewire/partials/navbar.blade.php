@@ -1,6 +1,7 @@
 <nav class="bg-white border-b top-0 start-0 fixed border-sky-600 dark:bg-gray-900 w-full z-50">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-  <a href="#" data-drawer-hide="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation" data-drawer-body-scrolling="true" type="button" data-drawer-backdrop="false" class="flex items-center space-x-3 rtl:space-x-reverse">
+  <a href="#"
+   data-drawer-hide="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation" data-drawer-body-scrolling="true" type="button" data-drawer-backdrop="false" class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="{{asset(env('APP_LOGO'))}}" alt="" class="h-9 rounded-full animate-pulse hover:animate-none" alt="{{config('app.name')}}">
       
       <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 hidden animate-spin hover:animate-none" alt="{{config('app.name')}}" />

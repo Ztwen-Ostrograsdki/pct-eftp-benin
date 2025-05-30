@@ -24,14 +24,17 @@ if (window.User) {
     window.ClientUser = window.User;
 }
 
-
-
 e.channel('public')
 
         .listen("UpdateCommuniquesListEvent", () => {
             
             Livewire.dispatch('LiveUpdateCommuniquesListEvent')
 
+        })
+        .listen('MemberQuotesUpdatedEvent', (data) =>{
+
+            Livewire.dispatch('LiveMemberQuotesUpdatedEvent');
+            
         })
 
 e.private('master')

@@ -2,6 +2,7 @@ import './bootstrap';
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import 'preline';
 import 'tw-elements';
+import '@sweetalert2/theme-dark/dark.css';
 
 import { Tooltip } from 'tw-elements';
 

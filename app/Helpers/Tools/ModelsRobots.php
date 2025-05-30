@@ -154,9 +154,8 @@ class ModelsRobots{
 
     public static function makeUserIdentifySequence()
     {
-        return Str::upper(Str::random(18));
+        return "AESP" . Str::upper(Str::random(6));
     }
-
 
 
 

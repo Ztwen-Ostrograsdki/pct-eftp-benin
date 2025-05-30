@@ -1,9 +1,9 @@
 <div>
-    @if($user && $member && $member->role)
+    @if($user && $member)
     <div class="w-full py-2 my-3">
         <div class="w-full mx-auto max-w-lg my-2 bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
             <h4 class="text-lg letter-spacing-2 w-full text-gray-200 p-3 uppercase font-semibold text-center">
-                {{ $member->role->name }}
+                {{ $member->getMemberRoleName() }}
             </h4>
         </div>
         <div class="w-full mx-auto max-w-lg bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
@@ -75,7 +75,7 @@
                 </span>
                 <span class="text-sm text-green-300 dark:text-green-300">
                     <span class="fas fa-user"></span>
-                    <span>{{ $member->role->name }}</span>
+                    <span>{{ $member->getMemberRoleName() }}</span>
                 </span>
                 <div class="m-0 p-0 mx-auto mt-4 mb-2">
                     @if($user->member)
@@ -93,9 +93,11 @@
                         </h6>
                     @endif
                 </div>
+                @if($member->role)
                 <div class="mt-2 md:mt-2 w-full mx-auto">
                     <h4 class="text-orange-400 py-2 letter-spacing-2 text-center border-t border-b">Prérogatives</h4>
                     <div class="flex w-full items-center text-center mx-auto">
+                        
                         <ul class="flex w-full flex-col gap-y-2">
                             @foreach ($member->tasks as $task)
                             <li class="ucfirst text-lg w-full text-center text-orange-200"> 
@@ -104,8 +106,10 @@
                             </li>
                             @endforeach
                         </ul>
+                       
                     </div>
                 </div>
+                 @endif
                 <div class="flex mt-4 md:mt-6 justify-center gap-x-2">
                     <a href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-800 rounded-lg hover:bg-green-700 ">
                         Mes cotisations

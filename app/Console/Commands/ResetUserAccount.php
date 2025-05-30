@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\JobResetUserAccount;
 use Illuminate\Console\Command;
 
 class ResetUserAccount extends Command
@@ -25,6 +26,31 @@ class ResetUserAccount extends Command
      */
     public function handle()
     {
-        //
+        $email = $this->argument('email');
+
+        if($email){
+
+            $user = getUser($email, 'email');
+
+            $admin = findUser(1);
+
+            if($user){
+
+                $dispatched = JobResetUserAccount::dispatch($admin, $user);
+
+                if($dispatched){
+
+                    $this->alert("La réinitialisation du compte de l'utilisateur {$user->getFullName()} a été lancé");
+
+                    $this->info("Processus lancé...");
+
+                }
+            }
+            else{
+                $this->error("ALERTE : Aucun utilisateur n'a été trouvé avec l'adresse mail {$email} dans la base de données");
+            }
+
+
+        }
     }
 }

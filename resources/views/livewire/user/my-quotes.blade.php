@@ -9,6 +9,7 @@
             </h2>
             <div class="flex justify-end gap-x-2">
                 <div class="flex items-center">
+                    @if($max_quotables > count($quotes))
                     <button wire:target='manageQuote'
                         wire:click="manageQuote"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-gray-800 transition"
@@ -21,6 +22,9 @@
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
+                    @else
+                    <h6 class="text-orange-500 font-semibold letter-spacing-1 text-right p-2">Nombre max de citations atteintes</h6>
+                    @endif
                 </div>
                 
             </div>
@@ -97,56 +101,6 @@
             
         @endif
     </div>
-
-    <div class="swiper mySwiper max-w-4xl mx-auto">
-    <div class="swiper-wrapper">
-
-      <!-- Slide 1 -->
-      <div class="swiper-slide bg-white p-6 rounded-2xl shadow-lg">
-        <div class="flex items-center space-x-4 mb-4">
-          <img src="https://i.pravatar.cc/100?img=32" class="w-14 h-14 rounded-full border-2 border-cyan-400" />
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800">Alice Dupont</h3>
-            <a href="mailto:alice@example.com" class="text-sm text-cyan-600 hover:underline">alice@example.com</a>
-          </div>
-        </div>
-        <blockquote class="text-gray-600 italic border-l-4 border-cyan-400 pl-4">
-          “Cette plateforme est incroyable ! Elle a transformé notre façon de gérer les enseignants.”
-        </blockquote>
-      </div>
-
-      <!-- Slide 2 -->
-      <div class="swiper-slide bg-white p-6 rounded-2xl shadow-lg">
-        <div class="flex items-center space-x-4 mb-4">
-          <img src="https://i.pravatar.cc/100?img=15" class="w-14 h-14 rounded-full border-2 border-cyan-400" />
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800">Jean Koffi</h3>
-            <a href="mailto:jean.koffi@example.com" class="text-sm text-cyan-600 hover:underline">jean.koffi@example.com</a>
-          </div>
-        </div>
-        <blockquote class="text-gray-600 italic border-l-4 border-cyan-400 pl-4">
-          “L’interface est fluide, moderne et intuitive. Bravo à toute l’équipe.”
-        </blockquote>
-      </div>
-
-      <!-- Slide 3 -->
-      <div class="swiper-slide bg-white p-6 rounded-2xl shadow-lg">
-        <div class="flex items-center space-x-4 mb-4">
-          <img src="https://i.pravatar.cc/100?img=12" class="w-14 h-14 rounded-full border-2 border-cyan-400" />
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800">Fatou Ndiaye</h3>
-            <a href="mailto:fatou.ndiaye@example.com" class="text-sm text-cyan-600 hover:underline">fatou.ndiaye@example.com</a>
-          </div>
-        </div>
-        <blockquote class="text-gray-600 italic border-l-4 border-cyan-400 pl-4">
-          “Un vrai gain de temps et une meilleure organisation. Je recommande vivement.”
-        </blockquote>
-      </div>
-
-    </div>
-  </div>
-
-
 
 </div>
 

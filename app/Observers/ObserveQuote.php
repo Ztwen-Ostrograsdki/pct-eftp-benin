@@ -12,7 +12,7 @@ class ObserveQuote
      */
     public function created(Quote $quote): void
     {
-        MemberQuotesUpdatedEvent::dispatch($quote->member->user, $quote->content, null);
+        MemberQuotesUpdatedEvent::dispatch($quote->user, $quote->content, null);
     }
 
     /**
@@ -20,7 +20,7 @@ class ObserveQuote
      */
     public function updated(Quote $quote): void
     {
-        MemberQuotesUpdatedEvent::dispatch($quote->member->user, $quote->content, null);
+        MemberQuotesUpdatedEvent::dispatch($quote->user, $quote->content, null);
     }
 
     /**
@@ -28,7 +28,7 @@ class ObserveQuote
      */
     public function deleted(Quote $quote): void
     {
-        MemberQuotesUpdatedEvent::dispatch($quote->member->user, $quote->content, null);
+        MemberQuotesUpdatedEvent::dispatch($quote->user, $quote->content, null);
     }
 
    

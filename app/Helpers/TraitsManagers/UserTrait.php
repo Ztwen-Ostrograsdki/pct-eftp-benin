@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers\TraitsManagers;
 
+use App\Helpers\Tools\ModelsRobots;
 use App\Jobs\JobToSendEmailToIdentifiedUser;
 use App\Models\ENotification;
 use App\Models\User;
@@ -95,6 +96,13 @@ trait UserTrait{
     public function markUserAsVerifiedOrNot(bool $as_verified, bool $as_not_verified)
     {
         return ($as_verified === true || $as_not_verified === false) ? $this->markAsVerified() : $this->markAsNotVerified();
+    }
+
+    public function resetIdentifiant()
+    {
+        $identifiant = ModelsRobots::makeUserIdentifySequence();
+
+        return $this->update(['identifiant' => $identifiant]);
     }
 
 

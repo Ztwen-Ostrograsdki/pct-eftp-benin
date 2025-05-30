@@ -63,28 +63,21 @@ class JobResetUserAccount implements ShouldQueue
 
         try {
 
-            $status = Password::reset(
-                $data,
-                function (User $user, string $password) {
+            $password = $data['password'];
 
-                    $user->forceFill([
-                        'blocked' => false,
-                        'confirmed_by_admin' => true,
-                        'blocked_at' => null,
-                        'email_verify_key' => null,
-                        'email_verified_at' => now(),
-                        'password' => Hash::make($password)
-                    ])->setRememberToken(Str::random(60));
-    
-                    $user->save();
-    
-                    event(new PasswordReset($user));
-                }
-            );
-    
-            if($status === Password::PASSWORD_RESET){
+            $user->forceFill([
+                'blocked' => false,
+                'confirmed_by_admin' => true,
+                'blocked_at' => null,
+                'email_verify_key' => null,
+                'email_verified_at' => now(),
+                'password' => Hash::make($password),
+                'password_reset_key' => null
+            ])->setRememberToken(Str::random(60));
 
-                $password = $data['password'];
+            $status = $user->save();
+    
+            if($status){
 
                 self::sendEmailToUser($password);
 
@@ -117,12 +110,15 @@ class JobResetUserAccount implements ShouldQueue
 
         $lien = route('login');
 
+        $identifiant = $user->identifiant;
+
         $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";
 
         $html = EmailTemplateBuilder::render('reset-account', [
             'name' => $user->getFullName(true),
             'password' => $password,
             'association' => $association,
+            'identifiant' => $identifiant,
             'email' => $user->email,
             'lien' => $lien,
             'greating' => $greating,

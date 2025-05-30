@@ -46,7 +46,9 @@ class MyQuotes extends Component
     {
         $quotes = $this->user->quotes;
 
-        return view('livewire.user.my-quotes', compact('quotes'));
+        $max_quotables = (int)env('APP_MEMBER_MAX_QUOTES');
+
+        return view('livewire.user.my-quotes', compact('quotes', 'max_quotables'));
     }
 
 
@@ -113,6 +115,8 @@ class MyQuotes extends Component
 
                 $this->toast( "La citation  a été supprimée avec succès!", 'success');
 
+                $this->counter = getRand();
+
             }
             else{
 
@@ -120,6 +124,8 @@ class MyQuotes extends Component
             }
 
         }
+
+       
 
     }
 

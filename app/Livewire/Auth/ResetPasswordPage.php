@@ -116,7 +116,7 @@ class ResetPasswordPage extends Component
 
                     if($tok && $tok->email === $this->email){
 
-                        $this->key_expired = $tok->updated_at >= 3600 * 24;
+                        $this->key_expired = $tok->created_at >= 3600 * 24;
 
                         if($this->key_expired){
 

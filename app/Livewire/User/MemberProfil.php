@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
+use App\Helpers\Services\EmailTemplateBuilder;
 use App\Mail\YourCardMemberIsReadyMail;
 use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
@@ -73,7 +74,20 @@ class MemberProfil extends Component
 
                     if(__isConnectedToInternet()){
 
-                        $sent = Mail::to($user->email)->send(new YourCardMemberIsReadyMail($user, $path));
+                        $association = env('APP_NAME');
+
+                        $lien = route('user.profil', ['identifiant' => $user->identifiant]);
+
+                        $html = EmailTemplateBuilder::render('member-card', [
+                            'name' => $user->getFullName(true),
+                            'poste' => $user->getMemberRoleName(),
+                            'association' => $association,
+                            'lien' => $lien,
+                            'email' => $user->email,
+                            'identifiant' => $user->identifiant
+                        ]);
+
+                        $sent = Mail::to($user->email)->send(new YourCardMemberIsReadyMail($user, $path, $html));
 
                         if($sent){
 

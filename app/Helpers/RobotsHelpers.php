@@ -316,7 +316,7 @@ if(!function_exists('getMembers')){
         }
         else{
 
-            return $data = $members;
+            $data = $members;
         }
 
         return $data;

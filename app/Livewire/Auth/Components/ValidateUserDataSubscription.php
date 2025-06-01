@@ -6,10 +6,13 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\SubscriptionManager;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use PhpParser\Node\Stmt\TryCatch;
+use Throwable;
 
 class ValidateUserDataSubscription extends Component
 {
@@ -188,71 +191,85 @@ class ValidateUserDataSubscription extends Component
         
         $all_data_is_ok = (session()->has('perso_data_is_ok') && session()->has('graduate_data_is_ok') && session()->has('professionnal_data_is_ok') && session()->has('email_data_is_ok'));
         
+        DB::beginTransaction();
 
-        if($all_data_is_ok){
+        try {
+            if($all_data_is_ok){
 
-            $data = [
-                'matricule' => $this->matricule,
-                'job_city' => $this->job_city,
-                'job_department' => $this->job_department,
-                'grade' => $this->grade,
-                'school' => $this->school,
-                'status' => $this->status,
-                'teaching_since' => $this->teaching_since,
-                'general_school' => $this->general_school,
-                'from_general_school' => $this->from_general_school,
-                'years_experiences' => $this->years_experiences,
-                'graduate' => $this->graduate,
-                'graduate_deliver' => $this->graduate_deliver,
-                'graduate_type' => $this->graduate_type,
-                'graduate_year' => $this->graduate_year,
-                'contacts' => $this->contacts,
-                'address' => Str::ucwords($this->address),
-                'gender' => Str::ucwords($this->gender),
-                'status' => Str::upper($this->status),
-                'marital_status' => Str::ucwords($this->marital_status),
-                'birth_date' => $this->birth_date,
-                'birth_city' => Str::ucfirst($this->birth_city),
-                'pseudo' => Str::ucwords($this->pseudo),
-                'password' => Hash::make($this->password),
-                'firstname' => Str::upper($this->firstname),
-                'lastname' => Str::ucwords($this->lastname),
-                'identifiant' => $identifiant,
-                'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
-                'email' => $this->email,
-                'profil_photo' => $this->photo_path,
-            ];
+                $data = [
+                    'matricule' => $this->matricule,
+                    'job_city' => $this->job_city,
+                    'job_department' => $this->job_department,
+                    'grade' => $this->grade,
+                    'school' => $this->school,
+                    'status' => $this->status,
+                    'teaching_since' => $this->teaching_since,
+                    'general_school' => $this->general_school,
+                    'from_general_school' => $this->from_general_school,
+                    'years_experiences' => $this->years_experiences,
+                    'graduate' => $this->graduate,
+                    'graduate_deliver' => $this->graduate_deliver,
+                    'graduate_type' => $this->graduate_type,
+                    'graduate_year' => $this->graduate_year,
+                    'contacts' => $this->contacts,
+                    'address' => Str::ucwords($this->address),
+                    'gender' => Str::ucwords($this->gender),
+                    'status' => Str::upper($this->status),
+                    'marital_status' => Str::ucwords($this->marital_status),
+                    'birth_date' => $this->birth_date,
+                    'birth_city' => Str::ucfirst($this->birth_city),
+                    'pseudo' => Str::ucwords($this->pseudo),
+                    'password' => Hash::make($this->password),
+                    'firstname' => Str::upper($this->firstname),
+                    'lastname' => Str::ucwords($this->lastname),
+                    'identifiant' => $identifiant,
+                    'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
+                    'email' => $this->email,
+                    'profil_photo' => $this->photo_path,
+                ];
 
-            if($data){
+                if($data){
 
-                $user = User::create($data);
+                    $user = User::create($data);
 
-                if($user){
+                    if($user){
 
-                    $auth = $user->sendVerificationLinkOrKeyToUser();
+                        $sendEmailToUser = $user->sendVerificationLinkOrKeyToUser();
+            
+                        $message = "Incription lancée avec succès! Un courriel vous a été envoyé pour confirmation, veuillez vérifier votre boite mail.";
+            
+                        $this->toast($message, 'success', 5000);
         
-                    $message = "Incription lancée avec succès! Un courriel vous a été envoyé pour confirmation, veuillez vérifier votre boite mail.";
-        
-                    $this->toast($message, 'success', 5000);
-    
-                    session()->flash('success', $message);
+                        session()->flash('success', $message);
 
-                    SubscriptionManager::clearEachData();
-    
-                    return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
-                    
-                }
-                else{
+                        SubscriptionManager::clearEachData();
         
-                    $message = "L'incription a échoué! Veuillez réessayer!";
-        
-                    session()->flash('error', $message);
-        
-                    $this->toast($message, 'error', 7000);
-        
+                        return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
+                        
+                    }
+                    else{
+            
+                        $message = "L'incription a échoué! Veuillez réessayer!";
+            
+                        session()->flash('error', $message);
+            
+                        $this->toast($message, 'error', 7000);
+            
+                    }
                 }
             }
 
+            DB::commit();
+
+
+        } catch (Throwable $e) {
+            
+            DB::rollBack(); // Annule tout
+
+            $this->toast("Une erreure est survenue lors l'insertion de vos données dans la base de données! Veuillez réessayer!", 'info');
+
+            
         }
+        
     }
 }

@@ -154,8 +154,6 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
 
         if($pdf){
 
-            $association = env('APP_NAME');
-
             $lien = route('user.profil', ['identifiant' => $user->identifiant]);
 
             $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";

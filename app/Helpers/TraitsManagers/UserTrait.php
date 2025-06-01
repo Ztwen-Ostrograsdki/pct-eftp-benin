@@ -71,7 +71,7 @@ trait UserTrait{
 
         $email_verify_key = Str::random(6);
 
-        $this->notify(new SendEmailVerificationKeyToUser($email_verify_key));
+        $send = $this->notify(new SendEmailVerificationKeyToUser($email_verify_key));
 
         $auth = $this->forceFill([
             'email_verify_key' => Hash::make($email_verify_key)

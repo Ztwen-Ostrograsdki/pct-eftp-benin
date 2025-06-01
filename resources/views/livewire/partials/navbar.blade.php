@@ -46,7 +46,7 @@
             <a wire:navigate href="{{route('user.notifications')}}" class="block {{request()->route()->named('user.notifications') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes notification
               <span class="py-0.5 float-right px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
-                {{ count(auth()->user()->getUnreadNotifications()) }}
+                {{ count(auth()->user()->unreadNotifications) }}
                 </span>
             </a>
           </li>
@@ -218,7 +218,7 @@
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Mes notifications</span>
                <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                  {{ count(auth()->user()->getUnreadNotifications()) }}
+                  {{ count(auth()->user()->unreadNotifications) }}
                </span>
             </a>
          </li>

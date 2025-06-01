@@ -87,7 +87,7 @@
                               {{ $subject->user->getFullName() }}
                           </h5>
                           <p class="text-xs text-gray-500 dark:text-gray-400">
-                              {{ $subject->user->member ? $subject->user->member->role->name : '' }}
+                              {{ $subject->user->member->getMemberRoleName() }}
                           </p>
                       </a>
                     </div>

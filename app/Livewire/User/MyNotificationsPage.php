@@ -49,9 +49,26 @@ class MyNotificationsPage extends Component
             
         }
 
-        $notif_sections = config('app.notifications_sections');
+        $notif_sections = ['unread' => "Non lues", 'read' => "Lues"];
 
-        $my_notifications = User::find($user->id)->getMyIncommingNotifications(null, $search, $this->sectionned);
+        $my_notifications = [];
+
+        $data = [];
+
+        if($this->sectionned == 'read') {
+
+            $data = User::find(auth_user()->id)->readNotifications;
+        }
+        elseif($this->sectionned == 'unread') {
+
+            $data = User::find(auth_user()->id)->unreadNotifications;
+        }
+
+        foreach($data as $notif){
+
+            $my_notifications[] = $notif;
+
+        }
 
         return view('livewire.user.my-notifications-page', compact('my_notifications', 'notif_sections'));
     }
@@ -76,58 +93,73 @@ class MyNotificationsPage extends Component
 
    
 
-    public function markAsRead($notif_id)
+    public function deleteNotification($notif_id)
     {
-        $notif = ENotification::find($notif_id);
-
-        $user = auth_user();
+        
+        $notif =  User::find(auth_user()->id)->notifications()->where('id', $notif_id)->first();
 
         if($notif){
 
-            $seen_by = (array)$notif->seen_by;
+            if($notif->read_at){
 
-            if(!in_array($user->id, $seen_by)){
+                $notif->delete();
 
-                $seen_by[] = $user->id;
+                $message = "La notification a été supprimée avec success!";
+        
+                $this->toast($message, 'success');
 
-                $notif->update(['seen_by' => $seen_by]);
+
+            }
+            else{
+
+                $notif->markAsRead();
 
                 $message = "La notification a été marquée comme lue et envoyée dans la section des notifications lues avec success!";
         
                 $this->toast($message, 'success');
-        
-                $this->counter = rand(3, 65);
+
             }
+
+            $this->counter = getRandom();
+
         }
        
     }
 
-    public function markAllAsRead()
+    public function deleteAllNotifications()
     {
         $user = auth_user();
 
-        $my_notifications = User::find($user->id)->getMyIncommingNotifications(null, null, 'unread');
-        
 
-        if(count($my_notifications)){
+        if($user){
 
-            foreach($my_notifications as $notif){
+            if($this->sectionned == 'read'){
 
-                $seen_by = (array)$notif->seen_by;
+                $notifs =  User::find(auth_user()->id)->readNotifications;
 
-                if(!in_array($user->id, $seen_by)){
+                foreach($notifs as $notif){
 
-                    $seen_by[] = $user->id;
+                    $notif->delete();
 
-                    $notif->update(['seen_by' => $seen_by]);
                 }
+
+
+            }
+            elseif($this->sectionned == 'unread'){
+
+                $notifs =  User::find(auth_user()->id)->unreadNotifications;
+
+                foreach($notifs as $notif){
+
+                    $notif->delete();
+
+                }
+
             }
 
-            $message = "Toutes les notifications non lues ont été marquée comme lues et envoyées dans la section des notifications lues avec success!";
+            $this->counter = getRandom();
+
             
-            $this->toast($message, 'success');
-    
-            $this->counter = rand(3, 65);
         }
        
     }

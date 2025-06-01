@@ -1,19 +1,19 @@
 <div>
-  <div class="mx-auto shadow-3 shadow-sky-600 rounded-lg  my-3 lg:w-4/6 xl:w-4/6 2xl:w-4/6 w-11/12 p-2 m-2 z-bg-secondary-light">
-    <h1 class="p-4 text-gray-300 flex items-center justify-between uppercase text-center">
-        <span class="text-xs letter-spacing-2">
-            <strong class="text-sky-400">
-                Gestion de mes notifications 
-              
-            </strong>
-        </span>
+    <div class="mx-auto shadow-3 shadow-sky-600 rounded-lg  my-3 max-w-6xl p-2 m-2 z-bg-secondary-light">
+        <h1 class="p-4 text-gray-300 flex items-center justify-between uppercase text-center">
+            <span class="text-xs letter-spacing-2">
+                <strong class="text-sky-400">
+                    Gestion de mes notifications 
+                
+                </strong>
+            </span>
 
-        <div class="flex gap-x-2">
-            
-        </div>
-    </h1>
-  </div>
-    <section class="py-14 rounded-xl shadow-3 shadow-sky-600 font-poppins lg:w-4/6 xl:w-4/6 2xl:w-4/6 w-11/12 mx-auto p-2 m-2 z-bg-secondary-light">
+            <div class="flex gap-x-2">
+                
+            </div>
+        </h1>
+    </div>
+    <section class="py-14 rounded-xl shadow-3 shadow-sky-600 font-poppins max-w-6xl mx-auto p-2 m-2 z-bg-secondary-light">
         <div class="w-full px-4 mx-auto lg:text-base md:text-sm sm:text-sm xs:textxs">
           <div class="w-full mx-auto">
             <div class="text-left w-full">
@@ -65,8 +65,12 @@
                     <span class="fas fa-pen px-4"></span>
                   </span>
   
-                  <span wire:click='deleteNotifications' title="Suprimer les notifications de la section en cours..." class="hover:scale-110 rounded-md flex items-center cursor-pointer shadow-1 shadow-sky-500 py-2  text-red-600">
-                    <span class="fas fa-trash px-4"></span>
+                  <span wire:click='deleteAllNotifications' title="Suprimer les notifications de la section en cours..." class="hover:scale-110 rounded-md flex items-center cursor-pointer shadow-1 shadow-sky-500 py-2  text-red-600">
+                    <span wire:target='deleteAllNotifications' wire:loading.remove class="fas fa-trash px-4"></span>
+                    <span wire:target='deleteAllNotifications' wire:loading class="px-2" >
+                        <span class="fas fa-rotate animate-spin"></span>
+                        <span>en cours...</span>
+                    </span>
                   </span>
                 </div>
               </div>
@@ -75,91 +79,26 @@
             @if(count($my_notifications))
             
             @foreach ($my_notifications as $key => $notif)
-            <div wire:click="markAsRead({{$notif->id}})" wire:key="notif-{{$notif->id}}-{{auth()->user()->id}}" class="py-6 rounded-xl z-bg-secondary-light shadow-2 shadow-sky-500 mb-2">
-              <div class="flex flex-wrap items-center justify-between pb-4 mb-2 space-x-2 border-b dark:border-gray-700">
-                <div class="flex items-center px-6 mb-2 md:mb-0 ">
-                  <div class="flex mr-2 rounded-full">
-                    <a title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $notif->user->identifiant]) }}">
-                        @if($notif->user->profil_photo)
-                            <img src="{{ url('storage', $notif->user->profil_photo) }}" alt="" class="object-cover w-12 h-12 rounded-full shadow-1 shadow-sky-400">
-                        @else
-                            <div class="border rounded-full border-gray-600 w-10 h-10 flex justify-center">
-                                <span class="fa fa-user text-lg mt-1" ></span>
-                            </div>
-                        @endif
-                    </a>
-                </div>
-                  <div>
-                    <a class="text-xs letter-spacing-1" title="Charger le profil de {{ $notif->user->getFullName() }}" href="{{ route('user.profil', ['identifiant' => $notif->user->identifiant]) }}">
-                        <h6 class="text-green-400 letter-spacing-1 font-semibold">Publié par:  </h6>
-                        <h5 class="font-semibold text-sky-400">
-                            {{ $notif->user->getFullName() }}
-                        </h5>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ $notif->user->status }}
-                        </p>
-                    </a>
-                  </div>
-                </div>
-                <div class="flex justify-end flex-col px-4">
-                  <p class="text-xs text-gray-600 dark:text-gray-400 hidden"> Inscrit depuis, {{ $notif->user->__getDateAsString($notif->user->created_at) }}
-                  </p>
-                  <span class="text-xs font-semibold letter-spacing-1 text-gray-600 dark:text-yellow-600 ">Notification N° 0000{{ $notif->id }}</span>
-                </div>
-              </div>
-              <div class="flex flex-col px-6 mb-6 text-xs text-gray-400">
-                <div class="w-full">
-                    <h4 class="text-sky-300 letter-spacing-1">
-                        <strong>Action:</strong>
-                        <span> {{ $notif->title }} </span>
-                    </h4>
-                </div>
-                <div class="flex justify-end">
-                    <h4 class="text-green-400 letter-spacing-1 hidden">
-                        <strong>Objet:</strong>
-                        <span> {{ $notif->object }} </span>
-                    </h4>
-                </div>
-                <div class="shadow-1 shadow-sky-400 rounded-lg border-gray-600 my-2 p-2">
-                    <strong class="text-yellow-600 font-bold letter-spacing-2">Contenu:</strong>
-                    <p class="letter-spacing-1">
-                        {{ $notif->content }}
-                    </p>
-                </div>
-            </div>
-              
-              <div class="flex flex-wrap justify-between gap-y-2 pt-4 border-t dark:border-gray-700">
-                <div class="flex px-6 mb-2 md:mb-0 text-xs letter-spacing-1">
-                  <h6 class=" text-gray-400">
-                    <span class="fas fa-clock text-blue-500"></span>
-                    Envoyé le : 
-                    <span class="font-semibold text-gray-600 dark:text-gray-300"> 
-                        {{ $notif->__getDateAsString($notif->created_at, 3, true) }} 
-                    </span>
-                  </h6>
-                </div>
-                <div class="flex items-center px-6 space-x-1 text-gray-400">
-                  <div class="flex items-center text-xs">
-                    <div class="flex gap-x-2 mr-3 float-right justify-end  text-gray-700 dark:text-gray-400">
-                        <div class="float-right @if($sectionned == 'read') hidden @endif ">
-                          <span class="border cursor-pointer bg-purple-300 text-purple-700 hover:bg-purple-400 hover:shadow-lg hover:shadow-sky-600 px-3 py-2 rounded ">
-                              <span class="fas fa-eye"></span>
-                              <span>Lu</span>
-                          </span>
-                        </div>
-                        <div class="float-right">
-                          <span wire:click="deleteNotif({{$notif->id}})" class="border cursor-pointer bg-red-300 text-red-700 hover:shadow-lg hover:shadow-sky-600 hover:bg-red-400 px-3 py-2 rounded ">
-                              <span class="fas fa-trash"></span>
-                              <span class="sm:hidden xs:hidden md:inline " wire:loading.remove wire:target='deleteNotif({{$notif->id}})'>Supprimer</span>
-                              <span wire:loading wire:target='deleteNotif({{$notif->id}})' class="fas fa-rotate animate-spin"></span>
-                          </span>
-                        </div>
+
+                @php
+                    $name = $notif->id;
+                @endphp
+                <div wire:key="notif-page-{{getRandom(253435, 7736535534)}}" id="notif-{{$notif->id}}" class="flex gap-0 items-center w-full p-2 px-3 my-0 text-yellow-500 bg-gray-800 rounded-lg shadow-sm  opacity-85 transition-opacity" role="alert" >
+                    <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-gray-500 bg-gray-100 rounded-lg dark:bg-gray-800 dark:text-gray-200">
+                        <span class="fas fa-envelope-open"></span>
+                        <span class="sr-only">Check icon</span>
                     </div>
-                    
-                  </div>
+                    <div class="ms-3 lg:text-sm md:text-xs xs:text-xs font-normal break-all">{{ $notif->data ? $notif->data['message'] : 'Une notification...' }}</div>
+                    <button wire:click='deleteNotification("{{$name}}")' title="Cliquer pour Masquer cette notification" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#notif-{{$notif->id}}" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
                 </div>
-              </div>
-            </div>
+                <div class="text-right w-full py-0 my-0 text-xs mb-2 border-b-2 bg-slate-600 font-semibold letter-spacing-1 text-gray-900">
+                    <small> Récu le {{ __formatDateTime($notif->created_at) }} </small>
+                </div>
             @endforeach
             @elseif($search)
               <div>
@@ -181,5 +120,5 @@
             
           </div>
         </div>
-      </section>
+    </section>
 </div>

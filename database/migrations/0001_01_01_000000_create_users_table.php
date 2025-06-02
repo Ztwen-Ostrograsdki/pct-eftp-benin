@@ -51,6 +51,7 @@ return new class extends Migration
             $table->string('current_function')->default('Enseignant');
             $table->datetime('blocked_at')->nullable()->default(null);
             $table->string('general_school')->nullable()->default(null);
+            $table->unsignedBigInteger('wrong_password_tried')->nullable()->default(null);
             $table->boolean('from_general_school')->default(0);
             $table->rememberToken();
             $table->timestamps();

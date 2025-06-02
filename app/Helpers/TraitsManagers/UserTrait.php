@@ -176,6 +176,18 @@ trait UserTrait{
         return $this->ability == 'admin' || $this->abitlity == 'master';
     }
 
+    public function incrementUserWrongPasswordTried()
+    {
+        $tried = (int)$this->wrong_password_tried + 1;
+
+        return $this->update(['wrong_password_tried' => $tried]);
+    }
+
+    public function resetUserWrongPasswordTried()
+    {
+        return $this->update(['wrong_password_tried' => null]);
+    }
+
 
     public function userHasBeenBlocked()
     {

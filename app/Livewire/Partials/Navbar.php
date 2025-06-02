@@ -120,4 +120,17 @@ class Navbar extends Component
         return File::delete($path);
         
     }
+
+    #[On("LiveToasterMessagesEvent")]
+    public function getToasters()
+    {
+        $this->counter = getRandom();
+    }
+    
+    
+    #[On("LiveNewLiveNotificationEvent")]
+    public function realodToaster()
+    {
+        $this->counter = getRandom();
+    }
 }

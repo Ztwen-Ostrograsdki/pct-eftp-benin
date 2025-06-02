@@ -1,4 +1,7 @@
 <div class="p-6 max-w-6xl mx-auto z-bg-secondary-light-opac shadow-2 shadow-sky-500">
+    
+    
+    
     <div class="mb-6">
         <div class="flex items-center justify-between gap-x-2 mb-6">
             <h2 class="lg:text-lg md:text-lg sm:text-sm  font-semibold letter-spacing-1 uppercase text-sky-500">

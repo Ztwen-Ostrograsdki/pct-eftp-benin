@@ -5,10 +5,12 @@ namespace App\Jobs;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
 {
@@ -42,16 +44,9 @@ class JobNotifyAdminThatAUndentifiedUserTryingToLogin implements ShouldQueue
                     " a tenté de se connecter a son compte. Le compte de cet utilisateur dont l'adresse mail est " 
                     . $user->email . " n'a pas encore été identifié!";
 
-        $admins = ModelsRobots::getUserAdmins();
-        
-        $data = [
-            'user_id' => $user->id,
-            'content' => $content,
-            'title' => $title,
-            'object' => $object,
-            'receivers' => $admins
-        ];
+        $admins = ModelsRobots::getAllAdmins();
 
-        ENotification::create($data);
+        Notification::sendNow($admins, new RealTimeNotificationGetToUser($content));
+
     }
 }

@@ -7,26 +7,27 @@ use Livewire\Component;
 
 class MembersHomePage extends Component
 {
-    public $member_section = 'users-list';
+    public $member_section = 'dashboard';
 
     public $member_section_title = 'liste';
 
     public $counter = 2;
 
     public $member_sections = [
+        'dashboard' => "Tableau de bord",
+        'stats' => "Statistiques plateforme",
         'members-list' => "Liste des membres",
-        'members-cards' => "Cartes de membres",
-        'users-list' => "Les enseignants",
+        'members-cards' => "Cartes de membre",
+        'users-list' => "Utilisateurs",
         'members' => "Profil des membres",
         'payments' => "Les cotisations",
         'roles' => "Les Postes",
-        'lycees' => "Les Lycées",
-        'laws' => "Les Lois",
-        'subjects' => "Les Sujets de discussion",
+        'lycees' => "Les Lycées et centres",
+        'laws' => "Le règlement intérieur",
+        // 'subjects' => "Les Sujets de discussion",
         'infos' => "Les Communiqués",
         'epreuves' => "Les Epreuves",
         'epreuves-exams-list' => "Les Epreuves d'examens",
-        "lays" => "Les réglements intérieurs",
         "history" => "Historique",
         'cv' => "Description de l'association"
 

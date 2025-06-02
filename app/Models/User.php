@@ -63,6 +63,7 @@ class User extends Authenticatable
         'general_school',
         'from_general_school',
         'auth_token',
+        'wrong_password_tried',
 
     ];
 
@@ -97,6 +98,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
 
     public function communiques()
     {

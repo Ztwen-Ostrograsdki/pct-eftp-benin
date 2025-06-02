@@ -77,6 +77,14 @@
                 <div>
                     @livewire('master.communiques-listing')
                 </div>
+            @elseif($member_section == "dashboard")
+                <div>
+                    @livewire('master.dashboard')
+                </div>
+            @elseif($member_section == "stats")
+                <div>
+                    @livewire('master.dashboard-site-stats')
+                </div>
             @endif
         </div>
     </div>

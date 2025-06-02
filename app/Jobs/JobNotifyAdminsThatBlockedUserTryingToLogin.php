@@ -5,9 +5,11 @@ namespace App\Jobs;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Notification;
 
 class JobNotifyAdminsThatBlockedUserTryingToLogin implements ShouldQueue
 {
@@ -46,17 +48,10 @@ class JobNotifyAdminsThatBlockedUserTryingToLogin implements ShouldQueue
         
         ModelsRobots::notificationThatBlockedUserTriedToLogin($user, $title, $object, $content);
 
-        $admins = ModelsRobots::getUserAdmins();
-        
-        $data = [
-            'user_id' => $user->id,
-            'content' => $content,
-            'title' => $title,
-            'object' => $object,
-            'receivers' => $admins,
+        $admins = ModelsRobots::getAllAdmins();
 
-        ];
+        Notification::sendNow($admins, new RealTimeNotificationGetToUser($content));
+    
 
-        ENotification::create($data);
     }
 }

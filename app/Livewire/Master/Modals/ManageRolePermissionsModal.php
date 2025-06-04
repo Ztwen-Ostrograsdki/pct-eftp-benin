@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Master\Modals;
 
+use Akhaled\LivewireSweetalert\Toast;
+use App\Events\InitProcessToManageRolePermissionsEvent;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
@@ -9,7 +11,10 @@ use Spatie\Permission\Models\Role;
 
 class ManageRolePermissionsModal extends Component
 {
-    public $modal_name = "#permissions-manager-modal";
+    use Toast;
+
+    
+    public $modal_name = "#role-permissions-manager-modal";
 
     public $counter = 2;
 
@@ -17,13 +22,33 @@ class ManageRolePermissionsModal extends Component
 
     public $role_id;
 
+    public $role;
+
     public function render()
     {
-        $role = Role::find($this->role_id);
-
         $permissions = Permission::all();
 
         return view('livewire.master.modals.manage-role-permissions-modal', compact('permissions'));
+    }
+
+
+    public function insert()
+    {
+        if($this->role){
+
+            $admin_generator = auth_user();
+
+            InitProcessToManageRolePermissionsEvent::dispatch($this->role, $this->selecteds, $admin_generator);
+
+            $role = $this->role;
+
+            $role_name = __translateRoleName($role->name);
+
+            $this->toast("La mise à jour des privilèges du rôle {$role_name} a été lancée!", 'success');
+
+            $this->hideModal();
+
+        }
     }
 
 
@@ -68,6 +93,8 @@ class ManageRolePermissionsModal extends Component
 
         if($role){
 
+            $this->role = $role;
+
             $selecteds = $role->permissions;
 
             foreach($selecteds as $perm){
@@ -78,14 +105,18 @@ class ManageRolePermissionsModal extends Component
 
             $this->selecteds = $table;
 
+            $this->dispatch('OpenModalEvent', $this->modal_name);
+
         }
 
-        $this->dispatch('OpenModalEvent', $this->modal_name);
+        
     }
 
 
     public function hideModal($modal_name = null)
     {
+        $this->reset();
+
         $this->dispatch('HideModalEvent', $this->modal_name);
     }
 }

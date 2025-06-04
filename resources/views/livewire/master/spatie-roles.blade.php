@@ -44,14 +44,14 @@
                 </button>
                 <div class="flex items-center">
                     <button
-                        wire:click="memberPaymentsManager"
+                        wire:click="addNewSpatieRole"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
                     >
-                        <span wire:loading.remove wire:target='memberPaymentsManager'>
-                            <span class="fas fa-save"></span>
-                            <span>Enregistrer un paiement</span>
+                        <span wire:loading.remove wire:target='addNewSpatieRole'>
+                            <span class="fas fa-plus"></span>
+                            <span>Ajouter un nouveau rôle</span>
                         </span>
-                        <span wire:target='memberPaymentsManager' wire:loading>
+                        <span wire:target='addNewSpatieRole' wire:loading>
                             <span>Chargement en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
@@ -59,29 +59,29 @@
                 </div>
                 <div class="flex gap-x-2 items-center">
                     <button
-                        wire:click="printMembersCotisations"
+                        wire:click="printRolesDetails"
                         class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
                     >
-                        <span wire:loading.remove wire:target='printMembersCotisations'>
+                        <span wire:loading.remove wire:target='printRolesDetails'>
                             <span>Imprimer</span>
                             <span class="fas fa-print"></span>
                         </span>
-                        <span wire:target='printMembersCotisations' wire:loading>
+                        <span wire:target='printRolesDetails' wire:loading>
                             <span>Impression en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
                     @if($selected_roles AND count($selected_roles) > 0)
                         <button
-                            wire:click="buildAndSendToMembersByMail"
-                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 hover:text-gray-900 transition"
+                            wire:click="deleteRoles"
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
                         >
-                            <span wire:loading.remove wire:target='buildAndSendToMembersByMail'>
-                                <span>Générer et envoyés en masse</span>
-                                <span class="fas fa-envelope"></span>
+                            <span wire:loading.remove wire:target='deleteRoles'>
+                                <span>Supprimer les rôles en masse</span>
+                                <span class="fas fa-trash"></span>
                             </span>
-                            <span wire:target='buildAndSendToMembersByMail' wire:loading>
-                                <span>Impression en cours...</span>
+                            <span wire:target='deleteRoles' wire:loading>
+                                <span>Suppression en cours...</span>
                                 <span class="fas fa-rotate animate-spin"></span>
                             </span>
                         </button>
@@ -117,10 +117,12 @@
         <thead class="bg-gray-900 text-gray-300 font-semibold">
             <tr>
                 <th class="px-3 py-4 text-center">#N°</th>
-                <th class="px-3 py-4 text-left">Roles</th>
+                <th class="px-3 py-4 text-left">Rôles</th>
                 <th class="px-3 py-4 text-left">Nombres de permissions</th>
-                <th class="px-3 py-4 text-center">Permissions</th>
+                <th class="px-3 py-4 text-center">Permissions ou privilèges accordés au rôle</th>
+                @if(!$display_select_cases)
                 <th class="px-3 py-4 text-center">Actions</th>
+                @endif
                 @if($display_select_cases)
                 <th class="px-3 py-4 text-center">
                     <button
@@ -159,26 +161,33 @@
                         <td class="px-2 py-2 text-center text-gray-400 font-semibold">
                             {{ numberZeroFormattor(count($permissions)) }}
                         </td>
-                        <td class="px-2 py-2 text-green-600 font-semibold">
+                        <td class="px-2 py-2 text-green-600">
                         <span class="flex flex-wrap gap-2">
                                 @foreach ($permissions as $permission)
-                                    <span title="cliquer pour Supprimer retirer cette permission de ce role" class="border rounded-lg p-2 cursor-pointer bg-gray-700 hover:bg-gray-800 text-gray-300"> 
+                                    <span class="border border-gray-400 px-2 py-1 cursor-pointer bg-gray-800 hover:bg-gray-900 text-gray-400 hover:text-gray-100 text-xs"> 
                                         <span>
                                             <span>{{ __translatePermissionName($permission->name) }}</span>
-                                            <span class="fas fa-trash text-red-400"></span>
                                         </span>
                                     </span>
                                 @endforeach
                         </span>
                         </td>
+                        @if(!$display_select_cases)
                         <td class="px-2 py-2 text-center">
                             <span class="flex gap-x-3 w-full justify-center items-center">
-                                <span wire:click="manageRolePermissions({{$role->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Ajouter uen permission au role {{ $role->name }}">
-                                    <span class="fas fa-plus"></span>
-                                    <span class="hidden lg:inline">Ajouter</span>
+                                <span wire:click="deleteRole({{$role->id}})" class="hover:bg-red-500 text-gray-300 border rounded-md bg-red-600 px-2 py-1" title="Supprimer le rôle {{ __translateRoleName($role->name) }}">
+                                    <span wire:target="deleteRole({{$role->id}})" wire:loading.remove>
+                                        <span class="fas fa-trash"></span>
+                                        <span class="hidden lg:inline">Suppr.</span>
+                                    </span>
+                                    <span wire:target="deleteRole({{$role->id}})" wire:loading>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                        <span>Suppression en cours...</span>
+                                    </span>
                                 </span>
                             </span>
                         </td>
+                        @endif
                         @if($display_select_cases)
                         <td>
                             <span wire:click="pushOrRetrieveFromSelectedRoles({{$role->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">

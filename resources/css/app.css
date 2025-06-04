@@ -19,6 +19,42 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.swal2-actions button{
+
+  border: thin solid white !important;
+
+}
+
+.swal2-popup.swal2-modal.swal2-icon-warning.swal2-show{
+
+  border: thin solid white !important;
+
+  background: #19191a !important;
+
+}
+
+h2.swal2-title{
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+}
+
+.swal2-popup.swal2-modal.swal2-icon-warning.swal2-show p{
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+}
+
+.swal2-html-container{
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 

@@ -70,6 +70,16 @@ e.private('confirmeds')
             Livewire.dispatch('LiveUpdateMembersListEvent');
             
         })
+        .listen('RolePermissionsWasUpdatedEvent', () =>{
+
+            Livewire.dispatch('LiveRolePermissionsWasUpdatedEvent');
+            
+        })
+        .listen('RoleUsersWasUpdatedEvent', () =>{
+
+            Livewire.dispatch('LiveRoleUsersWasUpdatedEvent');
+            
+        })
 
 
     

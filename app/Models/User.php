@@ -10,6 +10,7 @@ use App\Models\Communique;
 use App\Models\ENotification;
 use App\Models\Member;
 use App\Models\Quote;
+use App\Models\UserRole;
 use App\Observers\ObserveUser;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -99,6 +100,12 @@ class User extends Authenticatable
     }
 
 
+    public function userRoles()
+    {
+        return $this->hasMany(UserRole::class);
+    }
+
+
     public function communiques()
     {
         return $this->hasMany(Communique::class);
@@ -167,6 +174,8 @@ class User extends Authenticatable
 
         return $prefix;
     }
+
+
 
 
     public function getNotifications()

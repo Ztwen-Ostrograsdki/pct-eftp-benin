@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Master;
 
+use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class MembersHomePage extends Component
 {
+    use ListenToEchoEventsTrait;
+
     public $member_section = 'dashboard';
 
     public $member_section_title = 'liste';

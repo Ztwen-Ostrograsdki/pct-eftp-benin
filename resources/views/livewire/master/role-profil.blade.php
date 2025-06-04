@@ -42,7 +42,7 @@
                 >
                     <span wire:loading.remove wire:target='joinUserToRole'>
                         <span class="fas fa-user-check"></span>
-                        <span>Ajouter un utilisateur</span>
+                        <span>Assigner ce rôle</span>
                     </span>
                     <span wire:target='joinUserToRole' wire:loading>
                         <span>Chargement en cours...</span>
@@ -83,6 +83,8 @@
         <div class="mt-4 p-3 border mx-auto">
             <h6 class="text-center py-2 letter-spacing-1 font-semibold text-gray-900 uppercase border bg-zinc-500 border-b-zinc-500">
                 Liste des utilisateurs ayant ce role et ses privilèges
+
+                <span class="font-semibold letter-spacing-1 ml-2 text-yellow-500"> ({{ numberZeroFormattor(count($users)) }}) </span>
             </h6>
             @if(count($users) > 0)
             <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -92,6 +94,7 @@
                         <th class="px-3 py-4 text-center">#N°</th>
                         <th class="px-3 py-4 text-left">Utilisateurs</th>
                         <th class="px-3 py-4 text-left">Emails</th>
+                        <th class="px-3 py-4 text-left"> {{ __translateRoleName($role->name) }} depuis </th>
                         <th class="px-3 py-4 text-center">Actions</th>
                     </tr>
                 </thead>
@@ -102,18 +105,42 @@
                                 {{ numberZeroFormattor($loop->iteration) }}
                             </td>
                             <td class="px-2 py-2 text-gray-300 font-medium">
+                                <span class="flex gap-x-2 items-center">
+                                    <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}">
+                                    <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
+                                        {{$user->getFullName()}} 
+                                    </a>
+                                </span>
+                            </td>
                                 
                             <td class="px-2 py-2 text-center text-gray-400 font-semibold">
-                                
+                                {{ $user->email }}
                             </td>
-                            <td class="px-2 py-2 text-green-600 font-semibold">
-                            
+
+                            <td class="px-2 py-2 text-gray-600 font-semibold">
+                                @php
+                                    $user_role = $user->userRoles()->where('role_id', $role->id)->first();
+                                @endphp
+                                {{ $user_role ? __formatDateTime($user_role->created_at) : 'Date non renseignée' }}
+
+                                @if($user_role)
+                                <span class="text-yellow-600 text-xs ml-3">
+                                    ( {{ $user_role->created_at->diffForHumans() }} ) 
+                                </span>
+                                @endif
                             </td>
+
                             <td class="px-2 py-2 text-center">
-                                <span class="flex gap-x-3 w-full justify-center items-center">
-                                    <span wire:click="manageRolePermissions({{$role->id}})" class="hover:bg-blue-500 text-gray-300 border rounded-md bg-blue-600 px-2 py-1" title="Ajouter uen permission au role {{ $role->name }}">
-                                        <span class="fas fa-plus"></span>
-                                        <span class="hidden lg:inline">Ajouter</span>
+                                <span wire:click="removeUserFromRole({{$user->id}})" class="flex hover:bg-red-700 text-gray-300 border rounded-md bg-red-600 gap-x-3 w-full justify-center items-center">
+                                    <span class=" px-2 py-1" title="Retirer lz rôle {{ $role->name }} à {{$user->getFullName()}}">
+                                        <span wire:target="removeUserFromRole({{$user->id}})" wire:loading.remove>
+                                            <span class="fas fa-trash"></span>
+                                            <span class="hidden lg:inline">Retirer le rôle</span>
+                                        </span>
+                                        <span wire:target="removeUserFromRole({{$user->id}})" wire:loading>
+                                            <span>Traitement en cours...</span>
+                                            <span class="fas fa-rotate animate-spin"></span>
+                                        </span>
                                     </span>
                                 </span>
                             </td>
@@ -135,6 +162,8 @@
         <div class="p-3 mx-auto border">
             <h6 class="text-center py-2 letter-spacing-1 font-semibold text-gray-900 uppercase border bg-zinc-500 border-b-zinc-500">
                 Liste des privilèges liés à ce role
+
+                <span class="font-semibold letter-spacing-1 ml-2 text-yellow-300"> ({{ numberZeroFormattor(count($permissions)) }}) </span>
             </h6>
             @if(count($permissions) > 0)
                 <table class="min-w-full divide-y divide-gray-200 text-sm border">

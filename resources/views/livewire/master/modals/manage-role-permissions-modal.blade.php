@@ -1,13 +1,13 @@
 
   <!-- Main modal -->
-  <div wire:ignore.self id="permissions-manager-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div wire:ignore.self id="{{str_replace('#', '', $modal_name)}}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-2xl mt-32 max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white border rounded-lg shadow dark:bg-gray-800">
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Gestion des permissions du role administrateur 
+                    Gestion des privilèges du role administrateur {{ $role ? __translateRoleName($role->name) : "" }}
                 </h3>
                 <button wire:click='hideModal' type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -21,9 +21,9 @@
 
                 <div class="w-full my-2">
                     <h5 class="my-3 text-gray-500 xs:text-xs lg:text-base w-full">
-                        <span>Veuillez sélectionner les permissions</span>
+                        <span>Veuillez sélectionner les privilèges</span>
 
-                        <span class="float-right text-orange-300"> {{ count($selecteds) }} permissions sélectionnées </span>
+                        <span class="float-right text-orange-300"> {{ count($selecteds) }} privilèges sélectionnés </span>
                     </h5>
                 </div>
                 <div class="mt-3 w-full mb-5 group overflow-y-auto p-3" style="max-height: 400px">
@@ -37,12 +37,11 @@
                                     N°
                                 </th>
                                 <th scope="col" class="px-6 py-2">
-                                   Permission
+                                   Privilèges
                                 </th>
                                 <th scope="col" class="px-6 py-2 text-center">
                                     Action à effectuer 
                                 </th>
-                                
                             </tr>
                         </thead>
                         <tbody>

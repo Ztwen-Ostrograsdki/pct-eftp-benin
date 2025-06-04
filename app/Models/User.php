@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
-use App\Models\CardMember;
 use App\Models\Communique;
 use App\Models\ENotification;
 use App\Models\Member;
@@ -14,15 +13,15 @@ use App\Models\Quote;
 use App\Observers\ObserveUser;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy(ObserveUser::class)]
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, UserTrait, DateFormattor;
+    use HasFactory, Notifiable, UserTrait, DateFormattor, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -172,72 +171,17 @@ class User extends Authenticatable
 
     public function getNotifications()
     {
-        $data = [];
-
-        $all = ENotification::all();
-
-        foreach($all as $notif){
-
-            $receivers = (array)$notif->receivers;
-
-            $seens = (array)$notif->seen_by;
-
-            if($receivers){
-
-                if(in_array($this->id, $receivers)){
-
-                    $data[] = $notif;
-    
-                }
-
-            }
-            else{
-
-                if(!in_array($this->id, $seens)){
-
-                    $data[] = $notif;
-    
-                }
-
-            }
-        }
-
-        return $data;
+        return $this->notifications;
     }
 
     public function getUnreadNotifications()
     {
-        $data = [];
+        return $this->unreadNotifications;
+    }
 
-        $all = ENotification::all();
-
-        foreach($all as $notif){
-
-            $receivers = (array)$notif->receivers;
-
-            $seens = (array)$notif->seen_by;
-
-            if($receivers){
-
-                if(in_array($this->id, $receivers) && !in_array($this->id, $seens)){
-
-                    $data[] = $notif;
-    
-                }
-
-            }
-            else{
-
-                if(!in_array($this->id, $seens)){
-
-                    $data[] = $notif;
-    
-                }
-
-            }
-        }
-
-        return $data;
+    public function getReadNotifications()
+    {
+        return $this->readNotifications;
     }
 
     public function member()

@@ -15,6 +15,7 @@
         "simplesoftwareio/simple-qrcode": "*",
         "smalot/pdfparser": "^2.12",
         "spatie/browsershot": "*",
+        "spatie/laravel-permission": "^6.19",
         "spatie/pdf-to-image": "^1.2"
     },
     "require-dev": {

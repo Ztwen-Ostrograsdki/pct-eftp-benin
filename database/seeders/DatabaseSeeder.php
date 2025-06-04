@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\Tools\DefaultData;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Classe;
-use App\Models\Filiar;
-use App\Models\Promotion;
-use App\Models\User;
+use App\Helpers\Tools\SpatieManager;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +16,46 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        return ;
+
+        DB::beginTransaction();
+
+        try {
+            $permissions = SpatieManager::getPermissions();
+
+            $roles = SpatieManager::getRoles();
+
+            foreach ($permissions as $perm) {
+
+                Permission::firstOrCreate(['name' => $perm]);
+
+            }
+
+            foreach ($roles as $role) {
+
+                Role::firstOrCreate(['name' => $role]);
+
+            }
+
+            $master = Role::where('name', 'master')->first();
+
+            $master->syncPermissions($permissions);
+
+            DB::commit();
+
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+        }
+
+        
+
+        // $superAdmin = Role::firstOrCreate(['name' => 'super-admin']);
+        // $superAdmin->syncPermissions($permissions);
+
+
+
         // User::factory(10)->create();
 
         /*$filiars = DefaultData::getFiliars();

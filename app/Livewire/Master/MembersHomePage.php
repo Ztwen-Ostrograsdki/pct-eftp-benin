@@ -14,6 +14,8 @@ class MembersHomePage extends Component
     public $counter = 2;
 
     public $member_sections = [
+        'spatie-roles' => "Les roles (admins)",
+        'spatie-permissions' => "Les permissions (admins)",
         'dashboard' => "Tableau de bord",
         'stats' => "Statistiques plateforme",
         'members-list' => "Liste des membres",

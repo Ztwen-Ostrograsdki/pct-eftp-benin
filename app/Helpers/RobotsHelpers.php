@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Classe;
 use App\Models\Cotisation;
 use App\Models\Epreuve;
@@ -62,6 +63,24 @@ if(!function_exists('__isConnectedToInternet')){
 
             return false;
         }
+    }
+
+}
+
+if(!function_exists('__translateRoleName')){
+
+    function __translateRoleName($role_name)
+    {
+        return SpatieManager::translateRoleName($role_name);
+    }
+
+}
+
+if(!function_exists('__translatePermissionName')){
+
+    function __translatePermissionName($permission_name)
+    {
+        return SpatieManager::translatePermissionName($permission_name);
     }
 
 }

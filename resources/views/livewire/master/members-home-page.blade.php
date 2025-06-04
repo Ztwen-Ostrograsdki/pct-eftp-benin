@@ -10,7 +10,7 @@
             <div class="lg:col-span-3 md:col-span-3 lg:text-sm sm:col-span-5 sm:text-xs xs:col-span-5 xs:text-xs">
                 <div class="flex flex-wrap gap-2 text-center justify-start">
                     @foreach($member_sections as $section => $sec_title)
-                    <span wire:click="$set('member_section', '{{$section}}')" class="admin-panel-widget border hover:bg-blue-600 cursor-pointer @if($member_section == $section) shadow-2 shadow-sky-400 bg-blue-800 @endif bg-blue-400 text-gray-50 rounded-xl py-2 px-3">
+                    <span wire:click="$set('member_section', '{{$section}}')" class=" border hover:bg-blue-600 cursor-pointer @if($member_section == $section) shadow-2 shadow-sky-400 bg-blue-800 @endif bg-blue-400 text-gray-50 rounded-xl py-2 px-3">
                         {{$sec_title}}
                     </span>
                     @endforeach
@@ -84,6 +84,14 @@
             @elseif($member_section == "stats")
                 <div>
                     @livewire('master.dashboard-site-stats')
+                </div>
+            @elseif($member_section == "spatie-roles")
+                <div>
+                    @livewire('master.spatie-roles')
+                </div>
+            @elseif($member_section == "spatie-permissions")
+                <div>
+                    @livewire('master.spatie-permissions')
                 </div>
             @endif
         </div>

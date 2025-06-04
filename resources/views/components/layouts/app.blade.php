@@ -55,6 +55,8 @@
         @livewire('master.modals.member-payments-modal-manager')
         @livewire('user.quotes-manager-modal')
         @livewire('master.modals.communique-manager-modal')
+        @livewire('master.modals.manage-role-users-modal')
+        @livewire('master.modals.manage-role-permissions-modal')
         @livewire('partials.footer')
         
 
@@ -64,9 +66,9 @@
         {{-- <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script> --}}
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
         @livewireSweetalertScripts
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 
         <script>
@@ -129,6 +131,8 @@
 
                 Livewire.on('OpenModalEvent', (event) => {
 
+                    console.log('modal_name')
+
                     let modal_name = event[0];
 
                     let modalElement = document.querySelector(modal_name);
@@ -146,6 +150,7 @@
         </script>
         
         <script src="{{asset('js/revealmanagerfile.js')}}"></script>
+        
 
 
         {{-- <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script> --}}

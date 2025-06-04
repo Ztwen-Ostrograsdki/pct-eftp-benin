@@ -20,6 +20,7 @@ use App\Livewire\Master\LawProfilPage;
 use App\Livewire\Master\LyceesListingPage;
 use App\Livewire\Master\MembersHomePage;
 use App\Livewire\Master\MembersListPage;
+use App\Livewire\Master\RoleProfil;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\User\CardMemberComponent;
 use App\Livewire\User\MemberProfil;
@@ -42,6 +43,8 @@ Route::get('/les-lycees-et-centre-de-formations-du-benin', LyceesListingPage::cl
 Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
 
     Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
+    
+    Route::get('gestion/role-administrateurs/ID={role_id}', RoleProfil::class)->name('master.admin.role.profil');
 
     Route::get('administration/aesp-eftp/acceuil', MembersHomePage::class)->name('master.members.home');
 

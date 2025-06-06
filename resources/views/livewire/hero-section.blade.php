@@ -25,7 +25,7 @@
             </a>
             @endguest
 
-            <a href="#" class="from-left py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-blue-500 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+            <a href="{{route('communique.dispatched')}}" class="from-left py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-blue-500 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
               <span class="fas fa-newspaper"></span>
               Les nouvelles - ici
               <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -115,7 +115,7 @@
                     </h3>
                     <span class="flex flex-col">
                         <a href="#" class="text-sm text-cyan-600 hover:underline">
-                            <span class="fas fa-person"></span>
+                            <span class="fas fa-user-check"></span>
                             @if($user->member)
                               {{ $user->member->role ? $user->member->role->name : 'Un membre actif' }}
                             @else

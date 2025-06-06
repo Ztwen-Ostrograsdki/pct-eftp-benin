@@ -9,7 +9,7 @@
 
                     <span class="text-blue-500">{{env('APP_NAME')}}</span> 
                     <span>
-                        Association des Enseignants de Sciences Physiques de l'EFTP
+                        {{ env('APP_FULL_NAME') }}
                     </span>
                 </h1>
                 <div class="flex w-full mt-2 mb-0 overflow-hidden rounded">

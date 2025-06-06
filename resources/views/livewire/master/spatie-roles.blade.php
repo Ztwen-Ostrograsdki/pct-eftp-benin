@@ -163,13 +163,13 @@
                         </td>
                         <td class="px-2 py-2 text-green-600">
                         <span class="flex flex-wrap gap-2">
-                                @foreach ($permissions as $permission)
-                                    <span class="border border-gray-400 px-2 py-1 cursor-pointer bg-gray-800 hover:bg-gray-900 text-gray-400 hover:text-gray-100 text-xs"> 
-                                        <span>
-                                            <span>{{ __translatePermissionName($permission->name) }}</span>
-                                        </span>
+                            @foreach ($permissions as $permission)
+                                <span class="border border-gray-400 px-2 py-1 cursor-pointer bg-gray-800 hover:bg-gray-900 text-gray-400 hover:text-gray-100 text-xs"> 
+                                    <span>
+                                        <span>{{ __translatePermissionName($permission->name) }}</span>
                                     </span>
-                                @endforeach
+                                </span>
+                            @endforeach
                         </span>
                         </td>
                         @if(!$display_select_cases)

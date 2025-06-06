@@ -1,12 +1,12 @@
 <div>
     @if($user && $member)
     <div class="w-full py-2 my-3">
-        <div class="w-full mx-auto max-w-lg my-2 bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
+        <div class="mx-auto max-w-3xl my-2 bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
             <h4 class="text-lg letter-spacing-2 w-full text-gray-200 p-3 uppercase font-semibold text-center">
                 {{ $member->getMemberRoleName() }}
             </h4>
         </div>
-        <div class="w-full mx-auto max-w-lg bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
+        <div class="w-full mx-auto max-w-3xl bg-blue-900 border border-gray-100 rounded-lg shadow dark:bg-blue-900 dark:border-gray-100">
             <div class="flex justify-end px-4 pt-4">
                 <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
                     <span class="sr-only">Open dropdown</span>
@@ -60,7 +60,7 @@
                 </div>
                 
             </div>
-            <div class="flex flex-col items-center pb-10 px-2">
+            <div class="flex flex-col items-center pb-10 px-2 font-semibold letter-spacing-1">
                 <img class="w-24 h-24 mb-3 border border-gray-100 rounded-full shadow-lg" src="{{user_profil_photo($user)}}" alt="Photo de profil de {{ $user->getFullName() }}"/>
                 <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                     {{ $user->getFullName(true) }}
@@ -72,6 +72,10 @@
                 <span class="text-sm text-yellow-800 letter-spacing-2 dark:text-yellow-400">
                     <span class="fas fa-phone"></span>
                     <span>{{ $user->contacts }}</span>
+                </span>
+                <span class="text-sm text-orange-400 dark:text-orange-400">
+                    <span>#ID : </span>
+                    <span class="">{{ $user->identifiant }}</span>
                 </span>
                 <span class="text-sm text-green-300 dark:text-green-300">
                     <span class="fas fa-user"></span>
@@ -117,16 +121,16 @@
                     <a href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white  bg-purple-900 rounded-lg hover:bg-purple-700 ">
                         Mes citations
                     </a>
-                    <a href="#" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 ">
-                        Notifier
+                    <a href="{{route('member.admins.roles', ['identifiant' => auth_user()->identifiant])}}" class="inline-flex  border items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 ">
+                        Rôles admins
                     </a>
-                    <a wire:click='removeUserFormMembers' href="#" class="py-2 px-4 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-red-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-red-700">
-                        <span wire:loading.remove wire:target='removeUserFormMembers'>Supprimer</span>
-                        <span wire:loading wire:target='removeUserFormMembers'>
+                    <span title="Réinitialiser le poste de {{$user->getFullName(true)}}" wire:click='resetMemberRoleToNull' class="py-2 px-4 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-red-100 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-red-600 dark:text-gray-100 dark:border-white-600 dark:hover:text-white dark:hover:bg-red-700 cursor-pointer text-center">
+                        <span wire:loading.remove wire:target='resetMemberRoleToNull'>Réinitialiser poste</span>
+                        <span wire:loading wire:target='resetMemberRoleToNull'>
                             <span>En cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
-                    </a>
+                    </span>
                 </div>
             </div>
         </div>

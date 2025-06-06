@@ -54,30 +54,35 @@
           
           @if(auth_user()->member)
           <li>
-            <a wire:navigate href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.profil') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.profil') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Statut membre
             </a>
           </li>
           <li>
-            <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.payments') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.payments') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes cotisations
             </a>
           </li>
           <li>
-            <a wire:navigate href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.quotes') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('member.admins.roles', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.admins.roles') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+              Mes rôles administrateurs
+            </a>
+          </li>
+          <li>
+            <a wire:navigate href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('member.quotes') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes citations
             </a>
           </li>
           @endif
           @if(__isAdminAs())
           <li class="hidden">
-            <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Administration
             </a>
           </li>
           @endif
           <li>
-            <a href="{{route('library.home')}}" class="block px-4 py-2 text-sm  hover:bg-gray-100 dark:hover:bg-gray-600 {{request()->route()->named('library.home') ? 'text-blue-600' : 'text-gray-400' }} ">
+            <a href="{{route('library.home')}}" class="block px-4 py-2 text-sm  hover:bg-gray-100 dark:hover:bg-gray-600 {{request()->route()->named('library.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} ">
               Bibliothèque
             </a>
           </li>

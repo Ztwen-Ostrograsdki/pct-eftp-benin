@@ -68,7 +68,12 @@ class JobManageRoleUsers implements ShouldQueue
 
                         $user->assignRole($role->name);
 
+                        $role_name = __translateRoleName($role->name);
+
                         UserRole::updateOrCreate(['user_id'=> $user->id, 'role_id' => $role->id], ['user_id'=> $user->id, 'role_id' => $role->id]);
+
+
+                        Notification::sendNow([$user], new RealTimeNotificationGetToUser("FELICITATION : Votre liste de rôles administrateurs a été mise à jour : Vous avez à présent le rôle administrateur {$role_name} et ses privilèges."));
 
                     }
 

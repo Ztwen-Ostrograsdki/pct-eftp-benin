@@ -57,6 +57,7 @@
         @livewire('master.modals.communique-manager-modal')
         @livewire('master.modals.manage-role-users-modal')
         @livewire('master.modals.manage-role-permissions-modal')
+        @livewire('master.modals.manage-user-spaties-roles')
         @livewire('partials.footer')
         
 

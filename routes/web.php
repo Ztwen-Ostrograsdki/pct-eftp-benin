@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AboutUs;
 use App\Livewire\Auth\EmailVerificationPage;
 use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
@@ -24,6 +25,7 @@ use App\Livewire\Master\RoleProfil;
 use App\Livewire\Master\UsersListPage;
 use App\Livewire\User\CardMemberComponent;
 use App\Livewire\User\MemberProfil;
+use App\Livewire\User\MyAdminRoles;
 use App\Livewire\User\MyMonthlyPayments;
 use App\Livewire\User\MyNotificationsPage;
 use App\Livewire\User\MyQuotes;
@@ -88,7 +90,11 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     
     Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['user.self']);
 
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-roles-administrateurs', MyAdminRoles::class)->name('member.admins.roles')->middleware([]);
+
 });
+
+Route::get('/a-propos/de-aesp-eftp-benin/', AboutUs::class)->name('about.us');
 
 
 

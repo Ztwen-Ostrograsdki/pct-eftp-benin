@@ -40,6 +40,18 @@ if(!function_exists('getMonths')){
 
 }
 
+if(!function_exists('generateRandomNumber')){
+
+    function generateRandomNumber($length = 10)
+    {
+        $min = (int)str_pad("1", $length, "0");
+
+        $max = (int)str_pad("", $length, "9");
+
+        return random_int($min, $max);
+    }
+
+}
 if(!function_exists('getCurrentMonth')){
 
     function getCurrentMonth()
@@ -722,6 +734,29 @@ if(!function_exists('getMember')){
     function getMember($value, $column = "id")
     {
         return Member::where($column, $value)->first();
+    }
+
+}
+
+if(!function_exists('getActivesMembers')){
+
+    function getActivesMembers()
+    {
+        $members = [];
+
+        $all = Member::all();
+
+        foreach($all as $member){
+
+            if($member->role){
+
+                $members[] = $member;
+
+            }
+
+        }
+
+        return $members;
     }
 
 }

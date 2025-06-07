@@ -1,4 +1,6 @@
 <div>
+    @php use Illuminate\Support\Str; @endphp
+
     <div class="lg:text-lg md:text-base sm:text-sm xs:text-xs">
         <div class="border mx-auto rounded-lg my-1 max-w-6xl z-bg-secondary-light p-0">
             <div class="m-0 p-3 w-full max-w-6xl">
@@ -139,6 +141,29 @@
                                             <div class="flex flex-col leading-1.5 p-4 border-gray-200 rounded-e-xl rounded-es-xl @if($chat->user_id == auth_user()->id) bg-indigo-700  @else bg-gray-500  @endif ">
                                                 <p class="text-sm font-normal text-gray-900 dark:text-white"> 
                                                     {{ $chat->message }}
+                                                    @if($chat->hasFile())
+                                                        <div class="flex mt-2 justify-end">
+                                                            <div title="Télécharger le document" wire:click='downloadFile({{$chat->file_path}})' class="flex cursor-pointer items-center justify-between bg-gray-800 text-white rounded-xl p-3 w-full max-w-md ">
+                                                                <div class="flex items-center gap-3">
+                                                                    @if(strtoupper(str_replace('.', '', $chat->file_extension)) == 'PDF')
+                                                                    <img src="{{asset('images/pdf-ico.png')}}" alt="PDF" class="w-6 h-6 mt-1">
+                                                                    @elseif(strtoupper(str_replace('.', '', $chat->file_extension)) == 'DOCX')
+                                                                    <img src="{{asset('images/docx-ico-3.png')}}" alt="DOCX" class="w-6 h-6 mt-1">
+                                                                    @endif
+                                                                    
+                                                                    <div>
+                                                                        <p class="font-semibold text-sm truncate">
+                                                                            {{ $chat->file }} 
+                                                                        </p>
+                                                                        <p class="text-xs text-gray-400"> {{ $chat->file_pages }} Page(s) • {{ $chat->file_size }} • {{ $chat->file_extension }}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="flex gap-x-3">
+                                                                    <span class="fas fa-download cursor-pointer"></span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </p>
                                             </div>
                                             <span class="text-xs font-normal text-gray-500 dark:text-gray-400 text-right float-right">
@@ -181,6 +206,55 @@
                         @endforeach
                     @endforeach
                 </div>
+                @if ($pdfPreviewPath)
+                    @php
+                        $file_size = "0 Ko";
+
+                        $ext = strtoupper($file->extension());
+
+                        $name = string_cutter(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME), 30);
+
+                        if($file->getSize() >= 1048580){
+
+                            $file_size = number_format($file->getSize() / 1048576, 2) . ' Mo';
+
+                        }
+                        else{
+
+                            $file_size = number_format($file->getSize() / 1000, 2) . ' Ko';
+
+                        }
+                    @endphp 
+                    <div class="flex justify-end">
+                        <div class="flex items-center justify-between bg-gray-800 text-white rounded-xl p-3 w-full max-w-md ">
+                            <div class="flex items-center gap-3">
+                                @if($file->getClientOriginalExtension() === 'pdf')
+                                <img src="{{asset('images/pdf-ico.png')}}" alt="PDF" class="w-6 h-6 mt-1">
+                                @elseif($file->getClientOriginalExtension() === 'docx')
+                                <img src="{{asset('images/docx-ico-3.png')}}" alt="DOCX" class="w-6 h-6 mt-1">
+                                @endif
+                                
+                                <div>
+                                    <p class="font-semibold text-sm truncate">
+                                        {{ $name }} 
+                                    </p>
+                                    <p class="text-xs text-gray-400"> {{ $total_pages }} Page(s) • {{ $file_size }} • {{ $ext }}</p>
+                                </div>
+                            </div>
+                            <span class="flex gap-x-3">
+                                <span wire:click='sendMessage' title="Envoyez" class="fas fa-upload cursor-pointer"></span>
+                                <span wire:click='deleteFile' title="Annuler" class="fas fa-trash text-red-500 cursor-pointer"></span>
+                            </span>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="text-sm flex justify-end w-full" wire:loading wire:target='file'>
+                    <div class=" bg-gray-800 text-white w-auto float-right rounded-xl p-3">
+                        <span>Chargement du fichier en cours...</span>
+                        <span class="fas fa-rotate animate-spin"></span>
+                    </div>
+                </div>
             </div>
             
             <div class="w-full py-1 my-3 px-3 lg:text-sm md:text-sm sm:text-xs">
@@ -197,6 +271,7 @@
                         
                     </div>
                 @endif
+
                 <form @submit.prevent class="w-full mx-auto">   
                     <label for="default-message" class="mb-2 font-medium text-gray-900 sr-only dark:text-white">Envoyer</label>
                     <div class="relative">
@@ -204,9 +279,21 @@
                             <span class="w-4 h-4 text-gray-500 fas fa-message dark:text-gray-400" aria-hidden="true" >
                             </span>
                         </div>
+                        <input
+                            type="file"
+                            wire:model.live="file"
+                            class="hidden bg-transparent"
+                            id="fileInput"
+                        >
                         <input wire:keydown.enter="sendMessage" wire:model.live="message" type="message" id="epreuve-message-input" class=" block w-full p-4 ps-10 letter-spacing-2 border border-gray-300 rounded-lg bg-transparent focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 letter-spacing-1 focus text-gray-400 font-semibold sm:pr-32 md:pr-32 xs:pr-32 lg:pr-60" placeholder="Tapez votre message..." />
-                        @if($message !== '' && $message !== null)
+                       
                         <span class="gap-x-1 items-center text-white md:inline lg:inline absolute end-2.5 bottom-2.5 focus:ring-4 mb-2 focus:outline-none focus:ring-blue-300 font-medium ">
+                            <span class="">
+                                <label title="Envoyez un fichier" for="fileInput" class="ml-1 bg-transparent hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg  px-4 py-2  cursor-pointer">
+                                    <span class="fa-solid fa-paperclip text-gray-400 font-semibold"></span>
+                                </label>
+                            </span>
+                            @if($message !== '' && $message !== null)
                             <span wire:click="sendMessage" class=" bg-blue-700 hover:bg-blue-800 cursor-pointer focus:ring-4 focus:outline-none  px-4 py-2 dark:bg-blue-600 rounded-lg dark:hover:bg-blue-700 dark:focus:ring-blue-800 ">
                                 
                                 <span class="sm:hidden xs:hidden md:hidden lg:inline xl:inline mr-1">Envoyer</span>
@@ -216,8 +303,8 @@
                                 <span class="fas fa-trash"></span>
                                 <span class="sm:hidden xs:hidden md:hidden lg:inline xl:inline ml-1">Effacer</span>
                             </span>
+                            @endif
                         </span>
-                        @endif
                     </div>
                 </form>
               </div>

@@ -32,6 +32,7 @@ use App\Livewire\User\MyQuotes;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
 use Illuminate\Support\Facades\Route;
+use Spatie\PdfToImage\Pdf;
 
 Route::get('/', HomePage::class)->name('home');
 
@@ -96,6 +97,25 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 
 Route::get('/a-propos/de-aesp-eftp-benin/', AboutUs::class)->name('about.us');
 
+// Route::get('/pdf-preview', function () {
+//     $pdfPath = storage_path('app/public/epreuves\EPREUVE-2025-4-12epreuve-cg6juvqc-6wMm4.pdf'); // chemin vers ton PDF
+//     $imagePath = storage_path('app/public/miniature.png');
+
+//     if (!file_exists($pdfPath)) {
+//         return 'Fichier PDF introuvable ❌';
+//     }
+
+//     try {
+//         putenv('PATH=' . getenv('PATH') . ';C:\Program Files\gs\gs10.03.1\bin');
+
+//         $pdf = new Pdf($pdfPath);
+//         $pdf->setPage(1)->saveImage($imagePath);
+
+//         return 'Miniature créée ✅ : ' . $imagePath;
+//     } catch (\Exception $e) {
+//         return 'Erreur ❌ : ' . $e->getMessage();
+//     }
+// });
 
 
 

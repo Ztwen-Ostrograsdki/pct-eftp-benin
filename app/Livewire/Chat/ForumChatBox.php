@@ -15,16 +15,21 @@ use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use App\Observers\ObserveChatForumMessage;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Smalot\PdfParser\Parser;
 
 #[ObservedBy(ObserveChatForumMessage::class)]
 class ForumChatBox extends Component
 {
 
-    use Toast, Confirm;
+    use Toast, Confirm, WithFileUploads;
 
     #[Rule('string|required')]
     public $message = '';
@@ -38,6 +43,12 @@ class ForumChatBox extends Component
     public $targeted_message_id = null;
 
     public $targeted_message = null;
+
+    public $file;
+
+    public $pdfPreviewPath;
+
+    public $total_pages = 1;
 
 
     
@@ -69,26 +80,122 @@ class ForumChatBox extends Component
 
     public function sendMessage()
     {
-        $this->validate();
+        
+        if(!$this->file){
+
+            $this->validate();
+        }
+        else{
+
+            $validated = $this->validate([ 
+                'file' => 'required|file|mimes:docx,pdf|max:8000',
+            ]);
+
+        }
 
         $message = trim($this->message);
 
         $user = auth_user();
 
-        $data = [
-            'user_id' => auth_user()->id,
-            'message' => $message,
-            'seen_by' => auth_user()->id,
-            'reply_to_message_id' => $this->targeted_message_id,
-        ];
-        
-        NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
+        if(!$this->file){
 
+            $data = [
+                'user_id' => auth_user()->id,
+                'message' => $message,
+                'seen_by' => auth_user()->id,
+                'reply_to_message_id' => $this->targeted_message_id,
+            ];
+            
+            NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
+        }
+        else{
 
+            self::messageWithFileManager();
+
+        }
 
         $this->reset();
 
         $this->message = '';
+    }
+
+    public function messageWithFileManager()
+    {
+        $file_size = '0 Ko';
+
+        if($this->file){
+
+            $extension = $this->file->extension();
+
+            $originalNameWithoutExt = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
+
+            $file_name = 'forum-doc-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday'] . '-' .  Str::lower(Str::random(8));
+
+            $root = storage_path("app/public/forum-media/");
+
+            if(!File::isDirectory($root)){
+
+                File::makeDirectory($root, 0777, true, true);
+
+            }
+
+            $path = storage_path("app/public/forum-media/" . $file_name . "." . $extension);
+
+            if($this->file->getSize() >= 1048580){
+
+                $file_size = number_format($this->file->getSize() / 1048576, 2) . ' Mo';
+
+            }
+            else{
+
+                $file_size = number_format($this->file->getSize() / 1000, 2) . ' Ko';
+
+            }
+
+            $message = trim($this->message);
+
+            $user = auth_user();
+
+
+            $file_saved_path = $this->file->storeAs("forum-documents/", $file_name . '.' . $extension, ['disk' => 'public']);
+
+            if($file_saved_path){
+
+                $tmpPath = $this->file->getRealPath();
+
+                // Analyse le fichier temporaire
+                $parser = new Parser();
+
+                $pdf = $parser->parseFile($tmpPath);
+
+                $details = $pdf->getDetails();
+
+                $pageCount = $details['Pages'] ?? 1;
+
+                $data = [
+                    'user_id' => $user->id,
+                    'message' => $message,
+                    'seen_by' => $user->id,
+                    'reply_to_message_id' => $this->targeted_message_id,
+                    'file' => $originalNameWithoutExt,
+                    'file_path' => $path,
+                    'file_size' => $file_size,
+                    'file_extension' => "." . $extension,
+                    'file_pages' => $pageCount,
+                ];
+
+                NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
+
+                $this->reset();
+            }
+            else{
+
+                $this->toast("Une erreure est survenue", 'error');
+            }
+
+        }
+
+        
     }
 
 
@@ -293,7 +400,18 @@ class ForumChatBox extends Component
     }
 
 
+    public function downloadFile($fullpath)
+    {
+        
+    }
 
+
+
+    public function deleteFile()
+    {
+        $this->reset('file', 'pdfPreviewPath');
+    }
+    
     public function resetMessage()
     {
         $this->message = '';
@@ -303,4 +421,37 @@ class ForumChatBox extends Component
     {
         $this->dispatch('OpenModalForNewForumChatSubject');
     }
+
+    public function updatedFile()
+    {
+        // Réinitialiser l’aperçu si nouveau fichier
+        $this->reset('pdfPreviewPath', 'total_pages');
+
+        if ($this->file && $this->file->getClientOriginalExtension() === 'pdf') {
+
+            $tmpPath = $this->file->getRealPath();
+
+            $parser = new Parser();
+
+            $pdf = $parser->parseFile($tmpPath);
+
+            $details = $pdf->getDetails();
+
+            $pageCount = $details['Pages'] ?? 1;
+
+            $this->total_pages = $pageCount;
+
+            $this->pdfPreviewPath = true;
+        }
+
+        if ($this->file &&  $this->file->getClientOriginalExtension() === 'docx' or $this->file->getClientOriginalExtension() === 'doc') {
+
+            $tmpPath = $this->file->getRealPath();
+
+            $this->total_pages = 2;
+
+            $this->pdfPreviewPath = true;
+        }
+    }
+     
 }

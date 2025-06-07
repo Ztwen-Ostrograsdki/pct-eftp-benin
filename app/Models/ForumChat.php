@@ -49,5 +49,11 @@ class ForumChat extends Model
     }
 
 
+    public function hasFile()
+    {
+        return !$this->file == null;
+    }
+
+
 
 }

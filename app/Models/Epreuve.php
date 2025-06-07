@@ -222,7 +222,7 @@ class Epreuve extends Model
 
     public function getTotalPages()
     {
-        $path = $complete_path = storage_path().'/app/public/' . $this->path;
+        $path = storage_path().'/app/public/' . $this->path;
 
         $gets = file_get_contents($path);
 

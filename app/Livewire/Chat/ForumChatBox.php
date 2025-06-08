@@ -24,6 +24,7 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Smalot\PdfParser\Parser;
+use ZipArchive;
 
 #[ObservedBy(ObserveChatForumMessage::class)]
 class ForumChatBox extends Component
@@ -49,6 +50,8 @@ class ForumChatBox extends Component
     public $pdfPreviewPath;
 
     public $total_pages = 1;
+
+    public $is_image = false;
 
 
     
@@ -88,7 +91,7 @@ class ForumChatBox extends Component
         else{
 
             $validated = $this->validate([ 
-                'file' => 'required|file|mimes:docx,pdf|max:8000',
+                'file' => 'required|file|mimes:jpg,jpeg,png,gif,webp,pdf,docx|max:8000',
             ]);
 
         }
@@ -139,8 +142,6 @@ class ForumChatBox extends Component
 
             }
 
-            $path = storage_path("app/public/forum-media/" . $file_name . "." . $extension);
-
             if($this->file->getSize() >= 1048580){
 
                 $file_size = number_format($this->file->getSize() / 1048576, 2) . ' Mo';
@@ -157,20 +158,25 @@ class ForumChatBox extends Component
             $user = auth_user();
 
 
-            $file_saved_path = $this->file->storeAs("forum-documents/", $file_name . '.' . $extension, ['disk' => 'public']);
+            $file_saved_path = $this->file->storeAs("forum-media/", $file_name . '.' . $extension, ['disk' => 'public']);
 
             if($file_saved_path){
 
-                $tmpPath = $this->file->getRealPath();
+                if($this->file->getClientOriginalExtension() === 'pdf'){
 
-                // Analyse le fichier temporaire
-                $parser = new Parser();
 
-                $pdf = $parser->parseFile($tmpPath);
 
-                $details = $pdf->getDetails();
+                }
+                elseif($this->file->getClientOriginalExtension() === 'docx' or $this->file->getClientOriginalExtension() === 'doc'){
 
-                $pageCount = $details['Pages'] ?? 1;
+                }
+                else{
+
+                    $this->total_pages = null;
+
+                }
+
+                $file_path_name = "forum-media/" . $file_name . '.' . $extension;
 
                 $data = [
                     'user_id' => $user->id,
@@ -178,10 +184,10 @@ class ForumChatBox extends Component
                     'seen_by' => $user->id,
                     'reply_to_message_id' => $this->targeted_message_id,
                     'file' => $originalNameWithoutExt,
-                    'file_path' => $path,
+                    'file_path' => $file_path_name,
                     'file_size' => $file_size,
                     'file_extension' => "." . $extension,
-                    'file_pages' => $pageCount,
+                    'file_pages' => $this->total_pages,
                 ];
 
                 NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
@@ -192,10 +198,7 @@ class ForumChatBox extends Component
 
                 $this->toast("Une erreure est survenue", 'error');
             }
-
         }
-
-        
     }
 
 
@@ -400,9 +403,36 @@ class ForumChatBox extends Component
     }
 
 
-    public function downloadFile($fullpath)
+    public function downloadTheFile($chat_id)
     {
-        
+        $this->toast("Le téléchargement lancé... patientez", 'success');
+
+        $chat = ForumChat::find($chat_id);
+
+        if($chat){
+
+            $path = $chat->file_path;
+
+            if($path){
+
+                $path = storage_path().'/app/public/' . $path;
+
+                $exists = File::exists($path);
+                
+                if($exists){
+
+                    $name = $chat->file . '' . $chat->file_extension;
+
+                    return response()->download($path, $name);
+                }
+                else{
+
+                    $this->toast("Le fichier n'a pas pu être téléchargé car le fichier est introuvable, peut être qu'il a déja été supprimé", 'error');
+
+                }
+
+            }
+        }
     }
 
 
@@ -425,7 +455,7 @@ class ForumChatBox extends Component
     public function updatedFile()
     {
         // Réinitialiser l’aperçu si nouveau fichier
-        $this->reset('pdfPreviewPath', 'total_pages');
+        $this->reset('pdfPreviewPath', 'total_pages', 'is_image');
 
         if ($this->file && $this->file->getClientOriginalExtension() === 'pdf') {
 
@@ -448,10 +478,49 @@ class ForumChatBox extends Component
 
             $tmpPath = $this->file->getRealPath();
 
-            $this->total_pages = 2;
+            $pageCount = null;
+            
+            $zip = new ZipArchive;
+
+            if ($zip->open($tmpPath) === TRUE) {
+
+                $xml = $zip->getFromName('docProps/app.xml');
+
+                if ($xml !== false) {
+
+                    $dom = new \DOMDocument();
+
+                    $dom->loadXML($xml);
+
+                    $pagesNode = $dom->getElementsByTagName('Pages')->item(0);
+
+                    if ($pagesNode) {
+
+                        $pageCount = (int) $pagesNode->nodeValue;
+                    }
+                }
+                $zip->close();
+            }
+
+            // Valeur par défaut si non trouvée
+            $pageCount = $pageCount ?? 1;
+
+            $this->total_pages = $pageCount;
 
             $this->pdfPreviewPath = true;
         }
+        else{
+
+            $extension = strtolower($this->file->getClientOriginalExtension());
+
+            $this->is_image = is_image($extension);
+
+            $this->pdfPreviewPath = true;
+
+
+        }
+
+
     }
      
 }

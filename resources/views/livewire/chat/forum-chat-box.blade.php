@@ -127,7 +127,7 @@
                         @foreach ($chats as $chat)
                             @if($chat->notHiddenFor(auth_user()->id))
                                 <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs mb-4">
-                                    <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="flex items-start @if($chat->user_id == auth_user()->id) float-end   @endif cursor-pointer gap-2.5 gap-y-3">
+                                    <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="flex items-start @if($chat->user_id == auth_user()->id) float-end chat-message-of-self @else chat-message-of-other  @endif cursor-pointer gap-2.5 gap-y-3 ">
                                         <img class="w-8 h-8 rounded-full" src="{{user_profil_photo($chat->user)}}" alt="Jese image">
                                         <div class="flex flex-col gap-1 w-full max-w-[320px]">
                                             <div class="flex items-center space-x-2 rtl:space-x-reverse">
@@ -143,24 +143,35 @@
                                                     {{ $chat->message }}
                                                     @if($chat->hasFile())
                                                         <div class="flex mt-2 justify-end">
-                                                            <div title="Télécharger le document" wire:click='downloadFile({{$chat->file_path}})' class="flex cursor-pointer items-center justify-between bg-gray-800 text-white rounded-xl p-3 w-full max-w-md ">
+                                                            <div class="flex cursor-pointer items-center justify-between bg-gray-800 text-white rounded-xl p-3 w-full max-w-md ">
                                                                 <div class="flex items-center gap-3">
-                                                                    @if(strtoupper(str_replace('.', '', $chat->file_extension)) == 'PDF')
-                                                                    <img src="{{asset('images/pdf-ico.png')}}" alt="PDF" class="w-6 h-6 mt-1">
-                                                                    @elseif(strtoupper(str_replace('.', '', $chat->file_extension)) == 'DOCX')
-                                                                    <img src="{{asset('images/docx-ico-3.png')}}" alt="DOCX" class="w-6 h-6 mt-1">
+                                                                    @if(is_image($chat->file_extension))
+                                                                        <a title="Cliquer sur l'image pour la Télécharger" href="{{forum_image($chat)}}" download class="flex flex-col">
+                                                                            <img  class="border transition-transform duration-300 hover:scale-150 rounded shadow object-cover" src="{{forum_image($chat)}}" alt="{{$chat->file}}">
+                                                                            <div class="flex flex-col text-center">
+                                                                                <p class="font-semibold text-sm truncate">
+                                                                                    {{ $chat->file . '' . $chat->file_extension }} 
+                                                                                </p>
+                                                                                <p class="text-xs text-gray-400"> {{ $chat->file_size }} • Image • ({{ str_replace('.', '', $chat->file_extension) }})</p>
+                                                                            </div>
+                                                                        </a>
+                                                                    @else
+                                                                        <div class="flex gap-x-2" title="Télécharger le document" wire:click='downloadTheFile({{$chat->id}})'>
+                                                                            @if(strtoupper(str_replace('.', '', $chat->file_extension)) == 'PDF')
+                                                                            <img src="{{asset('images/pdf-ico.png')}}" alt="PDF" class="w-6 h-6 mt-1">
+                                                                            @elseif(strtoupper(str_replace('.', '', $chat->file_extension)) == 'DOCX')
+                                                                            <img src="{{asset('images/docx-ico-3.png')}}" alt="DOCX" class="w-6 h-6 mt-1">
+                                                                            @endif
+                                                                            <div>
+                                                                                <p class="font-semibold text-sm truncate">
+                                                                                    {{ $chat->file }} 
+                                                                                </p>
+                                                                                <p class="text-xs text-gray-400"> {{ $chat->file_pages }} Page(s) • {{ $chat->file_size }} • {{ $chat->file_extension }}</p>
+                                                                            </div>
+                                                                        </div>
                                                                     @endif
                                                                     
-                                                                    <div>
-                                                                        <p class="font-semibold text-sm truncate">
-                                                                            {{ $chat->file }} 
-                                                                        </p>
-                                                                        <p class="text-xs text-gray-400"> {{ $chat->file_pages }} Page(s) • {{ $chat->file_size }} • {{ $chat->file_extension }}</p>
-                                                                    </div>
                                                                 </div>
-                                                                <span class="flex gap-x-3">
-                                                                    <span class="fas fa-download cursor-pointer"></span>
-                                                                </span>
                                                             </div>
                                                         </div>
                                                     @endif
@@ -227,6 +238,7 @@
                     @endphp 
                     <div class="flex justify-end">
                         <div class="flex items-center justify-between bg-gray-800 text-white rounded-xl p-3 w-full max-w-md ">
+                            @if(!is_image($ext))
                             <div class="flex items-center gap-3">
                                 @if($file->getClientOriginalExtension() === 'pdf')
                                 <img src="{{asset('images/pdf-ico.png')}}" alt="PDF" class="w-6 h-6 mt-1">
@@ -241,9 +253,20 @@
                                     <p class="text-xs text-gray-400"> {{ $total_pages }} Page(s) • {{ $file_size }} • {{ $ext }}</p>
                                 </div>
                             </div>
+                            @else
+                            <div class="flex items-center flex-col gap-y-2">
+                                <img class="border h-40 w-52" src="{{$file->temporaryUrl()}}" alt="">
+                                <div class="text-center">
+                                    <p class="font-semibold text-sm truncate">
+                                        {{ $name }} 
+                                    </p>
+                                    <p class="text-xs text-gray-400">{{ $file_size }} • {{ $ext }}</p>
+                                </div>
+                            </div>
+                            @endif
                             <span class="flex gap-x-3">
-                                <span wire:click='sendMessage' title="Envoyez" class="fas fa-upload cursor-pointer"></span>
-                                <span wire:click='deleteFile' title="Annuler" class="fas fa-trash text-red-500 cursor-pointer"></span>
+                                <span wire:click='sendMessage' title="Envoyez" class="fas fa-upload cursor-pointer hover:bg-gray-900 p-2 rounded-lg"></span>
+                                <span wire:click='deleteFile' title="Annuler" class="fas fa-trash text-red-500 cursor-pointer hover:bg-gray-900 p-2 rounded-lg"></span>
                             </span>
                         </div>
                     </div>

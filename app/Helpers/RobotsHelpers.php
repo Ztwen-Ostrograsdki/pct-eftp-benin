@@ -144,6 +144,21 @@ if(!function_exists('__arrayAllTruesValues')){
     }
 
 }
+if(!function_exists('is_image')){
+
+    function is_image($extension)
+    {
+        $extension = str_replace('.', '', $extension);
+        
+        if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+            
+            return true;
+        }
+        
+        return false;
+    }
+
+}
 if(!function_exists('numberZeroFormattor')){
 
     function numberZeroFormattor($number, $string = false)
@@ -641,6 +656,25 @@ if(!function_exists('user_profil_photo')){
         if($user->profil_photo) 
 
             return url('storage', $user->profil_photo);
+
+        else
+
+            return asset("/images/errors/nf7.png");
+
+
+    }
+
+}
+
+if(!function_exists('forum_image')){
+
+    function forum_image($chat)
+    {
+        if(!$chat) return asset("/images/errors/nf7.png");
+        
+        if($chat->file_path) 
+
+            return url('storage', $chat->file_path);
 
         else
 

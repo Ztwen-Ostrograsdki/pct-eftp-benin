@@ -163,4 +163,100 @@ class RobotsBeninHelpers {
 
 	}
 
+
+	public static function getLycees($department_id = null, $city_name = null)
+	{
+		$data = [
+			8 => [
+				"COTONOU" =>  [
+					"Lycée Technique Coulibaly",
+					"Lycée Technique et Professionnel de Kpondéhou"
+				]
+			],
+			1 => [
+				"KANDI" => [
+					"Lycée Technique Industriel et Commercial de Kandi"
+				],
+				"BANIKOARA" => [
+					"Lycée Technique Agricole de Banikoara",
+				],
+			],
+			2 => [
+				"NATITINGOU" => [
+					"Lycée Technique et Professionnel de Natitingou",
+				],
+			],
+			3 => [
+				"ABOMEY-CALAVI" => [
+					"Lycée Technique d'Amitié Sino-Béninoise d'Akassato",
+					"Lycée Technique et Professionnel d'Économie Familiale et Sociale d'Akassato",
+				],
+				"OUIDAH" => [
+					"Lycée Technique et Professionnel de Ouidah"
+				],
+			],
+			4 => [
+				"TCHAOUROU" => [
+					"Lycée Technique et Professionnel de Tchaourou",
+					
+				],
+				"BEMBEREKE" => [
+					"Lycée Technique et Professionnel d'Ina" ,
+				],
+			],
+			9 => [
+				"BOPA" => [
+					"Lycée Technique et Professionnel de Bopa"
+				],
+				"LOKOSSA" => [
+					"Lycée Technique de Lokossa",
+				],
+			],
+			7 => [
+				"DJOUGOU" => [
+					"Lycée Technique et Professionnel de Djougou" 
+				],
+			],
+			6 => [
+				"DJAKOTOMEY" => [
+					"Lycée Technique et Professionnel de Djakotomè"
+				],
+			],
+			12 => [
+				"BOHICON" => [
+					"Lycée Technique et Professionnel de Bohicon",
+				],
+			],
+			11 => [
+				"POBE" => [
+					"Lycée Technique et Professionnel de Pobè",
+				],
+			],
+			10 => [
+				"PORTO-NOVO" => [
+					"Lycée Technique et Professionnel de Porto-Novo",
+				],
+			],
+		];
+
+		if($department_id){
+
+			if($city_name){
+
+				return $data[$department_id][$city_name];
+			}
+
+			else{
+
+				return $data[$department_id];
+			}
+
+		}
+
+		return $data;
+
+
+
+	}
+
 }

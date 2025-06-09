@@ -20,10 +20,8 @@
                   <div class="w-1/6 h-2 bg-blue-700"></div>
                 </div>
               </div>
-              <p class="mb-12 text-base text-center text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
-                Pariatur
-                numquam, odio quod nobis ipsum ex cupiditate?
+              <p class="mb-12 text-base text-center text-gray-300 letter-spacing-1 font-semibold">
+                Parcourez ici la liste complète des lycées et centre de formations du BENIN!
               </p>
             </div>
           </div>
@@ -243,6 +241,144 @@
                 </div>
 
             </div>
+
+            @if(!$selected_lycee_id)
+            <div class="swiper LyceeSwiper w-full mx-auto p-3">
+                <h3 class="my-4 font-semibold letter-spacing-1 py-3 text-gray-200 text-lg uppercase text-center border bg-gray-900" >Liste des lycées et centre de formation</h3>
+                <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                @foreach ($lycees as $lc)
+                    <div wire:key='defilement-lycee-{{$lc->id}}' class="swiper-slide z-bg-secondary-light p-6 rounded-2xl shadow-2 shadow-purple-400">
+                        <div class="w-full rounded-lg my-3">
+
+                            @php
+                                $lc_flrs = $lc->getFiliars();
+
+                                $lc_prms = $lc->getPromotions();
+                            @endphp
+
+                            <div class="letter-spacing-1 font-semibold p-2">
+                                <h6 class="text-orange-300">
+                                    Profil du lycée ou centre de formation
+                                </h6>
+                                <h6 class="text-sky-500">
+                                    {{ $lc->name }}
+
+                                    @if($lc->is_public)
+                                    <span class="text-green-600 text-right">
+                                        (PUBLIC)
+                                    </span>
+                                    @else
+                                    <span class="text-orange-400 text-right">
+                                        (PRIVE)
+                                    </span>
+                                    @endif
+                                </h6>
+
+                                <div class="rounded-lg p-3 shadow-2 shadow-sky-400 my-5">
+
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Lycée :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->name }}
+                                        </span>
+                                    </h6>
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Department :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->department }}
+                                        </span>
+                                    </h6>
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Ville ou comunne :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->city }}
+                                        </span>
+                                    </h6>
+
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Proviseur actuel :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->provisor }}
+                                        </span>
+                                    </h6>
+
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Censeur actuel :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->censeur }}
+                                        </span>
+                                    </h6>
+
+                                    <h6>
+                                        <span class="text-gray-400">
+                                            Rand actuel sur le plan national :
+                                        </span>
+                                        <span class="text-orange-300">
+                                            {{ $lc->rank }}
+                                        </span>
+                                    </h6>
+
+                                    <div class="shadow-2 shadow-sky-300 p-2 mt-3">
+                                        <h6 class="w-full border-b text-center text-yellow-400 border-sky-400 py-1 flex justify-between items-center">
+
+                                            <span>Promotions disponibles</span>
+                                        </h6>
+                                        <div class="flex-wrap flex gap-x-3 my-2">
+                                            @if(count($lc_prms) > 0)
+                                                @foreach ($lc_prms as $pr)
+                                                <span class="shadow-2 p-2 px-3 shadow-sky-400 text-sky-500 rounded-lg">
+                                                    <span>
+                                                        {{ $pr->name }}
+                                                    </span>
+                                                </span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-gray-400 letter-spacing-1 text-center my-3 inline-block w-full">Aucune promotion renseignée</span>
+                                            @endif
+                                        </div>
+
+                                    </div>
+
+                                    <div class="shadow-2 shadow-purple-300 p-2 mt-3">
+                                        <h6 class="w-full border-b text-center text-yellow-400 border-purple-400 py-1 flex justify-between items-center">
+
+                                            <span>Filières disponibles</span>
+                                        </h6>
+                                        <div class="flex-wrap flex gap-x-3 my-2">
+                                            @if(count($lc_flrs) > 0)
+                                                @foreach ($lc_flrs as $fl)
+                                                <span class="shadow-2 p-2 px-3 shadow-purple-400 text-purple-500 rounded-lg">
+                                                    <span>
+                                                        {{ $fl->name }}
+                                                    </span>
+                                                </span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-gray-400 letter-spacing-1 text-center my-3 inline-block w-full">Aucune filière renseignée</span>
+                                            @endif
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+                </div>
+            </div>
+            @endif
           
             
         </div>

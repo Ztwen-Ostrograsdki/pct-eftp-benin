@@ -4,6 +4,7 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\NewLyceeCreatedSuccessfullyEvent;
 use App\Helpers\Tools\RobotsBeninHelpers;
 use App\Jobs\JobToGenerateDefaultUserMember;
 use App\Models\Lycee;
@@ -34,38 +35,53 @@ class LyceesListingPage extends Component
 
         $promotions = [];
 
+        $has_lycee = Lycee::all()->count() > 0;
 
-        if(session()->has('selected_lycee_profil')){
+        if($has_lycee){
 
-            $this->selected_lycee_id = session('selected_lycee_profil');
+            if(session()->has('selected_lycee_profil')){
 
-            $selected_lycee = Lycee::find($this->selected_lycee_id);
-            
-        }
+                $this->selected_lycee_id = session('selected_lycee_profil');
 
-        if($this->selected_lycee_id){
+                $selected_lycee = Lycee::find($this->selected_lycee_id);
 
-            $selected_lycee = Lycee::find($this->selected_lycee_id);
+                if(!$selected_lycee){
 
-            $filiars = $selected_lycee->getFiliars();
+                    $this->reset('selected_lycee', 'selected_lycee_id');
 
-            $promotions = $selected_lycee->getPromotions();
+                }
+                
+            }
 
-            $this->selected_lycee = $selected_lycee;
-        }
+            if($this->selected_lycee_id){
 
-        $lycees = [];
+                $selected_lycee = Lycee::find($this->selected_lycee_id);
 
-        if(session()->has('selected_department_lycee_profil')){
+                $filiars = $selected_lycee->getFiliars();
 
-            $this->selected_department = session('selected_department_lycee_profil');
+                $promotions = $selected_lycee->getPromotions();
 
-        }
+                $this->selected_lycee = $selected_lycee;
+            }
 
-        if($this->selected_department){
+            $lycees = [];
 
-            $lycees = Lycee::where('lycees.department', $this->selected_department)->get();
+            if(session()->has('selected_department_lycee_profil')){
 
+                $this->selected_department = session('selected_department_lycee_profil');
+
+            }
+
+            if($this->selected_department){
+
+                $lycees = Lycee::where('lycees.department', $this->selected_department)->get();
+
+            }
+            else{
+
+                $lycees = Lycee::all();
+
+            }
         }
         else{
 
@@ -112,12 +128,57 @@ class LyceesListingPage extends Component
 
     public function deleteLycee()
     {
-        if($this->selected_lycee){
+        $lycee = $this->selected_lycee;
 
+        if($lycee){
+
+            $name = $lycee->name;
+
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de supprimer le lycée: 
+                                <span class='text-sky-400 letter-spacing-2 font-semibold'> {$name} </span>
+                                de la liste des lycées enregistrés dans la base de données!
+                            </p>
+                    </h6>";
+
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
+
+            $options = ['event' => 'confirmedLyceeDeletion', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['lycee_id' => $lycee->id]];
+
+            $this->confirm($html, $noback, $options);
             
+        }
+
+    }
+
+    #[On('confirmedLyceeDeletion')]
+    public function onConfirmedLyceeDeletion($data)
+    {
+        if($data){
+
+            $lycee_id = $data['lycee_id'];
+
+            $lycee = Lycee::find($lycee_id);
+
+            if($lycee){
+
+                $deleted = $lycee->delete();
+
+                if($deleted){
+
+                    NewLyceeCreatedSuccessfullyEvent::dispatch();
+
+                    $this->toast( "Le lycée a été supprimé avec succès!", 'success');
+
+                }
+            }
+            else{
+
+                $this->toast( "La suppression a échoué! Veuillez réessayer!", 'error');
+            }
 
         }
-        
+
     }
 
 

@@ -172,6 +172,15 @@ if(!function_exists('numberZeroFormattor')){
 
 }
 
+if(!function_exists('__formatNumber3')){
+
+    function __formatNumber3(int $number)
+    {
+        return $nombre_formate = number_format($number, 0, '', ' ');
+    }
+
+}
+
 if(!function_exists('substringer')){
 
     function substringer($string, $length = 8)
@@ -759,6 +768,33 @@ if(!function_exists('getUsers')){
     function getUsers()
     {
         return User::all();
+    }
+
+}
+
+if(!function_exists('blockedsUsers')){
+
+    function blockedsUsers()
+    {
+        return User::where('blocked', true)->where('blocked_at')->get();
+    }
+
+}
+
+if(!function_exists('unconfirmedsAccounts')){
+
+    function unconfirmedsAccounts()
+    {
+        return User::whereNull('email_verified_at')->get();
+    }
+
+}
+
+if(!function_exists('confirmedsAccounts')){
+
+    function confirmedsAccounts()
+    {
+        return User::whereNotNull('email_verified_at')->get();
     }
 
 }

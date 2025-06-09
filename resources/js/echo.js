@@ -86,6 +86,12 @@ e.private('confirmeds')
 
 e.private('admin')
 
+    .listen('NewVisitorHasBeenRegistredEvent', (data) =>{
+
+        Livewire.dispatch('LiveNewVisitorHasBeenRegistredEvent');
+        
+    })
+    
     .listen('UserHasBeenBlockedSuccessfullyEvent', (data) =>{
 
         Livewire.dispatch('LiveUserHasBeenBlockedSuccessfullyEvent');

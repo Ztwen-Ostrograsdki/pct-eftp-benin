@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link rel="icon" type="image/jpg" href="{{ asset(env('APP_LOGO')) }}">
+
         <title>{{ $title ?? config('app.name') }}</title>
         {{-- <link rel="stylesheet" href="@sweetalert2/themes/dark/dark.css"> --}}
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js"></script>
@@ -95,6 +97,16 @@
                 autoplay: {
                     delay: 5000,
                     disableOnInteraction: false,
+                },
+                spaceBetween: 40,
+                grabCursor: true,
+            });
+
+            new Swiper(".LyceeSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 20000,
+                    disableOnInteraction: true,
                 },
                 spaceBetween: 40,
                 grabCursor: true,

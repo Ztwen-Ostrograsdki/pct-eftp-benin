@@ -1,10 +1,10 @@
-<div class="w-full px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
+<div class="w-full px-4 sm:px-3 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500">
     <section class="py-14 font-poppins">
-        <div class="max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
+        <div class="max-w-6xl py-6 mx-auto lg:py-4 md:px-6">
           <div class="w-full mx-auto">
             <div class="text-center ">
               <div class="relative flex flex-col ">
-                <h1 class="text-xl font-bold dark:text-gray-200 text-left letter-spacing-1"> 
+                <h1 class="lg:text-xl md:text-lg sm:text-xs xs:text-xs font-bold dark:text-gray-200 text-left letter-spacing-1"> 
                     Listes complètes des Lycées et Centres de Formations du 
                     <span class="text-blue-500">BENIN</span>
                     <span class="text-orange-200 float-right text-right">
@@ -26,36 +26,48 @@
             </div>
           </div>
 
+           @if(__isAdminAs())
             <div class="border-t my-2 shadow-2 items-center shadow-sky-400 py-3 gap-x-2 flex justify-end px-2">
-                @if(__isAdminAs())
-                    @if($selected_lycee)
-                        <button wire:click="deleteLycee" title="Supprimer le lycée | centre de formation {{ $selected_lycee->name }}" type="button" class="border cursor-pointer bg-red-500 text-red-100 rounded-md hover:bg-red-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800">
-                            <span wire:loading.remove wire:target='deleteLycee'>
-                                <span>Supprimer</span>
-                                <span class="fas fa-trash hover:animate-spin"></span>
-                            </span>
-                            <span wire:loading wire:target='deleteLycee'>
-                                <span class="">
-                                    Suppression en cours...
-                                </span>
-                                <span class="fas fa-rotate animate-spin"></span>
-                            </span>
-
-                            
-                        </button>
-                        <button wire:click="manageLyceeData" title="Editer les données de {{ $selected_lycee->name }}" type="button" class="border cursor-pointer bg-gray-500 text-gray-100 rounded-md hover:bg-gray-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
-                            <span>Editer les données</span>
+               
+                @if($selected_lycee)
+                    <button wire:click="manageLyceeImages" title="Ajouter ou éditer les images du lycée | centre de formation {{ $selected_lycee->name }}" type="button" class="border cursor-pointer bg-blue-500 text-gray-100 rounded-md hover:bg-blue-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <span wire:loading.remove wire:target='manageLyceeImages'>
+                            <span>Modifier images</span>
                             <span class="fas fa-edit hover:animate-spin"></span>
-                        </button>
-                    @endif
+                        </span>
+                        <span wire:loading wire:target='manageLyceeImages'>
+                            <span class="">
+                                En cours...
+                            </span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </button>
                     
-                    <button wire:click="addNewLycee" title="Ajouter un lycée ou un centre de formation" type="button" class="border cursor-pointer bg-green-500 text-gray-100 rounded-md hover:bg-green-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800">
-                        <span>Ajouter un lycée | centre de formation</span>
-                        <span class="fas fa-plus hover:animate-spin"></span>
+                    <button wire:click="deleteLycee" title="Supprimer le lycée | centre de formation {{ $selected_lycee->name }}" type="button" class="border cursor-pointer bg-red-500 text-red-100 rounded-md hover:bg-red-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800">
+                        <span wire:loading.remove wire:target='deleteLycee'>
+                            <span>Supprimer</span>
+                            <span class="fas fa-trash hover:animate-spin"></span>
+                        </span>
+                        <span wire:loading wire:target='deleteLycee'>
+                            <span class="">
+                                Suppression en cours...
+                            </span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </button>
+
+                    <button wire:click="manageLyceeData" title="Editer les données de {{ $selected_lycee->name }}" type="button" class="border cursor-pointer bg-gray-500 text-gray-100 rounded-md hover:bg-gray-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
+                        <span>Editer les données</span>
+                        <span class="fas fa-edit hover:animate-spin"></span>
                     </button>
                 @endif
+                
+                <button wire:click="addNewLycee" title="Ajouter un lycée ou un centre de formation" type="button" class="border cursor-pointer bg-green-500 text-gray-100 rounded-md hover:bg-green-700 float-right px-2 py-2  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800">
+                    <span>Ajouter un lycée | centre de formation</span>
+                    <span class="fas fa-plus hover:animate-spin"></span>
+                </button>
             </div>
-
+            @endif
             <div>
                 <div class="flex justify-between gap-x-3 w-full">
                     <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0">
@@ -165,6 +177,25 @@
                                     </span>
                                 </h6>
 
+                                <div class="shadow-2 my-3">
+                                    <h6 class="text-gray-100 py-1 my-2 border rounded-xl text-center uppercase bg-violet-600">
+                                        Des images...
+                                    </h6>
+                                    <div class="swper swper_name w-full mx-auto">
+                                        <div class="swper_wrapr">
+                                            <div class="grid grid-cols-3 items-center justify-center gap-x-0 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-auto">
+                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img2.jpg')}}" alt="">                                                    
+                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img3.jpg')}}" alt="">                                                    
+                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img4.jpg')}}" alt="">                                                    
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    
+
+                                </div>
+
                                 <div class="shadow-2 shadow-sky-300 p-2 mt-3">
                                     <h6 class="w-full border-b text-center text-yellow-400 border-sky-400 py-1 flex justify-between items-center">
 
@@ -243,12 +274,12 @@
             </div>
 
             @if(!$selected_lycee_id)
-            <div class="swiper LyceeSwiper w-full mx-auto p-3">
-                <h3 class="my-4 font-semibold letter-spacing-1 py-3 text-gray-200 text-lg uppercase text-center border bg-gray-900" >Liste des lycées et centre de formation</h3>
+            <div class="swiper LyceeSwiper w-full mx-auto py-3">
+                <h3 class="my-4 font-semibold w-full letter-spacing-1 py-3 text-gray-200 lg:text-lg md:text-lg sm:text-xs xs:text-xs uppercase text-center border bg-gray-900" >Liste des lycées et centre de formation</h3>
                 <div class="swiper-wrapper">
                 <!-- Slide 1 -->
                 @foreach ($lycees as $lc)
-                    <div wire:key='defilement-lycee-{{$lc->id}}' class="swiper-slide z-bg-secondary-light p-6 rounded-2xl shadow-2 shadow-purple-400">
+                    <div wire:key='defilement-lycee-{{$lc->id}}' class="swiper-slide z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400">
                         <div class="w-full rounded-lg my-3">
 
                             @php
@@ -258,18 +289,15 @@
                             @endphp
 
                             <div class="letter-spacing-1 font-semibold p-2">
-                                <h6 class="text-orange-300">
-                                    Profil du lycée ou centre de formation
-                                </h6>
-                                <h6 class="text-sky-500">
+                                <h6 class="text-gray-900 py-2 border rounded-xl text-center uppercase bg-sky-600">
                                     {{ $lc->name }}
 
                                     @if($lc->is_public)
-                                    <span class="text-green-600 text-right">
+                                    <span class="text-gray-100 text-right">
                                         (PUBLIC)
                                     </span>
                                     @else
-                                    <span class="text-orange-400 text-right">
+                                    <span class="text-orange-600 text-right">
                                         (PRIVE)
                                     </span>
                                     @endif
@@ -328,6 +356,25 @@
                                             {{ $lc->rank }}
                                         </span>
                                     </h6>
+
+                                    <div class="shadow-2 my-3">
+                                        <h6 class="text-gray-100 py-1 my-2 border rounded-xl text-center uppercase bg-violet-600">
+                                            Des images...
+                                        </h6>
+                                        <div class="swper swper_name w-full mx-auto">
+                                            <div class="swper_wrapr">
+                                                <div class="grid lg:grid-cols-3 justify-center gap-x-0 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-full">
+                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img2.jpg')}}" alt="">                                                    
+                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img3.jpg')}}" alt="">                                                    
+                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img4.jpg')}}" alt="">                                                    
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        
+
+                                    </div>
 
                                     <div class="shadow-2 shadow-sky-300 p-2 mt-3">
                                         <h6 class="w-full border-b text-center text-yellow-400 border-sky-400 py-1 flex justify-between items-center">

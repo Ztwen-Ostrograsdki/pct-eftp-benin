@@ -207,6 +207,15 @@ class LyceesListingPage extends Component
 
     }
 
+    public function manageLyceeImages()
+    {
+        if($this->selected_lycee_id){
+
+            $this->dispatch("ManageLyceeImagesEvent", $this->selected_lycee_id);
+
+        }
+    }
+
 
     public function updatedSelectedLyceeId($selected_lycee_id)
     {

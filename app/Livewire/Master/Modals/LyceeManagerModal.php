@@ -44,6 +44,8 @@ class LyceeManagerModal extends Component
 
     public $editing_lycee = null;
 
+    public $showModal = false;
+
     public function render()
     {
         $cities = [];
@@ -109,10 +111,13 @@ class LyceeManagerModal extends Component
     #[On('AddNewLyceeEvent')]
     public function openModal()
     {
+
         $this->reset();
 
 
         $this->dispatch('OpenModalEvent', $this->modal_name);
+
+        $this->dispatch('modalOpened');
     } 
     
     
@@ -163,5 +168,7 @@ class LyceeManagerModal extends Component
     public function hideModal($modal_name = null)
     {
         $this->dispatch('HideModalEvent', $this->modal_name);
+        
+        $this->dispatch('modalClosed');
     }
 }

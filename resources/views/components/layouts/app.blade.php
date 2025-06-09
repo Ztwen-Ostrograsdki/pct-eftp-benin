@@ -54,6 +54,7 @@
         @livewire('master.modals.lycee-manager-modal')
         @livewire('master.modals.lycee-filiars-manager-modal')
         @livewire('master.modals.lycee-promotions-manager-modal')
+        @livewire('master.modals.lycee-images-manger-modal')
         @livewire('master.modals.member-payments-modal-manager')
         @livewire('user.quotes-manager-modal')
         @livewire('master.modals.communique-manager-modal')
@@ -78,9 +79,19 @@
 
             document.addEventListener('DOMContentLoaded', () => {
 
-                document.getElementById('epreuve-message-input').focus();
+                let message_focusable = document.getElementById('epreuve-message-input');
 
-                //document.getElementById('my-preloader-cover').remove();
+                if(message_focusable) {message_focusable.focus();}
+
+                document.querySelectorAll('[id$="-modal"]').forEach(modal => {
+
+                    modal.setAttribute('aria-hidden', 'true');
+                    
+                });
+
+                
+
+                // document.getElementById('my-preloader-cover').remove();
 
             });
 
@@ -88,42 +99,64 @@
                 initFlowbite();
             });
             
-            window.User = { 
-                id: {{optional(auth()->user())->id}},
+            function initAllSwipers() {
+                const swiper1 = document.querySelector('.mySwiper');
+                const swiper2 = document.querySelector('.LyceeSwiper');
+                const swiper3 = document.querySelector('.MyCommuniquesSwiper');
+
+                if (swiper1 && !swiper1.swiper) {
+                    new Swiper(swiper1, {
+                        loop: true,
+                        autoplay: {
+                            delay: 5000,
+                            disableOnInteraction: false,
+                        },
+                        spaceBetween: 40,
+                        grabCursor: true,
+                    });
+                }
+
+                if (swiper2 && !swiper2.swiper) {
+                    new Swiper(swiper2, {
+                        loop: true,
+                        autoplay: {
+                            delay: 20000,
+                            disableOnInteraction: true,
+                        },
+                        spaceBetween: 40,
+                        grabCursor: true,
+                    });
+                }
+
+                if (swiper3 && !swiper3.swiper) {
+                    new Swiper(swiper3, {
+                        loop: false,
+                        autoplay: {
+                            delay: 20000,
+                            disableOnInteraction: false,
+                        },
+                        spaceBetween: 50,
+                        grabCursor: true,
+                    });
+                }
             }
 
-            new Swiper(".mySwiper", {
-                loop: true,
-                autoplay: {
-                    delay: 5000,
-                    disableOnInteraction: false,
-                },
-                spaceBetween: 40,
-                grabCursor: true,
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                initAllSwipers();
             });
 
-            new Swiper(".LyceeSwiper", {
-                loop: true,
-                autoplay: {
-                    delay: 20000,
-                    disableOnInteraction: true,
-                },
-                spaceBetween: 40,
-                grabCursor: true,
+            document.addEventListener('livewire:navigated', () => {
+
+                initAllSwipers();
             });
 
-
-            new Swiper(".MyCommuniquesSwiper", {
-                loop: 0,
-                autoplay: {
-                    delay: 20000,
-                    disableOnInteraction: false,
-                },
-                spaceBetween: 50,
-                grabCursor: true,
+            Livewire.hook('message.processed', (message, component) => {
+                
+                initAllSwipers();
             });
 
-            
             document.addEventListener('livewire:init', () => {
 
                 Livewire.on('HideModalEvent', (event) => {
@@ -132,35 +165,48 @@
 
                     let modalElement = document.querySelector(modal_name);
 
-                    console.log(modalElement);
-
                     modal = new Modal(modalElement)
 
                     modal.hide();
 
-                    document.querySelector(".fixed.inset-0.z-40").remove()
+                    let fixed = document.querySelector(".fixed.inset-0.z-40");
+
+                    if(fixed){fixed.remove();}
+
+                    setTimeout(() => {
+
+                        initAllSwipers(); 
+                    }, 300); 
 
                 });
 
                 Livewire.on('OpenModalEvent', (event) => {
 
-                    console.log('modal_name')
-
                     let modal_name = event[0];
 
                     let modalElement = document.querySelector(modal_name);
 
-                    console.log(modalElement);
-
                     modal = new Modal(modalElement)
 
+                    modalElement.setAttribute('aria-hidden', 'false');
+
                     modal.show();
+
+                    initAllSwipers();
 
                 });
                 
             });
-            
+
+
+            window.User = {!! json_encode([
+                    'id' => optional(auth()->user())->id,
+                ]) 
+            !!};
+
         </script>
+
+        
         
         <script src="{{asset('js/revealmanagerfile.js')}}"></script>
         

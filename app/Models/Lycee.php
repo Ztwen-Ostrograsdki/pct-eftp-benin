@@ -64,6 +64,11 @@ class Lycee extends Model
         return $promotions;
     }
 
+    public function hasImages(): bool
+    {
+        return (array)$this->images !== null;
+    }
+
     public function getImages()
     {
         

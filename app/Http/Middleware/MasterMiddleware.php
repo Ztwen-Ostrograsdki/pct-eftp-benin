@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,11 @@ class MasterMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()){
+        if($request->user()){
+
+            $user = $request->user();
             
-            if(Auth::user()->id == 1 || Auth::user()->ability == 'master'){
+            if($user->isMaster()){
                 
                 return $next($request);
             }

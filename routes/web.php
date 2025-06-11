@@ -43,7 +43,7 @@ Route::get('communiques/communique/id={id}/s={slug}', CommuniqueComponent::class
 Route::get('/les-lycees-et-centre-de-formations-du-benin', LyceesListingPage::class)->name('lycee.listing');
 
 
-Route::middleware(['auth', 'master', 'user.not.blocked'])->group(function(){
+Route::middleware(['auth', 'user.not.blocked', 'admin.or.master'])->group(function(){
 
     Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
     
@@ -83,15 +83,15 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     
     Route::get('profil/IDX={identifiant}/edition-profil/{auth_token}', UserEditionPage::class)->name('user.profil.edition')->middleware(['user.self']);
 
-    Route::get('profil/IDX={identifiant}', UserProfil::class)->name('user.profil')->middleware(['user.self']);
+    Route::get('profil/IDX={identifiant}', UserProfil::class)->name('user.profil')->middleware(['self.or.admins']);
     
-    Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['user.self']);
+    Route::get('profil/statut=membre/IDX={identifiant}', MemberProfil::class)->name('member.profil')->middleware(['self.or.admins']);
     
-    Route::get('profil/statut=membre/cotisations/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['user.self']);
+    Route::get('profil/statut=membre/cotisations/IDX={identifiant}/mes-cotisations', MyMonthlyPayments::class)->name('member.payments')->middleware(['self.or.admins']);
     
-    Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['user.self']);
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-citations', MyQuotes::class)->name('member.quotes')->middleware(['self.or.admins']);
 
-    Route::get('profil/statut=membre/IDX={identifiant}/mes-roles-administrateurs', MyAdminRoles::class)->name('member.admins.roles')->middleware([]);
+    Route::get('profil/statut=membre/IDX={identifiant}/mes-roles-administrateurs', MyAdminRoles::class)->name('member.admins.roles')->middleware(['self.or.admins']);
 
 });
 

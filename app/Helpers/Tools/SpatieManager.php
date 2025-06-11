@@ -115,7 +115,7 @@ trait SpatieManager{
 			'lycees-manager', 
 			'forum-messages-manager', 
 			'account-manager', 
-			'lestroyer', 
+			'destroyer', 
 			'user-account-reseter', 
 			'cotisations-manager', 
 			'classes-filiars-promotions-manager'
@@ -130,7 +130,7 @@ trait SpatieManager{
 	{
 		$data = [
 
-			'master' => "Master", 
+			'master' => "Master (Tous les rôles) Indestructible", 
 			'admin-1' => "Admin niveau 1", 
 			'admin-2' => "Admin niveau 2", 
 			'admin-3'=> "Admin niveau 3",
@@ -142,7 +142,7 @@ trait SpatieManager{
 			'members-manager'=> "Gestion des membres",
 			'viewer'=> "Lecture seule",
 			'lycees-manager'=> "Gestion des lycées",
-			'forum-messages-manager'=> "Gestions des messages sur le forum",
+			'forum-messages-manager'=> "Gestion des messages sur le forum",
 			'account-manager'=> "Gestion des comptes utilisateurs",
 			'destroyer'=> "Destructeur",
 			'user-account-reseter'=> "Réinitialisation de compte utilisateur",
@@ -151,7 +151,7 @@ trait SpatieManager{
 
 		];
 
-		return $role_name && isset($data[$role_name]) ? $data[$role_name] : 'inconnu';
+		return $role_name && isset($data[$role_name]) ? $data[$role_name] : $role_name ;
 
 
 	}
@@ -164,7 +164,7 @@ trait SpatieManager{
 			'edit users' => "Editer les utilisateurs", 
 			'delete users' => "Supprimer les utilisateurs",
 			'view users' => "Parcourir les utilisateurs",
-			'assign roles' => "Atribuer des roles", 
+			'assign roles' => "Attribuer des rôles", 
 			'access dashboard' => "Accès à la page d'administration", 
 			'update settings' => "Mettre à jour les réglages",
 			'edit epreuves' => "Editer les épreuves", 
@@ -197,7 +197,7 @@ trait SpatieManager{
 
 		];
 
-		return $permission_name && isset($data[$permission_name]) ? $data[$permission_name] : 'inconnu';
+		return $permission_name && isset($data[$permission_name]) ? $data[$permission_name] : $permission_name;
 	}
 
 

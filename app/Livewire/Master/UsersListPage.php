@@ -6,13 +6,14 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Events\InitUserAccountDeletionEvent;
+use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class UsersListPage extends Component
 {
-    use Toast, Confirm;
+    use Toast, Confirm, ListenToEchoEventsTrait;
 
     protected $listeners = [
         'LiveUserHasBeenBlockedSuccessfullyEvent' => 'userBlockedSuccessfully',
@@ -21,6 +22,8 @@ class UsersListPage extends Component
     public $search = '';
 
     public $section = null;
+
+    public $counter = null;
 
     public $paginate_page = 10;
 
@@ -346,5 +349,11 @@ class UsersListPage extends Component
            
         }
 
+    }
+
+    #[On("LiveUpdateUsersListToComponentsEvent")]
+    public function reloadDataNewUser()
+    {
+        $this->counter = getRand();
     }
 }

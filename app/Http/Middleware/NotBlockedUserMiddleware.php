@@ -16,9 +16,9 @@ class NotBlockedUserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()){
+        if($request->user()){
             
-            if(Auth::user()->blocked == false){
+            if($request->user()->blocked == false){
                 
                 return $next($request);
             }

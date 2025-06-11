@@ -1,5 +1,5 @@
 <div class="p-2">
-    <div class="m-auto my-1 w-full z-bg-secondary-light min-h-80 p-2">
+    <div class="m-auto my-1 w-full z-bg-secondary-light min-h-80 p-2" x-data="{ show: false, currentImage: '', userName: '', email: '' }">
         <div class="m-auto bg-gray-700 p-0 my-3">
             <h1 class="p-4 text-gray-300 flex items-center justify-between border uppercase text-center rounded-sm">
                 <span class="text-xs letter-spacing-2">
@@ -82,7 +82,7 @@
                         </th>
                         <td class="px-6 py-4">
                             <span class="flex gap-x-2 items-center">
-                                <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}">
+                                <img title="Cliquez pour zoomer sur l'image de profil"  @click="currentImage = '{{ user_profil_photo($user) }}'; userName = '{{ $user->getFullName(true) }}'; email = '{{ $user->email }}'; show = true" class="w-8 h-8 rounded-full" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}">
                                 <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
                                     {{$user->getFullName()}} 
                                 </a>
@@ -190,7 +190,7 @@
                                         <span class="fa fa-trash"></span>
                                     </span>
                                     <span wire:loading wire:target="deleteUserAccount('{{$user->id}}')">
-                                        <span>Suppr compte...</span>
+                                        <span>Suppr. compte...</span>
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>
@@ -214,7 +214,28 @@
                 {{ $users->links() }}
             </div>
         </div>
+        <div 
+            x-show="show"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-75"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-75"
+            class="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50"
+            style="display: none;"
+            @click="show = false"
+        >
+            <h5 class="mx-auto flex flex-col gap-y-1 text-lg w-auto text-center py-3 font-semibold letter-spacing-1 bg-gray-950 my-3" >
+                <span class=" text-sky-500 uppercase" x-text="userName"></span>
+                <span class=" text-yellow-500" x-text="email"></span>
+            </h5>
+            <img :src="currentImage" alt="Zoom" class="max-w-4xl max-h-[90vh] rounded shadow-xl border-2 border-white" @click.stop>
+            
+        </div>
     </div>
+
+    
 
 
     

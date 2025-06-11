@@ -84,7 +84,7 @@ class Navbar extends Component
     public function render()
     {
         $communiques = Communique::where('hidden', false)->get();
-        
+
         return view('livewire.partials.navbar', compact('communiques'));
     }
 

@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Middleware\AdminsOrSelfUserMiddleware;
+use App\Http\Middleware\IsAdminMiddleware;
 use App\Http\Middleware\MasterMiddleware;
 use App\Http\Middleware\NotBlockedUserMiddleware;
+use App\Http\Middleware\OnlyAdminsMiddleware;
 use App\Http\Middleware\SelfUserMiddleware;
 use App\Http\Middleware\UserConfirmedByAdminMiddleware;
 use Illuminate\Foundation\Application;
@@ -23,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'user.self' => SelfUserMiddleware::class,
             'user.confirmed.by.admin' => UserConfirmedByAdminMiddleware::class,
             'user.not.blocked' => NotBlockedUserMiddleware::class,
+            'admin.or.master' => IsAdminMiddleware::class,
+            'only.admins' => OnlyAdminsMiddleware::class,
+            'self.or.admins' => AdminsOrSelfUserMiddleware::class,
         ]);
         
     })

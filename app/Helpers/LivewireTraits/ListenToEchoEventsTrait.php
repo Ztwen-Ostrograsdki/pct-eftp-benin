@@ -20,6 +20,24 @@ trait ListenToEchoEventsTrait{
     {
         $this->counter = getRandom();
     }
+    
+    #[On("LiveUpdatedLyceesDataEvent")]
+    public function relaodDataForLycees()
+    {
+        $this->counter = getRandom();
+    }
+    
+    #[On("LiveUpdateMembersListEvent")]
+    public function relaodDataForMembers()
+    {
+        $this->counter = getRandom();
+    }
+    
+    #[On("LiveUpdateUsersListToComponentsEvent")]
+    public function relaodDataForUsers()
+    {
+        $this->counter = getRandom();
+    }
 
 
 }

@@ -80,6 +80,17 @@
                     </span>
                 </div>
 
+                @error('images') 
+                    <span class="text-red-500 text-xs py-2 ml-1 font-semibold letter-spacing-1">
+                        {{ $message }}
+                    </span> 
+                @enderror
+                @error('images.*') 
+                    <span class="text-red-500 text-xs py-2 ml-1 font-semibold letter-spacing-1">
+                        {{ $message }}
+                    </span> 
+                @enderror
+
                 <div wire:loading.class='opacity-15' wire:target='images' class="grid grid-cols-2 gap-x-4 my-2 mt-5">
                     <span wire:click="save" class="border col-span-1 cursor-pointer flex items-center text-center justify-center bg-blue-700 text-gray-100 hover:bg-blue-600 px-5 py-2 rounded-full">
                         <span wire:loading.remove wire:target='save'>Valider</span>

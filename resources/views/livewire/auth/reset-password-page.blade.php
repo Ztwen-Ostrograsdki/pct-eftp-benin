@@ -10,14 +10,14 @@
             <div class="mt-5">
 
               @if(session()->has('success'))
-              <span class="text-dark bg-green-400 border block text-sm rounded-md p-2 border-green-950 text-center">
-                <b>{{ session('success')}}</b>
+              <span class="text-dark letter-spacing-1 font-semibold bg-green-400 border block text-sm rounded-md p-2 border-green-950 text-center">
+                {{ session('success')}}
               </span>
               @endif
 
               @if(session()->has('error'))
-              <span class="text-dark bg-red-400 border block rounded-md p-2 border-red-950 text-center">
-                <b>{{ session('error')}}</b>
+              <span class="text-dark text-sm letter-spacing-1 font-semibold bg-red-400 border block rounded-md p-2 border-red-950 text-center">
+                {{ session('error')}}
               </span>
               @endif
               <!-- Form -->

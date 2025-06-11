@@ -16,14 +16,15 @@ class SelfUserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()){
-            
-            if(Auth::user()->id === $request->user()->id){
-                
-                return $next($request);
-            }
-            return abort(403, "Vous n'êtes pas authorisé");
+        $user = $request->user(); 
+
+        $identifiant = $request->route('identifiant'); 
+
+        if ($identifiant !== $user->identifiant) {
+
+            abort(403, 'Vous ne pouvez accéder à cette page');
         }
-        return redirect(route('login'));
+
+        return $next($request);
     }
 }

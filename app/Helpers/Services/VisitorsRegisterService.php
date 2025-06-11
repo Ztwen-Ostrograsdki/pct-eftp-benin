@@ -33,13 +33,28 @@ trait VisitorsRegisterService{
 
             // Évite les doublons dans une courte période
             if (!Visitor::where('ip_address', $ip)->whereDate('visited_at', now()->toDateString())->exists()) {
-                $location = Http::get("http://ip-api.com/json/{$ip}")->json(); // API gratuite
+
+
+                if(__isConnectedToInternet()){
+
+					$location = Http::get("http://ip-api.com/json/{$ip}")->json(); // API gratuite
+
+					$country = $location['country'] ?? "BENIN";
+
+					$city =  $location['city'] ?? null;
+				}
+				else{
+
+					$country = "BENIN";
+
+					$city =  null;
+				}
 
                 Visitor::create([
                     'ip_address' => $ip,
                     'user_agent' => Request::header('User-Agent'),
-                    'country' => $location['country'] ?? "BENIN",
-                    'city' => $location['city'] ?? null,
+                    'country' => $country,
+                    'city' => $city,
                     'device_type' => self::getDeviceType(),
                 ]);
             }

@@ -106,7 +106,7 @@ class InitUserPersoData extends Component
 
             $data = [
                 'firstname' => Str::upper($this->firstname),
-                'lastname' => Str::ucwords($this->lastname),
+                'lastname' => ucwords($this->lastname),
                 'birth_date' => $this->birth_date,
                 'birth_city' => Str::ucfirst($this->birth_city),
                 'address' => $this->address,

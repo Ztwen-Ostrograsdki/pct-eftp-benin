@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -12,16 +11,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateMembersListEvent implements ShouldBroadcast
+class UpdatedUserProfilEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(
+        public User $user
+    )
     {
-        
+        $this->user = $user;
     }
 
     /**
@@ -33,6 +34,7 @@ class UpdateMembersListEvent implements ShouldBroadcast
     {
         return [
             new Channel('public'),
+            new PrivateChannel('App.Models.User.' . $this->user->id),
         ];
     }
 }

@@ -7,9 +7,10 @@ use App\Models\SupportFile;
 use App\Models\User;
 use App\Notifications\NotifyAdminThatBlockedUserTriedToLoginToUnblockThisUserAccount;
 use App\Notifications\NotifyAdminThatNewUserSubscribedToConfirmThisUserAccount;
+use App\Notifications\RealTimeNotificationGetToUser;
 use App\Notifications\SendDynamicMailToUser;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
 
 class ModelsRobots{
 
@@ -37,25 +38,52 @@ class ModelsRobots{
         return $name  ? $greating . ' ' . $name : $greating;
     }
 
-    public static function getUserAdmins($pluckindColumn = 'id', $except = null)
+    public static function getUserAdmins($pluckingColumn = 'id', $except = null)
     {
-        $admins = User::where('ability', 'admin')
-                      ->orWhere('ability', 'master')
-                      ->orWhere('id', 1)
-                      ->pluck($pluckindColumn)
-                      ->toArray();
+        $roles = ['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'];
 
-        return count($admins) ? $admins : [1];
+        if(!$pluckingColumn)
+
+            return User::whereHas('roles', function($query) use ($roles) {
+
+                $query->whereIn('admins.name', $roles);
+
+            })
+            ->orWhere(function($query){
+
+                $query->where('users.id', 1);
+            })
+            ->distinct()
+            ->pluck('id')
+            ->toArray();
+        else
+
+        return User::whereHas('roles', function($query) use ($roles) {
+
+            $query->whereIn('admins.name', $roles);
+
+        })
+        ->orWhere(function($query){
+
+            $query->where('users.id', 1);
+        })
+        ->distinct()->get();
     }
 
     public static function getAllAdmins()
     {
-        $admins = User::where('ability', 'admin')
-                      ->orWhere('ability', 'master')
-                      ->orWhere('id', 1)
-                      ->get();
+        $roles = ['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'];
 
-        return $admins;
+        return User::whereHas('roles', function($query) use ($roles) {
+
+            $query->whereIn('admins.name', $roles);
+        })
+        ->orWhere(function($query){
+
+            $query->where('users.id', 1);
+        })
+        ->distinct()->get();
+
     }
 
     public static function notificationToAdminsThatNewEpreuveHasBeenPublished(User $user, Epreuve $epreuve)
@@ -165,11 +193,17 @@ class ModelsRobots{
 
             $admins = self::getAllAdmins();
 
+            $since = __formatDateTime($user->email_verified_at);
+
             foreach($admins as $admin){
 
                 $admin->notify(new NotifyAdminThatNewUserSubscribedToConfirmThisUserAccount($user));
 
             }
+
+            $message = "L'utilisateur " . $user->getFullName(true) . " vient de confirmer son compte ce: " . $since . " !";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
 
         }
     }
@@ -177,6 +211,8 @@ class ModelsRobots{
     public static function notificationThatBlockedUserTriedToLogin(User $user, $title, $object, $content)
     {
         if($user && !$user->blocked){
+
+            $since = __formatDateTime($user->blocked_at);
 
             $admins = self::getAllAdmins();
 
@@ -186,13 +222,10 @@ class ModelsRobots{
 
             }
 
+            $message = "L'utilisateur " . $user->getFullName(true) . " dont le compte a été bloqué le " . $since . " a essayé de se connecter à son compte!";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
         }
     }
-
-
-
-
-
-
-
 }

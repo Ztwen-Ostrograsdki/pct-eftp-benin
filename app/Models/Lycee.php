@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\ObserveLycee;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ObserveLycee::class)]
 class Lycee extends Model
 {
     protected $fillable = [
@@ -69,8 +72,25 @@ class Lycee extends Model
         return (array)$this->images !== null;
     }
 
-    public function getImages()
+    public function getImagesPaths()
     {
+        $images = (array)$this->images;
+
+        $paths = [];
+
+        if($this->hasImages()){
+
+            foreach($images as $image){
+
+                $path = url('storage', $image);
+
+                $paths[$image] = $path;
+
+            }
+
+        }
+
+        return $paths;
         
     }
 

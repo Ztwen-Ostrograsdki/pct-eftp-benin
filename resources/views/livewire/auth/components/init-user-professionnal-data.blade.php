@@ -169,27 +169,49 @@
                   @endif
             </div>
         </div>
-        <div class="grid md:gap-6">
-          <div class="relative z-0 w-full mb-5 group text-gray-400">
-            <label for="register-school" class="block mb-1 text-sm font-medium text-gray-400">
-                Vos lycées d'intervention
-                <small class="text-yellow-500 letter-spacing-1 float-right">Les séparer par un point virgule</small>
+        <div class="w-full mx-auto border rounded-lg border-gray-500 px-2 mb-5">
+            <span class="inline-block py-1 letter-spacing-2 text-gray-400 w-full text-center text-sm border-b mb-1 border-gray-500">
+                Vous êtes déployé dans un lycée? Veuillez le(s) mentionner!
+            </span>
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="grid col-span-2 md:gap-6">
+                    <div class="relative z-0 w-full group text-gray-400">
+                        <label for="register-school" class="block mb-1 text-sm font-medium text-gray-400">
+                            Vos lycées d'intervention
+                            <small class="text-yellow-500 letter-spacing-1 float-right">Les séparer par un point virgule</small>
 
-            </label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
-                    <span class="fas fa-school"></span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                                <span class="fas fa-school"></span>
+                            </div>
+                            <input wire:model.live='school' type="text" id="register-school" aria-describedby="helper-text-register-school" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Renseignez lycées en les séparant par un point virgule" required />
+                        </div>
+                        @error('school')
+                        <p id="helper-text-register-school" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
+                            {{$message }}
+                        </p>
+                        @enderror
+                        
+                    </div>
                 </div>
-                <input wire:model.live='school' type="text" id="register-school" aria-describedby="helper-text-register-school" class="bg-transparent border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Renseignez lycées en les séparant par un point virgule" required />
-            </div>
-            @error('school')
-            <p id="helper-text-register-school" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
-              {{$message }}
-            </p>
-            @enderror
-            
-          </div>
+                    <div class="relative col-span-2 z-0 w-full mb-1 text-gray-400 group ">
+                        <label for="register-school_by_select" class="block mb-1 text-sm font-medium text-gray-400">Sélectionnez les lycées ou centres</label>
+                        <select multiple aria-describedby="helper-text-register-school_by_select" wire:model.live='school_by_select' id="register-school_by_select" class="bg-transparent border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        @foreach ($lycees as $lk => $lycee)
+                            <option class="bg-transparent w-full" value="{{$lycee->name}}">{{$lycee->name}}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                    @if($school || $school_by_select)
+                        <span wire:click="refreshSelected" title="Rafraîchir les données renseignées" class="border rounded-lg bg-red-300 text-red-700 font-semibold letter-spacing-1 cursor-pointer hover:bg-red-500 px-2 inline-block text-sm col-span-2 mx-auto py-2 my-2">
+                            <span class="fas fa-broom"></span>
+                            <span>Rafraîchir les sélections</span>
+                        </span>
+                    @endif
+                </div>
         </div>
+        
         <div class="grid grid-cols-5 gap-x-2">
             <a href="#" wire:click='goToTheGraduateForm' wire:loading.class='opacity-50' wire:target='goToTheGraduateForm' class=" cursor-pointer py-3 px-4 col-span-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <span wire:loading.remove wire:target='goToTheGraduateForm'>

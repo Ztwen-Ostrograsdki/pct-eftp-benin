@@ -5,16 +5,18 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\NewLyceeCreatedSuccessfullyEvent;
+use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Helpers\Tools\RobotsBeninHelpers;
 use App\Jobs\JobToGenerateDefaultUserMember;
 use App\Models\Lycee;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class LyceesListingPage extends Component
 {
-    use Toast, Confirm;
+    use Toast, Confirm, ListenToEchoEventsTrait;
 
     public $counter = 6;
 
@@ -96,6 +98,39 @@ class LyceesListingPage extends Component
             'promotions' => $promotions,
             
         ]);
+    }
+
+    public function removeImageFromImagesOf($image_path, $lycee_id = null)
+    {
+        if($image_path){
+
+            $lycee = $this->selected_lycee;
+
+            $images = (array)$lycee->images;
+
+            if(in_array($image_path, $images)){
+
+                $image_key = array_keys($images, $image_path)[0];
+
+                $path = storage_path().'/app/public/' . $image_path;
+
+                $deleted = File::delete($path);
+
+                if($deleted){
+
+                    unset($images[$image_key]);
+
+                    $images = array_values($images); 
+
+                    $updated = $lycee->update(['images' => $images]);
+
+                    if($updated) $this->toast( "L'image a été retirée avec succès!", 'success');
+
+                    $this->counter = getRand();
+                }
+
+            }
+        }
     }
 
     public function manageLyceeFiliars()

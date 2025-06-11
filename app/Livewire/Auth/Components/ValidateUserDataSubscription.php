@@ -6,8 +6,10 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\SubscriptionManager;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -94,7 +96,7 @@ class ValidateUserDataSubscription extends Component
     
     public function render()
     {
-        self::initializator();
+        // self::initializator();
 
         return view('livewire.auth.components.validate-user-data-subscription');
     }
@@ -102,7 +104,6 @@ class ValidateUserDataSubscription extends Component
     #[On("MakeDataIsCompletedEvent")]
     public function makeDataIsCompleted($section, $value = true)
     {
-        dd($section, $value);
         $this->data_subscription[$section] = true;
 
         session()->put('data_subscription', json_encode($this->data_subscription));
@@ -187,6 +188,10 @@ class ValidateUserDataSubscription extends Component
 
         $identifiant = ModelsRobots::makeUserIdentifySequence();
 
+        $user = false;
+
+        $sendEmailToUser = false;
+
         $this->pseudo = '@' . Str::substr($this->firstname, 0, 3) . '.' . Str::substr($this->lastname, 0, 3) . '' . rand(20, 99);
         
         $all_data_is_ok = (session()->has('perso_data_is_ok') && session()->has('graduate_data_is_ok') && session()->has('professionnal_data_is_ok') && session()->has('email_data_is_ok'));
@@ -212,16 +217,16 @@ class ValidateUserDataSubscription extends Component
                     'graduate_type' => $this->graduate_type,
                     'graduate_year' => $this->graduate_year,
                     'contacts' => $this->contacts,
-                    'address' => Str::ucwords($this->address),
-                    'gender' => Str::ucwords($this->gender),
+                    'address' => ucwords($this->address),
+                    'gender' => ucwords($this->gender),
                     'status' => Str::upper($this->status),
-                    'marital_status' => Str::ucwords($this->marital_status),
+                    'marital_status' => ucwords($this->marital_status),
                     'birth_date' => $this->birth_date,
                     'birth_city' => Str::ucfirst($this->birth_city),
-                    'pseudo' => Str::ucwords($this->pseudo),
+                    'pseudo' => ucwords($this->pseudo),
                     'password' => Hash::make($this->password),
                     'firstname' => Str::upper($this->firstname),
-                    'lastname' => Str::ucwords($this->lastname),
+                    'lastname' => ucwords($this->lastname),
                     'identifiant' => $identifiant,
                     'auth_token' => Str::replace("/", $identifiant, Hash::make($identifiant)),
                     'email' => $this->email,
@@ -243,8 +248,6 @@ class ValidateUserDataSubscription extends Component
                         session()->flash('success', $message);
 
                         SubscriptionManager::clearEachData();
-        
-                        return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
                         
                     }
                     else{
@@ -261,12 +264,17 @@ class ValidateUserDataSubscription extends Component
 
             DB::commit();
 
+            if($user && $sendEmailToUser){
+
+                return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
+            }
+
 
         } catch (Throwable $e) {
-            
+
             DB::rollBack(); // Annule tout
 
-            $this->toast("Une erreure est survenue lors l'insertion de vos données dans la base de données! Veuillez réessayer!", 'info');
+            $this->toast("Une erreure est survenue lors l'insertion de vos données dans la base de données: MESSAGE: " . $e->getMessage(), 'info');
 
             
         }

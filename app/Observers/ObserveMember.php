@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Events\UpdatedUserProfilEvent;
 use App\Events\UpdateMembersListEvent;
+use App\Events\UserMemberProfilHasBeenCreatedEvent;
 use App\Models\Member;
 
 class ObserveMember
@@ -13,6 +15,10 @@ class ObserveMember
     public function created(Member $member): void
     {
         UpdateMembersListEvent::dispatch($member->user);
+
+        UserMemberProfilHasBeenCreatedEvent::dispatch($member->user);
+
+        UpdatedUserProfilEvent::dispatch($member->user);
     }
 
     /**
@@ -28,7 +34,7 @@ class ObserveMember
      */
     public function deleting(Member $member): void
     {
-        UpdateMembersListEvent::dispatch($member->user);
+        UpdateMembersListEvent::dispatch();
     }
 
     /**

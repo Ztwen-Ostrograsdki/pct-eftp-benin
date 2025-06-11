@@ -230,6 +230,11 @@ class LyceeImagesMangerModal extends Component
 
     }
 
+    public function updatedImages()
+    {
+        $this->resetErrorBag();
+    }
+
     public function removeImage($index)
     {
         unset($this->images[$index]);

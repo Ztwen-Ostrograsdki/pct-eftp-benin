@@ -54,7 +54,7 @@ class ProcessToDeleteUserAccountListener
             })
             ->then(function(Batch $batch) use ($event){
 
-                $message_to_creator = "La suppression de comptes lancé s'est achevée avec succès!";
+                $message_to_creator = "La suppression de comptes lancé s'est achevée!";
 
                 UserAccountWasDeletedSuccessfullyEvent::dispatch($event->admin_generator, $message_to_creator);
 

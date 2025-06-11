@@ -111,9 +111,19 @@ trait UserTrait{
 
     }
 
+    public function isAdminsOrMaster()
+    {
+        return $this->isOnlyAdmin() || $this->isMaster();
+    }
+
+    public function isOnlyAdmin()
+    {
+        return $this->hasRole(['admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
+    }
+
     public function isMaster()
     {
-        return $this->id === 1;
+        return $this->hasRole('master') || $this->id == 1;
     }
 
     public function formatString($text)
@@ -161,19 +171,34 @@ trait UserTrait{
         }
     }
 
-    public function isAdminAs($statuses = null)
+    public function isAdminAs($roles = ['master', 'admin'])
     {
         if($this->id == 1) return true;
 
-        if($statuses){
+        $user = $this;
 
-            if(is_array($statuses)) return in_array($this->ability, $statuses);
+        if($user){
 
-            if(is_string($statuses)) return $this->ability == $statuses;
+            if($user->id == 1) return true;
 
+            if($roles){
+
+                if(is_array($roles)){
+
+                    if(in_array('admin', $roles)) return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
+
+                    else return $user->hasRole($roles);
+                }
+
+                if(!is_array($roles)){
+
+                    if($roles == 'admin') return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
+
+                    else return $user->hasRole([$roles]);
+                }
+            }
+            return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
         }
-        
-        return $this->ability == 'admin' || $this->abitlity == 'master';
     }
 
     public function incrementUserWrongPasswordTried()

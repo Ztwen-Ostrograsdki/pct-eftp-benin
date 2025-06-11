@@ -285,4 +285,16 @@ class UserProfil extends Component
     {
         $this->counter = getRand();
     }
+    
+    #[On('LiveUserMemberProfilHasBeenCreatedEvent')]
+    public function reloadDataForMember()
+    {
+        $this->counter = getRand();
+    }
+
+    #[On('LiveUpdatedUserProfilEvent')]
+    public function reloadDataForUser()
+    {
+        $this->counter = getRand();
+    }
 }

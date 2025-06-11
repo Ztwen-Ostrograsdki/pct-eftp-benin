@@ -181,19 +181,54 @@
                                     <h6 class="text-gray-100 py-1 my-2 border rounded-xl text-center uppercase bg-violet-600">
                                         Des images...
                                     </h6>
-                                    <div class="swper swper_name w-full mx-auto">
-                                        <div class="swper_wrapr">
-                                            <div class="grid grid-cols-3 items-center justify-center gap-x-0 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-auto">
-                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img2.jpg')}}" alt="">                                                    
-                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img3.jpg')}}" alt="">                                                    
-                                                <img class=" m-0 p-0" class="border" src="{{asset('images/img4.jpg')}}" alt="">                                                    
-                                            </div>
+                                    <div x-data="{ show: false, currentImage: '' }" class="relative">
+                                        <div class="swper swper_name w-full mx-auto">
+                                            <div class="swper_wrapr">
+                                                <div class="grid lg:grid-cols-3 justify-center gap-2 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-full">
+                                                    @if($selected_lycee->hasImages())
+                                                        @foreach ($selected_lycee->getImagesPaths() as $k => $path)
+                                                            <div class="flex flex-col gap-y-1 items-center">
+                                                                <img 
+                                                                wire:key="header-liste-des-images-{{$selected_lycee->id}}-{{$loop->iteration}}" 
+                                                                @click="currentImage = '{{ $path }}'; show = true" 
+                                                                class="border cursor-pointer rounded-lg shadow-2 h-80 m-0 p-0 inline-block lg:col-span-1 duration-300 opacity-75 hover:opacity-100 transition-opacity object-cover" 
+                                                                src="{{ $path }}" 
+                                                                alt="">
+                                                                <span wire:click="removeImageFromImagesOf('{{$k}}')" title="Supprimer cette image de la liste des images de {{$selected_lycee->name}}" class="py-2 rounded-lg hover:bg-red-500 text-center text-sm bg-red-300 text-red-800 cursor-pointer inline-block w-full">
+                                                                    <span wire:loading.remove wire:target="removeImageFromImagesOf('{{$k}}')">Retirer cette image</span>
+                                                                    <span wire:loading wire:target="removeImageFromImagesOf('{{$k}}')">
+                                                                        <span>Suppression en cours...</span>
+                                                                        <span class="fas fa-rotate animate-spin"></span>
+                                                                    </span>
 
+                                                                </span>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <h6 class="col-span-3 text-center font-semibold letter-spacing-1 text-red-800 bg-red-300 py-4">
+                                                            Oupps!!! Aucune image ajoutée
+                                                        </h6>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
 
+                                        <!-- Lightbox -->
+                                        <div 
+                                            x-show="show"
+                                            x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="opacity-0 scale-75"
+                                            x-transition:enter-end="opacity-100 scale-100"
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="opacity-100 scale-100"
+                                            x-transition:leave-end="opacity-0 scale-75"
+                                            class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+                                            style="display: none;"
+                                            @click="show = false"
+                                        >
+                                            <img :src="currentImage" alt="Zoom" class="max-w-4xl border-2 max-h-[90vh] shadow-xl" @click.stop>
+                                        </div>
                                     </div>
-                                    
-
                                 </div>
 
                                 <div class="shadow-2 shadow-sky-300 p-2 mt-3">
@@ -361,19 +396,21 @@
                                         <h6 class="text-gray-100 py-1 my-2 border rounded-xl text-center uppercase bg-violet-600">
                                             Des images...
                                         </h6>
-                                        <div class="swper swper_name w-full mx-auto">
+                                        <div class="swper swper_name hidden w-full mx-auto">
                                             <div class="swper_wrapr">
-                                                <div class="grid lg:grid-cols-3 justify-center gap-x-0 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-full">
-                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img2.jpg')}}" alt="">                                                    
-                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img3.jpg')}}" alt="">                                                    
-                                                    <img class="h-80 m-0 p-0 inline-block lg:col-span-1" class="border" src="{{asset('images/img4.jpg')}}" alt="">                                                    
+                                                <div class="grid lg:grid-cols-3 justify-center gap-2 swper_sldr z-bg-secondary-light rounded-2xl shadow-2 shadow-purple-400 p-2 w-full">
+                                                    @if($lc->hasImages())
+                                                        @foreach ($lc->getImagesPaths() as $kk => $paf)
+                                                            <img wire:key="liste-des-images-{{$lc->id}}-{{$loop->iteration}}"  class="border cursor-pointer rounded-lg shadow-2 h-80 m-0 p-0 inline-block lg:col-span-1 transition-transform duration-300 hover:scale-150 object-cover" src="{{ $paf }}" alt="">
+                                                        @endforeach
+                                                    @else
+                                                        <h6 class="col-span-3 text-center font-semibold letter-spacing-1 text-red-800  bg-red-300 py-4">Oupps!!! Aucune image ajoutée</h6>
+                                                    @endif                                     
                                                 </div>
 
                                             </div>
 
                                         </div>
-                                        
-
                                     </div>
 
                                     <div class="shadow-2 shadow-sky-300 p-2 mt-3">

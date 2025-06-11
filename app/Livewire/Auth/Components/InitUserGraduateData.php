@@ -96,7 +96,7 @@ class InitUserGraduateData extends Component
             'grade' => Str::upper($this->grade),
             'status' => Str::upper($this->status),
             'graduate' => Str::upper($this->graduate),
-            'graduate_deliver' => Str::ucwords($this->graduate_deliver),
+            'graduate_deliver' => ucwords($this->graduate_deliver),
             'graduate_year' => $this->graduate_year,
             'graduate_type' => Str::ucfirst($this->graduate_type),
         ];

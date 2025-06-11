@@ -5,6 +5,7 @@ namespace App\Livewire\Auth\Components;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\SubscriptionManager;
 use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Models\Lycee;
 use Livewire\Component;
 
 class InitUserProfessionnalData extends Component
@@ -25,6 +26,8 @@ class InitUserProfessionnalData extends Component
     public $years_experiences;
 
     public $matricule;
+
+    public $school_by_select = [];
 
     public $job_department;
 
@@ -63,6 +66,8 @@ class InitUserProfessionnalData extends Component
         $cities = RobotsBeninHelpers::getCities();
 
         $departments = RobotsBeninHelpers::getDepartments();
+
+        $lycees = Lycee::all();
         
 
         return view('livewire.auth.components.init-user-professionnal-data', 
@@ -70,6 +75,7 @@ class InitUserProfessionnalData extends Component
                 'years' => $years,
                 'departments' => $departments,
                 'cities' => $cities,
+                'lycees' => $lycees,
             ]
         );
     }
@@ -99,6 +105,40 @@ class InitUserProfessionnalData extends Component
             $this->department_key = isset($data['department_key']) ? $data['department_key'] : null;
 
         }
+    }
+
+    public function updatedSchoolBySelect($school)
+    {
+        $init = "";
+
+        $add = "";
+
+        if($this->school){
+
+            $init = $this->school;
+        }
+
+        if($school){
+
+            $add = implode('-', $this->school_by_select);
+
+        }
+
+        if($init){
+
+            $this->school = $init . '-' . $add;
+        }
+        else{
+
+            $this->school = $add;
+        }
+
+        
+    }
+
+    public function refreshSelected()
+    {
+        $this->reset('school', 'school_by_select');
     }
 
     public function updatedTeachingSince($teaching_since)

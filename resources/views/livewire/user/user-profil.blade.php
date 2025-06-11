@@ -1,6 +1,6 @@
 @auth
 <div>
-    <div class="w-full py-2 px-3 my-3">
+    <div class="w-full py-2 px-3 my-3" x-data="{ show: false, currentImage: '' }">
         <div class="w-full mx-auto max-w-xl my-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h4 class="text-lg letter-spacing-2 w-full text-gray-200 p-3">
                 Profil utilisateur
@@ -27,7 +27,7 @@
                             </li>
                         @endif
                         <li>
-                            <a data-modal-target="user-profil-photo-zoomer" data-modal-toggle="user-profil-photo-zoomer" type="button" title="Zoomer la photo de profil" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Zoomer la photo de profil</a>
+                            <a @click="currentImage = '{{ user_profil_photo($user) }}'; show = true" type="button" title="Zoomer la photo de profil" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Zoomer la photo de profil</a>
                         </li>
                         @if($user->member)
                         <li>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="flex flex-col items-center pb-10 px-2">
-                <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}"/>
+                <img title="Cliquez sur l'image pour zoomer" @click="currentImage = '{{ user_profil_photo($user) }}'; show = true" class="w-24 h-24 cursor-pointer mb-3 rounded-full shadow-lg" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}"/>
                 <h5 class="mb-1 text-xl border-b font-medium text-gray-900 dark:text-white">
                     {{ $user->getFullName(true) }}
                     
@@ -91,6 +91,22 @@
                         </span>
                     </span>
                 </span>
+
+
+                <div 
+                    x-show="show"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-75"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-75"
+                    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+                    style="display: none;"
+                    @click="show = false"
+                >
+                    <img :src="currentImage" alt="Zoom" class="max-w-4xl max-h-[90vh] rounded shadow-xl border-2 border-white" @click.stop>
+                </div>
 
                 <div class="m-0 p-0 mx-auto mt-4 mb-2">
                     @if($user->member)
@@ -491,10 +507,6 @@
         </div>
     </div>
     <div>
-        <div wire:key="profil-zoomer-{{$user->id}}">
-            @livewire('user.profil-photo-zoomer', ['user' => $user, 'key' => $user->id])
-        </div>
-
         <div wire:key="profil-editor{{$user->id}}">
             @livewire('user.profil-photo-editor', ['user' => $user, 'key' => $user->id])
         </div>

@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserConfirmedByAdminMiddleware
+class OnlyAdminsMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,14 +15,8 @@ class UserConfirmedByAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()){
-            
-            if($request->user()->confirmed_by_admin){
-                
-                return $next($request);
-            }
-            return abort(403, "Vous n'êtes pas authorisé");
-        }
-        return redirect(route('login'));
+        if($request->user()->hasRole(['admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'])) return $next($request);
+
+        else return abort(403, "Vous n'êtes pas authorisé");
     }
 }

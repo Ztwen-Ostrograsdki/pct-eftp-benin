@@ -242,21 +242,33 @@ if(!function_exists('flash')){
 }
 
 if(!function_exists('__isAdminAs')){
-
-    function __isAdminAs($roles = null)
+    function __isAdminAs(mixed $roles = null)
     {
-        if(auth_user()){
-            if(Auth::user()->id == 1) return true;
+        if(!auth_user()) return false;
+        
+        $user = User::find(auth_user()->id);
+
+        if($user){
+            
+            if($user->id == 1) return true;
 
             if($roles){
 
-                if(is_array($roles)) return in_array(Auth::user()->ability, $roles);
+                if(is_array($roles)){
 
-                if(is_string($roles)) return Auth::user()->ability == $roles;
+                    if(in_array('admin', $roles)) return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
 
+                    else return $user->hasRole($roles);
+                }
+
+                if(!is_array($roles)){
+
+                    if($roles == 'admin') return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
+
+                    else return $user->hasRole([$roles]);
+                }
             }
-            
-            return Auth::user()->ability == 'admin' || Auth::user()->abitlity == 'master';
+            return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
         }
 
         return false;
@@ -653,6 +665,15 @@ if(!function_exists('auth_user')){
     function auth_user()
     {
         return Auth::user();
+    }
+
+}
+
+if(!function_exists('auth_user_id')){
+
+    function auth_user_id()
+    {
+        return Auth::user()->id;
     }
 
 }

@@ -7,6 +7,7 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\RolePermissionsWasUpdatedEvent;
 use App\Events\RoleUsersWasUpdatedEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\RealTimeNotificationGetToUser;
@@ -65,16 +66,21 @@ class RoleProfil extends Component
 
     public function joinUserToRole()
     {
+        SpatieManager::ensureThatUserCan();
+
         $this->dispatch("JoinUserToRoleEvent", $this->role_id);
     }
 
     public function manageRolePermissions()
     {
+        SpatieManager::ensureThatUserCan();
+
         $this->dispatch("ManageRolePermissionsEvent", $this->role_id);
     }
     
     public function deletePermission($permission_id)
     {
+        SpatieManager::ensureThatUserCan();
 
         $permission = Permission::find($permission_id);
 
@@ -136,6 +142,7 @@ class RoleProfil extends Component
 
     public function removeUserFromRole($user_id)
     {
+        SpatieManager::ensureThatUserCan();
 
         $user = User::find($user_id);
 

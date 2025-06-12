@@ -6,11 +6,12 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitMemberCardSchemaEvent;
 use App\Events\InitProcessToBuildLotCardsMemberEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Member;
 use App\Models\User;
 use function PHPUnit\Framework\fileExists;
-use Illuminate\Support\Facades\File;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -76,12 +77,15 @@ class MembersCardsList extends Component
 
     public function editRole($member_id)
     {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
+
         $this->dispatch('OpenMemberModalForEditEvent', $member_id);
     }
 
 
     public function generateMembersCards()
     {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
 
         $admin_generator = auth_user();
         
@@ -92,6 +96,7 @@ class MembersCardsList extends Component
 
     public function generateCardMember($member_id)
     {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
 
         $member = Member::find($member_id);
 
@@ -114,8 +119,8 @@ class MembersCardsList extends Component
 
     public function removeUserFormMembers($member_id)
     {
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
-
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
+        
         $member = Member::find($member_id);
 
         if($member){

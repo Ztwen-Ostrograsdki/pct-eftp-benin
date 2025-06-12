@@ -2,6 +2,12 @@
 
 return [
 
+    'logo' => "images/logo.jpg",
+
+    'fullname' => "Association des Enseignants de Sciences Physiques dans l'Enseignement et la Formation Technique et Professionnels",
+
+    'memberMaxQuotes' => 3,
+
 
     'marital_statuses' => [
 

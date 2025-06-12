@@ -7,6 +7,7 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Events\InitUserAccountDeletionEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -14,10 +15,6 @@ use Livewire\Component;
 class UsersListPage extends Component
 {
     use Toast, Confirm, ListenToEchoEventsTrait;
-
-    protected $listeners = [
-        'LiveUserHasBeenBlockedSuccessfullyEvent' => 'userBlockedSuccessfully',
-    ];
 
     public $search = '';
 
@@ -73,7 +70,7 @@ class UsersListPage extends Component
     public function marksUserAsIdentifiedOrNot($user_id)
     {
 
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = User::find($user_id);
 
@@ -135,6 +132,8 @@ class UsersListPage extends Component
     public function confirmedUserBlockOrUnblocked($user_id)
     {
 
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
+
         $user = User::find($user_id);
 
         if($user){
@@ -172,7 +171,6 @@ class UsersListPage extends Component
             $user_id = $data['user_id'];
 
             $user = User::find($user_id);
-
 
             if($user->blocked) $action = false;
 
@@ -224,6 +222,7 @@ class UsersListPage extends Component
     }
 
 
+    #[On("LiveUserHasBeenBlockedSuccessfullyEvent")]
     public function userBlockedSuccessfully($user)
     {
         
@@ -245,6 +244,7 @@ class UsersListPage extends Component
 
     public function confirmedUserEmailVerification($user_id)
     {
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = User::find($user_id);
 
@@ -295,7 +295,7 @@ class UsersListPage extends Component
     public function deleteUserAccount($user_id)
     {
 
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = User::find($user_id);
 

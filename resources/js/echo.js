@@ -36,6 +36,12 @@ e.channel("public")
     })
     .listen("UpdateUsersListToComponentsEvent", (data) => {
         Livewire.dispatch("LiveUpdateUsersListToComponentsEvent");
+    })
+    .listen("RolePermissionsWasUpdatedEvent", () => {
+        Livewire.dispatch("LiveRolePermissionsWasUpdatedEvent");
+    })
+    .listen("RoleUsersWasUpdatedEvent", () => {
+        Livewire.dispatch("LiveRoleUsersWasUpdatedEvent");
     });
 
 e.private("master");

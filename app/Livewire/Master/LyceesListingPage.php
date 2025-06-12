@@ -7,6 +7,7 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\NewLyceeCreatedSuccessfullyEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Helpers\Tools\SpatieManager;
 use App\Jobs\JobToGenerateDefaultUserMember;
 use App\Models\Lycee;
 use Illuminate\Support\Carbon;
@@ -102,6 +103,8 @@ class LyceesListingPage extends Component
 
     public function removeImageFromImagesOf($image_path, $lycee_id = null)
     {
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         if($image_path){
 
             $lycee = $this->selected_lycee;
@@ -135,6 +138,9 @@ class LyceesListingPage extends Component
 
     public function manageLyceeFiliars()
     {
+
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         $lycee_id = $this->selected_lycee_id;
 
         $this->dispatch('ManageLyceeFiliars', $lycee_id);
@@ -142,6 +148,8 @@ class LyceesListingPage extends Component
 
     public function manageLyceeData()
     {
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         $lycee_id = $this->selected_lycee_id;
 
         $this->dispatch('ManageLyceeData', $lycee_id);
@@ -150,11 +158,17 @@ class LyceesListingPage extends Component
 
     public function addNewLycee()
     {
+
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         $this->dispatch('AddNewLyceeEvent');
     }
 
     public function manageLyceePromotions()
     {
+
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         $lycee_id = $this->selected_lycee_id;
 
         $this->dispatch('ManageLyceePromotions', $lycee_id);
@@ -163,6 +177,9 @@ class LyceesListingPage extends Component
 
     public function deleteLycee()
     {
+
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+
         $lycee = $this->selected_lycee;
 
         if($lycee){
@@ -244,6 +261,8 @@ class LyceesListingPage extends Component
 
     public function manageLyceeImages()
     {
+        SpatieManager::ensureThatUserCan(['lycees-manager']);
+        
         if($this->selected_lycee_id){
 
             $this->dispatch("ManageLyceeImagesEvent", $this->selected_lycee_id);

@@ -3,6 +3,7 @@
 namespace App\Livewire\Master;
 
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
+use App\Helpers\Tools\SpatieManager;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -10,33 +11,11 @@ class MembersHomePage extends Component
 {
     use ListenToEchoEventsTrait;
 
-    public $member_section = 'dashboard';
+    public $member_section = null;
 
     public $member_section_title = 'liste';
 
     public $counter = 2;
-
-    public $member_sections = [
-        'spatie-roles' => "Les roles (admins)",
-        'spatie-permissions' => "Les permissions (admins)",
-        'dashboard' => "Tableau de bord",
-        'stats' => "Statistiques plateforme",
-        'members-list' => "Liste des membres",
-        'members-cards' => "Cartes de membre",
-        'users-list' => "Utilisateurs",
-        'members' => "Profil des membres",
-        'payments' => "Les cotisations",
-        'roles' => "Les Postes",
-        'lycees' => "Les Lycées et centres",
-        'laws' => "Le règlement intérieur",
-        // 'subjects' => "Les Sujets de discussion",
-        'infos' => "Les Communiqués",
-        'epreuves' => "Les Epreuves",
-        'epreuves-exams-list' => "Les Epreuves d'examens",
-        "history" => "Historique",
-        'cv' => "Description de l'association"
-
-    ];
 
     public function updatedMemberSection($section)
     {
@@ -54,13 +33,26 @@ class MembersHomePage extends Component
 
     public function render()
     {
+        $member_sections = [];
+
         if(session()->has('member_section')){
 
             $this->member_section = session('member_section');
 
         }
 
-        return view('livewire.master.members-home-page');
+        $member_sections = SpatieManager::getUserDashboard();
+
+        if($member_sections){
+
+            if($this->member_section == null){
+
+                $this->member_section = array_key_first($member_sections);
+            }
+
+        }
+
+        return view('livewire.master.members-home-page', compact('member_sections'));
     }
 
     #[On('LiveUpdateLawEcosystemEvent')]
@@ -78,6 +70,8 @@ class MembersHomePage extends Component
 
     public function joinMemberToRole()
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $this->dispatch('OpenModalToJoinMemberToRole');
     }
 

@@ -2,6 +2,7 @@
 
 use App\Helpers\Tools\SpatieManager;
 use App\Models\Classe;
+use App\Models\Communique;
 use App\Models\Cotisation;
 use App\Models\Epreuve;
 use App\Models\Filiar;
@@ -14,7 +15,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use PhpParser\Node\Expr\Instanceof_;
 
 if(!function_exists('getMonths')){
 
@@ -240,6 +240,14 @@ if(!function_exists('flash')){
     }
 
 }
+if(!function_exists('__isMaster')){
+
+    function __isMaster()
+    {
+        return User::find(auth_user()->id)->isMaster();
+    }
+
+}
 
 if(!function_exists('__isAdminAs')){
     function __isAdminAs(mixed $roles = null)
@@ -268,7 +276,7 @@ if(!function_exists('__isAdminAs')){
                     else return $user->hasRole([$roles]);
                 }
             }
-            return $user->hasRole(['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5']);
+            return $user->isAdminsOrMaster();
         }
 
         return false;
@@ -848,6 +856,16 @@ if(!function_exists('getActivesMembers')){
         }
 
         return $members;
+    }
+
+}
+
+if(!function_exists('getActivesCommuniques')){
+
+    function getActivesCommuniques()
+    {
+        return Communique::where('hidden', false)->get();
+
     }
 
 }

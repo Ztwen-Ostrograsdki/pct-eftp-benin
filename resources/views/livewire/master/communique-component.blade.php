@@ -1,5 +1,5 @@
 <div class="p-6 w-full mx-auto">
-    @if(auth()->user() && __isAdminAs())
+    @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('communiques-manager'))
     <div class="text-center mx-auto flex justify-end gap-x-3 mt-2 border-2 border-gray-900 p-3 max-w-7xl lg:px-6 md:px-4 sm:px-1 xs:px-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
         <span wire:click="sendCommuniqueToMemberByEmail({{$communique->id}})" class="border cursor-pointer rounded-lg py-2 px-3 bg-green-700 hover:bg-green-800 text-white">
             <span wire:target='sendCommuniqueToMemberByEmail({{$communique->id}})' wire:loading.remove="sendCommuniqueToMemberByEmail({{$communique->id}})">

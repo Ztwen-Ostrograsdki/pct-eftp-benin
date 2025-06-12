@@ -37,9 +37,9 @@ class NewMemberModalComponent extends Component
 
     public function render()
     {
-        $users = User::all();
+        $users = User::doesntHave('member')->get();
 
-        $roles = Role::all();
+        $roles = Role::doesntHave('member')->get();
         
         return view('livewire.master.modals.new-member-modal-component', 
             [

@@ -5,6 +5,7 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\SupportFile;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -141,6 +142,8 @@ class SupportFilesPage extends Component
 
     public function deleteFile($id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $support_file = SupportFile::find($id);
 
         if($support_file){

@@ -30,6 +30,15 @@ class MyNotificationsPage extends Component
         'LiveUserHasBeenBlockedSuccessfullyEvent' => 'userUnBlockedSuccessfully',
     ];
 
+    public function mount($identifiant)
+    {
+        if(!$identifiant){
+
+            return abort(404);
+
+        }
+    }
+
 
     public function render()
     {

@@ -5,6 +5,7 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Epreuve;
 use App\Models\Lycee;
 use Hamcrest\Type\IsInteger;
@@ -155,6 +156,8 @@ class EpreuvesPage extends Component
 
     public function deleteFile($id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $epreuve = Epreuve::find($id);
 
         if($epreuve){

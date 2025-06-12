@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitProcessToSendCommuniqueToMembersByMailEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Communique;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -45,6 +46,8 @@ class CommuniqueComponent extends Component
 
     public function manageCommnunique($communique_id = null)
     {
+        SpatieManager::ensureThatUserCan(['communiques-manager']);
+
         $this->dispatch('ManageCommnuniqueEvent', $communique_id);
     }
 
@@ -71,6 +74,7 @@ class CommuniqueComponent extends Component
 
     public function deleteCommunique($communique_id = null)
     {
+        SpatieManager::ensureThatUserCan(['communiques-manager']);
 
         $communique = Communique::find($this->communique_id);
 
@@ -119,6 +123,7 @@ class CommuniqueComponent extends Component
 
     public function hideOrUnHideCommunique($communique_id = null)
     {
+        SpatieManager::ensureThatUserCan(['communiques-manager']);
 
         $communique = Communique::find($this->communique_id);
 
@@ -173,12 +178,7 @@ class CommuniqueComponent extends Component
 
     }
 
-
-
-
-
-
-    #[On('UpdatedCommuniquesList')]
+    #[On('LiveUpdateCommuniquesListEvent')]
     public function reloadData()
     {
         $this->counter = getRand();

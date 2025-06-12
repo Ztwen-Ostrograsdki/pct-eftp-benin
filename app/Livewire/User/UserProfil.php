@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
@@ -63,6 +64,7 @@ class UserProfil extends Component
 
     public function confirmedUserIdentification()
     {
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = $this->user;
 
@@ -113,6 +115,8 @@ class UserProfil extends Component
 
     public function confirmedUserBlockOrUnblocked()
     {
+
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = $this->user;
 
@@ -205,9 +209,9 @@ class UserProfil extends Component
     }
 
 
+    #[On("LiveUserHasBeenBlockedSuccessfullyEvent")]
     public function userBlockedSuccessfully($user)
     {
-        
         if($user && $user['blocked']){
 
             $message = "L'utilisateur a été bloqué avec success!";
@@ -226,6 +230,8 @@ class UserProfil extends Component
 
     public function confirmedUserEmailVerification()
     {
+        
+        SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = $this->user;
 

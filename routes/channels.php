@@ -25,7 +25,7 @@ Broadcast::channel('members', function ($user) {
 
 Broadcast::channel('admin', function ($user) {
 
-    return $user->isAdminAs(['master', 'admin']);
+    return $user->isAdminsOrMaster();
 });
 
 Broadcast::channel('confirmeds', function ($user) {

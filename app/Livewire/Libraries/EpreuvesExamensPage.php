@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
 use App\Helpers\Tools\RobotsBeninHelpers;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Epreuve;
 use App\Models\Lycee;
 use Livewire\Attributes\On;
@@ -189,6 +190,8 @@ class EpreuvesExamensPage extends Component
 
     public function deleteFile($id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $epreuve = Epreuve::find($id);
 
         if($epreuve){

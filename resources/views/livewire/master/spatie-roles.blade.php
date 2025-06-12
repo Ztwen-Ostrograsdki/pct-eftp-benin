@@ -42,7 +42,7 @@
                         <span class="fas fa-rotate animate-spin"></span>
                     </span>
                 </button>
-                <div class="flex items-center">
+                <div class="items-center hidden">
                     <button
                         wire:click="addNewSpatieRole"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
@@ -71,20 +71,22 @@
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
-                    @if($selected_roles AND count($selected_roles) > 0)
-                        <button
-                            wire:click="deleteRoles"
-                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
-                        >
-                            <span wire:loading.remove wire:target='deleteRoles'>
-                                <span>Supprimer les rôles en masse</span>
-                                <span class="fas fa-trash"></span>
-                            </span>
-                            <span wire:target='deleteRoles' wire:loading>
-                                <span>Suppression en cours...</span>
-                                <span class="fas fa-rotate animate-spin"></span>
-                            </span>
-                        </button>
+                    @if(__isMaster())
+                        @if($selected_roles AND count($selected_roles) > 0)
+                            <button
+                                wire:click="deleteRoles"
+                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
+                            >
+                                <span wire:loading.remove wire:target='deleteRoles'>
+                                    <span>Supprimer les rôles en masse</span>
+                                    <span class="fas fa-trash"></span>
+                                </span>
+                                <span wire:target='deleteRoles' wire:loading>
+                                    <span>Suppression en cours...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -120,7 +122,7 @@
                 <th class="px-3 py-4 text-left">Rôles</th>
                 <th class="px-3 py-4 text-left">Nombres de permissions</th>
                 <th class="px-3 py-4 text-center">Permissions ou privilèges accordés au rôle</th>
-                @if(!$display_select_cases)
+                @if(__isMaster() && !$display_select_cases)
                 <th class="px-3 py-4 text-center">Actions</th>
                 @endif
                 @if($display_select_cases)
@@ -172,21 +174,23 @@
                             @endforeach
                         </span>
                         </td>
-                        @if(!$display_select_cases)
-                        <td class="px-2 py-2 text-center">
-                            <span class="flex gap-x-3 w-full justify-center items-center">
-                                <span wire:click="deleteRole({{$role->id}})" class="hover:bg-red-500 text-gray-300 border rounded-md bg-red-600 px-2 py-1" title="Supprimer le rôle {{ __translateRoleName($role->name) }}">
-                                    <span wire:target="deleteRole({{$role->id}})" wire:loading.remove>
-                                        <span class="fas fa-trash"></span>
-                                        <span class="hidden lg:inline">Suppr.</span>
-                                    </span>
-                                    <span wire:target="deleteRole({{$role->id}})" wire:loading>
-                                        <span class="fas fa-rotate animate-spin"></span>
-                                        <span>Suppression en cours...</span>
+                        @if(__isMaster())
+                            @if(!$display_select_cases)
+                            <td class="px-2 py-2 text-center">
+                                <span class="flex gap-x-3 w-full justify-center items-center">
+                                    <span wire:click="deleteRole({{$role->id}})" class="hover:bg-red-500 text-gray-300 border rounded-md bg-red-600 px-2 py-1" title="Supprimer le rôle {{ __translateRoleName($role->name) }}">
+                                        <span wire:target="deleteRole({{$role->id}})" wire:loading.remove>
+                                            <span class="fas fa-trash"></span>
+                                            <span class="hidden lg:inline">Suppr.</span>
+                                        </span>
+                                        <span wire:target="deleteRole({{$role->id}})" wire:loading>
+                                            <span class="fas fa-rotate animate-spin"></span>
+                                            <span>Suppression en cours...</span>
+                                        </span>
                                     </span>
                                 </span>
-                            </span>
-                        </td>
+                            </td>
+                            @endif
                         @endif
                         @if($display_select_cases)
                         <td>

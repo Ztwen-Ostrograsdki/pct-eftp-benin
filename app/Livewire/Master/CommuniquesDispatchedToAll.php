@@ -13,16 +13,11 @@ class CommuniquesDispatchedToAll extends Component
 
     public function render()
     {
-        $communiques = Communique::where('hidden', false)->get();
+        $communiques = Communique::whereYear('created_at', now()->year)->where('hidden', false)->latest()->get();
         
         return view('livewire.master.communiques-dispatched-to-all', compact('communiques'));
     }
 
-    #[On('UpdatedCommuniquesList')]
-    public function reloadData()
-    {
-        $this->counter = getRand();
-    }
 
     #[On('LiveUpdateCommuniquesListEvent')]
     public function reloadDataList()

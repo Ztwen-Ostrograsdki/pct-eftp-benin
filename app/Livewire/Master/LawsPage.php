@@ -4,6 +4,7 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\ForumChatSubject;
 use App\Models\Law;
 use Livewire\Attributes\On;
@@ -67,17 +68,22 @@ class LawsPage extends Component
 
     public function newLaw()
     {
+        SpatieManager::ensureThatUserCan();
+
         $this->dispatch("OpenLawManagerModal");
     }
 
     public function editLaw($law_id)
     {
+        SpatieManager::ensureThatUserCan();
+
         $this->dispatch("OpenLawManagerModal", $law_id);
     }
 
 
     public function deleteLaw($law_id)
     {
+        SpatieManager::ensureThatUserCan();
 
         $law = Law::find($law_id);
 

@@ -43,7 +43,7 @@ Route::get('communiques/communique/id={id}/s={slug}', CommuniqueComponent::class
 Route::get('/les-lycees-et-centre-de-formations-du-benin', LyceesListingPage::class)->name('lycee.listing');
 
 
-Route::middleware(['auth', 'user.not.blocked', 'admin.or.master'])->group(function(){
+Route::middleware(['auth', 'user.not.blocked'])->group(function(){
 
     Route::get('gestion/utilisateurs', UsersListPage::class)->name('master.users.list');
     
@@ -79,7 +79,7 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 
     Route::get('bibliotheque/publication/tag=les-fiches-de-cours', SupportFilesUploader::class)->name('library.fiches.uplaoder');
     
-    Route::get('profil/mes-notifications', MyNotificationsPage::class)->name('user.notifications')->middleware(['user.self']);
+    Route::get('profil/mes-notifications/IDX={identifiant?}', MyNotificationsPage::class)->name('user.notifications')->middleware(['user.self']);
     
     Route::get('profil/IDX={identifiant}/edition-profil/{auth_token}', UserEditionPage::class)->name('user.profil.edition')->middleware(['user.self']);
 
@@ -98,6 +98,9 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 Route::get('/a-propos/de-aesp-eftp-benin/', AboutUs::class)->name('about.us');
 
 
+Route::get('/403', function () {
+    abort(403, "Vous n'êtes pas authorisé à acceder à une telle page ou effectuer une telle action!");
+})->name('error.403');
 
 
 Route::middleware(['guest'])->group(function(){

@@ -8,11 +8,12 @@
             @auth()
             <div class="mt-3 flex flex-col gap-y-2 ">
                 <p class="m-0 p-0">
-                    <a class=" hover:bg-gray-800 pl-2 py-1 footer-element w-full inline-block my-0 gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('user.notifications')}}">
+                    <a class=" hover:bg-gray-800 pl-2 py-1 footer-element w-full inline-block my-0 gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('user.notifications', ['identifiant' => auth_user()->identifiant])}}">
                         Mes notifications
                     </a>
                 </p>
 
+                @if(auth_user()->member)
                 <p class="m-0 p-0">
                     <a class=" hover:bg-gray-800 pl-2 py-1 footer-element w-full inline-block my-0 gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}">
                         Mon profil membre
@@ -24,17 +25,19 @@
                         Mes cotisations
                     </a>
                 </p>
-                
+                @endif
                 <p class="m-0 p-0">
                     <a class=" hover:bg-gray-800 pl-2 py-1 footer-element w-full inline-block my-0 gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}">
                         Mes citations
                     </a>
                 </p>
+                @if(auth_user()->roles)
                 <p class="m-0 p-0">
                     <a class=" hover:bg-gray-800 pl-2 py-1 footer-element w-full inline-block my-0 gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('member.admins.roles', ['identifiant' => auth_user()->identifiant])}}">
                         Mes rôles administrateurs
                     </a>
                 </p>
+                @endif
             </div>
             @endauth
 
@@ -46,7 +49,6 @@
 
             <div class="mt-3 grid space-y-3">
             <p><a class="inline-flex footer-element gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('library.home')}}">La banques des épreuves</a></p>
-            <p><a class="inline-flex footer-element gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('library.home')}}">Des livres d'accompagnement</a></p>
             <p><a class="inline-flex footer-element gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{route('library.home')}}">Des fiches de cours</a></p>
             </div>
         </div>
@@ -84,12 +86,10 @@
         <!-- End Grid -->
 
         <div class="mt-5 sm:mt-12 grid gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
-        <div class="flex justify-between items-center footer-element">
+        <div class="flex justify-between gap-x-2 items-center footer-element">
+            <img class="w-10 h-10 rounded-full border-2 border-sky-600" src="{{asset(env('APP_LOGO'))}}" alt="">
             <p class="text-sm text-gray-400">© {{ $date }} {{ config('app.name') }}. {{__('Tout droits réservés')}}.</p>
         </div>
-        <!-- End Col -->
-
-        <!-- Social Brands -->
         <div>
             <a class="w-10 h-10 inline-flex footer-element justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-gray-600" href="#">
             <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

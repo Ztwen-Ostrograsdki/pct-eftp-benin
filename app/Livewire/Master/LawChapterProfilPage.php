@@ -4,6 +4,7 @@ namespace App\Livewire\Master;
 
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\LawChapter;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -61,11 +62,15 @@ class LawChapterProfilPage extends Component
 
     public function addNewArticle()
     {
+        SpatieManager::ensureThatUserCan();
+        
         $this->dispatch("AddNewArticleEvent", $this->chapter_id);
     }
 
     public function deleteChapter($chapter_id = null, $chapter = "le chapitre")
     {
+        SpatieManager::ensureThatUserCan();
+        
         $chapter = LawChapter::find($chapter_id);
 
         if($chapter){

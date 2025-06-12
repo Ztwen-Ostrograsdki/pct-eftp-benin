@@ -5,9 +5,6 @@ use Livewire\Attributes\On;
 
 trait ListenToEchoEventsTrait{
 
-
-
-
 	#[On("LiveRolePermissionsWasUpdatedEvent")]
     public function relaodDataForRolePermissionsUpdate()
     {

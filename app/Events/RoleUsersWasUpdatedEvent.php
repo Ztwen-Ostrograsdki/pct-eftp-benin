@@ -31,6 +31,7 @@ class RoleUsersWasUpdatedEvent implements ShouldBroadcast
     {
         return [
             new PrivateChannel('confirmeds'),
+            new Channel('public'),
         ];
     }
 }

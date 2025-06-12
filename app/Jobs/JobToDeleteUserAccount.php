@@ -42,7 +42,9 @@ class JobToDeleteUserAccount implements ShouldQueue
 
         try {
 
-            $member = $user->member?->delete();
+            $member = $user->member;
+
+            if($member) $member->delete();
 
             $profil_photo = $user->profil_photo;
 

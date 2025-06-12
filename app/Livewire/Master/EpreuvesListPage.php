@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\ENotification;
 use App\Models\Epreuve;
 use App\Models\Lycee;
@@ -120,6 +121,8 @@ class EpreuvesListPage extends Component
 
     public function validateEpreuve($epreuve_id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $epreuve = Epreuve::find($epreuve_id);
 
         if($epreuve){
@@ -198,6 +201,8 @@ class EpreuvesListPage extends Component
 
     public function deleteFile($id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $epreuve = Epreuve::find($id);
 
         if($epreuve){

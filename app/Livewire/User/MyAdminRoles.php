@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\RoleUsersWasUpdatedEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\UserRole;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\DB;
@@ -61,11 +62,14 @@ class MyAdminRoles extends Component
 
     public function joinUserToRole()
     {
+        SpatieManager::ensureThatUserCan();
+        
         $this->dispatch("ManageUserSpatiesRolesEvent", $this->user_id);
     }
 
     public function removeUserFromRole($role_id)
     {
+        SpatieManager::ensureThatUserCan();
 
         $user = $this->user;
 

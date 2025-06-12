@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
 use App\Events\InitProcessToGenerateAndSendDocumentToMemberEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Jobs\JobGetMembersDataToInitAProcessForBuildingAndSendingDocumentToMembers;
 use App\Models\Cotisation;
 use App\Models\User;
@@ -187,6 +188,8 @@ class MembersMonthliesPayments extends Component
 
     public function memberPaymentsManager($member_id = null, $payment_id = null)
     {
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
+
         $this->dispatch('OpenMemberPaymentsManagerModalEvent', $member_id, $payment_id);
     }
 
@@ -198,7 +201,7 @@ class MembersMonthliesPayments extends Component
 
     public function editMemberPayment($cotisation_id)
     {
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
         
         $cotisation = Cotisation::find($cotisation_id);
 
@@ -269,6 +272,8 @@ class MembersMonthliesPayments extends Component
 
     public function generateAndSendDetailsToMember($member_id)
     {
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
+
         $admin = auth_user();
 
         $member = findMember($member_id);
@@ -329,7 +334,7 @@ class MembersMonthliesPayments extends Component
     
     public function addMemberPayment($member_id)
     {
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $options = [];
 
@@ -343,8 +348,7 @@ class MembersMonthliesPayments extends Component
     public function buildAndSendToMembersByMail()
     {
 
-        if(!__isAdminAs()) return false;
-
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $members = $this->selected_members;
 
@@ -421,7 +425,7 @@ class MembersMonthliesPayments extends Component
     public function deleteMemberPayment($cotisation_id)
     {
 
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $cotisation = Cotisation::find($cotisation_id);
 
@@ -474,7 +478,7 @@ class MembersMonthliesPayments extends Component
     public function printMembersCotisations()
     {
 
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $month = $this->selected_month;
 

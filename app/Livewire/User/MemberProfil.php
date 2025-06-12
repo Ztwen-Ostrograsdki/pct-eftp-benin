@@ -8,6 +8,7 @@ use App\Events\BlockUserEvent;
 use App\Events\MemberCreationOrUpdatingManagerEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Helpers\Services\EmailTemplateBuilder;
+use App\Helpers\Tools\SpatieManager;
 use App\Mail\YourCardMemberIsReadyMail;
 use App\Models\Member;
 use App\Models\User;
@@ -132,6 +133,7 @@ class MemberProfil extends Component
 
     public function confirmedUserIdentification()
     {
+        SpatieManager::ensureThatUserCan(['users-manager']);
 
         $user = $this->user;
 
@@ -181,6 +183,9 @@ class MemberProfil extends Component
 
     public function confirmedUserBlockOrUnblocked()
     {
+
+        SpatieManager::ensureThatUserCan(['users-manager']);
+
 
         $user = $this->user;
 
@@ -294,6 +299,7 @@ class MemberProfil extends Component
 
     public function confirmedUserEmailVerification()
     {
+        SpatieManager::ensureThatUserCan(['users-manager']);
 
         $user = $this->user;
 
@@ -344,6 +350,8 @@ class MemberProfil extends Component
 
     public function editRole($member_id = null)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $member_id = $this->member->id;
 
         $this->dispatch('OpenMemberModalForEditEvent', $member_id);
@@ -351,7 +359,8 @@ class MemberProfil extends Component
 
     public function resetMemberRoleToNull()
     {
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
 
         $user = $this->user;
 

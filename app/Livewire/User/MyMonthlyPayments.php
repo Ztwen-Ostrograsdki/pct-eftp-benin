@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Cotisation;
 use App\Models\Member;
 use App\Notifications\RealTimeNotificationGetToUser;
@@ -83,6 +84,8 @@ class MyMonthlyPayments extends Component
 
     public function memberPaymentsManager($member_id = null, $payment_id = null)
     {
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
+
         $this->dispatch('OpenMemberPaymentsManagerModalEvent', $member_id, $payment_id);
     }
 
@@ -94,6 +97,8 @@ class MyMonthlyPayments extends Component
 
     public function editMemberPayment($cotisation_id)
     {
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
+
         if(!__isAdminAs()) return false;
 
         $cotisation = Cotisation::find($cotisation_id);
@@ -107,7 +112,7 @@ class MyMonthlyPayments extends Component
     
     public function addMemberPayment($month = null)
     {
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $options = [];
 
@@ -120,7 +125,7 @@ class MyMonthlyPayments extends Component
 
     public function deleteMemberPayment($cotisation_id)
     {
-        if(!__isAdminAs()) return false;
+        SpatieManager::ensureThatUserCan(['cotisations-manager']);
         
         $cotisation = Cotisation::find($cotisation_id);
 

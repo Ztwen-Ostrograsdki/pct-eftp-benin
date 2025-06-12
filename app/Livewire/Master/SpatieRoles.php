@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitProcessToDeleteSpatieRolesEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
+use App\Helpers\Tools\SpatieManager;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -34,22 +35,30 @@ class SpatieRoles extends Component
 
     public function printRolesDetails()
     {
+        SpatieManager::ensureThatUserCan();
 
+        $this->toast("Cette fonctionnalité n'est pas encore disponible sur la plateforme" . env('APP_NAME') , 'info');
     }
     
     public function addNewSpatieRole()
     {
-        
+        SpatieManager::ensureThatUserCan();
+
+        $this->toast("Cette fonctionnalité n'est pas encore disponible sur la plateforme" . env('APP_NAME') , 'info');
     }
 
 
     public function deleteRole($role_id)
     {
+        SpatieManager::ensureThatUserCan();
+        
         return self::deleteRoles([$role_id => $role_id]);
     }
 
     public function deleteRoles($data = [])
     {
+        SpatieManager::ensureThatUserCan();
+
         if($data){
 
             $selected_roles = $data;

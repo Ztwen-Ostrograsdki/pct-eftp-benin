@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\ForumChatSubjectHasBeenValidatedByAdminsEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\ENotification;
 use App\Models\ForumChatSubject;
 use Carbon\Carbon;
@@ -107,6 +108,8 @@ class ForumChatSubjectsList extends Component
 
     public function validateSubject($subject_id)
     {
+        SpatieManager::ensureThatUserCan(['forum-messages-manager']);
+        
         $subject = ForumChatSubject::find($subject_id);
 
         $active_chat_subject = ForumChatSubject::where('active', true)->where('authorized', 1)->first();
@@ -166,6 +169,8 @@ class ForumChatSubjectsList extends Component
 
     public function deleteSubject($subject_id)
     {
+        SpatieManager::ensureThatUserCan(['forum-messages-manager']);
+
         $subject = ForumChatSubject::find($subject_id);
 
         if($subject){

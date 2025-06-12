@@ -17,8 +17,10 @@
                         </strong>
                     </span>
     
+                    @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole(['postes-manager', 'members-manager']))
                     <div class="flex gap-x-2 lg:text-sm items-center letter-spacing-2 sm:text-xs xs:text-xs">
                         <span wire:click="refreshAllPosts" class="text-gray-200 font-semibold px-3 py-3 cursor-pointer hover:bg-red-500 letter-spacing-1 rounded-lg border bg-red-700">
+
                             <span wire:loading.remove wire:target='refreshAllPosts'>
                                 <span class="fas fa-trash"></span>
                                 <span>Rafraichir tous les postes occupés</span>
@@ -29,6 +31,7 @@
                             </span>
                         </span>
                     </div>
+                    @endif
                 </h1>
             </div>
           
@@ -101,33 +104,31 @@
                                     </h5>
                                 </div>
                                 @endif
-
+                                @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole(['postes-manager', 'members-manager']))
                                 <div class="mx-auto w-full flex gap-x-2 px-3 my-0 py-0 font-semibold letter-spacing-1 text-gray-200 lg:text-sm md:text-sm sm:text-sm xs:text-xs">
-                                    @if( __isAdminAs())
+                                    
+                                    <h6>
+                                        <span wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})"  class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Editer</span>
+                                    </h6>
+                                    @if($role->member)
                                         <h6>
-                                            <span wire:click="$dispatch('OpenRoleModalForEditEvent', {role_id: {{$role->id}}})"  class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Editer</span>
+                                            <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Modifier membre</span>
                                         </h6>
-                                        @if($role->member)
-                                            <h6>
-                                                <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Modifier membre</span>
-                                            </h6>
-                                        @else
+                                    @else
                                         <h6>
                                             <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Choisir le membre</span>
                                         </h6>
-                                        @endif
-                                        @if($role->member && __isAdminAs())
-                                            <h6>
-                                                <span wire:click="resetMemberRoleToNull('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
-                                            </h6>
-                                            <h6>
-                                                <span wire:click="confirmedUserBlockOrUnblocked('{{$role->member->user->id}}')" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">
-                                                    {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
-                                                </span>
-                                            </h6>
-                                        @endif
                                     @endif
+                                    <h6>
+                                        <span wire:click="resetMemberRoleToNull('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
+                                    </h6>
+                                    <h6>
+                                        <span wire:click="confirmedUserBlockOrUnblocked('{{$role->member->user->id}}')" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">
+                                            {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
+                                        </span>
+                                    </h6>
                                 </div>
+                                @endif
                             </div>
                             <div class="mx-auto m-0 p-2">
                                 <h5 class="w-full m-0 flex items-center justify-between px-2 mx-auto text-center text-xs lg:text-lg  text-orange-400 letter-spacing-2 py-2 border-b border-t border-gray-500 z-bg-secondary-light">
@@ -136,6 +137,7 @@
                                         Les prérogatives du {{ $role->name }}
                                     </span>
 
+                                    @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole(['postes-manager', 'members-manager']))
                                     <span wire:click="addNewTaskToRole({{$role->id}})" title="Editer les prérogatives à la fonction {{$role->name}}" class="float-right border bg-blue-600 hover:bg-blue-800 text-gray-50 rounded-full cursor-pointer text-xs lg:text-sm p-1">
                                         <span  wire:loading.remove wire:target="addNewTaskToRole({{$role->id}})" wire:target="removeFromTasks({{$role->id}})" class="">
                                             <span class="">Editer</span>
@@ -147,6 +149,7 @@
                                             <span class="fa fa-rotate animate-spin"></span>
                                         </span>
                                     </span>
+                                    @endif
 
                                 </h5>
                             </div>
@@ -208,7 +211,7 @@
                                 <div class="flex items-center">
                                     <div class="flex text-sm text-gray-700 dark:text-gray-400">
                                         <a href="#" class="inline-flex hover:underline text-xs font-medium text-gray-600 dark:text-yellow-400">
-                                        Poste occupé depuis le {{$role->member->user->__getDateAsString($role->created_at)}}
+                                        Poste occupé depuis le {{ __formatDate($role->created_at) }}
                                         </a>
                                     </div>
                                 </div>

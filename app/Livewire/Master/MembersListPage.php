@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\MemberCreationOrUpdatingManagerEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Mail\ConfirmationAdhesion;
 use App\Models\Member;
 use App\Models\User;
@@ -86,6 +87,8 @@ class MembersListPage extends Component
 
     public function changeTheMemberOfThisRole($role_id)
     {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
+        
         $this->dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', $role_id);
     }
 
@@ -93,12 +96,14 @@ class MembersListPage extends Component
     
     public function changeTheRoleOfThisMember($member_id)
     {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
+
         $this->dispatch('OpenModalToChangeTheRoleOfThisMemberEvent', $member_id);
     }
 
     public function resetMemberRoleToNull($member_id)
     {
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
 
         $member = Member::find($member_id);
 
@@ -178,6 +183,9 @@ class MembersListPage extends Component
 
     public function sendMailConfirmationForAdded($user_id)
     {
+        return;
+
+        
         $user = User::find($user_id);
 
         $html = file_get_contents(base_path('resources/maizzle/build_production/member-confirmation.html'));

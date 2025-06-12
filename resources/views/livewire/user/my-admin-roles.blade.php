@@ -8,6 +8,7 @@
                 </span>
             </h2>
             <div class="flex justify-end gap-x-2">
+                @if($user->isAdminsOrMaster())
                 <div class="flex items-center">
                     <button
                         wire:click="joinUserToRole"
@@ -23,6 +24,7 @@
                         </span>
                     </button>
                 </div>
+                @endif
                 
             </div>
         </div>
@@ -62,6 +64,7 @@
                                     {{ __translateRoleName($role->name) }}
                                 </span>
                             </h6>
+                            @if($user->isAdminsOrMaster())
                             <div class="flex items-center justify-between gap-x-2">
                                 <button wire:target='removeUserFromRole({{$role->id}})'  wire:click="removeUserFromRole({{$role->id}})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 hover:text-gray-100 transition">
                                     <span wire:loading.remove wire:target='removeUserFromRole({{$role->id}})'>
@@ -73,6 +76,7 @@
                                     </span>
                                 </button>
                             </div>
+                            @endif
                         </div>
                         <hr class="border border-sky-600 my-2">
 

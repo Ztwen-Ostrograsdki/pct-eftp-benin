@@ -1,9 +1,74 @@
 <?php
 namespace App\Helpers\Tools;
 
-
+use App\Models\User;
 
 trait SpatieManager{
+
+	public static function getMemberDashboard($user_id = null)
+	{
+		return self::getUserDashboard($user_id);
+	}
+
+
+	public static function getUserDashboard($user_id = null)
+	{
+		if(!$user_id) $user = User::find(auth_user_id());
+
+		else $user = User::find($user_id);
+
+		if($user->isAdminsOrMaster()) 
+
+			return [
+				'dashboard' => "Tableau de bord",
+				'stats' => "Statistiques plateforme",
+				'spatie-roles' => "Les roles (admins)",
+				'roles' => "Les Postes",
+				// 'spatie-permissions' => "Les permissions (admins)",
+				'users-list' => "Utilisateurs",
+				'members-list' => "Liste des membres",
+				'members' => "Profil des membres",
+				'members-cards' => "Cartes de membre",
+				'payments' => "Les cotisations",
+				'lycees' => "Les Lycées et centres",
+				'laws' => "Le règlement intérieur",
+				// 'subjects' => "Les Sujets de discussion",
+				'infos' => "Les Communiqués",
+				'epreuves' => "Les Epreuves",
+				'epreuves-exams-list' => "Les Epreuves d'examens",
+		
+			];
+		else
+
+			if($user->hasRole(['lycees-manager'])) return [
+				'lycees' => "Les Lycées et centres",
+			];
+
+			if($user->hasRole(['users-manager', 'members-manager'])) return [
+				'users-list' => "Utilisateurs",
+				'members-list' => "Liste des membres",
+				'members' => "Profil des membres",
+				'members-cards' => "Cartes de membre",
+			];
+
+			if($user->hasRole(['epreuves-manager'])) return [
+				'epreuves' => "Les Epreuves",
+				'epreuves-exams-list' => "Les Epreuves d'examens",
+			];
+			
+			if($user->hasRole(['lycees-manager'])) return [
+				'lycees' => "Les Lycées et centres",
+			];
+			
+			if($user->hasRole(['communiques-manager'])) return [
+				'infos' => "Les Communiqués",
+			];
+			else return [];
+
+
+
+
+	}
 
 
 	public static function getPermissions(?string $data = null) : ?array
@@ -198,6 +263,25 @@ trait SpatieManager{
 		];
 
 		return $permission_name && isset($data[$permission_name]) ? $data[$permission_name] : $permission_name;
+	}
+
+	public static function ensureThatUserCan(?array $roles = [])
+	{
+		$admin = User::find(auth_user_id());
+
+		if($roles !== [] && $roles !== null){
+
+			$cannot = !$admin->isAdminsOrMaster() && !$admin->hasRole($roles);
+
+		}
+		else{
+
+			$cannot = !$admin->isAdminsOrMaster();
+
+		}
+
+		if($cannot) return redirect()->to('/403');
+
 	}
 
 

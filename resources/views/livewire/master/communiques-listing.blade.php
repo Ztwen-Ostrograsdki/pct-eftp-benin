@@ -31,6 +31,7 @@
             </span>
 
         </h1>
+        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('communiques-manager'))
         <div class="my-2 flex justify-end">
             <button wire:click='manageCommnunique' type="button" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
                 <span wire:target='manageCommnunique' wire:loading.remove='manageCommnunique'>
@@ -42,6 +43,7 @@
                 </span>
             </button>
         </div>
+        @endif
         <div class="overflow-x-auto lg:text-base md:text-sm sm:text-xs xs:text-xs">
             @if(count($communiques) > 0)
             <table class="w-full bg-transparent border border-gray-200 shadow text-gray-300">
@@ -52,7 +54,10 @@
                 <th class="py-3 px-3 text-left font-semibold ">Titre</th>
                 <th class="py-3 px-3 text-left font-semibold ">Contenu</th>
                 <th class="py-3 px-3 text-left font-semibold ">Date de publication</th>
+                <th class="py-3 px-3 text-left font-semibold ">Statut</th>
+                @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('communiques-manager'))
                 <th class="py-3 px-3 text-center font-semibold ">Actions</th>
+                @endif
                 </tr>
             </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -77,7 +82,11 @@
                         </td>
                         <td class="py-2 px-3 ">
                             {{ __formatDate($communique->created_at) }}
+                        </td> 
+                        <td class="py-2 px-3 @if($communique->hidden) text-red-400 @else text-green-500 @endif">
+                            {{ $communique->hidden ? 'Masqué | non publié' : "Visible | publié" }}
                         </td>
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('communiques-manager'))
                         <td class="py-2 px-3 text-center space-x-2">
                             <a wire:click="manageCommnunique({{$communique->id}})"  class="text-blue-600 hover:underline">
                                 <span wire:target="manageCommnunique({{$communique->id}})" wire:loading.remove="manageCommnunique({{$communique->id}})">Modifier</span>
@@ -93,6 +102,7 @@
                                 Publier
                             </button>
                         </td>
+                        @endif
                     </tr>
                     @endforeach
                     <!-- Fin de boucle -->

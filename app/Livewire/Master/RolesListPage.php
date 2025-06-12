@@ -5,8 +5,10 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\MemberCreationOrUpdatingManagerEvent;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\Member;
 use App\Models\Role;
+use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -26,37 +28,46 @@ class RolesListPage extends Component
     public function render()
     {
         $roles = Role::all();
+
+        $user = auth_user();
         
         return view('livewire.master.roles-list-page', 
             [
                 'roles' => $roles,
+                'user' => $user,
             ]
         );
     }
 
     public function refreshAllPosts()
     {
-        
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
     }
 
     public function changeTheMemberOfThisRole($role_id)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $this->dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', $role_id);
     }
 
     public function editRole($role_id)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $this->dispatch('OpenMemberModalForEditEvent', $role_id);
     }
 
     public function updateRoleData($role_id)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $this->dispatch('OpenRoleModalForEditEvent', $role_id);
     }
 
     public function resetMemberRoleToNull($member_id)
     {
-        if(!__isAdminAs()) return abort(403, "Vous n'êtes pas authorisé!");
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
 
         $member = Member::find($member_id);
 
@@ -108,8 +119,6 @@ class RolesListPage extends Component
                     $this->reset();
 
                     $this->toast("Le proccessus a été lancé!", 'success');
-
-                    
                 }
 
             }
@@ -126,6 +135,7 @@ class RolesListPage extends Component
 
     public function removeFromTasks($role_id, $task = null)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
 
         $task = str_replace("@", "'", $task);
 
@@ -160,6 +170,8 @@ class RolesListPage extends Component
 
     public function addNewTaskToRole($role_id)
     {
+        SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
+
         $this->dispatch('OpenRoleModalForEditEvent', $role_id, true);
     }
 

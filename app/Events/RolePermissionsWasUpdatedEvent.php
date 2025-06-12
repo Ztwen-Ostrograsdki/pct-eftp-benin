@@ -30,6 +30,7 @@ class RolePermissionsWasUpdatedEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
+            new Channel('public'),
             new PrivateChannel('confirmeds'),
         ];
     }

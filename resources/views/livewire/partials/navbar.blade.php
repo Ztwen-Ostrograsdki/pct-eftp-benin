@@ -35,22 +35,22 @@
               Supprimer ma photo de profil
             </a>
           </li>
-          @if(__isAdminAs())
+          @if(auth_user()->isAdminsOrMaster())
           <li>
             <a wire:navigate href="{{route('master.users.list')}}" class="block {{request()->route()->named('master.users.list') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Gestion utilisateurs
             </a>
           </li>
+          @endif
           
           <li>
-            <a wire:navigate href="{{route('user.notifications')}}" class="block {{request()->route()->named('user.notifications') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+            <a wire:navigate href="{{route('user.notifications', ['identifiant' => auth_user()->identifiant])}}" class="block {{request()->route()->named('user.notifications') ? 'text-blue-600' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Mes notification
               <span class="py-0.5 float-right px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
                 {{ count(auth()->user()->unreadNotifications) }}
-                </span>
+              </span>
             </a>
           </li>
-          @endif
           
           @if(auth_user()->member)
           <li>
@@ -74,8 +74,8 @@
             </a>
           </li>
           @endif
-          @if(__isAdminAs())
-          <li class="hidden">
+          @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
+          <li class="">
             <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
               Administration
             </a>
@@ -116,7 +116,7 @@
           Acceuil
         </a>
       </li>
-      @if(__isAdminAs())
+      @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
       <li>
         <a wire:navigate href="{{route('master.members.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded md:p-0 {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-200' }} ">Administration</a>
       </li>
@@ -135,8 +135,6 @@
       <li>
         <a wire:navigate href="{{route('lycee.listing')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('lycee.listing') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Lycées et centres</a>
       </li>
-      
-
       @auth
       <li>
         <a wire:navigate href="{{route('forum.chat')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('forum.chat') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">
@@ -176,7 +174,7 @@
    </button>
   <div class="py-4 overflow-y-auto">
       <ul class="space-y-2 font-medium">
-        @if(__isAdminAs())
+        @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
          <li>
             <a wire:navigate href="{{route('master.members.home')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('master.members.home') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
                <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -192,7 +190,9 @@
              <span class="fas fa-school"></span>
              <span class="ms-3">Les lycées et centres</span>
           </a>
+        
        </li>
+       @auth
          <li class="">
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
@@ -204,38 +204,102 @@
                   </svg>
             </button>
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                  <li>
-                     <a wire:navigate href="{{route('library.epreuves')}}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.epreuves') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">Les épreuves</a>
+                  <li class="">
+
+                     <a wire:navigate href="{{route('library.epreuves')}}" class="flex items-center w-full gap-x-2 p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.epreuves') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                      <span class="fas fa-book"></span>
+                      <span>Les épreuves</span>
+                    </a>
                   </li>
                   <li>
-                     <a wire:navigate href="{{route('library.fiches')}}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.fiches') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">Fiches de cours</a>
-                  </li>
-                  <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.epreuves') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">Livres</a>
+                     <a wire:navigate href="{{route('library.fiches')}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.fiches') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+
+                      <span>Fiches de cours</span>
+                      <span class="fas fa-book"></span>
+                    </a>
                   </li>
             </ul>
          </li>
-         @auth
-         <li>
-            <a wire:navigate href="{{route('user.notifications')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('user.notifications') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Mes notifications</span>
-               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                  {{ count(auth()->user()->unreadNotifications) }}
-               </span>
-            </a>
-         </li>
+        
+         <li class="">
+          <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-user-profil-details" data-collapse-toggle="dropdown-user-profil-details">
+                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+                   <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                </svg>
+                <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap mr-3">Mon profil</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+          </button>
+          <ul id="dropdown-user-profil-details" class="hidden py-2 space-y-2">
+                <li class="">
+                   <a wire:navigate href="{{route('user.profil', ['identifiant' => auth_user()->identifiant])}}"class="flex items-center w-full gap-x-2 p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('user.profil') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                    <span class="fas fa-user"></span>
+                    <span>Profil utilisateur</span>
+                  </a>
+                </li>
+                
+                <li>
+                   <a wire:navigate href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('member.profi') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                    <span class="fas fa-user-check"></span>
+                    <span>Profil membre</span>
+                    
+                  </a>
+                </li>
+                
+               <li>
+                <a wire:navigate href="{{route('member.quotes', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('member.quotes') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                  <span class="fas fa-quote-left"></span>
+                  <span>Mes citations</span>
+               </a>
+             </li>
+              @if(auth_user()->member)
+                <li>
+                  <a wire:navigate href="{{route('member.profil', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('member.profi') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                    <span class="fas fa-user-shield"></span>
+                    <span>Profil membre</span>
+                 </a>
+               </li>
+              <li>
+                  <a wire:navigate href="{{route('member.payments', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('member.payments') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                    <span class="fas fa-coins"></span>
+                    <span>Mes Cotisations</span>
+                </a>
+              </li>
+              @if (auth_user()->roles)
+                <li>
+                  <a wire:navigate href="{{route('member.admins.roles', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('member.admins.roles') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                    <span class="fas fa-user-secret"></span>
+                    <span>Mes rôles administrateurs</span>
+                </a>
+              </li>
+              @endif
+           @endif
+           <li>
+              <a wire:navigate href="{{route('user.notifications', ['identifiant' => auth_user()->identifiant])}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('user.notifications') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                <span class="fas fa-message"></span>
+                <span>Mes notification</span>
+               <span class="py-0.5 float-right px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">
+                {{ count(auth()->user()->unreadNotifications) }}
+              </span>
+             </a>
+           </li>
+          </ul>
+       </li>
+       <li>
+        <a wire:navigate href="{{route('forum.chat')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('forum.chat') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+           <span class="fas fa-comments"></span>
+           <span class="ms-3">Forum</span>
+        </a>
+       </li>
+       @endauth
          @if(__isAdminAs())
          <li>
             <a wire:navigate href="{{route('master.users.list')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('master.users.list') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                  <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Liste des enseignants</span>
+              <span class="fas fa-users"></span>
+               <span class="flex-1 ms-3 whitespace-nowrap">Liste des utilisateurs</span>
                <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                {{ numberZeroFormattor(count(getTeachers())) }}
+                {{ numberZeroFormattor(count(getUsers())) }}
               </span>
             </a>
          </li>
@@ -250,6 +314,16 @@
           </a>
        </li>
          @endif
+        <li>
+          <a wire:navigate href="{{route('communique.dispatched')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('communique.dispatched') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+             <span class="fas fa-newspaper"></span>
+             <span class="flex-1 ms-3 whitespace-nowrap">Communiqués</span>
+             <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+              {{ numberZeroFormattor(count(getActivesCommuniques())) }}
+            </span>
+          </a>
+       </li>
+        @auth
          <li>
             <a title="Se déconnecter" wire:click.prevent='logout' href="#" class="flex items-center p-2 rounded-lg bg-red-400 border border-gray-50 hover:bg-red-600 text-gray-800 group">
                <span class="fas fa-user-xmark"></span>

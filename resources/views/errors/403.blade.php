@@ -23,7 +23,7 @@
 				<span class="text-yellow-500">Repartons au labo</span> 
 				<span class="text-7xl">🧪🧪🧪</span> 
 			</a>
-			<h6 class="text-red-500 font-semibold text-lg">Bref, Vous n'êtes pas authorisé à accéder à cette page!</h6>
+			<h6 class="text-red-500 font-semibold text-lg">Bref, Désolé mais, vous n'êtes pas authorisé à accéder à cette page ou à effectuer une telle action!</h6>
 		</div>
 		
 	</section>

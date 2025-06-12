@@ -5,6 +5,7 @@ namespace App\Livewire\Master;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Helpers\Tools\ModelsRobots;
+use App\Helpers\Tools\SpatieManager;
 use App\Models\ENotification;
 use App\Models\SupportFile;
 use Livewire\Attributes\On;
@@ -110,6 +111,8 @@ class SupportFilesListPage extends Component
 
     public function validateSupportFile($fiche_id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+
         $fiche = SupportFile::find($fiche_id);
 
         if($fiche){
@@ -188,6 +191,8 @@ class SupportFilesListPage extends Component
 
     public function deleteFile($id)
     {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
         $support_file = SupportFile::find($id);
 
         if($support_file){

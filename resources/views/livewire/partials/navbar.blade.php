@@ -74,13 +74,15 @@
             </a>
           </li>
           @endif
-          @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
-          <li class="">
-            <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
-              Administration
-            </a>
-          </li>
-          @endif
+          @auth
+            @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
+            <li class="">
+              <a wire:navigate href="{{route('master.members.home')}}" class="block {{request()->route()->named('master.members.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white">
+                Administration
+              </a>
+            </li>
+            @endif
+          @endauth
           <li>
             <a href="{{route('library.home')}}" class="block px-4 py-2 text-sm  hover:bg-gray-100 dark:hover:bg-gray-600 {{request()->route()->named('library.home') ? 'text-yellow-600 bg-gray-800' : 'text-gray-400' }} ">
               Bibliothèque
@@ -116,11 +118,13 @@
           Acceuil
         </a>
       </li>
-      @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
-      <li>
-        <a wire:navigate href="{{route('master.members.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded md:p-0 {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-200' }} ">Administration</a>
-      </li>
-      @endif
+      @auth
+        @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
+        <li>
+          <a wire:navigate href="{{route('master.members.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded md:p-0 {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-200' }} ">Administration</a>
+        </li>
+        @endif
+      @endauth
       <li class="hidden">
         <a wire:navigate href="{{route('master.members.home')}}" class="block hover:text-sky-400 py-2 px-3 rounded {{request()->route()->named('master.members.home') ? 'text-blue-600' : 'text-gray-200' }}  md:p-0 ">Association</a>
       </li>
@@ -174,17 +178,19 @@
    </button>
   <div class="py-4 overflow-y-auto">
       <ul class="space-y-2 font-medium">
-        @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
-         <li>
-            <a wire:navigate href="{{route('master.members.home')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('master.members.home') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
-               <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
-                  <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
-                  <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
-               </svg>
-               <span class="ms-3">Administration</span>
-            </a>
-         </li>
-         @endif
+        @auth
+          @if(auth_user()->isAdminsOrMaster() || auth_user()->roles)
+          <li>
+              <a wire:navigate href="{{route('master.members.home')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('master.members.home') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
+                <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                    <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                    <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                </svg>
+                <span class="ms-3">Administration</span>
+              </a>
+          </li>
+          @endif
+         @endauth
          <li>
           <a wire:navigate href="{{route('lycee.listing')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group  {{request()->route()->named('lycee.listing') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
              <span class="fas fa-school"></span>
@@ -213,9 +219,8 @@
                   </li>
                   <li>
                      <a wire:navigate href="{{route('library.fiches')}}" class="flex items-center w-full p-2 gap-x-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{request()->route()->named('library.fiches') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
-
-                      <span>Fiches de cours</span>
                       <span class="fas fa-book"></span>
+                      <span>Fiches de cours</span>
                     </a>
                   </li>
             </ul>
@@ -293,7 +298,8 @@
         </a>
        </li>
        @endauth
-         @if(__isAdminAs())
+       @auth
+         @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole(['users-manager']))
          <li>
             <a wire:navigate href="{{route('master.users.list')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('master.users.list') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
               <span class="fas fa-users"></span>
@@ -303,7 +309,9 @@
               </span>
             </a>
          </li>
+         @endif
 
+         @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole(['members-manager']))
          <li>
           <a wire:navigate href="{{route('master.members.list')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('master.members.list') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
              <span class="fas fa-users-gear"></span>
@@ -312,8 +320,9 @@
               {{ numberZeroFormattor(count(getMembers())) }}
             </span>
           </a>
-       </li>
+        </li>
          @endif
+        @endauth
         <li>
           <a wire:navigate href="{{route('communique.dispatched')}}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{request()->route()->named('communique.dispatched') ? 'z-bg-secondary-light border border-sky-500 shadow-2 shadow-sky-400' : '' }}">
              <span class="fas fa-newspaper"></span>

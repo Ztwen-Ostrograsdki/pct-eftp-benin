@@ -55,12 +55,12 @@
                                 </h3>
                                 
                                 <div class="flex flex-col text-sm gap-y-2">
-                                    <p class="text-sky-300 text-right flex justify-between">
+                                    <p class="text-red-500 text-right flex justify-between">
                                         <span>
                                             Les membres bloqués:
                                         </span>
                                         <span>
-                                            {{ __formatNumber3(count(confirmedsAccounts())) }}
+                                            {{ __formatNumber3(count(blockedsUsers())) }}
                                         </span>
                                     </p>
 

@@ -6,10 +6,12 @@ use App\Events\BlockUserEvent;
 use App\Events\LogoutUserEvent;
 use App\Events\UserHasBeenBlockedSuccessfullyEvent;
 use App\Jobs\JobBlockUser;
+use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Bus\Batch;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Notification;
 use Throwable;
 
 class BlockUserListener
@@ -28,6 +30,10 @@ class BlockUserListener
             ])->then(function(Batch $batch) use ($event){
 
                 UserHasBeenBlockedSuccessfullyEvent::dispatch($event->user);
+
+                $message = "L'utilisateur " . $event->user->getFullName() . " a été bloqué avec succès!";
+                
+                Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("Le processus est terminé: " . $message));
 
                 LogoutUserEvent::dispatch($event->user);
 

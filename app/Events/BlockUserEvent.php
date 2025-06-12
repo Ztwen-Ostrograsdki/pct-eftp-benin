@@ -18,12 +18,16 @@ class BlockUserEvent implements ShouldBroadcastNow
 
     public $user;
 
+    public $admin_generator;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user)
+    public function __construct(User $user, User $admin_generator)
     {
         $this->user = $user;
+
+        $this->admin_generator = $admin_generator;
     }
 
 

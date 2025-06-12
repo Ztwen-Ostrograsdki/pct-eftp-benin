@@ -197,24 +197,9 @@ class UsersListPage extends Component
             }
             else{
 
-                BlockUserEvent::dispatch($user);
+                $dispatched = BlockUserEvent::dispatch($user, auth_user());
 
-                if($user){
-
-                    $message = "Le processus de blocage a été lancé avec success!";
-    
-                    if(!$action) $message = "Le processus de déblocage a été lancé avec success!" ;
-    
-                    $this->toast($message, 'success');
-    
-                    session()->flash('success', $message);
-    
-                }
-                else{
-    
-                    $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
-    
-                }
+                $this->toast( "L'opération a été lancée!", 'success');
             }
             
         }
@@ -223,23 +208,10 @@ class UsersListPage extends Component
 
 
     #[On("LiveUserHasBeenBlockedSuccessfullyEvent")]
-    public function userBlockedSuccessfully($user)
+    public function userBlockedSuccessfully($user = null)
     {
         
-        if($user && $user['blocked']){
-
-            $message = "L'utilisateur a été bloqué avec success!";
-
-            $this->toast($message, 'success');
-
-            session()->flash('success', $message);
-
-        }
-        else{
-
-            $this->toast( "L'opération a échoué! Veuillez réessayer!", 'error');
-
-        }
+        
     }
 
     public function confirmedUserEmailVerification($user_id)

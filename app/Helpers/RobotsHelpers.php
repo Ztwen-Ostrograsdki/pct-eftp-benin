@@ -805,7 +805,7 @@ if(!function_exists('blockedsUsers')){
 
     function blockedsUsers()
     {
-        return User::where('blocked', true)->where('blocked_at')->get();
+        return User::where('blocked', true)->whereNotNull('blocked_at')->get();
     }
 
 }

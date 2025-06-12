@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\SupportFile;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\Notification;
 
 class ObserveSupportFile
 {
@@ -19,26 +21,11 @@ class ObserveSupportFile
 
         $user = $supportFile->user;
 
-        $since = $supportFile->__getDateAsString($supportFile->created_at, 3, true);
+        $since = __formatDateTime($supportFile->created_at);
 
-        $object = "Validation d'une fiche de cours publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
-        " et d'identifiant personnel : ID = " . $user->identifiant;
+        $message = "Validation d'un support de cours publié par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Le support de cours a été publié le " . $since . " .";
 
-        $content = "Vous recevez cette notification parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer le support publiée par "
-        . $user->getUserNamePrefix() . " " . $user->getFullName(true) . ". Le support a été publié le " . $since . " ." ;
-        
-        $title = "Validation d'une fiche de cours publié";
-        
-        $data = [
-            'user_id' => $user->id,
-            'content' => $content,
-            'title' => $title,
-            'object' => $object,
-            'receivers' => $admins,
-
-        ];
-
-        ENotification::create($data);
+        Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
     }
 
     /**

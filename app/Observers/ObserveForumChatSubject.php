@@ -6,6 +6,8 @@ use App\Events\ToasterMessagesEvent;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\ENotification;
 use App\Models\ForumChatSubject;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class ObserveForumChatSubject
@@ -21,27 +23,11 @@ class ObserveForumChatSubject
 
         $user = $forumChatSubject->user;
 
-        $since = $forumChatSubject->__getDateAsString($forumChatSubject->created_at, 3, true);
+        $since = __formatDateTime($forumChatSubject->created_at);
 
-        $object = "Validation d'un sujet de discussion publié sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
-        " et d'identifiant personnel : ID = " . $user->identifiant;
+        $message = "Approbation d'un sujet de discussion publiée par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Le sujet a été publié le " . $since . " .";
 
-        $content = "Vous recevez cette notification parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer ce sujet de discussion publié par "
-        . $user->getUserNamePrefix() . " " . $user->getFullName(true) . ". Ce sujet de discussion a été publié le " . $since . " ." ;
-        
-        $title = "Validation d'un sujet de discussion publié";
-        
-        $data = [
-            'user_id' => $user->id,
-            'content' => $content,
-            'title' => $title,
-            'object' => $object,
-            'receivers' => $admins,
-
-        ];
-
-        ENotification::create($data);
-
+        Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
         
     }
 

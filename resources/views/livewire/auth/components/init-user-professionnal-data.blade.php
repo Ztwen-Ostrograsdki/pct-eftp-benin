@@ -140,8 +140,8 @@
                 <div class="relative z-0 w-full mb-5 text-gray-400 group ">
                     <label for="register-from_general_school" class="block mb-1 text-sm font-medium text-gray-400">Je suis dans un CEG</label>
                     <select aria-describedby="helper-text-register-from_general_school" wire:model.live='from_general_school' id="register-from_general_school" class="bg-inherit border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                      <option class="z-bg-secondary-light-opac" value="{{false}}">NON</option>
-                      <option class="z-bg-secondary-light-opac" value="{{true}}">OUI</option>
+                      <option class="z-bg-secondary-light-opac" value="{{$non}}">NON</option>
+                      <option class="z-bg-secondary-light-opac" value="{{$oui}}">OUI</option>
                     </select>
                     @error('from_general_school')
                     <p id="helper-text-register-from_general_school" class="mt-2 text-xs text-red-500 letter-spacing-2 ">
@@ -151,7 +151,7 @@
                   </div>
                   @if($from_general_school)
                   <div class="relative z-0 w-full mb-5 group text-gray-400">
-                    <label for="register-general_school" class="block mb-1 text-sm font-medium text-gray-400">Renseignez CEG</label>
+                    <label for="register-general_school" class="block mb-1 text-sm font-medium text-gray-400">Renseignez le CEG</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
                             <span class="fas fa-school"></span>

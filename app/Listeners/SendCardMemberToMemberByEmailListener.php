@@ -24,12 +24,8 @@ class SendCardMemberToMemberByEmailListener
 
             ])->then(function(Batch $batch) use ($event){
 
-                
-
             })
             ->catch(function(Batch $batch, Throwable $er) use ($event){
-
-                
 
             })
 

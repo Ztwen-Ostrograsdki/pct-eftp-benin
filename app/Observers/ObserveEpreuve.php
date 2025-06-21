@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Events\NewEpreuveHasBeenPublishedEvent;
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\ENotification;
 use App\Models\Epreuve;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\Notification;
@@ -16,18 +15,35 @@ class ObserveEpreuve
      */
     public function created(Epreuve $epreuve): void
     {
-        ModelsRobots::notificationToAdminsThatNewEpreuveHasBeenPublished($epreuve->user, $epreuve);
-
-        $admins = ModelsRobots::getUserAdmins();
-
         $user = $epreuve->user;
 
-        $since = __formatDateTime($epreuve->created_at);
+        if($user->isAdminsOrMaster() || $user->hasRole('epreuves-manager')){
 
-        $message = "Validation d'une épreuve publiée par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". L'épreuve a été publiée le " . $since . " .";
+            $epreuve->update(['authorized' => true]);
 
-        Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+            $admins = ModelsRobots::getUserAdmins(null, $user->id);
 
+            $since = __formatDateTime($epreuve->created_at);
+
+            $message = "Nouvelle épreuve publiée par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+        }
+        else{
+
+            ModelsRobots::notificationToAdminsThatNewEpreuveHasBeenPublished($epreuve->user, $epreuve);
+
+            $admins = ModelsRobots::getUserAdmins();
+
+            $since = __formatDateTime($epreuve->created_at);
+
+            $message = "Validation d'une épreuve publiée par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+
+        }
     }
 
     /**

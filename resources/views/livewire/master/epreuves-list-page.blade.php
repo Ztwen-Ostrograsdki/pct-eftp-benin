@@ -126,7 +126,8 @@
                         </span>
                         <span class="gap-x-2 flex text-xs">
 
-                              <span wire:loading.remove wire:target='deleteFile({{$epreuve->id}})' wire:click="deleteFile({{$epreuve->id}})"   title="Supprimer cette épreuve " class="text-red-500 p-2 rounded-full cursor-pointer bg-red-300 border-red-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                          @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                            <span wire:loading.remove wire:target='deleteFile({{$epreuve->id}})' wire:click="deleteFile({{$epreuve->id}})"   title="Supprimer cette épreuve " class="text-red-500 p-2 rounded-full cursor-pointer bg-red-300 border-red-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
                                 <span class="fas fa-trash"></span> 
                                 <span>Suppr.</span>
                             </span>
@@ -134,7 +135,7 @@
                                 <span class="fas fa-rotate animate-spin mr-2"></span> 
                                 <span>Suppression en cours...</span>
                             </span>
-                        
+                          
                             @if(!$epreuve->authorized)
                                 <span wire:loading.remove wire:target='validateEpreuve({{$epreuve->id}})' wire:click="validateEpreuve({{$epreuve->id}})"   title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
                                     <span class="fas fa-check"></span> 
@@ -145,6 +146,7 @@
                                     <span>Validation en cours...</span>
                                 </span>
                             @endif
+                          @endif
                           <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire les éléments de réponses" class="text-gray-900 p-2 rounded-full cursor-pointer bg-sky-400 border-gray-900 border hover:shadow-3 hover:shadow-sky-600">
                             <span class="fas fa-pen"></span> 
                             <span>Rep</span>
@@ -211,7 +213,7 @@
                       </small>
                       <br>
                       <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-sm">Par 
-                         {{$epreuve->user->getFullName()}}
+                        {{$epreuve->user ? $epreuve->user->getFullName() : 'Inconnu'}}
                       </small>
                     </p>
                   </div>

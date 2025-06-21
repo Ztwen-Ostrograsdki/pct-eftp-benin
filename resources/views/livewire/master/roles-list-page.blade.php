@@ -119,6 +119,7 @@
                                             <span wire:click="$dispatch('OpenModalToChangeTheMemberOfThisRoleEvent', {role_id: {{$role->id}}})" class="block cursor-pointer px-2 py-1 bg-gray-600 rounded-md hover:bg-gray-700 ">Choisir le membre</span>
                                         </h6>
                                     @endif
+                                    @if($role->member)
                                     <h6>
                                         <span wire:click="resetMemberRoleToNull('{{$role->member->id}}')" class="block cursor-pointer px-2 py-1 bg-red-600 rounded-md hover:bg-red-700 ">Supprimer</span>
                                     </h6>
@@ -127,6 +128,7 @@
                                             {{ $user->blocked ? "DéBloquer" : "Bloquer" }}
                                         </span>
                                     </h6>
+                                    @endif
                                 </div>
                                 @endif
                             </div>

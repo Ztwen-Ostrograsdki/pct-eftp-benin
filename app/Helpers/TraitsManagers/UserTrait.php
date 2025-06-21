@@ -2,6 +2,7 @@
 namespace App\Helpers\TraitsManagers;
 
 use App\Helpers\Tools\ModelsRobots;
+use App\Jobs\JobToSendConfirmationMailRequestToUser;
 use App\Jobs\JobToSendEmailToIdentifiedUser;
 use App\Models\ENotification;
 use App\Models\User;
@@ -45,7 +46,7 @@ trait UserTrait{
 
     public function markAsNotVerified()
     {
-        $email_verify_key = Str::random(6);
+        $email_verify_key = generateRandomNumber(6);
 
         if(!$this->emailNotVerified()){
     
@@ -69,20 +70,14 @@ trait UserTrait{
             return $this;
         }
 
-        $email_verify_key = Str::random(6);
+        $dispatched = JobToSendConfirmationMailRequestToUser::dispatch($this);
 
-        $send = $this->notify(new SendEmailVerificationKeyToUser($email_verify_key));
-
-        $auth = $this->forceFill([
-            'email_verify_key' => Hash::make($email_verify_key)
-        ])->save();
-
-        return $this;
+        return $dispatched ? $this : false;
     }
 
     public function sendPasswordResetKeyToUser(?string $key = null)
     {
-        $password_reset_key = Str::random(6);
+        $password_reset_key = generateRandomNumber(6);
         
         if($key) $password_reset_key = $key;
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers\Tools;
 
+use App\Events\UpdateUsersListToComponentsEvent;
 use App\Models\Epreuve;
 use App\Models\ForumChatSubject;
 use App\Models\SupportFile;
@@ -44,28 +45,36 @@ class ModelsRobots{
 
         if(!$pluckingColumn)
 
-            return User::whereHas('roles', function($query) use ($roles) {
+            return User::whereHas('roles', function($query) use ($roles, $except) {
 
                 $query->whereIn('admins.name', $roles);
 
+                if($except) $query->where('users.id', '<>', $except);
+
             })
-            ->orWhere(function($query){
+            ->orWhere(function($query) use ($except){
 
                 $query->where('users.id', 1);
+
+                if($except) $query->where('users.id', '<>', $except);
             })
             ->distinct()
             ->pluck('id')
             ->toArray();
         else
 
-        return User::whereHas('roles', function($query) use ($roles) {
+        return User::whereHas('roles', function($query) use ($roles, $except) {
 
             $query->whereIn('admins.name', $roles);
 
+            if($except) $query->where('users.id', '<>', $except);
+
         })
-        ->orWhere(function($query){
+        ->orWhere(function($query) use ($except){
 
             $query->where('users.id', 1);
+
+            if($except) $query->where('users.id', '<>', $except);
         })
         ->distinct()->get();
     }
@@ -100,7 +109,7 @@ class ModelsRobots{
             $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
             . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
                 
-                "L'épreuve a été publiée le " . $since . " ."
+                ". L'épreuve a été publiée le " . $since . " ."
             ;
 
             foreach($admins as $admin){
@@ -204,6 +213,8 @@ class ModelsRobots{
             $message = "L'utilisateur " . $user->getFullName(true) . " vient de confirmer son compte ce: " . $since . " !";
 
             Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+            
 
         }
     }

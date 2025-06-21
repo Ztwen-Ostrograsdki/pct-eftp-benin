@@ -68,12 +68,6 @@
                             Statut carte
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Impressions
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Dernière Impression
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Expire Le
                         </th>
                         <th scope="col" class="px-6 py-3 text-center">
@@ -105,13 +99,7 @@
                         <td class="px-6 py-4">
                             {{ $member->getMemberCardCreationDate() ? "Emise depuis le " . $member->getMemberCardCreationDate() : "Non prête" }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $member->getMemberCardPrints() ? $member->getMemberCardPrints() : "Non prête" }}
-                        </td>
                         
-                        <td class="px-6 py-4">
-                            {{ $member->getMemberCardLastDatePrint() ? $member->getMemberCardLastDatePrint() : "Aucune" }}
-                        </td>
                         <td class="px-6 py-4">
                             {{ $member->getMemberCardExpirationDate() ? $member->getMemberCardExpirationDate() : "Non prête" }}
                         </td>
@@ -153,6 +141,18 @@
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>
+                                @if($member->card())
+                                <span wire:click="sendCardToMember('{{$member->id}}')" class="bg-purple-500 hover:bg-purple-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="sendCardToMember('{{$member->id}}')">
+                                        <span class="hidden lg:inline">Envoyer</span>
+                                        <span class="fa fa-envelope"></span>
+                                    </span>
+                                    <span wire:loading wire:target="sendCardToMember('{{$member->id}}')">
+                                        <span>En cours...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
+                                @endif
                             </span> 
                         </td>
                         <td class="px-6 py-4 text-center">

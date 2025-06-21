@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Events\UpdateUsersListToComponentsEvent;
 use App\Helpers\Tools\ModelsRobots;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -46,9 +47,6 @@ class EmailVerificationPage extends Component
                 }
 
             }
-            else{
-                return abort(404, "La page est introuvable");
-            }
 
         }
 
@@ -68,13 +66,15 @@ class EmailVerificationPage extends Component
     {
         $status = false;
 
+        $this->resetErrorBag();
+
         $this->validate([
             'email' => 'required|email|max:255|exists:users,email',
         ]);
 
         if(!$this->user){
 
-            $user = User::where('email', $this->email)->whereNull('email_verify_key')->first();
+            $user = User::where('email', $this->email)->first();
 
             if($user){
 
@@ -129,6 +129,8 @@ class EmailVerificationPage extends Component
                         if($status){
 
                             $texto = "Votre compte ..." . $this->email . " ... a été confirmé avec succès!";
+
+                            UpdateUsersListToComponentsEvent::dispatch();
 
                             ModelsRobots::notificationToConfirmUnconfirmedUser($user);
     
@@ -209,6 +211,7 @@ class EmailVerificationPage extends Component
                 return redirect(route('email.verification', ['email' => $this->email]))->with('success', "Confirmer votre compte en renseignant le code qui vous été envoyé!");
             }
             else{
+
                 $message = "Adresse mail non reconnu";
 
                 session()->flash('info', $message);

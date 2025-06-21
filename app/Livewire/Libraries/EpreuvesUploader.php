@@ -19,6 +19,8 @@ class EpreuvesUploader extends Component
 {
     use WithFileUploads, Toast, Confirm;
     
+    public $uploaded_completed = false;
+    
     public $counter = 0;
 
     public $name;
@@ -101,6 +103,26 @@ class EpreuvesUploader extends Component
         $this->resetErrorBag();
     }
 
+    public function updatedFileEpreuve($file)
+    {
+        $this->resetErrorBag();
+    }
+    
+    public function updatedLyceeId($id)
+    {
+        $this->resetErrorBag();
+    }
+
+    public function updatedExamSession($exam_session)
+    {
+        $this->resetErrorBag();
+    }
+
+    public function updatedExamType($type)
+    {
+        $this->resetErrorBag();
+    }
+
     public function pushIntoSelecteds($id)
     {
         $tables = [];
@@ -156,16 +178,32 @@ class EpreuvesUploader extends Component
             ]);
         }
         elseif($this->epreuve_type == 'examen'){
-            
-            $this->validate([
-                'file_epreuve' => 'required|file|mimes:docx,pdf|max:8000',
-                'filiars_ids' => 'required',
-                'exam_department' => 'required',
-                'exam_session' => 'required',
-                'name' => 'string|max:60',
-            ]);
+
+            $this->is_exam = true;
+
+            if($this->exam_session == 'normal')
+
+                $this->validate([
+                    'file_epreuve' => 'required|file|mimes:docx,pdf|max:8000',
+                    'exam_session' => 'required',
+                    'exam_type' => 'required',
+                    'name' => 'string|max:60',
+                ]);
+            else{
+                $this->validate([
+                    'file_epreuve' => 'required|file|mimes:docx,pdf|max:8000',
+                    'exam_department' => 'required',
+                    'exam_session' => 'required',
+                    'exam_type' => 'required',
+                    'name' => 'string|max:60',
+                ]);
+
+            }
+
+
+
         }
-        
+
         $path = null;
 
         $selecteds = $this->selecteds;
@@ -257,6 +295,8 @@ class EpreuvesUploader extends Component
             InitEpreuveCreationEvent::dispatch($data, $file_epreuve_saved_path);
 
             $this->reset();
+
+            $this->uploaded_completed = true;
         }
         else{
 

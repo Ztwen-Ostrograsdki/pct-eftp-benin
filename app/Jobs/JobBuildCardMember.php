@@ -78,7 +78,7 @@ class JobBuildCardMember implements ShouldQueue
 
         $user = $member->user;
 
-        $card_number = date('Y') . '' . Str::random(6);
+        $card_number = date('Y') . '' . generateRandomNumber(6);
 
         $qr_value = 'ID:' . $user->identifiant . '@Tel:' . $user->contacts . 'N°:' . $card_number;
 
@@ -173,7 +173,7 @@ class JobBuildCardMember implements ShouldQueue
 
         if($done){
 
-            $key = Str::random(4);
+            $key = generateRandomNumber(5);
 
             $card_of_this_year_existed = $member->card();
 

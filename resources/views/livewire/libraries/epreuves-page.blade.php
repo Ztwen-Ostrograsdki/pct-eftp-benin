@@ -12,9 +12,9 @@
             </h4>
         </div>
     </div>
-    <div class="w-full p-0 m-0 flex gap-x-3">
-        <div class="m-0 p-0 mb-2 ">
-            <a class="bg-blue-600 text-gray-300 border border-white rounded-lg px-2 py-2 w-full inline-block" href="{{route('library.epreuves.uplaoder', ['type' => 'simple'])}}">
+    <div class="w-full p-0 m-0 flex gap-x-1 items-center">
+        <div class="m-0 p-0">
+            <a class="bg-blue-600 hover:bg-blue-800 text-xs text-gray-300 py-3 border border-white rounded-lg px-3 w-full flex gap-x-1 items-center" href="{{route('library.epreuves.uplaoder', ['type' => 'simple'])}}">
                 <span>Publier</span>
                 <span class="fa fa-share"></span>
             </a>
@@ -117,11 +117,11 @@
               </form>
             </div>
             @if(count($epreuves))
-            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
+            <div class="grid xs:grid-cols-6 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-6 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2 epreuve-card">
-                <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
+              <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 epreuve-card">
+                <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700 text-xs font-semibold letter-spacing-1">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
                         <span>
@@ -151,8 +151,11 @@
                           Fichier
                         </span> 
                         <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
-                        <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
+                        <h5 class="w-full flex flex-col text-right justify-end text-gray-400">
                           <span>{{$epreuve->name}}</span>
+                          <span class="text-xs text-yellow-600">
+                            {{$epreuve->school_year}}
+                          </span>
                         </h5>
                       </div>
                       
@@ -167,7 +170,25 @@
                       <div class="w-full">
                         <span class="text-cyan-300">
                           <strong>Promotion :</strong> 
-                          {{ $epreuve->getPromotion() }}
+
+                          @php
+
+                            $promotion = $epreuve->getPromotion();
+
+                            if($promotion) $names = __getSimpleNameFormated($promotion);
+
+                            else $names = null;
+                              
+                          @endphp
+
+                          @if($names)
+
+                            {{ $names['root'] }}<sup>{{ $names['sup'] }} </sup> {{ $names['idc'] }}
+
+                          @else
+                            Non précisée
+                          @endif
+                          
                         </span>
                       </div>
                       <div class="w-full">
@@ -178,30 +199,29 @@
                       </div>
                     </div>
                     <p class=" w-full">
-                      <span class="text-green-600 text-base dark:text-green-600">
+                      <span class="text-green-600 dark:text-green-600">
                         Taille : {{ $epreuve->file_size ? $epreuve->file_size : 'inconnue' }}
                       </span>
                       <span class="text-xs ml-3 text-sky-600">
                         ({{$epreuve->getTotalPages()}} Pages)
                       </span>
-                      <span class="text-xs ml-3 text-yellow-600">
-                        (cette épreuve est conçue en {{$epreuve->school_year}})
-                      </span>
 
                       @if($epreuve->lycee_id)
                       <br>
-                      <small class="text-gray-600 text-right text-sm">Lycée ou Centre :  
+                      <small class="text-gray-600 text-right">Lycée ou Centre :  
                          {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
                       </small>
                       @endif
                       <br>
-                      <small class="text-gray-400 text-right text-sm">Publié le 
-                         {{$epreuve->__getDateAsString($epreuve->created_at)}}
+                      <small class="text-gray-400 text-right">Publié le 
+                         {{ __formatDate($epreuve->created_at) }}
                       </small>
                       <br>
-                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-sm">Par 
+                      @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-xs">Par 
                          {{$epreuve->user->getFullName()}}
                       </small>
+                      @endif
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">

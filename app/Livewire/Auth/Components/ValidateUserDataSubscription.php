@@ -96,8 +96,6 @@ class ValidateUserDataSubscription extends Component
     
     public function render()
     {
-        // self::initializator();
-
         return view('livewire.auth.components.validate-user-data-subscription');
     }
 

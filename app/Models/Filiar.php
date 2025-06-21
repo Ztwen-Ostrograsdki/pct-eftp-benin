@@ -26,4 +26,6 @@ class Filiar extends Model
     {
         return $this->hasMany(Classe::class);
     }
+
+    
 }

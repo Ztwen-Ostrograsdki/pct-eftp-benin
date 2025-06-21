@@ -33,11 +33,14 @@ class InitUserProfessionnalData extends Component
 
     public $department_key;
 
+    public $oui = true;
+
+    public $non = false;
+
     protected $rules = [
         'matricule' => 'required|string',
         'job_city' => 'string|required',
         'years_experiences' => 'numeric|required',
-        'from_general_school' => 'bool|required',
         'school' => 'string|nullable',
         'general_school' => 'string|nullable',
         'teaching_since' => 'numeric|required|',
@@ -53,8 +56,6 @@ class InitUserProfessionnalData extends Component
     
     public function render()
     {
-        self::initializator();
-
         $years = [];
 
         $current_year = (int)date('Y');

@@ -86,48 +86,7 @@ class CardMemberComponent extends Component
         InitMemberCardSchemaEvent::dispatch($member, $key, $admin_generator);
     }
 
-    public function __f_generateCardMember($id)
-    {
-        $member = Member::find($id);
-
-        $user = $member->user;
-
-        $data = [
-            'name' => $user->getFullName(),
-            'reverse_name' => $user->getFullName(true),
-            'email' =>  $user->email,
-            'identifiant' =>  $user->identifiant,
-            'address' =>  Str::upper($user->address),
-            'role' =>  $member->role->name,
-            'photo' =>  user_profil_photo($user),
-            'contacts' =>  $user->contacts,
-            'card_number' => $this->card_number
-
-        ];
-
-        $html = View::make('pdftemplates.card', $data)->render();
-
-        $rand = random_int(13136636, 89999938872);
-
-        $pdfPath = storage_path("app/public/carte-de-membre-{$rand}-{$user->identifiant}.pdf");
-
-        // ini_set("max_execution_time", 45);
-
-        Browsershot::html($html)
-            ->setNodeBinary('C:\Program Files\nodejs\node.exe')
-            ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')
-            ->setIncludePath(public_path('build/assets'))
-            ->showBackground()
-            ->waitUntilNetworkIdle()
-            ->ignoreHttpsErrors()
-            ->format('A4')
-            ->margins(15, 15, 15, 15)
-            ->timeout(120)
-            ->save($pdfPath);
-
-        return response()->download($pdfPath);
-    }
-
+    
 
     
 

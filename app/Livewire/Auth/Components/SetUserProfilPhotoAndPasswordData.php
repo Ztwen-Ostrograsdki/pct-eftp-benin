@@ -36,12 +36,15 @@ class SetUserProfilPhotoAndPasswordData extends Component
         'profil_photo' => 'required|image|mimes:jpeg,png,jpg|max:4000',
     ];
 
+    public function mount()
+    {
+        self::initializator();
+    }
+
     
     
     public function render()
     {
-        self::initializator();
-
         return view('livewire.auth.components.set-user-profil-photo-and-password-data');
     }
 

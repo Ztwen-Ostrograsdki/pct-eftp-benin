@@ -35,6 +35,7 @@ trait SpatieManager{
 				// 'subjects' => "Les Sujets de discussion",
 				'infos' => "Les Communiqués",
 				'epreuves' => "Les Epreuves",
+				'supports-files' => "Les Supports de cours",
 				'epreuves-exams-list' => "Les Epreuves d'examens",
 		
 			];
@@ -54,6 +55,7 @@ trait SpatieManager{
 			if($user->hasRole(['epreuves-manager'])) return [
 				'epreuves' => "Les Epreuves",
 				'epreuves-exams-list' => "Les Epreuves d'examens",
+				'supports-files' => "Les Supports de cours",
 			];
 			
 			if($user->hasRole(['lycees-manager'])) return [

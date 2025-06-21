@@ -8,7 +8,6 @@ use App\Events\MemberCreationOrUpdatingManagerEvent;
 use App\Helpers\Tools\SpatieManager;
 use App\Models\Member;
 use App\Models\Role;
-use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;

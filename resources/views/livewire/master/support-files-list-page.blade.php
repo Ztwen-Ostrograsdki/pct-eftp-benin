@@ -4,9 +4,9 @@
             <h4 class="py-3 xs:text-xs lg:text-base">
                 <span class="text-sky-400 uppercase ml-2">
                     Liste complète des fiches de cours publiées  
-                    <span class=" text-sky-400 float-right">
+                    <span class="float-right text-orange-600">
                        {{ numberZeroFormattor(count($support_files)) }} 
-                       <span class="lowercase">fiches de cours trouvées</span> 
+                       <span class="lowercase ">fiches de cours trouvées</span> 
                     </span>
                 </span>
             </h4>
@@ -15,13 +15,20 @@
     <div class="w-full p-0 m-0">
         <div class="w-full m-0 p-0 mb-2 ">
             <div class="mb-4">
-                <div class="items-center justify-between px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg">
+                <div class="items-center flex justify-between px-3 border-sky-700 bg-transparent rounded-lg">
                   <div class="flex items-center w-2/5 justify-between">
-                    <select wire:model.live='authorized' name="authorized" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
+                    <select wire:model.live='authorized' name="authorized" id="" class="block w-full px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
                         <option class="py-4" value="{{'all'}}">Lister toutes les fiches de cours</option>
                         <option class="py-4 px-3" value="{{true}}"> {{ "Les fiches de cours déjà authorisées" }} </option>
                         <option class="py-4 px-3" value="{{false}}"> {{ "Les fiches de cours pas encore authorisées" }} </option>
                     </select>
+                  </div>
+                  <div class="w-2/5 m-0 p-0 mb-2 ">
+                      <a class="bg-transparent text-sky-600 border border-sky-700 rounded-lg px-2 py-3 w-full hover:bg-sky-600 hover:text-gray-900 hover:border-gray-100 inline-block" href="{{route('library.fiches.uplaoder')}}">
+                          <span class="fa fa-send"></span>
+                          <span>Publier des fiches</span>
+                          <span class="fa fa-book"></span>
+                      </a>
                   </div>
                 </div>
               </div>
@@ -62,7 +69,7 @@
             
           </div>
           <div class="w-full xs:col-span-4 sm:col-span-4 lg:col-span-3 lg:grid-cols-4">
-            <div class="px-3 mb-4">
+            <div class="px-3 mb-4 hidden">
               <div class="items-center justify-between hidden px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg sm:flex">
                 <div class="flex items-center w-2/5 justify-between">
                   <select name="" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
@@ -74,7 +81,7 @@
                 </div>
               </div>
             </div>
-            <div class="w-full py-1 my-3 px-3">
+            <div class="w-full py-1 mb-3 px-3">
               <form class="w-full mx-auto">   
                   <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
                   <div class="relative">
@@ -171,7 +178,7 @@
                       </small>
                       <br>
                       <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-sm">Par 
-                         {{$fiche->user->getFullName()}}
+                         {{$fiche->user ? $fiche->user->getFullName() : 'Inconnu'}}
                       </small>
                     </p>
                   </div>
@@ -204,7 +211,6 @@
                     </span>
                   </h5>
                   @endif
-                
               </div>
             @endif
             <!-- pagination start -->

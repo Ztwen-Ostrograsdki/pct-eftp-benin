@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Helpers\Dater\DateFormattor;
 use App\Helpers\TraitsManagers\UserTrait;
 use App\Models\Communique;
+use App\Models\EpreuveResponse;
 use App\Models\Member;
 use App\Models\Quote;
 use App\Models\UserRole;
@@ -116,10 +117,20 @@ class User extends Authenticatable
 
     }
 
+    public function epreuveResponses()
+    {
+        return $this->hasMany(EpreuveResponse::class);
+    }
+
 
     public function epreuves()
     {
-        
+        return $this->hasMany(Epreuve::class);
+    }
+    
+    public function supportFile()
+    {
+        return $this->hasMany(SupportFile::class);
     }
 
     public function quotes()

@@ -6,11 +6,12 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitMemberCardSchemaEvent;
 use App\Events\InitProcessToBuildLotCardsMemberEvent;
+use App\Events\NewCardMemberHasBeenCreatedEvent;
 use App\Helpers\Tools\SpatieManager;
 use App\Models\Member;
 use App\Models\User;
-use function PHPUnit\Framework\fileExists;
 
+use function PHPUnit\Framework\fileExists;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -105,6 +106,26 @@ class MembersCardsList extends Component
         $admin_generator = auth_user();
 
         InitMemberCardSchemaEvent::dispatch($member, $key, $admin_generator);
+    }
+
+    public function sendCardToMember($member_id)
+    {
+        SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);
+
+        $member = Member::find($member_id);
+
+        if($member){
+
+            $card_of_this_year_existed = $member->card();
+
+            if($card_of_this_year_existed){
+
+                NewCardMemberHasBeenCreatedEvent::dispatch($member, auth_user());
+
+                $this->toast( "L'envoi de la carte a été lancé!", 'success');
+
+            }
+        }
     }
     
     public function showMemberCard($member_id)

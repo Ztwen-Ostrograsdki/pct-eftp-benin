@@ -102,7 +102,7 @@
                             @if($user->from_general_school)
                                 <span>Vient du CEG</span>
                                 {{ 
-                                    $user->general_school ? $user->user->general_school : 'Non renseigné'
+                                    $user->general_school ? $user->general_school : 'Non renseigné'
                                 }}
                             @else
                                 <span>Ne vient pas du CEG</span>

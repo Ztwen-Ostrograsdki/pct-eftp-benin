@@ -36,7 +36,7 @@ class EpreuveResponse extends Model
 
     ];
 
-    public function answer()
+    public function epreuve()
     {
         return $this->belongsTo(Epreuve::class);
     }

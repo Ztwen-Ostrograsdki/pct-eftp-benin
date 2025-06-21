@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\InitUserAccountDeletionEvent;
+use App\Events\LogoutUserEvent;
 use App\Events\UserAccountWasDeletedSuccessfullyEvent;
 use App\Jobs\JobToDeleteUserAccount;
 use App\Models\JobReportAfterProcessed;
@@ -28,6 +29,8 @@ class ProcessToDeleteUserAccountListener
 
         
         foreach($users as $user){
+
+            LogoutUserEvent::dispatch($user);
 
             $jobs[] = new JobToDeleteUserAccount($event->admin_generator, $user);
 

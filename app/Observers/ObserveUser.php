@@ -26,7 +26,6 @@ class ObserveUser
 
         UpdateUsersListToComponentsEvent::dispatch();
 
-
         $admins = ModelsRobots::getAllAdmins();
 
         $message = "Une nouvelle inscription vient d'être faite sur la plateforme. Utilisateur : " . $user->getFullName(true) . " et Email: " . $user->email;
@@ -43,7 +42,9 @@ class ObserveUser
         if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
 
         if($user->emailVerified() && $user->confirmed_by_admin){
+
             JobToGenerateDefaultUserMember::dispatch($user)->delay(Carbon::now()->addMinutes(5));
+
         }
 
         UpdateUsersListToComponentsEvent::dispatch();

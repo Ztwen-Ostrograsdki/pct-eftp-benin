@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('school_year')->nullable()->default(null);
             $table->json('images')->nullable()->default(null);
             $table->json('filiars_id')->nullable()->default(null);
-            $table->foreignId('user_id')->constrained('users')->restrictOnDelete()->nullOnDelete();
+            $table->foreignId('user_id')->constrained('users')->nullOnDelete()->nullable()->default(null);
             $table->foreignId('promotion_id')->constrained('promotions')->cascadeOnDelete();
             $table->unsignedBigInteger('lycee_id')->nullable()->default(null);
             $table->unsignedBigInteger('downloaded')->nullable()->default(0);

@@ -124,10 +124,10 @@
               </form>
             </div>
             @if(count($epreuves))
-            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
+            <div class="grid grid-cols-6 gap-2">
               
               @foreach($epreuves as $epreuve)
-              <div wire:key="epreuves-examens-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2 epreuve-card">
+              <div wire:key="epreuves-examens-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 epreuve-card text-xs font-semibold letter-spacing-1">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
@@ -158,7 +158,7 @@
                           Fichier
                         </span> 
                         <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
-                        <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
+                        <h5 class="gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$epreuve->name}}</span>
                           @if($epreuve->is_normal_exam)
                             <span class="ml-2 text-green-500 letter-spacing-1">(Session normal)</span>
@@ -205,17 +205,16 @@
                       <span class="text-xs ml-3 text-sky-600">
                         ({{$epreuve->getTotalPages()}} Pages)
                       </span>
-                      <span class="text-xs ml-3 text-yellow-600">
-                        (cette épreuve est conçue en {{$epreuve->school_year}})
-                      </span>
                       <br>
                       <small class="text-gray-400 text-right text-sm">Publié le 
                          {{$epreuve->__getDateAsString($epreuve->created_at)}}
                       </small>
                       <br>
-                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-sm">Par 
+                      @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-xs">Par 
                          {{$epreuve->user->getFullName()}}
                       </small>
+                      @endif
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">

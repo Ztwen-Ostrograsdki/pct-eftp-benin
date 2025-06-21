@@ -113,6 +113,9 @@ e.private("admin")
     })
     .listen("NewLyceeCreatedSuccessfullyEvent", (data) => {
         Livewire.dispatch("LiveNewLyceeCreatedSuccessfullyEvent", data);
+    })
+    .listen("UpdateUsersListToComponentsEvent", (data) => {
+        Livewire.dispatch("LiveUpdateUsersListToComponentsEvent");
     });
 
 e.private("App.Models.User." + window.ClientUser.id)

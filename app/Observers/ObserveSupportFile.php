@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Helpers\Tools\ModelsRobots;
-use App\Models\ENotification;
 use App\Models\SupportFile;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\Notification;
@@ -15,17 +14,34 @@ class ObserveSupportFile
      */
     public function created(SupportFile $supportFile): void
     {
-        ModelsRobots::notificationToAdminsThatSupportFileHasBeenPublished($supportFile->user, $supportFile);
-
-        $admins = ModelsRobots::getUserAdmins();
-
         $user = $supportFile->user;
 
-        $since = __formatDateTime($supportFile->created_at);
+        if($user->isAdminsOrMaster() || $user->hasRole('epreuves-manager')){
 
-        $message = "Validation d'un support de cours publié par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Le support de cours a été publié le " . $since . " .";
+            $supportFile->update(['authorized' => true]);
 
-        Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+            $admins = ModelsRobots::getUserAdmins(null, $user->id);
+
+            $since = __formatDateTime($supportFile->created_at);
+
+            $message = "Nouveau support de cours publié par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+        }
+        else{
+
+            ModelsRobots::notificationToAdminsThatSupportFileHasBeenPublished($supportFile->user, $supportFile);
+
+            $admins = ModelsRobots::getUserAdmins();
+
+            $since = __formatDateTime($supportFile->created_at);
+
+            $message = "Validation d'un support de cours publié par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
+
+            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+        }
     }
 
     /**

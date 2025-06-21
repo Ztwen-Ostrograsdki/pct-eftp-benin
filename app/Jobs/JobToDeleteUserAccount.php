@@ -44,6 +44,14 @@ class JobToDeleteUserAccount implements ShouldQueue
 
             $member = $user->member;
 
+            if($user->communiques) $user->communiques()->update(['user_id' => null]);
+
+            if($user->epreuves) $user->epreuves()->update(['user_id' => null]);
+
+            if($user->supportFile) $user->supportFile()->update(['user_id' => null]);
+            
+            if($user->epreuveResponses) $user->epreuveResponses()->update(['user_id' => null]);
+
             if($member) $member->delete();
 
             $profil_photo = $user->profil_photo;

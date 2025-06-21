@@ -63,8 +63,6 @@ class InitUserPersoData extends Component
 
     public function render()
     {
-        self::initializator();
-
         $cities = RobotsBeninHelpers::getCities();
 
         $departments = RobotsBeninHelpers::getDepartments();

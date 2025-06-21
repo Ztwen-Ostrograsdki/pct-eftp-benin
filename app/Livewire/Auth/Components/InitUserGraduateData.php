@@ -36,8 +36,6 @@ class InitUserGraduateData extends Component
     {
         $years = [];
 
-        self::initializator();
-
         $current_year = (int)date('Y');
 
         for ($i = $current_year; $i >= 1990; $i--) { 

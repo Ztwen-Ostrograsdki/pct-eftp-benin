@@ -30,6 +30,7 @@ class UpdateUsersListToComponentsEvent implements ShouldBroadcast
     {
         return [
            new PrivateChannel('admin'),
+           new Channel('public'),
         ];
     }
 }

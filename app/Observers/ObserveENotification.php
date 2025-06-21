@@ -14,16 +14,7 @@ class ObserveENotification
     public function created(ENotification $eNotification): void
     {
 
-        $receivers = $eNotification->getReceivers();
-
-        $content = "Une nouvelle notification: " . string_cutter($eNotification->object, 10);
-
-        foreach($receivers as $user){
-
-            $user->notify(new RealTimeNotificationGetToUser($content));
-            
-            IHaveNewNotificationEvent::dispatch($user);
-        }
+        $eNotification->delete();
         
     }
 

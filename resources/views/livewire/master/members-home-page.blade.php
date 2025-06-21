@@ -64,6 +64,10 @@
             @elseif($member_section == "epreuves")
                 <div>
                     @livewire('master.epreuves-list-page')
+                </div>
+            @elseif($member_section == "supports-files")
+                <div>
+                    @livewire('master.support-files-list-page')
                 </div> 
             @elseif($member_section == "epreuves-exams-list")
                 <div>

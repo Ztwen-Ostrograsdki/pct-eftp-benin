@@ -1,24 +1,26 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-xs mx-auto z-bg-secondary-light mt-10 rounded-xl shadow-4 shadow-sky-500 ">
-  <div class="w-1/2 m-0 p-0 mb-2 lg:text-lg xl:text-lg sm:text-xs md:text-xs xs:text-xs">
-    <a class="bg-sky-600 text-gray-300 border border-sky-900 shadow-sky-800 rounded-lg px-2 py-3 w-full inline-block hover:bg-sky-700 hover:text-sky-950 hover:shadow-2 hover:shadow-sky-400" href="{{route('library.epreuves.uplaoder', ['type' => 'examen'])}}">
-        <span class="fa fa-send"></span>
-        <span>Publier des épreuves d'examen</span>
-        <span class="fa fa-share"></span>
-    </a>
-</div>
-    <div class="py-2 mb-4 shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5">
+      <div class="py-2 mb-4 shadow-3 shadow-sky-700 border border-sky-900  rounded-xl w-full my-5">
         <div class="w-full px-2 font-semibold letter-spacing-2">
             <h4 class="py-3 xs:text-xs lg:text-base">
                 <span class="text-sky-400 uppercase ml-2">
                     Banque des épreuves  
                     <span class=" text-sky-400 float-right">
-                       {{ numberZeroFormattor(count($epreuves)) }} 
-                       <span class="lowercase">épreuves trouvées</span> 
+                      {{ numberZeroFormattor(count($epreuves)) }} 
+                      <span class="lowercase">épreuves trouvées</span> 
                     </span>
                 </span>
             </h4>
         </div>
     </div>
+    <div class="w-full m-0 p-0 my-4 lg:text-lg xl:text-lg sm:text-xs md:text-xs xs:text-xs">
+      <a class="bg-sky-600 text-gray-300 border border-sky-100 shadow-sky-800 rounded-lg px-2 py-3 w-full inline-block hover:bg-sky-700 hover:text-gray-950 shadow-2" href="{{route('library.epreuves.uplaoder', ['type' => 'examen'])}}">
+          <span class="fa fa-send"></span>
+          <span>Publier des épreuves d'examen</span>
+          <span class="fa fa-share"></span>
+      </a>
+    </div>
+    @if(__hasFiles('Epreuve', true))
+    
     <div class="w-full p-0 m-0 flex gap-x-2 justify-between ">
       <div class="items-center justify-between px-0 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg w-1/2 mx-0 card-reveal">
         <div class="flex items-center justify-between mx-0 px-0">
@@ -258,5 +260,13 @@
         </div>
       </div>
     </section>
+
+    @else
+    <div class="mx-auto w-full p-4 mt-5">
+      <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
+        Oupppps!!! Aucune épreuve d'examen n'est disponible pour le moment!
+      </h2>
+    </div>
+    @endif
   
   </div>

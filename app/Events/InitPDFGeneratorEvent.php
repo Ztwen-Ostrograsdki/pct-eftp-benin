@@ -22,12 +22,18 @@ class InitPDFGeneratorEvent implements ShouldBroadcast
         public $view_path,
         public array $data,
         public $path,
-        public ?User $user = null
+        public ?User $user = null,
+        public bool $send_by_mail = false,
+        public ?User $admin_generator
 
 
     )
     {
         $this->user = $user;
+
+        $this->admin_generator = $admin_generator;
+
+        $this->send_by_mail = $send_by_mail;
 
         $this->path = $path;
 

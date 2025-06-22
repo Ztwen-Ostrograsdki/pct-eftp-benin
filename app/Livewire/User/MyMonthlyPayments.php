@@ -7,9 +7,7 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
 use App\Helpers\Tools\SpatieManager;
 use App\Models\Cotisation;
-use App\Models\Member;
 use App\Notifications\RealTimeNotificationGetToUser;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
@@ -79,6 +77,13 @@ class MyMonthlyPayments extends Component
         $this->selected_year = $selected_year;
 
         session()->put('selected_year_for_user_cotisation', $selected_year);
+    }
+
+    public function redirectToMembersHomePayments()
+    {
+        session()->put('member_section', 'payments');
+
+        return to_route('master.members.home');
     }
 
 
@@ -213,7 +218,7 @@ class MyMonthlyPayments extends Component
 
         $view_path = "pdftemplates.once-member-cotisation";
 
-        InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, auth_user());
+        InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, auth_user(), true, auth_user());
 
         Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
     }

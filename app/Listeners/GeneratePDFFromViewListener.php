@@ -22,10 +22,10 @@ class GeneratePDFFromViewListener
     {
         $batch = Bus::batch([
 
-            new JobGeneratePrintingPDFFromView($event->view_path, $event->data, $event->path, $event->user)
+            new JobGeneratePrintingPDFFromView($event->view_path, $event->data, $event->path, $event->user, $event->send_by_mail, $event->admin_generator)
             ])->then(function(Batch $batch) use ($event){
 
-                Notification::sendNow([$event->user], new RealTimeNotificationGetToUser("Le processus est terminé: Votre document est prêt!"));
+                Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("Le processus est terminé: Votre document est prêt!"));
 
             })
             ->catch(function(Batch $batch, Throwable $er) use ($event){

@@ -503,6 +503,33 @@ if(!function_exists('getYearEpreuves')){
 
 }
 
+if(!function_exists('__hasFiles')){
+
+    function __hasFiles($classMapping = 'Epreuve', $is_exam = false)
+    {
+        if($classMapping == 'SupportFile'){
+
+            return SupportFile::where('authorized', true)->count() > 0;
+
+        }
+        else{
+
+            if($is_exam){
+
+                return Epreuve::where('authorized', true)->where('is_exam', true)->count() > 0;
+            }
+            else{
+
+                return Epreuve::where('authorized', true)->where('is_exam', false)->count() > 0;
+            }
+
+            return Epreuve::where('authorized', true)->count() > 0;
+
+        }
+    }
+
+}
+
 if(!function_exists('__getSimpleNameFormated')){
 
     function __getSimpleNameFormated($name)

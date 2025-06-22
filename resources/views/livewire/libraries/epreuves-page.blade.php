@@ -12,6 +12,7 @@
             </h4>
         </div>
     </div>
+    @if(__hasFiles('Epreuve', false))
     <div class="w-full p-0 m-0 flex gap-x-1 items-center">
         <div class="m-0 p-0">
             <a class="bg-blue-600 hover:bg-blue-800 text-xs text-gray-300 py-3 border border-white rounded-lg px-3 w-full flex gap-x-1 items-center" href="{{route('library.epreuves.uplaoder', ['type' => 'simple'])}}">
@@ -265,5 +266,19 @@
         </div>
       </div>
     </section>
+
+    @else
+    <div class="m-0 p-0">
+        <a class="bg-blue-600 hover:bg-blue-800 text-xs text-gray-300 py-3 border border-white rounded-lg px-3 w-full flex gap-x-1 items-center" href="{{route('library.epreuves.uplaoder', ['type' => 'simple'])}}">
+            <span>Publier</span>
+            <span class="fa fa-share"></span>
+        </a>
+    </div>
+    <div class="mx-auto w-full p-4 mt-5">
+      <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
+        Oupppps!!! Aucune épreuve n'est disponible pour le moment!
+      </h2>
+    </div>
+    @endif
   
   </div>

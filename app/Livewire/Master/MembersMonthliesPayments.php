@@ -74,6 +74,8 @@ class MembersMonthliesPayments extends Component
 
         $users = User::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get();
 
+        $yearly_payments = [];
+
         foreach($users as $user){
 
             $members[] = $user->member;
@@ -89,7 +91,7 @@ class MembersMonthliesPayments extends Component
 
                 if($this->selected_year){
 
-                    if($this->selected_year == $this->all_year){
+                    if($this->selected_year == null){
 
                         foreach($cotisation->get() as $ct){
 
@@ -143,33 +145,54 @@ class MembersMonthliesPayments extends Component
 
             $init_data = [];
 
-            if($this->selected_year == $this->all_year){
+            if($this->selected_year){
 
-                $payment_data = $cotisations;
 
-            }
-            else{
+                foreach($members as $member){
 
-                $payment_data = Cotisation::where('year', $this->selected_year)->get();
-            }
+                    $member_id = $member->id;
 
-            foreach($cotisations as $cta){
+                    $member_yearly_payments = Cotisation::where('member_id', $member_id)->where('year', $this->selected_year)->pluck('amount')->toArray();
 
-                if($cta){
+                    if($member_yearly_payments){
 
-                    $init_data[$cta->member_id] = $cta;
+                        $yearly_payments[$member_id] = [
+                            'total' => array_sum($member_yearly_payments), 
+                            'payments_done' => count($member_yearly_payments)
+                        ];
+
+
+                    }
+                    else{
+
+                        $yearly_payments[$member_id] = [
+                            'total' => 0,
+                            'payments_done' => 'Aucun payement effectué'
+                        ];
+                    }
+
                 }
+
             }
 
             $payment_data = $init_data;
 
         }
 
-        $this->printingData = $payment_data;
+        if($this->selected_month && $this->selected_year && $yearly_payments == []){
+
+            $this->printingData = $payment_data;
+        }
+        elseif(!$this->selected_month && $this->selected_year){
+
+            $this->printingData = $yearly_payments;
+        }
 
         
 
-        return view('livewire.master.members-monthlies-payments', compact('months', 'cotisations', 'members', 'payment_data'));
+        return view('livewire.master.members-monthlies-payments', 
+            compact('months', 'cotisations', 'members', 'payment_data', 'yearly_payments')
+        );
     }
 
     public function updatedSelectedYear($selected_year)
@@ -477,7 +500,6 @@ class MembersMonthliesPayments extends Component
 
     public function printMembersCotisations()
     {
-
         SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $month = $this->selected_month;
@@ -488,41 +510,83 @@ class MembersMonthliesPayments extends Component
 
         foreach($this->printingData as $d){
 
-            if($d && isset($d->amount)){
+            if($month){
+                if($d && isset($d->amount)){
 
-                $total_amount = $total_amount + $d->amount;
+                    $total_amount = $total_amount + $d->amount;
+                }
+            }
+            else{
+
+                if($d && isset($d['total'])){
+
+                    $total_amount = $total_amount + $d['total'];
+                }
             }
         }
 
-        $root = storage_path("app/public/cotisations/membres/". $month . '-' . $year);
+        if($year && $month){
 
-        if(!File::isDirectory($root)){
+            $root = storage_path("app/public/cotisations/membres/". $month . '-' . $year);
 
-            $directory_make = File::makeDirectory($root, 0777, true, true);
+            if(!File::isDirectory($root)){
+
+                $directory_make = File::makeDirectory($root, 0777, true, true);
+
+            }
+
+            if(!File::isDirectory($root) && !$directory_make){
+
+                Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+            }
+
+            $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-de-membre-de-". $month . '-' . $year . '.pdf');
+
+            $document_title = "FICHE DE COTISATION DE $month $year";
+
+            $data = [
+                'payment_data' => $this->printingData, 
+                'the_month' => $month,
+                'the_year' => $year,
+                'total_amount' => $total_amount,
+                'document_title' => $document_title,
+            ];
 
         }
+        elseif($year && !$month){
 
-        if(!File::isDirectory($root) && !$directory_make){
+            $root = storage_path("app/public/cotisations/membres/annuelles" . $year);
 
-            Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+            if(!File::isDirectory($root)){
 
+                $directory_make = File::makeDirectory($root, 0777, true, true);
+
+            }
+
+            if(!File::isDirectory($root) && !$directory_make){
+
+                Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+            }
+
+            $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-annuelle-de-membres-de-" . $year . '.pdf');
+
+            $document_title = "FICHE DE COTISATION ANNUELLES DES MEMBRES DE $year";
+
+            $data = [
+                'payment_data' => $this->printingData, 
+                'the_month' => $month,
+                'the_year' => $year,
+                'total_amount' => $total_amount,
+                'document_title' => $document_title,
+                'yearly_payments' => $this->printingData
+            ];
         }
-
-        $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-de-membre-de-". $month . '-' . $year . '.pdf');
-
-        $document_title = "FICHE DE COTISATION DE $month $year";
-
-        $data = [
-            'payment_data' => $this->printingData, 
-            'the_month' => $month,
-            'the_year' => $year,
-            'total_amount' => $total_amount,
-            'document_title' => $document_title,
-        ];
 
         $view_path = "pdftemplates.members-cotisation";
 
-        InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, auth_user());
+        InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, null, true, auth_user());
 
         Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
     }

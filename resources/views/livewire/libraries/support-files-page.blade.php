@@ -13,14 +13,15 @@
         </div>
     </div>
     <div class="w-full p-0 m-0">
-        <div class="w-full m-0 p-0 mb-2 ">
-            <a class="bg-blue-600 text-gray-300 border border-white rounded-lg px-2 py-3 text-lg w-full inline-block" href="{{route('library.fiches.uplaoder')}}">
-                <span class="fa fa-send"></span>
-                <span>Publier des fiches</span>
-                <span class="fa fa-book"></span>
-            </a>
-        </div>
+      <div class="w-full m-0 p-0 mb-2 ">
+        <a class="bg-sky-500 shadow-1 shadow-sky-400 border border-sky-700 rounded-lg px-2 py-3 w-full hover:bg-sky-600 text-gray-900 hover:border-gray-100 inline-block" href="{{route('library.fiches.uplaoder')}}">
+          <span class="fa fa-send"></span>
+          <span>Publier des fiches</span>
+          <span class="fa fa-book"></span>
+      </a>
+      </div>
     </div>
+    @if(__hasFiles('SupportFile'))
     <section class="py-3 bg-gray-50 font-poppins bg-transparent rounded-lg">
       <div class="px-4 mx-auto max-w-7xl lg:py-6 md:px-6">
         <div class="grid lg:grid-cols-4  mb-24 -mx-3">
@@ -57,15 +58,8 @@
           </div>
           <div class="w-full xs:col-span-4 sm:col-span-4 lg:col-span-3 lg:grid-cols-4">
             <div class="px-3 mb-4">
-              <div class="items-center justify-between hidden px-3 border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg sm:flex">
-                <div class="flex items-center w-2/5 justify-between">
-                  <select name="" id="" class="block w-full text-base px-3 border-none cursor-pointer border-sky-700 z-bg-secondary-light shadow-1 shadow-sky-400 py-3 rounded-lg text-sky-300 font-semibold letter-spacing-1">
-                    <option class="py-4" value="">Trier par classe</option>
-                    @foreach (getClasses(true) as $c_id => $cl)
-                      <option wire:key="classe-support-page-list-list-{{$cl->id}}" class="py-4 px-3" value="{{$cl->id}}"> {{ $cl->name }} </option>
-                    @endforeach
-                  </select>
-                </div>
+              <div class="items-center justify-between border-sky-700 bg-transparent shadow-1 shadow-sky-4000 rounded-lg sm:flex">
+                
               </div>
             </div>
             <div class="w-full py-1 my-3 px-3">
@@ -199,5 +193,12 @@
         </div>
       </div>
     </section>
+    @else
+    <div class="mx-auto w-full p-4 mt-5">
+      <h2 class="text-red-700 bg-red-300 border-red-600 mt-6 letter-spacing-2 lg:text-xl xs:text-xs sm:text-sm md:text-sm py-3 px-2 rounded-2xl text-center">
+        Oupppps!!! Aucune fiche de cours n'est disponible pour le moment!
+      </h2>
+    </div>
+    @endif
   
   </div>

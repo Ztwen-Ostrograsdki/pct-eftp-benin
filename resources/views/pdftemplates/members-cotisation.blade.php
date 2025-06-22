@@ -105,7 +105,7 @@
 						</span>
 					</span>
 					<h4 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="text-gray-900 my-0 uppercase letter-spacing-1 fas fa-2x">
-						Fiche de cotisation de {{ $the_month }} {{ $the_year }}
+						{{ $document_title }}
 					</h4>  
 					<h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="text-gray-800 fas fa-2x letter-spacing-1 flex flex-col">
 						<span>{{ env('APP_NAME') }}</span>
@@ -119,7 +119,7 @@
 		</h6>
 	</div>
 	<div class="overflow-x-auto my-2 p-1 shadow border-2 border-gray-800 bg-gray-300">
-    @if (count($payment_data) > 0)
+    @if ($the_month && $the_year && count($payment_data) > 0)
     <table class="min-w-full divide-y divide-gray-200 m-0 text-sm border-gray-800">
       <thead class="bg-sky-400 text-gray-900 font-semibold">
         <tr class="tr-head">
@@ -199,6 +199,65 @@
 			</span>
 		</h4>
 	</div>
+	@elseif (!$the_month && $the_year && count($yearly_payments) > 0)
+		@if($yearly_payments)
+			<table class="min-w-full divide-y divide-gray-200 m-0 text-sm border-gray-800">
+				<thead class="bg-sky-400 text-gray-900 font-semibold">
+					<tr class="tr-head">
+						<th class="px-3 py-3 text-center">#N°</th>
+						<th class="px-3 py-3 text-left">Membre</th>
+						<th class="px-3 py-3 text-left">Nombre de payements effectués</th>
+						<th class="px-3 py-3 text-left">Montant</th>
+						<th class="px-3 py-3 text-left">Cotisation de l'année</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-gray-100" id="payments-tbody">
+					
+					@foreach ($yearly_payments as $member_id => $member_payment)
+
+						@php
+							$member = findMember($member_id);
+						@endphp
+
+						@if($member_payment)
+							<tr wire:key='list-des-cotisations-annuelles-{{$member_id}}'>
+								<td class="px-3 py-2 text-gray-900 text-center ">
+									{{ numberZeroFormattor($loop->iteration) }}
+								</td>
+								<td class="px-3 py-2 text-gray-900 text-left">
+									{{ $member->user->getFullName() }}
+								</td>
+								<td class="px-3 py-2 text-gray-900 text-center">
+									{{ numberZeroFormattor($member_payment['payments_done']) }}
+								</td>
+								<td class="px-3 py-2 text-gray-900 text-center">
+									{{ __moneyFormat($member_payment['total']) }} FCFA
+								</td>
+								<td class="px-3 py-2 text-gray-900 text-center">
+									{{ $the_year }}
+								</td>
+							</tr>
+						@endif
+					@endforeach
+				</tbody>
+			</table>
+			<div class="text-gray-950 w-full">
+				<h4 class="w-full font-semibold text-2xl text-center items-center py-2 mt-2 flex justify-center gap-x-9">
+					<span>
+						Montant total enregistré: 
+					</span>
+					<span>
+						{{ __moneyFormat($total_amount) }} FCFA
+					</span>
+				</h4>
+			</div>
+		@else
+			<div class="w-full text-center py-2 border-none bg-red-300 text-red-600 text-base">
+				<span class="fas fa-trash"></span>
+				<span>Oupps aucune données trouvées!!!</span>
+			</div>
+		@endif
+
     @else
         <div class="w-full text-center py-2 border-none bg-red-300 text-red-600 text-base">
             <span class="fas fa-trash"></span>

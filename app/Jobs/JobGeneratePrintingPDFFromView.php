@@ -65,8 +65,6 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
                     self::sendDocumentToMemberByEmail();
 
                 }
-
-
             }
             else{
 
@@ -77,13 +75,7 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
 
         } catch (\Throwable $e) {
 
-            Log::error("Erreur dans JobGeneratePrintingPDFFromView: " . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-                'member_id' => $this->user->member->id,
-                'user_id' => $this->member->user->id ?? null,
-            ]);
-
-            $message = "Erreur lors de la génération du document " . $this->data['document_title'] . " de " . $this->user->getFullName();
+            $message = "Erreur lors de la génération du document " . $this->data['document_title'] . $this->user ? " de " . $this->user->getFullName() : ' ' ;
 
             Notification::sendNow([$this->admin_generator], new RealTimeNotificationGetToUser($message));
 
@@ -150,23 +142,49 @@ class JobGeneratePrintingPDFFromView implements ShouldQueue
 
         $user = $this->user;
 
-        $pdf = $this->path;
+        if($user){
 
-        if($pdf){
+            $pdf = $this->path;
 
-            $lien = route('user.profil', ['identifiant' => $user->identifiant]);
+            if($pdf){
 
-            $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";
+                $lien = route('user.profil', ['identifiant' => $user->identifiant]);
 
-            $html = EmailTemplateBuilder::render('template-document', [
-                'name' => $user->getFullName(true),
-                'lien' => $lien,
-                'objet' => $this->data['document_title'],
-                'greating' => $greating,
-            ]);
+                $greating = ModelsRobots::greatingMessage($user->getUserNamePrefix(true, false)) . ", ";
 
-            return Mail::to($user->email)->send(new SendDocumentToMemberMail($user, $this->path, $this->data['document_title'], $html));
+                $html = EmailTemplateBuilder::render('template-document', [
+                    'name' => $user->getFullName(true),
+                    'lien' => $lien,
+                    'objet' => $this->data['document_title'],
+                    'greating' => $greating,
+                ]);
 
+                return Mail::to($user->email)->send(new SendDocumentToMemberMail($user, $this->path, $this->data['document_title'], $html));
+
+            }
+        }
+        elseif($this->admin_generator){
+
+            $admin = $this->admin_generator;
+
+            $pdf = $this->path;
+
+            if($pdf){
+
+                $lien = route('user.profil', ['identifiant' => $admin->identifiant]);
+
+                $greating = ModelsRobots::greatingMessage($admin->getUserNamePrefix(true, false)) . ", ";
+
+                $html = EmailTemplateBuilder::render('template-document', [
+                    'name' => $admin->getFullName(true),
+                    'lien' => $lien,
+                    'objet' => $this->data['document_title'],
+                    'greating' => $greating,
+                ]);
+
+                return Mail::to($admin->email)->send(new SendDocumentToMemberMail($admin, $this->path, $this->data['document_title'], $html));
+
+            }
         }
     }
 }

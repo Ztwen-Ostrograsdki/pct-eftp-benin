@@ -7,7 +7,6 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Helpers\Tools\SpatieManager;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -119,6 +118,12 @@ class UserProfil extends Component
         SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = $this->user;
+
+        if($user->isMaster()){
+
+            return $this->toast( "Vous ne pouvez pas effectuer une telle opération sur cet utilisateur!", 'error');
+    
+        }
 
         $user_id = $this->user->id;
 

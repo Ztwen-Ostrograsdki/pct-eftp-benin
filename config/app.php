@@ -4,7 +4,7 @@ return [
 
     'logo' => "images/logo.jpg",
 
-    'fullname' => "Association des Enseignants de Sciences Physiques dans l'Enseignement et la Formation Technique et Professionnels",
+    'fullname' => "Association des Enseignants de Sciences Physiques de l'Enseignement et la Formation Techniques et Professionnels",
 
     'memberMaxQuotes' => 3,
 
@@ -54,6 +54,7 @@ return [
         'news' => "Récentes",
         'unread' => "Non lues",
         'read' => "Déjà lues",
+        'all' => "Toutes les notifications",
         'hidden' => "Masquées",
     ],
 

@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitPDFGeneratorEvent implements ShouldBroadcast
+class InitProcessToSendSimpleMailMessageToUsersEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,27 +18,25 @@ class InitPDFGeneratorEvent implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public $view_path,
-        public array $data,
-        public $path,
-        public ?User $user = null,
-        public bool $send_by_mail = false,
-        public ?User $admin_generator
-
-
+        public $receivers_details = [],
+        public $receiver_mail = null,
+        public $receiver_full_name = null,
+        public $message = null,
+        public $file_to_attach_path = null,
+        public $lien = null
     )
     {
-        $this->user = $user;
+        $this->receivers_details = $receivers_details;
 
-        $this->admin_generator = $admin_generator;
+        $this->receiver_full_name = $receiver_full_name;
 
-        $this->send_by_mail = $send_by_mail;
+        $this->receiver_mail = $receiver_mail;
 
-        $this->path = $path;
+        $this->message = $message;
 
-        $this->view_path = $view_path;
+        $this->lien = $lien;
 
-        $this->data = $data;
+        $this->file_to_attach_path = $file_to_attach_path;
     }
 
     /**
@@ -49,14 +46,8 @@ class InitPDFGeneratorEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        if($this->admin_generator){
-            return [
-                new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
-            ];
-        }
-
         return [
-            new PrivateChannel('admin'),
+            new Channel('public'),
         ];
     }
 }

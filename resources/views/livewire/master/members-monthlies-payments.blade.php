@@ -63,15 +63,28 @@
                 </div>
                 <div class="flex gap-x-2 items-center">
                     <button
+                        wire:click="sendDocumentToOthers"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 hover:text-gray-900 transition"
+                    >
+                        <span wire:loading.remove wire:target='sendDocumentToOthers'>
+                            <span>Envoyez aux admins</span>
+                            <span class="fas fa-paper-plane"></span>
+                        </span>
+                        <span wire:target='sendDocumentToOthers' wire:loading>
+                            <span>Envoie en cours...</span>
+                            <span class="fas fa-rotate animate-spin"></span>
+                        </span>
+                    </button>
+                    <button
                         wire:click="printMembersCotisations"
                         class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
                     >
                         <span wire:loading.remove wire:target='printMembersCotisations'>
-                            <span>Imprimer</span>
+                            <span>Recevoir par mail</span>
                             <span class="fas fa-print"></span>
                         </span>
                         <span wire:target='printMembersCotisations' wire:loading>
-                            <span>Impression en cours...</span>
+                            <span>Processus en cours...</span>
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
@@ -141,7 +154,7 @@
                         </span> membres sélectionnés
                     </h6>
                 @endif
-                <table class="min-w-full divide-y divide-gray-200 lg:text-base md:text-sm sm:text-sm xs:text-xs">
+                <table class="min-w-full divide-y divide-gray-200 xl:text-sm lg:text-sm md:text-sm sm:text-sm xs:text-xs">
                 <thead class="bg-gray-900 text-gray-300 font-semibold">
                     <tr>
                         <th class="px-3 py-4 text-center">#N°</th>

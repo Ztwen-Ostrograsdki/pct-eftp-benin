@@ -85,6 +85,14 @@ class MembersListPage extends Component
         );
     }
 
+
+    public function assignAdminRoles($user_id)
+    {
+        SpatieManager::ensureThatUserCan();
+        
+        $this->dispatch("ManageUserSpatiesRolesEvent", $user_id);
+    }
+    
     public function changeTheMemberOfThisRole($role_id)
     {
         SpatieManager::ensureThatUserCan(['postes-manager', 'members-manager']);

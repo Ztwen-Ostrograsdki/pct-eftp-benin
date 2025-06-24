@@ -6,6 +6,8 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitPDFGeneratorEvent;
 use App\Events\InitProcessToGenerateAndSendDocumentToMemberEvent;
+use App\Events\InitProcessToGeneratePDFAndSendItToUsersEvent;
+use App\Helpers\Tools\ModelsRobots;
 use App\Helpers\Tools\SpatieManager;
 use App\Jobs\JobGetMembersDataToInitAProcessForBuildingAndSendingDocumentToMembers;
 use App\Models\Cotisation;
@@ -500,6 +502,36 @@ class MembersMonthliesPayments extends Component
 
     public function printMembersCotisations()
     {
+        $data = self::builder();
+
+        $view_path = $data['view'];
+        $datum = $data['datum'];
+        $pdfPath = $data['pdf'];
+
+        InitPDFGeneratorEvent::dispatch($view_path, $datum, $pdfPath, null, true, auth_user());
+
+        Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
+    }
+    
+    public function sendDocumentToOthers()
+    {
+        $data = self::builder();
+
+        $view_path = $data['view'];
+
+        $datum = $data['datum'];
+
+        $pdfPath = $data['pdf'];
+
+        $admins = ModelsRobots::getAllAdmins(['cotisations-manager']);
+
+        InitProcessToGeneratePDFAndSendItToUsersEvent::dispatch($view_path, $datum, $pdfPath, $admins, true, auth_user());
+
+        Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
+    }
+
+    public function builder() : array
+    {
         SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
         $month = $this->selected_month;
@@ -586,9 +618,12 @@ class MembersMonthliesPayments extends Component
 
         $view_path = "pdftemplates.members-cotisation";
 
-        InitPDFGeneratorEvent::dispatch($view_path, $data, $pdfPath, null, true, auth_user());
+        return [
+            'view' => $view_path,
+            'datum' => $data,
+            'pdf' => $pdfPath,
+        ];
 
-        Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
     }
 
     

@@ -45,6 +45,11 @@ class Member extends Model
     {
         return $this->hasMany(CardMember::class);
     }
+
+    public function getFullName($reverse = false)
+    {
+        return $this->user ? $this->user->getFullName($reverse) : "Utilisateur inconnu";
+    }
     
     public function card()
     {

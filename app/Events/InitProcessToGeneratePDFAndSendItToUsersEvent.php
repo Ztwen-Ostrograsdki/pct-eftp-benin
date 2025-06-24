@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitPDFGeneratorEvent implements ShouldBroadcast
+class InitProcessToGeneratePDFAndSendItToUsersEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,14 +22,12 @@ class InitPDFGeneratorEvent implements ShouldBroadcast
         public $view_path,
         public array $data,
         public $path,
-        public ?User $user = null,
-        public bool $send_by_mail = false,
-        public ?User $admin_generator
-
-
+        public array $users,
+        public bool $send_by_mail = true,
+        public User $admin_generator
     )
     {
-        $this->user = $user;
+        $this->users = $users;
 
         $this->admin_generator = $admin_generator;
 
@@ -49,14 +47,8 @@ class InitPDFGeneratorEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        if($this->admin_generator){
-            return [
-                new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
-            ];
-        }
-
         return [
-            new PrivateChannel('admin'),
+            new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
         ];
     }
 }

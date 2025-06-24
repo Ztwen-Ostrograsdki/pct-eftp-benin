@@ -136,6 +136,12 @@ class UsersListPage extends Component
 
         $user = User::find($user_id);
 
+        if($user->isMaster()){
+
+            return $this->toast( "Vous ne pouvez pas effectuer une telle opération sur cet utilisateur!", 'error');
+    
+        }
+
         if($user){
 
             if($user->blocked){
@@ -270,6 +276,12 @@ class UsersListPage extends Component
         SpatieManager::ensureThatUserCan(['users-manager', 'destroyer', 'user-account-reseter', 'account-manager']);
 
         $user = User::find($user_id);
+
+        if($user->isMaster()){
+
+            return $this->toast( "Vous ne pouvez pas effectuer une telle opération sur cet utilisateur!", 'error');
+    
+        }
 
         if($user){
 

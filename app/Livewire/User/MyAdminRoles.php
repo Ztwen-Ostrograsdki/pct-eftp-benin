@@ -60,7 +60,7 @@ class MyAdminRoles extends Component
     }
 
 
-    public function joinUserToRole()
+    public function assignAdminRoles()
     {
         SpatieManager::ensureThatUserCan();
         
@@ -72,6 +72,12 @@ class MyAdminRoles extends Component
         SpatieManager::ensureThatUserCan();
 
         $user = $this->user;
+
+        if(auth_user()->id !== $user->id && $user->isMaster()){
+
+            return $this->toast( "Vous ne pouvez pas effectuer une telle opération sur cet utilisateur!", 'error');
+    
+        }
 
         $role = Role::find($role_id);
 
@@ -144,10 +150,6 @@ class MyAdminRoles extends Component
             
             DB::rollBack();
         }
-
-        
-        
-
     }
 
     

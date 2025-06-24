@@ -79,19 +79,40 @@ class ModelsRobots{
         ->distinct()->get();
     }
 
-    public static function getAllAdmins()
+    public static function getAllAdmins($with_these_admins = [], $limit_to_take = null)
     {
         $roles = ['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'];
 
-        return User::whereHas('roles', function($query) use ($roles) {
+        if(!empty($with_these_admins)){
 
-            $query->whereIn('admins.name', $roles);
-        })
-        ->orWhere(function($query){
+            $roles = array_merge($roles, $with_these_admins);
+        }
 
-            $query->where('users.id', 1);
-        })
-        ->distinct()->get();
+        if($limit_to_take){
+            return User::whereHas('roles', function($query) use ($roles) {
+
+                $query->whereIn('admins.name', $roles);
+    
+            })
+            ->orWhere(function($query){
+    
+                $query->where('users.id', 1);
+            })
+            ->inRandomOrder()->distinct()->limit($limit_to_take)->get();
+        }
+        else{
+
+            return User::whereHas('roles', function($query) use ($roles) {
+
+                $query->whereIn('admins.name', $roles);
+    
+            })
+            ->orWhere(function($query){
+    
+                $query->where('users.id', 1);
+            })
+            ->distinct()->get();
+        }
 
     }
 

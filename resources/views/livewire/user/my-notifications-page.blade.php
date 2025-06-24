@@ -14,7 +14,7 @@
         </h1>
     </div>
     <section class="py-14 rounded-xl shadow-3 shadow-sky-600 font-poppins max-w-6xl mx-auto p-2 m-2 z-bg-secondary-light">
-        <div class="w-full px-4 mx-auto lg:text-base md:text-sm sm:text-sm xs:textxs">
+        <div class="w-full px-4 mx-auto lg:text-base md:text-sm sm:text-sm xs:text-xs">
           <div class="w-full mx-auto">
             <div class="text-left w-full">
               <div class="relative flex flex-col">
@@ -44,8 +44,8 @@
       
           <div class="grid gap-2 gap-y-2">
             <div class="w-full bg-transparent rounded-md shadow ">
-              <div class="w-full grid ">
-                <input wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-2.5 ps-10 text-sm letter-spacing-2 border  bg-transparent rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 focus text-sky-200" placeholder="Lister les notifications par : un mot clé, un titre, un objet..." />
+              <div class="w-full lg:text-sm md:text-xs xs:text-xs break-all">
+                <input wire:model.live="search" type="search" id="epreuve-search" class=" block w-full p-2.5 ps-10 text-sm letter-spacing-2 border  bg-transparent rounded-lg focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500 focus text-sky-200 lg:text-sm md:text-xs xs:text-xs break-all" placeholder="Lister les notifications par : un mot clé,..." />
               </div>
             </div>
 
@@ -83,31 +83,35 @@
                 @php
                     $name = $notif->id;
                 @endphp
-                <div wire:key="notif-page-{{getRandom(253435, 7736535534)}}" id="notif-{{$notif->id}}" class="flex gap-0 items-center w-full p-2 px-3 my-0 text-yellow-500 bg-gray-800 rounded-lg shadow-sm  opacity-85 transition-opacity" role="alert" >
-                    <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-gray-500 bg-gray-100 rounded-lg dark:bg-gray-800 dark:text-gray-200">
-                        <span class="fas fa-envelope-open"></span>
-                        <span class="sr-only">Check icon</span>
-                    </div>
-                    <div class="ms-3 lg:text-sm md:text-xs xs:text-xs font-normal break-all">{{ $notif->data ? $notif->data['message'] : 'Une notification...' }}</div>
-                    <button wire:click='deleteNotification("{{$name}}")' title="Cliquer pour Masquer cette notification" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#notif-{{$notif->id}}" aria-label="Close">
-                        <span class="sr-only">Close</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="text-right w-full py-0 my-0 text-xs mb-2 border-b-2 bg-slate-600 font-semibold letter-spacing-1 text-gray-900">
-                    <small> Récu le {{ __formatDateTime($notif->created_at) }} </small>
+                <div class="flex flex-col gap-0 gap-y-1 items-center w-full p-1 my-2 shadow-1 shadow-purple-500  opacity-85 transition-opacity border border-gray-400" role="alert" >
+                  <div wire:key="notif-page-{{$name}}" id="notif-{{$notif->id}}" class="flex gap-0 items-center w-full p-2 px-3 my-0 text-gray-200 bg-gray-800  opacity-85 transition-opacity" role="alert" >
+                      <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-gray-500 bg-gray-100 rounded-lg dark:bg-gray-800 dark:text-gray-200">
+                          <span class="fas fa-envelope-open"></span>
+                          <span class="sr-only">Check icon</span>
+                      </div>
+                      <div class="ms-3 lg:text-sm md:text-xs xs:text-xs break-all font-semibold letter-spacing-1">{{ $notif->data ? $notif->data['message'] : 'Une notification...' }}</div>
+                      <button wire:click='deleteNotification("{{$name}}")' title="Cliquer pour Masquer cette notification" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#notif-{{$notif->id}}" aria-label="Close">
+                          <span class="sr-only">Close</span>
+                          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                          </svg>
+                      </button>
+                  </div>
+                  <div class="text-right w-full py-0 my-0 text-xs border-b-2 bg-slate-600 font-semibold letter-spacing-1 text-yellow-400">
+                      <small> Récu le {{ __formatDateTime($notif->created_at) }} </small>
+                  </div>
                 </div>
             @endforeach
             @elseif($search)
               <div>
-                <h5 class="text-gray-400 letter-spacing-1 shadow-inner rounded-lg shadow-sky-500 lg:text-lg xl:text-lg md:text-sm sm:text-sm xs:text-sm animate-pulse text-center py-4 my-4">
+                <h5 title="Cliquez vous effacer le champ de Rechercher" wire:click="$set('search', '')" class="cursor-pointer text-gray-400 letter-spacing-1 shadow-1 rounded-lg shadow-red-400 lg:text-sm xl:text-sm md:text-xs sm:text-xs xs:text-xs break-all animate-pulse text-center p-3 my-4">
                   <span>Désolée aucun résultat trouvé avec 
                     <b class="text-red-600 underline">
                       {{ $search }}
                     </b>
-                  </span>
+                  </span> 
+                  <span> dans la section </span>
+                  <span class="text-yellow-400"> {{ config('app.notifications_sections')[$sectionned] }}</span>
                 </h5>
               </div>
             @else

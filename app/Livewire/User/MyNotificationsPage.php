@@ -52,13 +52,11 @@ class MyNotificationsPage extends Component
 
         $search = null;
 
-        if($this->search && strlen($this->search) >= 2){
-
-            $search = $this->search;
-            
-        }
-
-        $notif_sections = ['unread' => "Non lues", 'read' => "Lues"];
+        $notif_sections = [
+            'unread' => "Non lues",
+            'read' => "Déjà lues",
+            'all' => "Toutes les notifications",
+        ];
 
         $my_notifications = [];
 
@@ -66,14 +64,32 @@ class MyNotificationsPage extends Component
 
         if($this->sectionned == 'read') {
 
-            $data = User::find(auth_user()->id)->readNotifications;
+            $data = User::find(auth_user()->id)->readNotifications();
         }
         elseif($this->sectionned == 'unread') {
 
-            $data = User::find(auth_user()->id)->unreadNotifications;
+            $data = User::find(auth_user()->id)->unreadNotifications();
+        }
+        elseif($this->sectionned == 'all') {
+
+            $data = User::find(auth_user()->id)->notifications();
+        }
+        if($this->search && strlen($this->search) >= 2){
+
+            $search = $this->search;
+
+            $tag = ['%' . $search . '%'];
+
+            if($data){
+
+                $data = $data->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.message')) LIKE ?", $tag);
+            }
+            
         }
 
-        foreach($data as $notif){
+        
+
+        foreach($data->get() as $notif){
 
             $my_notifications[] = $notif;
 
@@ -139,36 +155,36 @@ class MyNotificationsPage extends Component
     {
         $user = auth_user();
 
-
         if($user){
+
+            $notifs = [];
 
             if($this->sectionned == 'read'){
 
                 $notifs =  User::find(auth_user()->id)->readNotifications;
-
-                foreach($notifs as $notif){
-
-                    $notif->delete();
-
-                }
-
 
             }
             elseif($this->sectionned == 'unread'){
 
                 $notifs =  User::find(auth_user()->id)->unreadNotifications;
 
+            }
+            elseif($this->sectionned == 'all'){
+
+                $notifs =  User::find(auth_user()->id)->notifications;
+
+            }
+
+            if(!empty($notifs)){
+
                 foreach($notifs as $notif){
 
                     $notif->delete();
 
                 }
-
             }
 
             $this->counter = getRandom();
-
-            
         }
        
     }

@@ -46,42 +46,44 @@
                         </thead>
                         <tbody>
                             @foreach($roles as $role)
-                            <tr wire:key="role-joined-to-role-{{$role->id}}" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <th scope="row" class="px-6 py-1 text-left font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ numberZeroFormattor($loop->iteration) }}
-                                </th>
-                                <td class="px-6 py-1 text-left">
-                                    {{ __translateRoleName($role->name) }} 
-                                </td>
-                                <td class="px-1 py-1">
-                                    @if(!in_array($role->id, $selecteds))
-                                    <span wire:click='pushIntoSelecteds({{$role->id}})' class="bg-blue-500 text-gray-950 cursor-pointer border inline-block w-full rounded-lg py-1 px-3">
-                                        <span wire:loading.remove wire:target='pushIntoSelecteds({{$role->id}})'>
-                                            <span>Ajouter</span>
-                                            <span class="fas fa-plus"></span>
-                                        </span>
-                                        <span wire:loading wire:target='pushIntoSelecteds({{$role->id}})'>
-                                            <span class="fas fa-rotate animate-spin"></span>
-                                            <span class="text-xs">En cours...</span>
-                                        </span>
-                                        
-                                    </span>
-                                    @endif
+                                @if($role->name !== 'master')
+                                    <tr wire:key="role-joined-to-role-{{$role->id}}" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                        <th scope="row" class="px-6 py-1 text-left font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ numberZeroFormattor($loop->iteration) }}
+                                        </th>
+                                        <td class="px-6 py-1 text-left">
+                                            {{ __translateRoleName($role->name) }} 
+                                        </td>
+                                        <td class="px-1 py-1">
+                                            @if(!in_array($role->id, $selecteds))
+                                            <span wire:click='pushIntoSelecteds({{$role->id}})' class="bg-blue-500 text-gray-950 cursor-pointer border inline-block w-full rounded-lg py-1 px-3">
+                                                <span wire:loading.remove wire:target='pushIntoSelecteds({{$role->id}})'>
+                                                    <span>Ajouter</span>
+                                                    <span class="fas fa-plus"></span>
+                                                </span>
+                                                <span wire:loading wire:target='pushIntoSelecteds({{$role->id}})'>
+                                                    <span class="fas fa-rotate animate-spin"></span>
+                                                    <span class="text-xs">En cours...</span>
+                                                </span>
+                                                
+                                            </span>
+                                            @endif
 
-                                    @if(in_array($role->id, $selecteds))
-                                    <span  wire:click='retrieveFromSelecteds({{$role->id}})' class="bg-red-500 cursor-pointer text-gray-950 w-full inline-block border rounded-lg py-1 px-3">
-                                        <span wire:loading.remove wire:target='retrieveFromSelecteds({{$role->id}})'>
-                                            <span>Retirer</span>
-                                            <span class="fas fa-trash"></span>
-                                        </span>
-                                        <span wire:loading wire:target='retrieveFromSelecteds({{$role->id}})'>
-                                            <span class="fas fa-rotate animate-spin"></span>
-                                            <span class="text-xs">En cours...</span>
-                                        </span>
-                                    </span>
-                                    @endif
-                                </td>
-                            </tr>
+                                            @if(in_array($role->id, $selecteds))
+                                            <span  wire:click='retrieveFromSelecteds({{$role->id}})' class="bg-red-500 cursor-pointer text-gray-950 w-full inline-block border rounded-lg py-1 px-3">
+                                                <span wire:loading.remove wire:target='retrieveFromSelecteds({{$role->id}})'>
+                                                    <span>Retirer</span>
+                                                    <span class="fas fa-trash"></span>
+                                                </span>
+                                                <span wire:loading wire:target='retrieveFromSelecteds({{$role->id}})'>
+                                                    <span class="fas fa-rotate animate-spin"></span>
+                                                    <span class="text-xs">En cours...</span>
+                                                </span>
+                                            </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         @endif 
                         </tbody>

@@ -1,0 +1,65 @@
+<x-main class="bg-gray-100 text-gray-800 flex items-center justify-center">
+  <table
+    class="max-w-6xl font-roboto sm:w-5/6 xs:w-5/6 mx-auto bg-white my-5 rounded-xl shadow-lg overflow-hidden border border-gray-800"
+    cellpadding="0"
+    cellspacing="0"
+  >
+    <tr class="w-full m-0 mx-auto">
+      <td class="bg-blue-700 text-white text-center p-6">
+        <img
+          src="{{ logo_url }}"
+          alt="Logo Association"
+          class="h-28 w-28 rounded-full mx-auto mb-2"
+        />
+        <h1 class="text-2xl font-bold my-0">AESP-PCT BENIN</h1>
+        <h6 class="my-0 py-2">{{ app_full_name }}</h6>
+      </td>
+    </tr>
+    <tr>
+      <td class="p-6">
+        <h2 class="text-xl mb-4 my-0">ABONNEMENT A LA NEWS-LETTER</h2>
+
+        <h3 class="mb-4 flex flex-col">
+          <h3 class="my-0 py-0 text-green-400">
+            <span> BRAVO, vous êtes maintenant un abonné </span>
+          </h3>
+
+          <h3 class="my-0 py-0 text-blue-900">
+            Ceci est un message qui vous a été adressé personnellement!
+          </h3>
+        </h3>
+
+        <div class="mx-auto w-full my-3 mb-3">
+          <p class="my-0 text-sm font-semibold">
+            Bienvenue <span class="text-orange-400">{{ email }}</span><br />
+            Vous recevez ce mail en réponse à votre soubscription à notre
+            newsletter.
+            <br />
+            Vous recevrez désormais les actualités et les grandes tendances
+            liées à notre plateforme!
+          </p>
+        </div>
+
+        <div class="text-center my-4 mx-auto">
+          <a
+            href="{{ lien }}"
+            class="inline-block text-base bg-green-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-green-800 transition no-underline"
+          >
+            Accéder à la plateforme
+          </a>
+        </div>
+      </td>
+    </tr>
+
+    <tr class="">
+      <td class="">
+        <div class="bg-gray-100 text-center p-4 text-gray-500">
+          <p class="text-center mx-auto w-full text-xs">
+            &copy; {{ date }} {{ association }}.
+          </p>
+          <p class="text-center">Tous droits réservés.</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</x-main>

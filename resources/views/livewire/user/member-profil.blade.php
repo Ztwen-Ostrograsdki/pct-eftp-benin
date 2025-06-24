@@ -82,7 +82,8 @@
                     <span>{{ $member->getMemberRoleName() }}</span>
                 </span>
                 <div class="m-0 p-0 mx-auto mt-4 mb-2">
-                    @if($user->member)
+                    @if($user->member && $user->id == auth_user()->id)
+                        @if($member->card())
                         <h6 wire:click="downloadMyCard" class="m-0 p-0 font-semibold letter-spacing-1 cursor-pointer">
                             <span class=" px-4 py-2 bg-green-600 text-gray-900 hover:bg-green-500">
                                 <span wire:loading wire:target='downloadMyCard'>
@@ -95,6 +96,20 @@
                                 </span>
                             </span>
                         </h6>
+                        @else
+                        <h6 wire:click="demandeToGetMyCard" class="m-0 p-0 font-semibold letter-spacing-1 cursor-pointer">
+                            <span class=" px-4 py-2 border border-zinc-100 bg-zinc-500 text-gray-950 hover:bg-zinc-600">
+                                <span wire:loading wire:target='demandeToGetMyCard'>
+                                    <span>Requête en cours d'envoi...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                                <span wire:loading.remove wire:target='demandeToGetMyCard'>
+                                    <span class="mr-2 fas fa-address-card"></span>
+                                    <span>Demander ma carte</span>
+                                </span>
+                            </span>
+                        </h6>
+                        @endif
                     @endif
                 </div>
                 @if($member->role)

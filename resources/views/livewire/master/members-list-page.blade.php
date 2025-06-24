@@ -70,9 +70,9 @@
                         </th>
                         <td class="px-6 py-2">
                             <span class="flex gap-x-2 items-center">
-                                <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($member->user) }}" alt="Photo de profil de {{ $member->user->getFullName() }}">
-                                <a title="Charger le profil du statut membre de {{$member->user->getFullName()}}" class="" href="{{ route('member.profil', ['identifiant' => $member->user->identifiant]) }}">
-                                    {{$member->user->getFullName()}} 
+                                <img class="w-8 h-8 rounded-full" src="{{ user_profil_photo($member->user) }}" alt="Photo de profil de {{ $member->getFullName() }}">
+                                <a title="Charger le profil du statut membre de {{$member->getFullName()}}" class="" href="{{ route('member.profil', ['identifiant' => $member->user->identifiant]) }}">
+                                    {{$member->getFullName()}} 
                                 </a>
                             </span>
                         </td>
@@ -104,7 +104,7 @@
                                 @else
                                 <span wire:click="changeTheRoleOfThisMember('{{$member->id}}')" class="bg-primary-500 hover:bg-blue-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="changeTheRoleOfThisMember('{{$member->id}}')">
-                                        <span title="Definir un nouveau poste pour {{$member->user->getFullName()}}" class="hidden lg:inline">Changer</span>
+                                        <span title="Definir un nouveau poste pour {{$member->getFullName()}}" class="hidden lg:inline">Changer</span>
                                         <span class="fa fa-recycle"></span>
                                     </span>
                                     <span wire:loading wire:target="changeTheRoleOfThisMember('{{$member->id}}')">
@@ -113,10 +113,10 @@
                                     </span>
                                 </span>
                                 @endif
-                                <span wire:click="resetMemberRoleToNull('{{$member->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                <span title="Réinitialiser le poste de  {{$member->getFullName()}} au status  'Membre'" wire:click="resetMemberRoleToNull('{{$member->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
                                     <span wire:loading.remove wire:target="resetMemberRoleToNull('{{$member->id}}')">
-                                        <span class="hidden lg:inline">Suppr.</span>
-                                        <span class="fa fa-trash"></span>
+                                        <span class="hidden lg:inline">Réinitialiser</span>
+                                        <span class="fa fa-rotate"></span>
                                     </span>
                                     <span wire:loading wire:target="resetMemberRoleToNull('{{$member->id}}')">
                                         <span>En cours...</span>
@@ -134,6 +134,22 @@
                                         <span class="fas fa-rotate animate-spin"></span>
                                     </span>
                                 </span>
+
+                                @if(!$member->user->isMaster())
+                                <button
+                                    wire:click="assignAdminRoles({{$member->user->id}})"
+                                    class="bg-zinc-600 border text-white px-4 py-2 rounded-lg hover:bg-zinc-800 hover:text-gray-100 transition"
+                                >
+                                    <span wire:loading.remove wire:target='assignAdminRoles({{$member->user->id}})'>
+                                        <span class="fas fa-user-check"></span>
+                                        <span>Attribuer des permissions</span>
+                                    </span>
+                                    <span wire:target='assignAdminRoles({{$member->user->id}})' wire:loading>
+                                        <span>Chargement en cours...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </button>
+                                @endif
                                 
                             </span> 
                         </td>

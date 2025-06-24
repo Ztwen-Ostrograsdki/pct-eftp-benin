@@ -100,12 +100,11 @@
                         </td>
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1 ">
                             @if($user->from_general_school)
-                                <span>Vient du CEG</span>
                                 {{ 
                                     $user->general_school ? $user->general_school : 'Non renseigné'
                                 }}
                             @else
-                                <span>Ne vient pas du CEG</span>
+                                <span>Aucun</span>
                             @endif
                         </td>
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
@@ -134,10 +133,12 @@
                                         </span>
                                     </span>
                                     @else
-                                        <span wire:click.prevent="confirmedUserEmailVerification({{$user->id}})" class="text-red-600" title="{{ $user->getFullName() }} n'a pas encore confirmé son addresss mail. Cliquer pour lancer manuellement la confirmation de ce compte.">
-                                            <strong class="fas fa-user-xmark text-red-700 mr-2"></strong>
-                                            <span>Nom confirmé</span>
-                                        </span>
+                                        @if(!(auth_user()->id !== $user->id && $user->isMaster()))
+                                            <span wire:click.prevent="confirmedUserEmailVerification({{$user->id}})" class="text-red-600" title="{{ $user->getFullName() }} n'a pas encore confirmé son addresss mail. Cliquer pour lancer manuellement la confirmation de ce compte.">
+                                                <strong class="fas fa-user-xmark text-red-700 mr-2"></strong>
+                                                <span>Nom confirmé</span>
+                                            </span>
+                                        @endif
                                     @endif
                                 </span>
                             </span>
@@ -156,46 +157,52 @@
                                     <span class=" fas fa-unlock text-green-700"></span>
                                     <span> Débloquer {{ $user->getFilamentName() }} </span>
                                 @else
-                                    <span class=" fas fa-user-lock text-red-700"></span>
-                                    <span> Bloquer {{ $user->getFilamentName() }} </span>
+                                    @if(!$user->isMaster())
+                                        <span class=" fas fa-user-lock text-red-700"></span>
+                                        <span> Bloquer {{ $user->getFilamentName() }} </span>
+                                    @endif
                                 @endif
                             </span>
                         </td>
                         
                         <td class="lg:px-6 md:px-4 sm:px-3 xs:px-3  lg:py-4 md:py-1">
-                            <span class="text-white flex gap-x-2">
-                                <span wire:click="marksUserAsIdentifiedOrNot({{$user->id}})" wire:target="marksUserAsIdentifiedOrNot({{$user->id}})" @if(!$user->confirmed_by_admin) title="Cliquer pour confirmer l'identification de {{ $user->getFullName() }}" @endif class="@if(!$user->confirmed_by_admin) bg-orange-500 hover:bg-orange-700 @else  bg-blue-500 hover:bg-blue-700 @endif py-2 px-3 border rounded-lg cursor-pointer">
-                                    <span wire:loading.remove wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
-                                        @if(!$user->confirmed_by_admin)
-                                        <span class="fa fa-user-check"></span>
-                                        <span title="Marquer {{$user->getFullName()}} comme identifié" class="lg:inline">
-                                            Identifié
+                            @if(!$user->isMaster())
+                                <span class="text-white flex gap-x-2">
+                                    <span wire:click="marksUserAsIdentifiedOrNot({{$user->id}})" wire:target="marksUserAsIdentifiedOrNot({{$user->id}})" @if(!$user->confirmed_by_admin) title="Cliquer pour confirmer l'identification de {{ $user->getFullName() }}" @endif class="@if(!$user->confirmed_by_admin) bg-orange-500 hover:bg-orange-700 @else  bg-blue-500 hover:bg-blue-700 @endif py-2 px-3 border rounded-lg cursor-pointer">
+                                        <span wire:loading.remove wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
+                                            @if(!$user->confirmed_by_admin)
+                                            <span class="fa fa-user-check"></span>
+                                            <span title="Marquer {{$user->getFullName()}} comme identifié" class="lg:inline">
+                                                Identifié
+                                            </span>
+                                            @else
+                                                <span class="fa fa-user-xmark"></span>
+                                                <span title="Marquer {{$user->getFullName()}} comme non identifié" class="lg:inline">
+                                                    Non Identifié
+                                                </span>
+                                            
+                                            @endif
                                         </span>
-                                        @else
-                                        <span class="fa fa-user-xmark"></span>
-                                        <span title="Marquer {{$user->getFullName()}} comme non identifié" class="lg:inline">
-                                            Non Identifié
+                                        <span wire:loading wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
+                                            <span>Chargement</span>
+                                            <span class="fas fa-rotate animate-spin"></span>
                                         </span>
-                                        
-                                        @endif
                                     </span>
-                                    <span wire:loading wire:target="marksUserAsIdentifiedOrNot('{{$user->id}}')">
-                                        <span>Chargement</span>
-                                        <span class="fas fa-rotate animate-spin"></span>
-                                    </span>
-                                </span>
-                                <span wire:click="deleteUserAccount('{{$user->id}}')" wire:target="deleteUserAccount('{{$user->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
-                                    <span wire:loading.remove wire:target="deleteUserAccount('{{$user->id}}')">
-                                        <span class="hidden lg:inline">Suppr.</span>
-                                        <span class="fa fa-trash"></span>
-                                    </span>
-                                    <span wire:loading wire:target="deleteUserAccount('{{$user->id}}')">
-                                        <span>Suppr. compte...</span>
-                                        <span class="fas fa-rotate animate-spin"></span>
-                                    </span>
-                                </span>
-                                
-                            </span> 
+                                    @if(!$user->isMaster())
+                                        <span wire:click="deleteUserAccount('{{$user->id}}')" wire:target="deleteUserAccount('{{$user->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 border rounded-lg cursor-pointer">
+                                            <span wire:loading.remove wire:target="deleteUserAccount('{{$user->id}}')">
+                                                <span class="hidden lg:inline">Suppr.</span>
+                                                <span class="fa fa-trash"></span>
+                                            </span>
+                                            <span wire:loading wire:target="deleteUserAccount('{{$user->id}}')">
+                                                <span>Suppr. compte...</span>
+                                                <span class="fas fa-rotate animate-spin"></span>
+                                            </span>
+                                        </span>
+                                    @endif
+                                    
+                                </span> 
+                            @endif
                         </td>
                     </tr>
                     @endforeach
@@ -234,9 +241,4 @@
             
         </div>
     </div>
-
-    
-
-
-    
 </div>

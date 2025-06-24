@@ -8,21 +8,23 @@
                 </span>
             </h2>
             <div class="flex justify-end gap-x-2">
-                @if($user->isAdminsOrMaster())
+                @if(auth_user()->isAdminsOrMaster())
                 <div class="flex items-center">
-                    <button
-                        wire:click="joinUserToRole"
-                        class="bg-blue-600 border text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
-                    >
-                        <span wire:loading.remove wire:target='joinUserToRole'>
-                            <span class="fas fa-user-check"></span>
-                            <span>Assigner des rôles</span>
-                        </span>
-                        <span wire:target='joinUserToRole' wire:loading>
-                            <span>Chargement en cours...</span>
-                            <span class="fas fa-rotate animate-spin"></span>
-                        </span>
-                    </button>
+                    @if(!$user->isMaster() || auth_user()->isMaster())
+                        <button
+                            wire:click="assignAdminRoles"
+                            class="bg-blue-600 border text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='assignAdminRoles'>
+                                <span class="fas fa-user-check"></span>
+                                <span>Assigner des rôles</span>
+                            </span>
+                            <span wire:target='assignAdminRoles' wire:loading>
+                                <span>Chargement en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
+                    @endif
                 </div>
                 @endif
                 
@@ -60,22 +62,24 @@
                                 <span>
                                     Rôle administrateur N° {{ $loop->iteration }} : 
                                 </span>
-                                <span class="font-semibold letter-spacing-1 text-yellow-500">
+                                <a href="{{route('master.admin.role.profil', ['role_id' => $role->id])}}" class="font-semibold letter-spacing-1 text-yellow-500">
                                     {{ __translateRoleName($role->name) }}
-                                </span>
+                                </a>
                             </h6>
                             @if($user->isAdminsOrMaster())
-                            <div class="flex items-center justify-between gap-x-2">
-                                <button wire:target='removeUserFromRole({{$role->id}})'  wire:click="removeUserFromRole({{$role->id}})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 hover:text-gray-100 transition">
-                                    <span wire:loading.remove wire:target='removeUserFromRole({{$role->id}})'>
-                                        Supprimer ce rôle
-                                    </span>
-                                    <span wire:target='removeUserFromRole({{$role->id}})' wire:loading>
-                                        <span>Suppression en cours...</span>
-                                        <span class="fas fa-rotate animate-spin"></span>
-                                    </span>
-                                </button>
-                            </div>
+                                @if(!$user->isMaster() || auth_user()->isMaster())
+                                <div class="flex items-center justify-between gap-x-2">
+                                    <button wire:target='removeUserFromRole({{$role->id}})'  wire:click="removeUserFromRole({{$role->id}})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 hover:text-gray-100 transition">
+                                        <span wire:loading.remove wire:target='removeUserFromRole({{$role->id}})'>
+                                            Supprimer ce rôle
+                                        </span>
+                                        <span wire:target='removeUserFromRole({{$role->id}})' wire:loading>
+                                            <span>Suppression en cours...</span>
+                                            <span class="fas fa-rotate animate-spin"></span>
+                                        </span>
+                                    </button>
+                                </div>
+                                @endif
                             @endif
                         </div>
                         <hr class="border border-sky-600 my-2">

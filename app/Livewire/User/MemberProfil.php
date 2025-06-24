@@ -5,10 +5,13 @@ namespace App\Livewire\User;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
+use App\Events\InitProcessToSendSimpleMailMessageToUsersEvent;
 use App\Events\MemberCreationOrUpdatingManagerEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Helpers\Services\EmailTemplateBuilder;
+use App\Helpers\Tools\ModelsRobots;
 use App\Helpers\Tools\SpatieManager;
+use App\Jobs\JobToSendSimpleMailMessageTo;
 use App\Mail\YourCardMemberIsReadyMail;
 use App\Models\Member;
 use App\Models\User;
@@ -56,19 +59,59 @@ class MemberProfil extends Component
         return view('livewire.user.member-profil');
     }
 
-    public function downloadMyCard()
+
+    public function demandeToGetMyCard()
     {
         $member = $this->member;
 
+        $user = $member->user;
+
+        $admins = ModelsRobots::getAllAdmins(['members-manager'], 10);
+
+        $message_to_admins = "DEMANDE DE CARTE DE MEMBRE : " . $user->getFullName() . " vient de faire la demande de sa carte de membre";
+
+        Notification::sendNow($admins, new RealTimeNotificationGetToUser($message_to_admins));
+
+        $receivers_details = [];
+
+        foreach($admins as $admin){
+
+            $receivers_details[] = [
+                'email' => $admin->email,
+                'full_name' => $admin->getFullName(),
+                'message' => $message_to_admins,
+                'file_to_attach' => null,
+                'lien' => null
+
+            ];
+
+        }
+
+        InitProcessToSendSimpleMailMessageToUsersEvent::dispatch($receivers_details);
+
+        return $this->toast("Votre demande a été envoyée avec succès aux différentes organes en charge!", 'success');
+    }
+
+    public function downloadMyCard()
+    {
+        
+        $member = $this->member;
+
+        $user = $member->user;
+
         $has_card = $member->card();
+
+        if($user->id != auth_user()->id){
+
+            return $this->toast("Vous n'êtes pas authorisé à télécharger la carte de membre d'un autre membre!", 'info');
+
+        }
 
         if($has_card){
 
             if($has_card->isPrintable()){
 
                 if(!$has_card->max_print_attempt()){
-
-                    $user = $member->user;
 
                     $path = $has_card->status;
 
@@ -186,8 +229,13 @@ class MemberProfil extends Component
 
         SpatieManager::ensureThatUserCan(['users-manager']);
 
-
         $user = $this->user;
+
+        if($user->isMaster()){
+
+            return $this->toast( "Vous ne pouvez pas effectuer une telle opération sur cet utilisateur!", 'error');
+    
+        }
 
         $user_id = $this->user->id;
 
@@ -326,7 +374,6 @@ class MemberProfil extends Component
     public function resetMemberRoleToNull()
     {
         SpatieManager::ensureThatUserCan(['members-manager', 'postes-manager']);
-
 
         $user = $this->user;
 

@@ -30,7 +30,7 @@ class GeneratePDFFromViewListener
             })
             ->catch(function(Batch $batch, Throwable $er) use ($event){
 
-                Notification::sendNow([$event->user], new RealTimeNotificationGetToUser("La génération du document a échoué!"));
+                Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("La génération du document a échoué!"));
 
             })
 

@@ -25,7 +25,7 @@
                         @endforeach
                     @endif
                     @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('members-manager'))
-                    <button wire:click='joinMemberToRole' title="Ajouter un nouveau membre à l'association" type="button" class="admin-panel-widget border cursor-pointer bg-blue-500 text-gray-100 rounded-xl hover:bg-blue-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button wire:click='joinMemberToRole' title="Ajouter un nouveau membre à l'association" type="button" class=" admin-panel-widget border cursor-pointer bg-blue-500 text-gray-100 rounded-xl hover:bg-blue-700 float-right px-2 py-2 block focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm  text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 hidden">
                         <span>Ajouter un membre</span>
                         <span class="fas fa-plus hover:animate-spin"></span>
                     </button>

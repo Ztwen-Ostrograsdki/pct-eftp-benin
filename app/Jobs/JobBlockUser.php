@@ -11,14 +11,16 @@ class JobBlockUser implements ShouldQueue
 {
     use Queueable, Batchable;
 
-    public $user;
+    public $user, $block_this_user;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(User $user)
+    public function __construct(User $user, $block_this_user = true)
     {
         $this->user = $user;
+
+        $this->block_this_user = $block_this_user;
     }
 
     /**
@@ -26,6 +28,11 @@ class JobBlockUser implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->user->userBlockerOrUnblockerRobot(true);
+        $user = $this->user;
+
+        if($user && !$user->isMaster()){
+
+            $user->userBlockerOrUnblockerRobot($this->block_this_user);
+        }
     }
 }

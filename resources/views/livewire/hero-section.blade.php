@@ -18,25 +18,19 @@
           <div class="mt-7 grid gap-3 w-full sm:inline-flex">
             @guest
             <a href="{{route('register')}}" class="home-element py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              Enregistez - vous ici
-              <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m9 18 6-6-6-6" />
-              </svg>
+                <span class="fas fa-user-pen"></span>
+              Inscrivez - vous ici
             </a>
             @endguest
 
             <a href="{{route('communique.dispatched')}}" class="from-left py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-blue-500 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
               <span class="fas fa-newspaper"></span>
               Les nouvelles - ici
-              <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m9 18 6-6-6-6" />
-              </svg>
             </a>
 
-            <a class="from-right py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">
-              <span class="fas fa-phone"></span>
-              <span class="fas fa-comments"></span>
-              Contactez un membre actif
+            <a class="from-right py-3 px-4 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border  shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-gray-700 border-gray-700 text-white hover:bg-gray-950 transition-colors ease-in-out focus:outline-none focus:ring-1 focus:ring-gray-600" href="{{route('about.us')}}">
+              <span class="fas fa-glasses"></span>
+              A propos de {{ env('APP_NAME') }}
             </a>
           </div>
           <!-- End Buttons -->
@@ -87,17 +81,8 @@
               </div>
             </h1>
 
-          {{-- <img class="w-full rounded-md" src="https://png.pngtree.com/png-vector/20240628/ourlarge/pngtree-emblem-for-a-university-with-large-book-child-inventor-physics-chemistry-png-image_12735535.png" alt="Image Description">
           
-          <div class="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 dark:from-slate-800 dark:via-slate-900/0 dark:to-slate-900/0">
-            
-          </div> --}}
-  
-          <!-- SVG-->
-          
-          <!-- End SVG-->
         </div>
-        <!-- End Col -->
       </div>
       {{-- REVIEWS SECTION --}}
       <div>
@@ -105,48 +90,51 @@
             <h3 class="font-semibold letter-spacing-1 py-3 text-sky-600 text-lg" >Quelques pensées de nos membres</h3>
             <div class="swiper-wrapper">
             <!-- Slide 1 -->
-            @foreach (getUsers() as $user)
-                <div wire:key='defilement-reviews-membre-{{$user->id}}' class="swiper-slide bg-sky-100 p-6 rounded-2xl shadow-lg">
-                <div class="flex items-center space-x-4 mb-4">
-                <img src="{{user_profil_photo($user)}}" class="w-24 h-24 rounded-full border-2 border-cyan-700" />
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800">
-                    {{ $user->getFullName(true) }}
-                    </h3>
-                    <span class="flex flex-col">
-                        <a href="#" class="text-sm text-cyan-600 hover:underline">
-                            <span class="fas fa-user-check"></span>
-                            @if($user->member)
-                              {{ $user->member->role ? $user->member->role->name : 'Un membre actif' }}
-                            @else
-                              Un enseignant actif
-                            @endif
-                        </a>
-                        <a href="mailto:{{$user->email}}" class="text-sm text-cyan-600 hover:underline">
-                            <span class="fas fa-envelope"></span>
-                            {{ $user->email }}
-                        </a>
-                        <a href="#" class="text-sm text-cyan-600 hover:underline">
-                            <span class="fas fa-phone"></span>
-                            {{ $user->contacts ? $user->contacts : 'Non renseigné' }}
-                        </a>
-                        <a href="#" class="text-sm text-cyan-600 hover:underline">
-                            <span class="fas fa-home"></span>
-                            {{ $user->address ? $user->address : 'Non renseignée' }}
-                        </a>
-                    </span>
-                </div>
-                </div>
-                <blockquote class="text-gray-600 italic border-l-4 border-cyan-600 pl-4">
-                “{{ $user->getSingleQuote() }}”
-                </blockquote>
-            </div>
-            @endforeach
+                @foreach ($members as $member)
+                    @php
+                        $user = $member->user;
+                    @endphp
+                    <div wire:key='defilement-reviews-membre-{{$user->id}}' class="swiper-slide bg-sky-100 p-6 rounded-2xl shadow-lg">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <img src="{{user_profil_photo($user)}}" class="w-24 h-24 rounded-full border-2 border-cyan-700" />
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">
+                                {{ $user->getFullName(true) }}
+                                </h3>
+                                <span class="flex flex-col">
+                                    <a href="#" class="text-sm text-cyan-600 hover:underline">
+                                        <span class="fas fa-user-check"></span>
+                                        @if($user->member)
+                                        {{ $user->member->role ? $user->member->role->name : 'Un membre actif' }}
+                                        @else
+                                        Un enseignant actif
+                                        @endif
+                                    </a>
+                                    
+                                    <a href="mailto:{{$user->email}}" class="text-sm text-cyan-600 hover:underline">
+                                        <span class="fas fa-envelope"></span>
+                                        {{ $user->email }}
+                                    </a>
+                                    @if(auth_user() && auth_user()->member)
+                                        <a href="#" class="text-sm text-cyan-600 hover:underline">
+                                            <span class="fas fa-phone"></span>
+                                            {{ $user->contacts ? $user->contacts : 'Non renseigné' }}
+                                        </a>
+                                        <a href="#" class="text-sm text-cyan-600 hover:underline">
+                                            <span class="fas fa-home"></span>
+                                            {{ $user->address ? $user->address : 'Non renseignée' }}
+                                        </a>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                        <blockquote class="text-gray-600 italic border-l-4 border-cyan-600 pl-4">
+                            “{{ $user->getSingleQuote() }}”
+                        </blockquote>
+                    </div>
+                @endforeach
             </div>
         </div>
       </div>
-    {{-- END REVIEWS SECTION --}}
-      @livewire('partials.home-carrousel-component')
-      <!-- End Grid -->
     </div>
   </div>

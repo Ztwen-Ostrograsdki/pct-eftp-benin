@@ -42,49 +42,64 @@
                           <span class="fas fa-rotate animate-spin"></span>
                       </span>
                   </button>
-                  <div class="flex items-center">
-                      <button
-                          wire:click="memberPaymentsManager"
-                          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
-                      >
-                          <span wire:loading.remove wire:target='memberPaymentsManager'>
-                              <span class="fas fa-save"></span>
-                              <span>Enregistrer un paiement</span>
-                          </span>
-                          <span wire:target='memberPaymentsManager' wire:loading>
-                              <span>Chargement en cours...</span>
-                              <span class="fas fa-rotate animate-spin"></span>
-                          </span>
-                      </button>
+                  <div class="flex gap-x-2 items-center">
+                        @if(!empty($selected_users))
+                        <button
+                            wire:click="blockSelectedsUsersAccount"
+                            class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='blockSelectedsUsersAccount'>
+                                <span class="fas fa-user-lock"></span>
+                                <span>Bloquer les comptes sélectionnés</span>
+                            </span>
+                            <span wire:target='blockSelectedsUsersAccount' wire:loading>
+                                <span>Blocage en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
+                        <button
+                            wire:click="removeAllAssignments"
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='removeAllAssignments'>
+                                <span class="fas fa-trash"></span>
+                                <span>Supprimer toutes les attributions</span>
+                            </span>
+                            <span wire:target='removeAllAssignments' wire:loading>
+                                <span>Suppression en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
+                        @else
+                        <button
+                            wire:click="blockAllUsersAccount"
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='blockAllUsersAccount'>
+                                <span class="fas fa-user-lock"></span>
+                                <span>Bloquer tous les comptes</span>
+                            </span>
+                            <span wire:target='blockAllUsersAccount' wire:loading>
+                                <span>Blocage en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
+                        @endif
                   </div>
                   <div class="flex gap-x-2 items-center">
                       <button
-                          wire:click="sendDocumentToOthers"
+                          wire:click="mailMessageToAdmins"
                           class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 hover:text-gray-900 transition"
                       >
-                          <span wire:loading.remove wire:target='sendDocumentToOthers'>
-                              <span>Envoyez aux admins</span>
+                          <span wire:loading.remove wire:target='mailMessageToAdmins'>
+                              <span>Envoyez un message aux admins</span>
                               <span class="fas fa-paper-plane"></span>
                           </span>
-                          <span wire:target='sendDocumentToOthers' wire:loading>
+                          <span wire:target='mailMessageToAdmins' wire:loading>
                               <span>Envoie en cours...</span>
                               <span class="fas fa-rotate animate-spin"></span>
                           </span>
                       </button>
-                      <button
-                          wire:click="printMembersCotisations"
-                          class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
-                      >
-                          <span wire:loading.remove wire:target='printMembersCotisations'>
-                              <span>Recevoir par mail</span>
-                              <span class="fas fa-print"></span>
-                          </span>
-                          <span wire:target='printMembersCotisations' wire:loading>
-                              <span>Processus en cours...</span>
-                              <span class="fas fa-rotate animate-spin"></span>
-                          </span>
-                      </button>
-                      
                   </div>
               </div>
   
@@ -104,7 +119,7 @@
       </div>
   
     <!-- Tableau des paiements -->
-    <div class="overflow-x-auto letter-spacing-1 rounded-lg shadow border border-gray-200 z-bg-secondary-light">
+    <div class="overflow-x-auto letter-spacing-1 shadow border border-gray-200 z-bg-secondary-light">
         @if (count($users) > 0)
 
             @if($selected_users AND count($selected_users) > 0)
@@ -159,8 +174,22 @@
                         <td class="px-2 py-2 text-yellow-600">
                             <span class="flex flex-wrap gap-1 gap-x-2">
                                 @foreach ($user->roles as $role)
-                                    <span class="p-2 text-xs border rounded bg-gray-900 text-gray-300 hover:text-gray-100 "> 
-                                        {{ __translateRoleName($role->name) }} 
+                                    <span class="p-2 text-xs flex gap-x-2 border rounded bg-gray-900 text-gray-300 hover:text-gray-100 items-center">
+                                        <span>
+                                            {{ __translateRoleName($role->name) }} 
+                                        </span>
+                                        @if(auth_user()->isAdminsOrMaster() && !$user->isMaster()) 
+                                            <span title="Retirer le rôle {{ __translateRoleName($role->name) }} de la liste des rôles attribués à {{$user->getFullName()}}"  wire:click="revokeThisRoleFromUserRoles({{$role->id}}, {{$user->id}})" class="cursor-pointer bg-red-600 text-white hover:bg-red-800 p-2 rounded-md">
+                                                <span wire:loading.remove wire:target="revokeThisRoleFromUserRoles({{$role->id}}, {{$user->id}})">
+                                                    <span>Suppr.</span>
+                                                    <span class="fas">x</span>
+                                                </span>
+                                                <span wire:loading wire:target="revokeThisRoleFromUserRoles({{$role->id}}, {{$user->id}})">
+                                                    <span>Retrait en cours...</span>
+                                                    <span class="fas fa-rotate animate-spin"></span>
+                                                </span>
+                                            </span>
+                                        @endif
                                     </span>
                                 @endforeach
                             </span>
@@ -188,11 +217,19 @@
                             @if($display_select_cases)
                                 <td>
                                     <span wire:click="pushOrRetrieveFromSelectedUsers({{$user->id}})" class="w-full mx-auto text-center font-bold inline-block cursor-pointer">
-                                        @if(in_array($user->id, $selected_users))
-                                            <span class="fas fa-user-check text-green-600"></span>
-                                        @else
-                                            <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
-                                        @endif
+                                        <span wire:loading.remove wire:target="pushOrRetrieveFromSelectedUsers({{$user->id}})">
+                                            @if(in_array($user->id, $selected_users))
+                                                <span class="fas fa-user-check text-green-600"></span>
+                                            @else
+                                                <span class="text-xs text-zinc-500">Cliquer pour ajouter</span>
+                                            @endif
+                                        </span>
+                                        <span wire:loading wire:target="pushOrRetrieveFromSelectedUsers({{$user->id}})">
+                                            <span class="text-gray-200 font-normal">
+                                                <span>Un instant...</span>
+                                                <span class="fas fa-rotate animate-spin"></span>
+                                            </span>
+                                        </span>
                                     </span>
                                 </td>
                             @endif

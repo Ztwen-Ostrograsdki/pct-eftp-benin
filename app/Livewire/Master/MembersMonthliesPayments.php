@@ -285,7 +285,9 @@ class MembersMonthliesPayments extends Component
 
     public function toggleSelectionsCases()
     {
-        return $this->display_select_cases = !$this->display_select_cases;
+        $this->display_select_cases = !$this->display_select_cases;
+
+        if(!$this->display_select_cases) $this->reset('selected_members');
     }
 
     

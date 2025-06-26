@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Member;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -12,7 +13,9 @@ class HeroSection extends Component
     
     public function render()
     {
-        return view('livewire.hero-section');
+        $members = Member::all();
+        
+        return view('livewire.hero-section', compact('members'));
     }
 
 

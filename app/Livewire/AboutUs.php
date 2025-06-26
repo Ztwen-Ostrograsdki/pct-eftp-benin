@@ -2,12 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Models\Member;
 use Livewire\Component;
 
 class AboutUs extends Component
 {
     public function render()
     {
-        return view('livewire.about-us');
+        $members = Member::all();
+
+        return view('livewire.about-us', compact('members'));
     }
 }

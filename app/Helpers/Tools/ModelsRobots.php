@@ -39,6 +39,47 @@ class ModelsRobots{
         return $name  ? $greating . ' ' . $name : $greating;
     }
 
+    public static function getMasters($pluckingColumn = 'id', $except = null)
+    {
+        $roles = ['master'];
+
+        if(!$pluckingColumn)
+
+            return User::whereHas('roles', function($query) use ($roles, $except) {
+
+                $query->whereIn('admins.name', $roles);
+
+                if($except) $query->where('users.id', '<>', $except);
+
+            })
+            ->orWhere(function($query) use ($except){
+
+                $query->where('users.id', 1);
+
+                if($except) $query->where('users.id', '<>', $except);
+            })
+            ->distinct()
+            ->pluck('id')
+            ->toArray();
+
+        else
+
+            return User::whereHas('roles', function($query) use ($roles, $except) {
+
+                $query->whereIn('admins.name', $roles);
+
+                if($except) $query->where('users.id', '<>', $except);
+
+            })
+            ->orWhere(function($query) use ($except){
+
+                $query->where('users.id', 1);
+
+                if($except) $query->where('users.id', '<>', $except);
+            })
+            ->distinct()->get();
+    }
+
     public static function getUserAdmins($pluckingColumn = 'id', $except = null)
     {
         $roles = ['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'];
@@ -61,22 +102,23 @@ class ModelsRobots{
             ->distinct()
             ->pluck('id')
             ->toArray();
+
         else
 
-        return User::whereHas('roles', function($query) use ($roles, $except) {
+            return User::whereHas('roles', function($query) use ($roles, $except) {
 
-            $query->whereIn('admins.name', $roles);
+                $query->whereIn('admins.name', $roles);
 
-            if($except) $query->where('users.id', '<>', $except);
+                if($except) $query->where('users.id', '<>', $except);
 
-        })
-        ->orWhere(function($query) use ($except){
+            })
+            ->orWhere(function($query) use ($except){
 
-            $query->where('users.id', 1);
+                $query->where('users.id', 1);
 
-            if($except) $query->where('users.id', '<>', $except);
-        })
-        ->distinct()->get();
+                if($except) $query->where('users.id', '<>', $except);
+            })
+            ->distinct()->get();
     }
 
     public static function getAllAdmins($with_these_admins = [], $limit_to_take = null)
@@ -88,7 +130,7 @@ class ModelsRobots{
             $roles = array_merge($roles, $with_these_admins);
         }
 
-        if($limit_to_take){
+        if($limit_to_take)
             return User::whereHas('roles', function($query) use ($roles) {
 
                 $query->whereIn('admins.name', $roles);
@@ -99,8 +141,8 @@ class ModelsRobots{
                 $query->where('users.id', 1);
             })
             ->inRandomOrder()->distinct()->limit($limit_to_take)->get();
-        }
-        else{
+        
+        else
 
             return User::whereHas('roles', function($query) use ($roles) {
 
@@ -112,7 +154,7 @@ class ModelsRobots{
                 $query->where('users.id', 1);
             })
             ->distinct()->get();
-        }
+        
 
     }
 

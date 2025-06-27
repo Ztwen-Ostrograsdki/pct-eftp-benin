@@ -51,31 +51,42 @@ class ForgotPasswordPage extends Component
 
         if($this->validate() && $user){
 
-            Password::sendResetLink(['email' => $this->email]);
+            if(!$user->blocked || ($user->blocked && $user->blocked_because == 'wrong.password.tried')){
+                Password::sendResetLink(['email' => $this->email]);
 
-            $status = Password::RESET_LINK_SENT;
+                $status = Password::RESET_LINK_SENT;
 
-            if($status){
+                if($status){
 
-                $user->sendPasswordResetKeyToUser();
+                    $user->sendPasswordResetKeyToUser();
 
-                $this->resetErrorBag();
+                    $this->resetErrorBag();
 
-                $message = "Validation lancée avec succès! Un courriel vous a été envoyé, veuillez vérifier votre boite mail.";
+                    $message = "Validation lancée avec succès! Un courriel vous a été envoyé, veuillez vérifier votre boite mail.";
 
-                $this->toast($message, 'info', 7000);
+                    $this->toast($message, 'info', 7000);
 
-                session()->flash('success', $message);
+                    session()->flash('success', $message);
 
-                return redirect(route('password.reset.by.email', ['email' => $this->email]));
+                    return redirect(route('password.reset.by.email', ['email' => $this->email]));
+                }
+                else{
+
+                    $message = "Validation échouée! Une erreure est survenue, Veuillez réessayer";
+
+                    $this->toast($message, 'error', 7000);
+
+                    session()->flash('message', $message);
+                }
             }
-            else{
+            elseif($user->blocked){
 
-                $message = "Validation échouée! Une erreure est survenue, Veuillez réessayer";
+                $message = "Votre compte a été bloqué. Veuillez contacter les administrateurs de la plateforme afin de reccuperer votre compte!";
 
-                $this->toast($message, 'error', 7000);
+                session()->flash('error', $message);
 
-                session()->flash('message', $message);
+                $this->toast($message, 'info', 10000);
+
             }
         }
     }

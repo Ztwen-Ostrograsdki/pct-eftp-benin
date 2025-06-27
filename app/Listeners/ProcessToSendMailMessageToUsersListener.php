@@ -31,11 +31,13 @@ class ProcessToSendMailMessageToUsersListener
 
                 $message = $receiver['message'];
 
+                $objet = $receiver['objet'];
+
                 $file_to_attach = $receiver['file_to_attach'];
 
                 $lien = $receiver['lien'];
 
-                $jobs[] = new JobToSendSimpleMailMessageTo($email, $full_name, $message, $file_to_attach, $lien);
+                $jobs[] = new JobToSendSimpleMailMessageTo($email, $full_name, $message, $objet, $file_to_attach, $lien);
 
             }
         }
@@ -47,11 +49,13 @@ class ProcessToSendMailMessageToUsersListener
 
             $message = $event->message;
 
+            $objet = $event->objet;
+
             $file_to_attach = $event->file_to_attach_path;
 
             $lien = $event->lien;
 
-            $jobs[] = new JobToSendSimpleMailMessageTo($email, $full_name, $message, $file_to_attach, $lien);
+            $jobs[] = new JobToSendSimpleMailMessageTo($email, $full_name, $message, $objet, $file_to_attach, $lien);
 
         }
 

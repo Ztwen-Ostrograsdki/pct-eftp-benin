@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
+use App\Jobs\JobToSendSimpleMailMessageTo;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,19 @@ class ResetPasswordPage extends Component
             );
     
             if($status === Password::PASSWORD_RESET){
+
+                $user = User::where('email', $this->email)->first();
+
+                $user->forceFill([
+                    'blocked' => null,
+                    'blocked_at' => null,
+                    'wrong_password_tried' => 0,
+                    'blocked_because' => null,
+                ])->save();
+
+                $sucss_message = "Nous vous avons envoyé ce courriel, pour vous informer que le mot de passe de votre compte " . env('APP_NAME') . " a été réinitialisé avec succès!";
+
+                JobToSendSimpleMailMessageTo::dispatch($user->email, $user->getFullName(), $sucss_message, "MOT DE PASSE REINITIALISE AVEC SUCCES", null, route('login'));
 
                 return redirect(route('login'))->with('success', "Mot de passe réinitialisé avec succès!");
             }

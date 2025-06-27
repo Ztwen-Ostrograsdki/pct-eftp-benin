@@ -4,9 +4,7 @@ namespace App\Observers;
 
 use App\Events\UpdateUsersListToComponentsEvent;
 use App\Helpers\Tools\ModelsRobots;
-use App\Jobs\JobLogoutUser;
 use App\Jobs\JobToGenerateDefaultUserMember;
-use App\Models\Member;
 use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Carbon;
@@ -41,7 +39,7 @@ class ObserveUser
     {
         if(Str::lower($user->status) == 'ame') $user->update(['is_ame' => true]);
 
-        if($user->emailVerified() && $user->confirmed_by_admin){
+        if($user->emailVerified() && $user->confirmed_by_admin && !$user->member){
 
             JobToGenerateDefaultUserMember::dispatch($user)->delay(Carbon::now()->addMinutes(5));
 

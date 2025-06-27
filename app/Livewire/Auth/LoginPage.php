@@ -4,7 +4,10 @@ namespace App\Livewire\Auth;
 
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockedUserTryingToLoginEvent;
+use App\Events\BlockUserEvent;
+use App\Events\LogoutUserEvent;
 use App\Helpers\Tools\ModelsRobots;
+use App\Jobs\JobToSendSimpleMailMessageTo;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -37,6 +40,8 @@ class LoginPage extends Component
     public function login()
     {
         $user = User::where('email', $this->email)->first();
+
+        $max_password_tried = env('APP_MAX_PASSWORD_TRIED');
 
         if(!$this->email){
 
@@ -113,18 +118,55 @@ class LoginPage extends Component
 
             if($auth){
 
+                $user->forceFill([
+                    'blocked' => null,
+                    'blocked_at' => null,
+                    'wrong_password_tried' => 0,
+                    'blocked_because' => null,
+                ])->save();
+
                 if(!$user->auth_token){
 
                     $user->update(['auth_token' => Str::replace("/", $user->identifiant, Hash::make($user->identifiant))]);
                 }
 
-                $this->toast("Vous êtes connecté!", 'success');
+                $this->toast("Connexion réussie!", 'success');
 
                 request()->session()->regenerate();
 
                 return $this->redirectIntended(route('user.profil', ['identifiant'=> $user->identifiant]));
             }
             else{
+
+                $user = User::where('email', $this->email)->first();
+
+                if($user){
+
+                    $increment = $user->wrong_password_tried + 1;
+
+                    $user->update(['wrong_password_tried' => $increment]);
+
+                    
+
+                    if($user->wrong_password_tried >= $max_password_tried){
+
+                        $err_message = "Nous vous avons envoyé ce courriel, pour vous signaler que votre compte " . env('APP_NAME') . " a été bloqué suite des connexions malvaillantes et suspectes que nous avons décélée lié à votre compte dont l'addresse mail est : " . $user->email . ". Vous pouvez reccuperez votre compte soit en le signalant aux administrateurs soit en essayant de vous connecter en précisant mot de passe oublié. La seconde méthode, nous vous le signalons qu'elle ne marche que dans 5% des cas!";
+
+                        JobToSendSimpleMailMessageTo::dispatch($user->email, $user->getFullName(), $err_message, "COMPTE BLOQUES POUR TROP TENTATIVES ERRONEES DE CONNEXION", null, route('login'));
+
+                        $user->userBlockerOrUnblockerRobot(true, "wrong.tried.password");
+
+                        LogoutUserEvent::dispatch($user);
+
+                    }
+                    elseif($user->wrong_password_tried == $max_password_tried - 1){
+
+                        $err_message = "Attention trop de tentatives de connexion erronée: une autre tentative erronée entrainera le blocage du compte! Pensez peut-être à mot de passe oublié!";
+
+                        session()->flash('error', $err_message);
+                        
+                    }
+                }
 
                 $this->toast("Données incorrectes", 'error');
 

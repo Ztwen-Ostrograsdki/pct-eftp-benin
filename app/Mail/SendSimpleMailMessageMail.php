@@ -21,6 +21,7 @@ class SendSimpleMailMessageMail extends Mailable implements ShouldQueue
         public $email,
         public $full_name,
         public $message,
+        public $objet,
         public $file_to_attach_path = null,
         public $html,
     )
@@ -30,6 +31,8 @@ class SendSimpleMailMessageMail extends Mailable implements ShouldQueue
         $this->full_name = $full_name;
 
         $this->message = $message;
+
+        $this->objet = $objet;
 
         $this->html = $html;
 
@@ -41,9 +44,7 @@ class SendSimpleMailMessageMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        $name = $this->full_name;
-
-        return $this->subject("Bonjour  $name")
+        return $this->subject($this->objet)
                     ->html($this->html);
     }
 

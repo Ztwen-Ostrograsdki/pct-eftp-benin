@@ -64,6 +64,7 @@ class User extends Authenticatable
         'from_general_school',
         'auth_token',
         'wrong_password_tried',
+        'blocked_because',
 
     ];
 

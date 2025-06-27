@@ -31,7 +31,7 @@ class SetUserProfilPhotoAndPasswordData extends Component
     public $photo_path;
 
     protected $rules = [
-        'email' => 'required|email|unique:users|min:3|max:255',
+        'email' => 'required|email|email:dns|unique:users|min:3|max:255',
         'password' => 'string|required|min:4|confirmed',
         'profil_photo' => 'required|image|mimes:jpeg,png,jpg|max:4000',
     ];

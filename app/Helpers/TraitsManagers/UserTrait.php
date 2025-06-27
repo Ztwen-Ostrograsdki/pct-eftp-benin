@@ -149,18 +149,20 @@ trait UserTrait{
         }
     }
     
-    public function userBlockerOrUnblockerRobot($action = true)
+    public function userBlockerOrUnblockerRobot($action = true, $reason = null)
     {
         if($action){
             return $this->forceFill([
                 'blocked' => true,
-                'blocked_at' => Carbon::now()
+                'blocked_at' => Carbon::now(),
+                'blocked_because' => $reason
             ])->save();
         }
         else{
             return $this->forceFill([
                 'blocked' => false,
-                'blocked_at' => null
+                'blocked_at' => null,
+                'blocked_because' => null
             ])->save();
 
         }

@@ -75,7 +75,7 @@ class BlockUserListener
 
                     UserHasBeenBlockedSuccessfullyEvent::dispatch($event->user);
 
-                    $message = "L'utilisateur " . $event->user->getFullName() . " a été bloqué avec succès!";
+                    $message = "Le compte de l'utilisateur " . $event->user->getFullName() . " a été bloqué avec succès!";
                     
                     Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("Le processus est terminé: " . $message));
 
@@ -87,7 +87,7 @@ class BlockUserListener
 
                         UserHasBeenBlockedSuccessfullyEvent::dispatch($u);
 
-                        $message = "L'utilisateur " . $u->getFullName() . " a été bloqué avec succès!";
+                        $message = "Le compte de l'utilisateur " . $u->getFullName() . " a été bloqué avec succès!";
                         
                         Notification::sendNow([$event->admin_generator], new RealTimeNotificationGetToUser("Le processus est terminé: " . $message));
 

@@ -45,6 +45,19 @@
                   <div class="flex gap-x-2 items-center">
                         @if(!empty($selected_users))
                         <button
+                            wire:click="unlockSelectedsUsersAccount"
+                            class="bg-purple-400 text-gray-700 px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='unlockSelectedsUsersAccount'>
+                                <span class="fas fa-unlock-keyhole"></span>
+                                <span>Débloquer les comptes sélectionnés</span>
+                            </span>
+                            <span wire:target='unlockSelectedsUsersAccount' wire:loading>
+                                <span>Déblocage en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
+                        <button
                             wire:click="blockSelectedsUsersAccount"
                             class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:text-gray-900 transition"
                         >
@@ -71,6 +84,19 @@
                             </span>
                         </button>
                         @else
+                        <button
+                            wire:click="unlockAllUsersAccount"
+                            class="bg-purple-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
+                        >
+                            <span wire:loading.remove wire:target='unlockAllUsersAccount'>
+                                <span class="fas fa-unlock-keyhole"></span>
+                                <span>Débloquer tous les comptes</span>
+                            </span>
+                            <span wire:target='unlockAllUsersAccount' wire:loading>
+                                <span>Déblocage en cours...</span>
+                                <span class="fas fa-rotate animate-spin"></span>
+                            </span>
+                        </button>
                         <button
                             wire:click="blockAllUsersAccount"
                             class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-gray-900 transition"
@@ -165,7 +191,12 @@
                             <span class="flex gap-x-2 items-center">
                                 <img title="Cliquez pour zoomer sur l'image de profil"  @click="currentImage = '{{ user_profil_photo($user) }}'; userName = '{{ $user->getFullName(true) }}'; email = '{{ $user->email }}'; show = true" class="w-8 h-8 rounded-full" src="{{ user_profil_photo($user) }}" alt="Photo de profil de {{ $user->getFullName() }}">
                                 <a title="Charger le profil de {{$user->getFullName()}}" class="" href="{{ route('user.profil', ['identifiant' => $user->identifiant]) }}">
-                                    {{$user->getFullName()}} 
+                                    <span class="@if($user->blocked) text-red-600 @endif">
+                                        {{$user->getFullName()}}
+                                        @if ($user->blocked)
+                                            <span title="Le compte de {{$user->getFullName()}} a été bloqué depuis le {{__formatDateTime($user->blocked_at)}}" class="fas fa-user-lock ml-2"></span>
+                                        @endif
+                                    </span> 
                                 </a>
                             </span>
                         <td class="px-2 py-2 text-gray-400">
@@ -259,7 +290,7 @@
         style="display: none;"
         @click="show = false"
     >
-        <h5 class="mx-auto flex flex-col gap-y-1 text-lg w-auto text-center py-3 font-semibold letter-spacing-1 bg-gray-950 my-3" >
+        <h5 class="mx-auto flex flex-col gap-y-1 text-lg w-auto text-center py-1 font-semibold letter-spacing-1 bg-gray-950 my-1" >
             <span class=" text-sky-500 uppercase" x-text="userName"></span>
             <span class=" text-yellow-500" x-text="email"></span>
         </h5>

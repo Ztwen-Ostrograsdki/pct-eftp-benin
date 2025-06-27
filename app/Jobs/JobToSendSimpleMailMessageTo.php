@@ -22,6 +22,7 @@ class JobToSendSimpleMailMessageTo implements ShouldQueue
         public $email,
         public $full_name,
         public $message,
+        public $objet,
         public $file_to_attach_path = null,
         public $lien = null
     )
@@ -31,6 +32,8 @@ class JobToSendSimpleMailMessageTo implements ShouldQueue
         $this->full_name = $full_name;
 
         $this->message = $message;
+
+        $this->objet = $objet;
 
         $this->lien = $lien;
 
@@ -44,12 +47,15 @@ class JobToSendSimpleMailMessageTo implements ShouldQueue
     {
         $lien = $this->lien ? $this->lien : route('home');
 
+        $objet = $this->objet ? $this->objet : "Un courriel pour vous";
+
         $html = EmailTemplateBuilder::render('simple-mail-message', [
             'lien' => $lien,
             'full_name' => $this->full_name,
-            'message' => $this->message,
+            'mail_message' => $this->message,
+            'objet' => $objet,
         ]);
 
-        Mail::to($this->email)->send(new SendSimpleMailMessageMail($this->email, $this->full_name, $this->message, $this->file_to_attach_path, $html));
+        Mail::to($this->email)->send(new SendSimpleMailMessageMail($this->email, $this->full_name, $this->message, $this->objet, $this->file_to_attach_path, $html));
     }
 }

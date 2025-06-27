@@ -74,10 +74,13 @@ class MemberProfil extends Component
 
         $receivers_details = [];
 
+        $objet = "DEMANDE DE CARTE DE MEMBRE";
+
         foreach($admins as $admin){
 
             $receivers_details[] = [
                 'email' => $admin->email,
+                'objet' => $objet,
                 'full_name' => $admin->getFullName(),
                 'message' => $message_to_admins,
                 'file_to_attach' => null,

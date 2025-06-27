@@ -6,6 +6,7 @@ use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\BlockUserEvent;
 use App\Events\RoleUsersWasUpdatedEvent;
+use App\Events\UnlockUsersAccountEvent;
 use App\Helpers\LivewireTraits\ListenToEchoEventsTrait;
 use App\Helpers\Tools\ModelsRobots;
 use App\Helpers\Tools\SpatieManager;
@@ -52,9 +53,9 @@ class Dashboard extends Component
                             </p>
                     </h6>";
 
-            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
+            $noback = "";
 
-            $options = ['event' => 'confirmedBlockSelectedsUsersAccount', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets]];
+            $options = ['event' => 'confirmedBlockSelectedsUsersAccount', 'confirmButtonText' => 'Bloqué les comptes', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets]];
 
             $this->confirm($html, $noback, $options);
         }
@@ -87,9 +88,9 @@ class Dashboard extends Component
                             </p>
                     </h6>";
 
-            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
+            $noback = "";
 
-            $options = ['event' => 'confirmedBlockSelectedsUsersAccount', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets_ids]];
+            $options = ['event' => 'confirmedBlockSelectedsUsersAccount', 'confirmButtonText' => 'Bloqué les comptes', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets_ids]];
 
             $this->confirm($html, $noback, $options);
         }
@@ -117,6 +118,90 @@ class Dashboard extends Component
                     BlockUserEvent::dispatch(null, auth_user(), $targets, true);
 
                     $this->toast( "L'opération de blocage des comptes a été lancée!", 'success');
+
+                }
+
+            }
+
+        }
+    }
+
+    public function unlockSelectedsUsersAccount()
+    {
+        SpatieManager::ensureThatUserCan();
+        $targets_ids = [];
+
+        if(!empty($this->selected_users)){
+
+            $targets_ids = $this->selected_users;
+        }
+        else{
+
+            $targets_ids = [];
+
+        }
+
+        if(!empty($targets_ids)){
+
+            $total = numberZeroFormattor(count($targets_ids));
+
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de débloquer les comptes de tous les  
+                                <span class='text-sky-400 letter-spacing-2 font-semibold'> {$total} </span>
+                                utilisateurs sélectionnés
+                            </p>
+                    </h6>";
+
+            $noback = "";
+
+            $options = ['event' => 'confirmedunlockSelectedsUsersAccount', 'confirmButtonText' => 'Débloqué les comptes', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets_ids]];
+
+            $this->confirm($html, $noback, $options);
+        }
+    } 
+    
+    public function unlockAllUsersAccount()
+    {
+        SpatieManager::ensureThatUserCan();
+
+        $targets = "all_users";
+
+        if($targets){
+
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de débloquer les comptes de tous les utilisateurs ayant leur compte bloqué
+                            </p>
+                    </h6>";
+
+            $noback = "";
+
+            $options = ['event' => 'confirmedunlockSelectedsUsersAccount', 'confirmButtonText' => 'Débloqué les comptes', 'cancelButtonText' => 'Annulé', 'data' => ['targets' => $targets]];
+
+            $this->confirm($html, $noback, $options);
+        }
+    } 
+
+    #[On('confirmedunlockSelectedsUsersAccount')]
+    public function onconfirmedUnlockSelectedsUsersAccount($data)
+    {
+        if($data){
+
+            $targets = $data['targets'];
+
+            if(is_array($targets) && !empty($targets)){
+
+                UnlockUsersAccountEvent::dispatch($targets, auth_user(), false, 1);
+
+                $this->toast( "L'opération de déblocage des comptes a été lancée!", 'success');
+
+            }
+            elseif(!is_array($targets)){
+
+                if($targets == 'all_users'){
+
+                    UnlockUsersAccountEvent::dispatch(null, auth_user(), true, 1);
+
+                    $this->toast( "L'opération de déblocage des comptes a été lancée!", 'success');
 
                 }
 

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitProcessToSendSimpleMailMessageToUsersEvent implements ShouldBroadcast
+class UnlockUsersAccountEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -18,28 +19,19 @@ class InitProcessToSendSimpleMailMessageToUsersEvent implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public $receivers_details = [],
-        public $receiver_mail = null,
-        public $receiver_full_name = null,
-        public $message = null,
-        public $objet = null,
-        public $file_to_attach_path = null,
-        public $lien = null
+        public ?array $users_targets_ids = [],
+        public User $admin_generator,
+        public bool $just_unblock_all_users_acounts = false,
+        public ?int $delay = 0
     )
     {
-        $this->receivers_details = $receivers_details;
+        $this->users_targets_ids = $users_targets_ids;
 
-        $this->receiver_full_name = $receiver_full_name;
+        $this->admin_generator = $admin_generator;
 
-        $this->receiver_mail = $receiver_mail;
+        $this->just_unblock_all_users_acounts = $just_unblock_all_users_acounts;
 
-        $this->message = $message;
-
-        $this->objet = $objet;
-
-        $this->lien = $lien;
-
-        $this->file_to_attach_path = $file_to_attach_path;
+        $this->delay = $delay;
     }
 
     /**
@@ -50,7 +42,7 @@ class InitProcessToSendSimpleMailMessageToUsersEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('public'),
+            new PrivateChannel('App.Models.User.' . $this->admin_generator->id),
         ];
     }
 }

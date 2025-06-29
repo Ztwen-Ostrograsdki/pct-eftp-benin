@@ -3,6 +3,7 @@ namespace App\Helpers\Tools;
 
 use App\Events\UpdateUsersListToComponentsEvent;
 use App\Models\Epreuve;
+use App\Models\EpreuveResponse;
 use App\Models\ForumChatSubject;
 use App\Models\SupportFile;
 use App\Models\User;
@@ -84,7 +85,7 @@ class ModelsRobots{
     {
         $roles = ['master', 'admin-1', 'admin-2', 'admin-3', 'admin-4', 'admin-5'];
 
-        if(!$pluckingColumn)
+        if($pluckingColumn)
 
             return User::whereHas('roles', function($query) use ($roles, $except) {
 
@@ -164,7 +165,7 @@ class ModelsRobots{
 
             $admins = self::getAllAdmins();
 
-            $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
+            $since = __formatDateTime($epreuve->created_at);
 
             $subjet = "Validation d'une épreuve publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
             " et d'identifiant personnel : ID = " . $user->identifiant;
@@ -177,7 +178,35 @@ class ModelsRobots{
 
             foreach($admins as $admin){
 
-                $admin->notify(new SendDynamicMailToUser($subjet, $body));
+                $admin->notify(new SendDynamicMailToUser($subjet, $body, []));
+
+            }
+
+        }
+    }
+
+    public static function notificationToAdminsThatNewEpreuveResponseHasBeenPublished(User $user, EpreuveResponse $epreuve_response)
+    {
+        if($user && $user->confirmed_by_admin){
+
+            $path = storage_path().'/app/public/' . $epreuve_response->path;
+
+            $admins = self::getAllAdmins();
+
+            $since = __formatDateTime($epreuve_response->created_at);
+
+            $subjet = "Validation d'un éléments de réponses publié sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
+            " et d'identifiant personnel : ID = " . $user->identifiant;
+
+            $body = "Vous recevez ce mail parce que vous êtes administrateur et qu'avec ce statut, vous pouvez analyser et confirmer l'épreuve publiée par "
+            . $user->getUserNamePrefix() . " " . $user->getFullName(true) . 
+                
+                ". Le fichier a été publiée le " . $since . " ."
+            ;
+
+            foreach($admins as $admin){
+
+                $admin->notify(new SendDynamicMailToUser($subjet, $body, [$path]));
 
             }
 
@@ -190,7 +219,7 @@ class ModelsRobots{
 
             $admins = self::getAllAdmins();
 
-            $since = $support->__getDateAsString($support->created_at, 3, true);
+            $since = __formatDateTime($support->created_at);
 
             $subjet = "Validation d'une fiche de cours publiée sur la plateforme " . config('app.name') . " par l'utilisateur du compte : " . $user->email .
             " et d'identifiant personnel : ID = " . $user->identifiant;

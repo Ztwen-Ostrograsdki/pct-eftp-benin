@@ -68,6 +68,9 @@ e.private("confirmeds")
     .listen("RolePermissionsWasUpdatedEvent", () => {
         Livewire.dispatch("LiveRolePermissionsWasUpdatedEvent");
     })
+    .listen("NewEpreuveResponseHasBeenPublishedEvent", () => {
+        Livewire.dispatch("LiveNewEpreuveResponseHasBeenPublishedEvent");
+    })
     .listen("RoleUsersWasUpdatedEvent", () => {
         Livewire.dispatch("LiveRoleUsersWasUpdatedEvent");
     });
@@ -203,4 +206,9 @@ e.join("forumChatRoom")
     })
     .listen("ForumChatSubjectHasBeenLikedBySomeoneEvent", (data) => {
         Livewire.dispatch("LiveForumChatSubjectHasBeenLikedBySomeoneEvent");
+    })
+    .listen("NewMessageHasBeenSentEvent", (data) => {
+        Livewire.dispatch("LiveNewMessageHasBeenSentEvent", {
+            message_id: data.message_id,
+        });
     });

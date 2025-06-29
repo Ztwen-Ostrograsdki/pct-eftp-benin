@@ -16,85 +16,7 @@
                         </div>
                     @endif
                 </h4>
-                @if($active_chat_subject)
-                    <div class="mx-auto p-2">
-                        <h6 wire:click='toggleSubject' class="text-sky-500 letter-spacing-2 font-semibold cursor-pointer mb-4">
-                            Sujet de discussion en cours 
-
-                            @if($subject_show)
-                            <span wire:click='toggleSubject' title="Masquer le sujet de discussion" class="p-2 cursor-pointer">
-                                <span class="fas fa-eye-slash"></span>
-                            </span>
-                            @else
-                            <span wire:click='toggleSubject' title="Afficher le sujet de discussion" class="p-2 cursor-pointer">
-                                <span class="fas fa-eye"></span>
-                            </span>
-                            @endif
-
-                            <span wire:click='deleteSubject' title="Fermer cette discussion" class="ml-2 shadow-2 shadow-sky-500 text-orange-400 p-1 px-4 group  rounded-lg cursor-pointer">
-                                <span wire:loading.remove wire:target='deleteSubject' class="fas fa-lock inline transition ease-in-out group-hover:hidden"></span>
-                                <span wire:loading.remove wire:target='deleteSubject' class="fas fa-unlock hidden transition ease-in-out group-hover:inline"></span>
-                                <span wire:loading wire:target='deleteSubject' class="fas fa-rotate animate-spin"></span>
-                                <span wire:loading.remove wire:target='deleteSubject' class="text-xs md:inline lg:inline xl:inline sm:hidden xs:hidden">Fermer cette discussion</span>
-
-                            </span>
-                        </h6>
-                        @if($subject_show)
-                        <div class="letter-spacing-1 text-gray-500 shadow-1 shadow-sky-500 rounded-xl p-2 mt-3 ">
-                            <div title="Double-cliquez pour aimer ce topic" x-on:dblclick="$wire.likeSubject" class="mb-2 group cursor-pointer">
-                                <div class="flex justify-between">
-                                    <span class="text-sky-300">
-                                        {{ $active_chat_subject->subject }}
-                                    </span>
-
-                                    @if($active_chat_subject->likes)
-                                    <div class="mr-2">
-                                        <span>
-                                            <span  class="text-green-600"> {{ count($active_chat_subject->likes) }}  </span>
-                                            <span title="{{count($active_chat_subject->likes)}} personnes ont aimé ce message" class="fas transition ease-in-out fa-heart text-success-500 "></span>
-                                        </span>
-                                    </div>
-                                    @endif
-                                </div>
-                                <div class="transition translate-x-5 ease-out text-start invisible group-hover:visible group-hover:translate-x-0">
-                                    <div class="flex gap-x-2">
-                                        <span wire:click="likeSubject" title="Liker ce topic" class="fas fa-heart text-orange-500 hover:scale-125 p-2"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr class="w-full m-0 p-0 border-sky-700 bg-sky-700 text-sky-700">
-                            <div class="flex justify-between gap-x-2 letter-spacing-1 font-semibold ">
-                                <div class="flex justify-end gap-x-2 letter-spacing-1 font-semibold ">
-                                    <small class="text-sky-500">
-                                        Ce sujet sera fermé le 
-                                    </small>
-                                    <small class="text-sky-600">
-                                        {{ $active_chat_subject->__getDateAsString($active_chat_subject->updated_at, 3, true); }}
-                                    </small>
-                                </div>
-                                <div>
-                                    <small class="text-orange-500 ">
-                                        Posté par:
-                                    </small>
-                                    <small class="text-yellow-600">
-                                        {{ $active_chat_subject->user->getFullName() }}
-                                    </small>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        @endif
-                    </div>
-                @else
-                <div class="mx-auto p-2">
-                    <h6 title="Créer un sujet de discussion sur le forum, attirer l'attention de tous sur une préoccupation et fermer votre discussion à tout moment!" wire:click='addNewChatSubject' class="text-sky-700 rounded-lg letter-spacing-2 font-semibold inline-block px-3 py-2 shadow-2 shadow-sky-600 cursor-pointer hover:text-sky-400 hover:bg-sky-900">
-                        Lancer un sujet de discussion
-
-                        <span class="fas fa-plus"></span>
-                        
-                    </h6>
-                </div>
-                @endif
+               
                 <div class="flex justify-end " title="Cliquer pour voir la liste de ceux qui sont connectés présentement">
                     <a href="#" title="Afficher les enseignants ou membres connectés"  class="ml-2 lg:text-sm xl:text-sm md:text-sm sm:text-xs xs:text-xs text-green-600 letter-spacing-1 font-semibold" data-drawer-target="drawer-online-users" data-drawer-hide="drawer-online-users" data-drawer-show="drawer-online-users" aria-controls="drawer-online-users" data-drawer-backdrop="false" data-drawer-placement="right" data-drawer-body-scrolling="true" type="button">
                         <span>
@@ -108,13 +30,17 @@
         </div>
 
         @php
-            // dd($allMessages);
         @endphp
 
         <div class="m-auto border rounded-xl my-1 max-w-6xl z-bg-secondary-light p-2">
             <div class="p-2">
+                <div class="w-full flex justify-center items-center my-4">
+                    <span wire:click='loadMoreTop' class="border rounded-md bg-sky-600 text-white cursor-pointer">
+                        Charger les anciens
+                    </span>
+                </div>
                 <div class="flex flex-col">
-                    @foreach($allMessages as $date => $chats)
+                    @foreach($this->groupedMessages as $date => $chats)
 
                         @if(\Carbon\Carbon::parse($date)->isToday())
                             <h6 class="text-center py-1 text-xs my-2 border-y-2 border-y-gray-600 letter-spacing-2"> Aujourd'hui </h6>
@@ -125,9 +51,8 @@
                         @endif
 
                         @foreach ($chats as $chat)
-                            @if($chat->notHiddenFor(auth_user()->id))
                                 <div wire:key="forum-chat-{{$chat->id}}" class="w-full lg:text-sm  md:text-sm sm:text-xs xs:text-xs mb-4">
-                                    <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="flex items-start @if($chat->user_id == auth_user()->id) float-end chat-message-of-self @else chat-message-of-other  @endif cursor-pointer gap-2.5 gap-y-3 ">
+                                    <div x-on:dblclick="$wire.likeMessage('{{$chat->id}}')" class="flex items-start @if($chat->user_id == auth_user()->id) float-end  @else ''  @endif cursor-pointer gap-2.5 gap-y-3 ">
                                         <img class="w-8 h-8 rounded-full" src="{{user_profil_photo($chat->user)}}" alt="Jese image">
                                         <div class="flex flex-col gap-1 w-full max-w-[320px]">
                                             <div class="flex items-center space-x-2 rtl:space-x-reverse">
@@ -213,10 +138,10 @@
                                     </div>
 
                                 </div>
-                            @endif
                         @endforeach
                     @endforeach
                 </div>
+
                 @if ($pdfPreviewPath)
                     @php
                         $file_size = "0 Ko";

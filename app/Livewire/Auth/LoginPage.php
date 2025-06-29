@@ -119,7 +119,7 @@ class LoginPage extends Component
             if($auth){
 
                 $user->forceFill([
-                    'blocked' => null,
+                    'blocked' => false,
                     'blocked_at' => null,
                     'wrong_password_tried' => 0,
                     'blocked_because' => null,

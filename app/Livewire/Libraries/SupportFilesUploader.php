@@ -5,6 +5,10 @@ namespace App\Livewire\Libraries;
 use Akhaled\LivewireSweetalert\Confirm;
 use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitSupportFileCreationEvent;
+use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -149,6 +153,10 @@ class SupportFilesUploader extends Component
 
         }
 
+        $user = User::find(auth_user_id());
+
+        $authorized = $user->isAdminsOrMaster() || $user->hasRole(['epreuves-manager']);
+
         $data = [
             'name' => $this->name,
             'user_id' => auth_user()->id,
@@ -159,8 +167,31 @@ class SupportFilesUploader extends Component
             'extension' => "." . $extension,
             'file_size' => $file_size,
             'path' => $path,
-            'authorized' => 0,
+            'authorized' => $authorized,
         ];
+
+        $root = storage_path("app/public/fiches");
+
+        $directory_make = false;
+
+        if(!File::isDirectory($root)){
+
+            $directory_make = File::makeDirectory($root, 0777, true, true);
+
+        }
+        else{
+            
+            $directory_make = true;
+        }
+
+        if(!File::isDirectory($root) || !$directory_make){
+
+            $this->toast("Erreure stockage: La destination de sauvegarde est introuvable", 'error');
+
+
+           return  Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+        }
 
         $save = $this->support_file->storeAs("fiches/", $file_name . '.' . $extension, ['disk' => 'public']);
 

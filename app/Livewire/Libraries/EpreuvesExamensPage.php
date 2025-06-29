@@ -213,5 +213,11 @@ class EpreuvesExamensPage extends Component
             }
         }
     }
+
+    #[On("LiveNewEpreuveResponseHasBeenPublishedEvent")]
+    public function newResponsePublished()
+    {
+        $this->counter = getRand();
+    }
 }
 

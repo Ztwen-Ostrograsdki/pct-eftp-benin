@@ -10,7 +10,9 @@ use App\Models\User;
 use App\Observers\ObserveEpreuve;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 #[ObservedBy(ObserveEpreuve::class)]
 class Epreuve extends Model
@@ -20,6 +22,7 @@ class Epreuve extends Model
     protected $fillable = [
         'name', 
         'is_exam',
+        'uuid',
         'exam_type',
         'exam_department',
         'is_normal_exam',
@@ -52,6 +55,27 @@ class Epreuve extends Model
         'likes' => 'array',
 
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($epreuve){
+
+            $epreuve->uuid = Str::uuid();
+
+        });
+    }
+
+    public function baseName($with_extension = false)
+    {
+        $path = storage_path().'/app/public/' . $this->path;
+
+        if(File::exists($path)){
+
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
+        }
+
+        return "Fichier inconnu";
+    }
 
     public function lycee()
     {
@@ -87,9 +111,9 @@ class Epreuve extends Model
         return $lycee;
     }
 
-    public function answer()
+    public function answers()
     {
-        return $this->hasOne(EpreuveResponse::class);
+        return $this->hasMany(EpreuveResponse::class);
     }
 
     public function user()

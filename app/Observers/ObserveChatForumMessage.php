@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Events\LoadNewMessageEvent;
+use App\Events\NewMessageHasBeenSentEvent;
 use App\Models\ForumChat;
 use App\Notifications\RealTimeNotificationGetToUser;
 
@@ -12,6 +14,8 @@ class ObserveChatForumMessage
      */
     public function created(ForumChat $forumChat): void
     {
+        NewMessageHasBeenSentEvent::dispatch($forumChat->id);
+
         if($forumChat->reply_to_message_id){
 
             $user_id = auth_user()->id;

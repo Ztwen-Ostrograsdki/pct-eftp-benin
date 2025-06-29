@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->boolean('authorized')->nullable()->default(false);
+            $table->uuid('uuid')->unique();
             $table->string('visibity')->nullable()->default('public');
             $table->boolean('hidden')->nullable()->default(true);
             $table->text('description')->nullable()->default(null);
@@ -26,7 +27,8 @@ return new class extends Migration
             $table->string('school_year')->nullable()->default(null);
             $table->json('images')->nullable()->default(null);
             $table->json('filiars_id')->nullable()->default(null);
-            $table->foreignId('user_id')->constrained('users')->nullOnDelete()->nullable()->default(null);
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->foreignId('promotion_id')->constrained('promotions')->cascadeOnDelete();
             $table->unsignedBigInteger('downloaded')->nullable()->default(0);
             $table->json('seen_by')->nullable()->default(null);

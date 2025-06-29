@@ -5,23 +5,25 @@ namespace App\Models;
 use App\Models\Classe;
 use App\Models\Epreuve;
 use App\Models\User;
+use App\Observers\ObserveEpreuveResponse;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
+#[ObservedBy(ObserveEpreuveResponse::class)]
 class EpreuveResponse extends Model
 {
     protected $fillable = [
         'name', 
-        'description', 
-        'classe_id', 
         'epreuve_id', 
         'images', 
         'path', 
+        'uuid', 
         'user_id', 
         'authorized', 
         'hidden', 
         'visibity', 
-        'school_year', 
-        'notes',
         'likes',
         'downloaded',
         'downloaded_by',
@@ -35,6 +37,27 @@ class EpreuveResponse extends Model
         'downloaded_by' => 'array',
 
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($epreuve){
+
+            $epreuve->uuid = Str::uuid();
+
+        });
+    }
+
+    public function baseName($with_extension = false)
+    {
+        $path = storage_path().'/app/public/' . $this->path;
+
+        if(File::exists($path)){
+
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
+        }
+
+        return "Fichier inconnu";
+    }
 
     public function epreuve()
     {

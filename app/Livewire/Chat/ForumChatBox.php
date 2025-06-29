@@ -15,9 +15,9 @@ use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use App\Observers\ObserveChatForumMessage;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
@@ -53,28 +53,108 @@ class ForumChatBox extends Component
 
     public $is_image = false;
 
+    public Collection $messages;
+    public $perPage = 5;
+    public $userId;
+    public $earliestId;
+    public $latestId;
+
+    public function mount()
+    {
+        $this->userId = auth_user_id();
+        
+        $this->messages = collect();
+
+        $this->loadInitialMessages();
+    }
+
+    protected function loadInitialMessages()
+    {
+        $messages = ForumChat::with('user')
+            ->where(function ($query) {
+                $query->whereNull('delete_by')
+                      ->orWhereJsonDoesntContain('delete_by', $this->userId);
+            })
+            ->orderByDesc('created_at')
+            ->take($this->perPage)
+            ->get()
+            ->reverse();
+
+        $this->messages = $messages;
+        $this->updateBoundaries();
+    }
+
+    public function loadMoreTop()
+    {
+        $older = ForumChat::with('user')
+            ->where('id', '<', $this->earliestId)
+            ->where(function ($query) {
+                $query->whereNull('delete_by')
+                      ->orWhereJsonDoesntContain('delete_by', $this->userId);
+            })
+            ->orderByDesc('created_at')
+            ->take($this->perPage)
+            ->get()
+            ->reverse();
+
+        $this->messages = $older->merge($this->messages);
+        $this->updateBoundaries();
+    }
+
+    public function loadMoreBottom()
+    {
+        $newer = ForumChat::with('user')
+            ->where('id', '>', $this->latestId)
+            ->where(function ($query) {
+                $query->whereNull('delete_by')
+                      ->orWhereJsonDoesntContain('delete_by', $this->userId);
+            })
+            ->orderBy('created_at')
+            ->take($this->perPage)
+            ->get();
+
+        $this->messages = $this->messages->merge($newer);
+        $this->updateBoundaries();
+    }
+
+    protected function updateBoundaries()
+    {
+        $this->earliestId = $this->messages->first()?->id;
+        $this->latestId = $this->messages->last()?->id;
+    }
+
+    public function getGroupedMessagesProperty()
+    {
+        return $this->messages->groupBy(function ($message) {
+            return $message->created_at->format('Y-m-d');
+        });
+    }
+
 
     
     public function render()
     {
-        $active_chat_subject = ForumChatSubject::where('active', true)->where('authorized', 1)->first();
 
-        $chats = ForumChat::all();
-
-        $allMessages = ForumChat::orderBy('created_at')->get()->groupBy(function ($message){
-
-            return $message->created_at->format('Y-m-d');
-
-        });
-
-        return view('livewire.chat.forum-chat-box', [
-            'active_chat_subject' => $active_chat_subject,
-            'chats' => $chats,
-            'allMessages' => $allMessages
-        ]);
+        // $allMessages = ForumChat::with('user')
+        // ->where(function ($query) {
+        //     $query->whereNull('delete_by')
+        //         ->orWhereJsonDoesntContain('delete_by', auth_user_id());
+        // })
+        // ->orderBy('created_at')
+        // ->get()
+        // ->groupBy(function ($message) {
+        //     return $message->created_at->format('Y-m-d');
+        // });
+    
+        return view('livewire.chat.forum-chat-box');
 
     }
 
+    
+
+    
+
+    
     public function toggleSubject()
     {
         $this->subject_show = !$this->subject_show;
@@ -98,8 +178,6 @@ class ForumChatBox extends Component
 
         $message = trim($this->message);
 
-        $user = auth_user();
-
         if(!$this->file){
 
             $data = [
@@ -108,8 +186,9 @@ class ForumChatBox extends Component
                 'seen_by' => auth_user()->id,
                 'reply_to_message_id' => $this->targeted_message_id,
             ];
+
+            ForumChat::create($data);
             
-            NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
         }
         else{
 
@@ -190,7 +269,9 @@ class ForumChatBox extends Component
                     'file_pages' => $this->total_pages,
                 ];
 
-                NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
+                ForumChat::create($data);
+
+                // NewChatMessageIntoForumEvent::dispatchIf($data != [], $user, $data);
 
                 $this->reset();
             }
@@ -216,16 +297,22 @@ class ForumChatBox extends Component
         to_flash('typing', $user->getFullName());
     }
 
-    #[On('LiveLoadNewMessageEvent')]
+    #[On('LiveNewMessageHasBeenSentEvent')]
+    public function insertNewMessage($message_id)
+    {
+
+
+    }
+
     public function reloadMessages($data = null)
     {
-        $this->counter = rand(2, 23);
+        $this->counter = getRand();
     }
 
     #[On('LiveForumChatSubjectHasBeenValidatedByAdminsEvent')]
     public function reloadMessagesForNewSubject($user = null)
     {
-        $this->counter = rand(2, 23);
+        $this->counter = getRand();
 
         $user = new User($user);
 

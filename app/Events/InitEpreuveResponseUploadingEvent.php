@@ -7,26 +7,24 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitEpreuveCreationEvent implements ShouldBroadcastNow
+class InitEpreuveResponseUploadingEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $data = [];
-
-    public $file_epreuve;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(array $data, $file_epreuve)
+    public function __construct(
+        public array $data,
+        public $file_path
+    )
     {
         $this->data = $data;
 
-        $this->file_epreuve = $file_epreuve;
+        $this->file_path = $file_path;
     }
 
     /**

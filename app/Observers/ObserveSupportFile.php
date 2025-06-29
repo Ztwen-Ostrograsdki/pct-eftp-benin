@@ -22,11 +22,14 @@ class ObserveSupportFile
 
             $admins = ModelsRobots::getUserAdmins(null, $user->id);
 
-            $since = __formatDateTime($supportFile->created_at);
+            if(count($admins)){
 
-            $message = "Nouveau support de cours publié par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
+                $since = __formatDateTime($supportFile->created_at);
 
-            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+                $message = "Nouveau support de cours publié par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
+
+                Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+            }
 
         }
         else{
@@ -35,13 +38,20 @@ class ObserveSupportFile
 
             $admins = ModelsRobots::getUserAdmins();
 
-            $since = __formatDateTime($supportFile->created_at);
+            if(count($admins)){
 
-            $message = "Validation d'un support de cours publié par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
+                $since = __formatDateTime($supportFile->created_at);
 
-            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+                $message = "Validation d'un support de cours publié par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Support de cours publié le " . $since . " .";
 
+                Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+
+            }
         }
+
+        $msg = "Votre fichier a été publié avec succès!";
+
+        Notification::sendNow([$user], new RealTimeNotificationGetToUser($msg));
     }
 
     /**

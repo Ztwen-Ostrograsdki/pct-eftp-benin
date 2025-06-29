@@ -7,26 +7,21 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class InitEpreuveCreationEvent implements ShouldBroadcastNow
+class LoadNewMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $data = [];
-
-    public $file_epreuve;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(array $data, $file_epreuve)
-    {
-        $this->data = $data;
+    public $id; //message_id
 
-        $this->file_epreuve = $file_epreuve;
+    public function __construct($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -37,7 +32,7 @@ class InitEpreuveCreationEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('confirmeds'),
+            new PrivateChannel('forumChatRoom'),
         ];
     }
 }

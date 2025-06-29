@@ -7,6 +7,10 @@ use Akhaled\LivewireSweetalert\Toast;
 use App\Events\InitEpreuveCreationEvent;
 use App\Helpers\Tools\RobotsBeninHelpers;
 use App\Models\Lycee;
+use App\Models\User;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -269,6 +273,10 @@ class EpreuvesUploader extends Component
 
         elseif($this->exam_session == 'blanc') $is_normal_exam = false;
 
+        $user = User::find(auth_user_id());
+
+        $authorized = $user->isAdminsOrMaster() || $user->hasRole(['epreuves-manager']);
+
         $data = [
             'name' => $this->name,
             'exam_type' => $this->exam_type,
@@ -285,8 +293,30 @@ class EpreuvesUploader extends Component
             'file_size' => $file_size,
             'path' => $path,
             'lycee_id' => $this->lycee_id,
-            'authorized' => 0,
+            'authorized' => $authorized,
         ];
+
+        $root = storage_path("app/public/epreuves");
+
+        $directory_make = false;
+
+        if(!File::isDirectory($root)){
+
+            $directory_make = File::makeDirectory($root, 0777, true, true);
+
+        }
+        else{
+            
+            $directory_make = true;
+        }
+
+        if(!File::isDirectory($root) || !$directory_make){
+
+            $this->toast("Erreure stockage: La destination de sauvegarde est introuvable", 'error');
+
+           return  Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+
+        }
 
         $file_epreuve_saved_path = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
 

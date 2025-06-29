@@ -36,6 +36,12 @@ trait ListenToEchoEventsTrait{
         $this->counter = getRandom();
     }
 
+    #[On("LiveNewEpreuveResponseHasBeenPublishedEvent")]
+    public function newResponsePublished()
+    {
+        $this->counter = getRand();
+    }
+
 
 }
 

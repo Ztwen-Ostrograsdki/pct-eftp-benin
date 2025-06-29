@@ -8,6 +8,7 @@ use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\Chat\ForumChatBox;
 use App\Livewire\HomePage;
+use App\Livewire\Libraries\EpreuveProfil;
 use App\Livewire\Libraries\EpreuvesExamensPage;
 use App\Livewire\Libraries\EpreuvesPage;
 use App\Livewire\Libraries\EpreuvesUploader;
@@ -70,6 +71,8 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
     Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
 
     Route::get('bibliotheque/tag=les-epreuves', EpreuvesPage::class)->name('library.epreuves');
+
+    Route::get('bibliotheque/details-epreuves/epreuve={uuid}', EpreuveProfil::class)->name('library.epreuve.profil');
 
     Route::get('bibliotheque/examens/tag=les-epreuves', EpreuvesExamensPage::class)->name('library.epreuves.examens');
     

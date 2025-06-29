@@ -23,11 +23,14 @@ class ObserveEpreuve
 
             $admins = ModelsRobots::getUserAdmins(null, $user->id);
 
-            $since = __formatDateTime($epreuve->created_at);
+            if(count($admins)){
 
-            $message = "Nouvelle épreuve publiée par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
+                $since = __formatDateTime($epreuve->created_at);
 
-            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+                $message = "Nouvelle épreuve publiée par l'administrateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
+
+                Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+            }
 
         }
         else{
@@ -36,14 +39,21 @@ class ObserveEpreuve
 
             $admins = ModelsRobots::getUserAdmins();
 
-            $since = __formatDateTime($epreuve->created_at);
+            if(count($admins)){
+                
+                $since = __formatDateTime($epreuve->created_at);
 
-            $message = "Validation d'une épreuve publiée par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
+                $message = "Validation d'une épreuve publiée par l'utilisateur " . $user->getUserNamePrefix() . " " . $user->getFullName(true)  . " du compte : " . $user->email . ". Epreuve publiée le " . $since . " .";
 
-            Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+                Notification::sendNow($admins, new RealTimeNotificationGetToUser($message));
+            }
 
 
         }
+
+        $msg = "Votre épreuve a été publiée avec succès!";
+
+        Notification::sendNow([$user], new RealTimeNotificationGetToUser($msg));
     }
 
     /**
@@ -51,7 +61,7 @@ class ObserveEpreuve
      */
     public function updated(Epreuve $epreuve): void
     {
-        //
+        NewEpreuveHasBeenPublishedEvent::dispatch($epreuve->user);
     }
 
     /**

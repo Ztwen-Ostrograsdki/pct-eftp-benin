@@ -532,7 +532,7 @@ class MembersMonthliesPayments extends Component
         Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("La procédure est lancée!"));
     }
 
-    public function builder() : array
+    public function builder() : mixed
     {
         SpatieManager::ensureThatUserCan(['cotisations-manager']);
 
@@ -569,11 +569,11 @@ class MembersMonthliesPayments extends Component
 
             }
 
-            if(!File::isDirectory($root) && !$directory_make){
+            if(!File::isDirectory($root) || !$directory_make){
 
-                Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
-
-            }
+                return  Notification::sendNow([auth_user()], new RealTimeNotificationGetToUser("Erreure stockage: La destination de sauvegarde est introuvable"));
+     
+             }
 
             $pdfPath = storage_path("app/public/cotisations/membres/" . $year . "/cotisation-de-membre-de-". $month . '-' . $year . '.pdf');
 

@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Helpers\Dater\DateFormattor;
 use App\Models\User;
+use App\Observers\ObserveChatForumMessage;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ObserveChatForumMessage::class)]
 class ForumChat extends Model
 {
     use DateFormattor;

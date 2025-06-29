@@ -88,7 +88,7 @@ class ResetPasswordPage extends Component
                 $user = User::where('email', $this->email)->first();
 
                 $user->forceFill([
-                    'blocked' => null,
+                    'blocked' => false,
                     'blocked_at' => null,
                     'wrong_password_tried' => 0,
                     'blocked_because' => null,

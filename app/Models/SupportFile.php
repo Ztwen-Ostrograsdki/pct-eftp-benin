@@ -9,7 +9,9 @@ use App\Models\User;
 use App\Observers\ObserveSupportFile;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 #[ObservedBy(ObserveSupportFile::class)]
 class SupportFile extends Model
@@ -25,6 +27,7 @@ class SupportFile extends Model
         'promotion_id', 
         'images', 
         'path', 
+        'uuid', 
         'user_id', 
         'authorized', 
         'hidden', 
@@ -47,6 +50,27 @@ class SupportFile extends Model
         'likes' => 'array',
 
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($epreuve){
+
+            $epreuve->uuid = Str::uuid();
+
+        });
+    }
+
+    public function baseName($with_extension = false)
+    {
+        $path = storage_path().'/app/public/' . $this->path;
+
+        if(File::exists($path)){
+
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
+        }
+
+        return "Fichier inconnu";
+    }
 
     public function user()
     {

@@ -9,6 +9,8 @@ use App\Helpers\Tools\SpatieManager;
 use App\Models\ENotification;
 use App\Models\Epreuve;
 use App\Models\Lycee;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -135,28 +137,14 @@ class EpreuvesListPage extends Component
 
                 if($make){
 
-                    $auth = auth_user();
-
-                    $this->toast("L'épreuve $epreuve->name a été publié avec succès et est désormais visible sur la plateforme");
+                    $this->toast("L'épreuve $epreuve->name a été approuvée et publiée avec succès!", "success");
 
                     $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
 
-                    $object = "Validation de votre épreuve publiée sur la plateforme";
-
-                    $content = "Votre $epreuve->name épreuve publiée le " . $since . " a été approuvée par les administrateurs";
+                    $message = "Votre épreuve $epreuve->name publiée le " . $since . " a été approuvée par les administrateurs";
                     
-                    $title = "Validation d'une épreuve publié";
-                
-                    $data = [
-                        'user_id' => $auth->id,
-                        'content' => $content,
-                        'title' => $title,
-                        'object' => $object,
-                        'receivers' => [$user->id],
-
-                    ];
-
-                    $enotif = ENotification::create($data);
+                    Notification::sendNow([$user], new RealTimeNotificationGetToUser($message));
+                    
                 }
 
             }
@@ -201,40 +189,52 @@ class EpreuvesListPage extends Component
 
     public function deleteFile($id)
     {
+
         SpatieManager::ensureThatUserCan(['epreuves-manager']);
         
         $epreuve = Epreuve::find($id);
 
         if($epreuve){
 
-            $del = ModelsRobots::deleteFileFromStorageManager($epreuve->path);
+            $uuid = $epreuve->uuid;
 
-            if($del){
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de supprimer le fichier {$uuid} </p>
+                            
+                    </h6>";
+
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
+
+            $options = ['event' => 'confirmedFileDeletion', 'confirmButtonText' => 'Supprimé', 'cancelButtonText' => 'Annulé', 'data' => ['file_id' => $id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+    }
+
+    #[On('confirmedFileDeletion')]
+    public function onConfirmationFileDeletion($data)
+    {
+        if($data){
+
+            $file_id = $data['file_id'];
+
+            $epreuve = Epreuve::find($file_id);
+
+            if($epreuve){
 
                 $del_from_db = $epreuve->delete();
-                
 
                 if($del_from_db){
 
-                    $this->toast("L'épreuve a été supprimée avec succès!", 'success');
-    
-                    $this->counter = rand(12, 300);
-    
-                    return false;
+                    return $this->toast("Le fichier a été supprimé!", 'success');
                 }
                 else{
-    
-                    $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
-    
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été supprimé!", 'error');
                 }
             }
-            else{
-    
-                $this->toast("Une erreur s'est produite lors de la suppression de $epreuve->name", 'error');
 
-            }
-
-            
         }
     }
 }

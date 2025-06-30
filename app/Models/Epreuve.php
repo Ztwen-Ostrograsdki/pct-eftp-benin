@@ -63,6 +63,18 @@ class Epreuve extends Model
             $epreuve->uuid = Str::uuid();
 
         });
+
+        static::deleting(function($db_file){
+
+            $path = storage_path().'/app/public/' . $db_file->path;
+
+            if(File::exists($path)){
+
+                File::delete($path);
+
+            }
+
+        });
     }
 
     public function baseName($with_extension = false)
@@ -75,6 +87,27 @@ class Epreuve extends Model
         }
 
         return "Fichier inconnu";
+    }
+
+    public function assetAllResponsesHasBeenApproved()
+    {
+        $approved = true;
+
+        if(count($this->answers)){
+
+            foreach($this->answers as $rep){
+
+                if(!$rep->authorized){
+
+                    $approved = false;
+
+                    return false;
+                }
+                
+            }
+
+            return $approved;
+        }
     }
 
     public function lycee()

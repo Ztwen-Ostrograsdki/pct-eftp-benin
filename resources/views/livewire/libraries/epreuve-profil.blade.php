@@ -23,18 +23,137 @@
     </style>
     <div class="m-auto z-bg-secondary-light rounded my-1 min-h-80 p-2">
         <div class="flex items-center justify-between flex-col gap-x-2 mb-6 lg:text-lg md:text-lg sm:text-xs xs:text-xs">
-            <h2 class="lg:text-lg md:text-sm sm:text-sm xs:text-xs w-full flex gap-x-3  font-semibold letter-spacing-1 text-sky-500">
+            <h2 class="lg:text-lg md:text-sm sm:text-sm xs:text-xs w-full flex gap-x-3 justify-center items-center border-b border-b-sky-600 my-3 pb-3 font-semibold letter-spacing-1 text-sky-500">
                 <span class="uppercase">
                     Détails de l'épreuve
                 </span>
                 <span class="text-yellow-500 flex flex-col">
                     <span>{{ $epreuve->name }}</span>
-                    <span class="text-purple-400">{{ $epreuve->baseName() }}</span>
+                    <span class="text-purple-400">{{ $epreuve->baseName() }}
+                        <span class="text-xs text-yellow-600">
+                            {{$epreuve->school_year}}
+                        </span>
+                    </span>
                     <span class="text-xs text-orange-600 uppercase"> {{ $epreuve->uuid }} </span>
                 </span>
             </h2>
+            <div class="flex justify-center gap-x-2">
+                @if($epreuve->is_exam)
+                    @if(!$epreuve->is_normal_exam)
+                    <div class="w-full ">
+                    <span class="text-cyan-300">
+                        <strong>Département :</strong> 
+                        {{ $epreuve->exam_department }}
+                    </span>
+                    </div>
+                    @endif
+                    @if($epreuve->is_normal_exam)
+                        <span class="ml-2 text-green-500 letter-spacing-1">(Session normal)</span>
+                    @else
+                        <span class="ml-2 text-green-200 letter-spacing-1">(Examen blanc)</span>
+                    @endif
+                @endif
+            </div>
+            <div class="w-full flex items-center justify-between px-2">
+                <div>
+                    <div class=" items-center justify-between gap-2 mb-2">
+                        <div class="flex items-center">
+                            <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
+                            <span class="text-gray-400 letter-spacing-2 mr-3">
+                                Type de fichier : 
+                            </span> 
+                            <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
+                        </div>
+                            
+                        <div class="w-full">
+                            <span class="text-gray-300">
+                                <strong>Filières :</strong> 
+                                @foreach ($epreuve->getFiliars() as $f)
+                                <small wire:key="epreuve-filiars-list-{{$f->id}}" class="mx-2">{{ $f->name }}</small> 
+                                @endforeach
+                            </span>
+                        </div>
+                        <div class="w-full">
+                            <span class="text-cyan-300">
+                                <strong>Promotion :</strong> 
+    
+                                @php
+    
+                                $promotion = $epreuve->getPromotion();
+    
+                                if($promotion) $names = __getSimpleNameFormated($promotion);
+    
+                                else $names = null;
+                                    
+                                @endphp
+    
+                                @if($names)
+    
+                                {{ $names['root'] }}<sup>{{ $names['sup'] }} </sup> {{ $names['idc'] }}
+    
+                                @else
+                                Non précisée
+                                @endif
+                                
+                            </span>
+                        </div>
+                        <div class="w-full">
+                            <span class="text-yellow-300">
+                                <strong>Contenus :</strong> 
+                                {{ $epreuve->contents_titles }}
+                            </span>
+                        </div>
+                    </div>
+                    <p class=" w-full">
+                        <span class="text-green-600 dark:text-green-600">
+                        Taille : {{ $epreuve->file_size ? $epreuve->file_size : 'inconnue' }}
+                        </span>
+                        <span class="text-xs ml-3 text-sky-600">
+                        ({{$epreuve->getTotalPages()}} Page(s))
+                        </span>
+    
+                        @if($epreuve->lycee_id)
+                        <br>
+                        <small class="text-sky-400 text-right">Lycée ou Centre :  
+                        {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
+                        </small>
+                        @endif
+                        <br>
+                        <small class="text-gray-400 text-right">Publié le 
+                        {{ __formatDate($epreuve->created_at) }}
+                        </small>
+                        <br>
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                        <small class="text-sky-200 pt-2 opacity-60 text-xs">Par 
+                        {{$epreuve->user->getFullName()}}
+                        </small>
+                        @endif
+                    </p>
+                </div>
+                <div class="flex justify-end gap-x-3 items-center">
+                    <div class="">
+                        <span title="Télécharger cette épreuve" class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block"  wire:loading.class='bg-green-400' wire:click='downloadTheFile({{$epreuve->id}})' wire:target='downloadTheFile({{$epreuve->id}})' >
+                            <span wire:loading wire:target='downloadTheFile({{$epreuve->id}})'>
+                                <span class="fa animate-spin fa-rotate float-end mt-2"></span>
+                                <span class="mx-2">téléchargement en cours... </span>
+                            </span>
+                            <span wire:loading.remove wire:target='downloadTheFile({{$epreuve->id}})'>
+                                <span>Télécharger</span>
+                                <span class="fa fa-download mx-2"></span>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="">
+                        <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full animate-pulse cursor-pointer bg-gray-900 border-gray-400 border">
+                            {{ $epreuve->downloaded }}
+                            <span class="fas fa-download"></span> 
+                        </span>
+                    </div>
+                </div>
+            </div>
             <div class="flex justify-end gap-x-2 w-full mt-2 lg:text-base md:text-lg sm:text-xs xs:text-xs">
                 <div class="flex items-center">
+                    @if(count($epreuve->answers) < env('EPREUVE_MAX_ANSWERS'))
                     <button
                         wire:click="addNewResponse"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-gray-900 transition"
@@ -54,34 +173,42 @@
                             <span class="fas fa-rotate animate-spin"></span>
                         </span>
                     </button>
+                    @endif
                 </div>
                 <div class="flex gap-x-2 items-center">
-                    <button
-                        wire:click="sendDocumentToOthers"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 hover:text-gray-900 transition"
-                    >
-                        <span wire:loading.remove wire:target='sendDocumentToOthers'>
-                            <span>Envoyez aux admins</span>
-                            <span class="fas fa-paper-plane"></span>
-                        </span>
-                        <span wire:target='sendDocumentToOthers' wire:loading>
-                            <span>Envoie en cours...</span>
-                            <span class="fas fa-rotate animate-spin"></span>
-                        </span>
-                    </button>
-                    <button
-                        wire:click="printAllResponses"
-                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 hover:text-gray-900 transition"
-                    >
-                        <span wire:loading.remove wire:target='printAllResponses'>
-                            <span>Télécharger toutes les réponses</span>
-                            <span class="fas fa-print"></span>
-                        </span>
-                        <span wire:target='printAllResponses' wire:loading>
-                            <span>Téléchargement en cours...</span>
-                            <span class="fas fa-rotate animate-spin"></span>
-                        </span>
-                    </button>
+                    @if($epreuve && count($epreuve->answers))
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                            <button
+                                wire:click="deleteAllResponses"
+                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 hover:text-gray-900 transition"
+                            >
+                                <span wire:loading.remove wire:target='deleteAllResponses'>
+                                    <span>Suppr. les propositions</span>
+                                    <span class="fas fa-trash"></span>
+                                </span>
+                                <span wire:target='deleteAllResponses' wire:loading>
+                                    <span>Suppression en cours...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                            </button>
+
+                            @if(!$epreuve->assetAllResponsesHasBeenApproved())
+                            <button
+                                wire:click="approvedAllResponses"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 hover:text-gray-900 transition"
+                            >
+                                <span wire:loading.remove wire:target='approvedAllResponses'>
+                                    <span>Approuver tout</span>
+                                    <span class="fas fa-check-double"></span>
+                                </span>
+                                <span wire:target='approvedAllResponses' wire:loading>
+                                    <span>Envoie en cours...</span>
+                                    <span class="fas fa-rotate animate-spin"></span>
+                                </span>
+                            </button>
+                            @endif
+                        @endif
+                    @endif
                 </div>
             </div>
 
@@ -99,59 +226,80 @@
                 @if(count($epreuve->answers) > 0)
                 <thead class="text-sky-400 font-semibold letter-spacing-1">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-3 py-3">
                             N°
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-3 py-3">
 
-                            Eléments de réponses
+                            Eléments de réponses (Taille)
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-3 py-3">
                             Téléchargements
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-3 py-3">
                             Proposé par
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Proposé Le
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Supprimer
-                        </th>
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                            <th scope="col" class="px-3 py-3">
+                                Actions
+                            </th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($epreuve->answers as $epreuve_response)
                     <tr wire:key='epreuve-response-listing-page-{{$epreuve_response->uuid}}' class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                        <td scope="row" class="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                        <td scope="row" class="px-3 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             {{ numberZeroFormattor($loop->iteration) }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $epreuve_response->uuid }}
-                        </td>
-                        
-                        <td class="px-6 py-4">
-                            {{ numberZeroFormattor($epreuve_response->downloaded) }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $epreuve_response->user->getFullName() }}
-                        </td>
-                        
-                        <td class="px-6 py-4">
-                            {{ __formatDate($epreuve_response->created_at) }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span wire:click="deleteResponse('{{$epreuve_response->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 text-gray-100 border rounded-lg cursor-pointer">
-                                <span wire:loading.remove wire:target="deleteResponse('{{$epreuve_response->id}}')">
-                                    <span class="hidden lg:inline">Suppr.</span>
-                                    <span class="fa fa-trash"></span>
+                        <td class="px-3 py-4">
+                            <span title="Cliquer pour télécharger ce fichier" wire:click="downloadTheAnswer({{$epreuve_response->id}})" class="hover:underline">
+                                {{ $epreuve_response->uuid }}
+                                <span class="text-green-600">
+                                    ({{ $epreuve_response->getFileSize() ? $epreuve_response->getFileSize() : 'inconnue' }})
                                 </span>
-                                <span wire:loading wire:target="deleteResponse('{{$epreuve_response->id}}')">
-                                    <span>En cours...</span>
+                                <span wire:loading wire:target="downloadTheAnswer('{{$epreuve_response->id}}')">
+                                    <span>Téléchargement en cours...</span>
                                     <span class="fas fa-rotate animate-spin"></span>
                                 </span>
                             </span>
                         </td>
+                        
+                        <td class="px-3 py-4">
+                            {{ numberZeroFormattor($epreuve_response->downloaded) }}
+                        </td>
+                        <td class="px-3 py-4">
+                            {{ $epreuve_response->user->getFullName() }}
+                        </td>
+                        
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                        <td class="px-1 py-2 text-center">
+                            <span class="flex justify-start gap-x-2">
+                                @if(!$epreuve_response->authorized)
+                                <span wire:click="approvedResponse('{{$epreuve_response->id}}')" class="bg-green-500 hover:bg-green-700 py-2 px-3 text-gray-100 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="approvedResponse('{{$epreuve_response->id}}')">
+                                        <span class="hidden lg:inline">Approuver</span>
+                                        <span class="fa fa-check-double"></span>
+                                    </span>
+                                    <span wire:loading wire:target="approvedResponse('{{$epreuve_response->id}}')">
+                                        <span>En cours...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
+                                @endif
+                                <span wire:click="deleteFile('{{$epreuve_response->id}}')" class="bg-red-500 hover:bg-red-700 py-2 px-3 text-gray-100 border rounded-lg cursor-pointer">
+                                    <span wire:loading.remove wire:target="deleteFile('{{$epreuve_response->id}}')">
+                                        <span class="hidden lg:inline">Suppr.</span>
+                                        <span class="fa fa-trash"></span>
+                                    </span>
+                                    <span wire:loading wire:target="deleteFile('{{$epreuve_response->id}}')">
+                                        <span>En cours...</span>
+                                        <span class="fas fa-rotate animate-spin"></span>
+                                    </span>
+                                </span>
+                            </span>
+                        </td>
+                        @endif
                     </tr>
                     @endforeach
                     

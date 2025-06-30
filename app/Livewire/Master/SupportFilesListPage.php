@@ -191,27 +191,52 @@ class SupportFilesListPage extends Component
 
     public function deleteFile($id)
     {
+
         SpatieManager::ensureThatUserCan(['epreuves-manager']);
         
-        $support_file = SupportFile::find($id);
+        $support = SupportFile::find($id);
 
-        if($support_file){
+        if($support){
 
-            $del = ModelsRobots::deleteFileFromStorageManager($support_file->path);
+            $uuid = $support->uuid;
 
-            if($del){
+            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de supprimer le fichier {$uuid} </p>
+                            
+                    </h6>";
 
-                $this->toast("Le support de cours a été supprimée avec succès!", 'success');
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
 
-                $this->counter = rand(12, 300);
+            $options = ['event' => 'confirmedFileDeletion', 'confirmButtonText' => 'Supprimé', 'cancelButtonText' => 'Annulé', 'data' => ['file_id' => $id]];
 
-                return false;
+            $this->confirm($html, $noback, $options);
+            
+        }
+    }
+
+    #[On('confirmedFileDeletion')]
+    public function onConfirmationFileDeletion($data)
+    {
+        if($data){
+
+            $file_id = $data['file_id'];
+
+            $support = SupportFile::find($file_id);
+
+            if($support){
+
+                $del_from_db = $support->delete();
+
+                if($del_from_db){
+
+                    return $this->toast("Le fichier a été supprimé!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été supprimé!", 'error');
+                }
             }
-            else{
 
-                $this->toast("Une erreur s'est produite lors de la suppression de $support_file->name", 'error');
-
-            }
         }
     }
 }

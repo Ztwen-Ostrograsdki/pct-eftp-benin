@@ -53,9 +53,21 @@ class SupportFile extends Model
 
     protected static function booted()
     {
-        static::creating(function ($epreuve){
+        static::creating(function ($support){
 
-            $epreuve->uuid = Str::uuid();
+            $support->uuid = Str::uuid();
+
+        });
+
+        static::deleting(function($db_file){
+
+            $path = storage_path().'/app/public/' . $db_file->path;
+
+            if(File::exists($path)){
+
+                File::delete($path);
+
+            }
 
         });
     }

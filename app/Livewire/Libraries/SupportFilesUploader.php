@@ -121,14 +121,7 @@ class SupportFilesUploader extends Component
 
             $extension = $this->support_file->extension();
 
-            $str = '';
-
-            if($this->name){
-                
-                $str = str_replace(' ', '-', $this->name);
-            }
-
-            $file_name = 'FICHE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::random(5);
+            $file_name = 'FICHE-' . getdate()['year'] . '-' . Str::uuid();
 
             $path = 'fiches/' . $file_name . '.' . $extension;
 

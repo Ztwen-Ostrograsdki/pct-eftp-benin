@@ -270,7 +270,31 @@ class ModelsRobots{
 
         $complete_path = storage_path().'/app/public/' . $path;
 
-        return File::delete($complete_path);
+        if(File::exists($complete_path)){
+
+            return File::delete($complete_path);
+        }
+        
+        return true;
+        
+    }
+
+    public static function deleteFilesFromStorageManager(array $paths)
+    {
+
+        // Ex: 'users/' . $file_name
+
+        foreach($paths as $path){
+
+            $complete_path = storage_path().'/app/public/' . $path;
+
+            if(File::exists($complete_path)){
+
+                return File::delete($complete_path);
+            }
+        }
+        
+        return true;
         
     }
 

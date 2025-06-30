@@ -139,9 +139,12 @@
                           @endif
                         </span>
                         <span class="gap-x-2 flex">
-                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire les éléments de réponses" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
-                            <span class="fas fa-pen"></span> 
-                            <span>Rep</span>
+                          <a href="{{route("library.epreuve.profil", ['uuid' => $epreuve->uuid])}}" title="Lire ou proposer des éléments de réponses à cette épreuve" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
+                            <span>Rep
+                              @if($epreuve->answers)
+                                <span> ({{ count($epreuve->answers) }}) </span>
+                              @endif
+                            </span>
                           </a>
                           <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 

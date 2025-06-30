@@ -67,6 +67,11 @@ class EpreuvesUploader extends Component
     {
         if($type) $this->epreuve_type = $type;
 
+        if($type !== 'simple' && ($type !== 'examen')){
+
+            return abort(404);
+        }
+
         if(auth_user()) $this->author = auth_user_fullName();
 
     }
@@ -224,7 +229,7 @@ class EpreuvesUploader extends Component
 
            if($this->epreuve_type == 'simple'){
 
-                $file_name = 'EPREUVE-' . getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday']. $str . '-' .  Str::lower(Str::random(5));
+                $file_name = 'epreuve-' . getdate()['year'] . '-' . Str::uuid();
 
                 $this->is_exam = false;
 
@@ -232,9 +237,9 @@ class EpreuvesUploader extends Component
            }
            elseif($this->epreuve_type == 'examen'){
 
-                $this->name = str_replace(' ', '-', 'Examen-' . $this->exam_type . '-' . $this->year);
+                $this->name = str_replace(' ', '-', 'examen-' . $this->exam_type . '-' . $this->year);
 
-                $file_name = $this->name . '-' . Str::lower(Str::random(5));
+                $file_name = $this->name . '-' . generateRandomNumber(4);
 
                 $this->is_exam = true;
 

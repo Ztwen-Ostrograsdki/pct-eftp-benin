@@ -132,8 +132,11 @@
                         </span>
                         <span class="gap-x-2 flex">
                           <a href="{{route("library.epreuve.profil", ['uuid' => $epreuve->uuid])}}" title="Lire ou proposer des éléments de réponses à cette épreuve" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
-                            <span class="fas fa-pen"></span> 
-                            <span>Rep</span>
+                            <span>Rep
+                              @if($epreuve->answers)
+                                <span> ({{ count($epreuve->answers) }}) </span>
+                              @endif
+                            </span>
                           </a>
                           <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 
@@ -204,12 +207,12 @@
                         Taille : {{ $epreuve->file_size ? $epreuve->file_size : 'inconnue' }}
                       </span>
                       <span class="text-xs ml-3 text-sky-600">
-                        ({{$epreuve->getTotalPages()}} Pages)
+                        ({{$epreuve->getTotalPages()}} Page(s))
                       </span>
 
                       @if($epreuve->lycee_id)
                       <br>
-                      <small class="text-gray-600 text-right">Lycée ou Centre :  
+                      <small class="text-sky-400 text-right">Lycée ou Centre :  
                          {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
                       </small>
                       @endif
@@ -232,7 +235,7 @@
                           <span class="mx-2">téléchargement en cours... </span>
                       </span>
                       <span wire:loading.remove wire:target='downloadTheFile({{$epreuve->id}})'>
-                          <span>Telecharger</span>
+                          <span>Télécharger</span>
                           <span class="fa fa-download mx-2"></span>
                       </span>
                     </span>

@@ -122,14 +122,16 @@
               
               @foreach($epreuves as $epreuve)
               <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 epreuve-card">
-                <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700 text-xs font-semibold letter-spacing-1">
+                <div class="border  border-gray-700 text-xs font-semibold letter-spacing-1">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
+                        @auth
                         <span>
                           @if(in_array(auth_user()->id, (array)$epreuve->downloaded_by))
                             <span title="Vous avez déjà télécharger ce fichier" class="text-green-500 fa fa-check-double cursor-pointer animate-pulse"></span>
                           @endif
                         </span>
+                        @endauth
                         <span class="gap-x-2 flex">
                           <a href="{{route("library.epreuve.profil", ['uuid' => $epreuve->uuid])}}" title="Lire ou proposer des éléments de réponses à cette épreuve" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
                             <span>Rep
@@ -150,11 +152,10 @@
                     </div>
                     <div class=" items-center justify-between gap-2 mb-2">
                       <div class="flex items-center">
-                        <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
-                        <span class="text-gray-400 letter-spacing-2 mr-3">
+                        <span class="text-gray-400 letter-spacing-1 mr-3">
                           Fichier
                         </span> 
-                        <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
+                        <span style="font-size: 1.2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
                         <h5 class="w-full flex flex-col text-right justify-end text-gray-400">
                           <span>{{$epreuve->name}}</span>
                           <span class="text-xs text-yellow-600">
@@ -221,14 +222,17 @@
                          {{ __formatDate($epreuve->created_at) }}
                       </small>
                       <br>
-                      @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
-                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-xs">Par 
-                         {{$epreuve->user->getFullName()}}
-                      </small>
-                      @endif
+                      @auth
+                        @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
+                        <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-xs">Par 
+                          {{$epreuve->user ? $epreuve->user->getFullName() : ' Non renseigné'}}
+                        </small>
+                        @endif
+                      @endauth
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">
+                    @auth
                     <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block"  wire:loading.class='bg-green-400' wire:click='downloadTheFile({{$epreuve->id}})' wire:target='downloadTheFile({{$epreuve->id}})' >
                       <span wire:loading wire:target='downloadTheFile({{$epreuve->id}})'>
                           <span class="fa animate-spin fa-rotate float-end mt-2"></span>
@@ -239,6 +243,13 @@
                           <span class="fa fa-download mx-2"></span>
                       </span>
                     </span>
+                    @else
+                    <span class="text-center w-full bg-gray-500 text-gray-950 cursor-pointer py-2 px-3 inline-block">
+                      <span>
+                        Vous ne pouvez pas télécharger ce fichier
+                      </span>
+                    </span>
+                    @endauth
                   </div>
                 </div>
               </div>

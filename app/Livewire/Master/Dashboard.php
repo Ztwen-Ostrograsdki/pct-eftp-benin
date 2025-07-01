@@ -375,16 +375,16 @@ class Dashboard extends Component
 
             $role_name = __translateRoleName($role->name);
 
-            $html = "<h6 class='font-semibold text-base text-orange-400 py-0 my-0'>
-                            <p>Vous êtes sur le point de retirer le role: 
-                                <span class='text-sky-400 letter-spacing-2 font-semibold'> {$role_name} </span>
-                                à l'utilisateur {$name}
-                            </p>
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                        <p>Vous êtes sur le point de retirer le role: 
+                            <span class='text-orange-500 letter-spacing-2 font-semibold'> {$role_name} </span>
+                            à l'utilisateur {$name}
+                        </p>
                     </h6>";
 
             $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
 
-            $options = ['event' => 'confirmedUserRetrieving', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['role_id' => $role->id]];
+            $options = ['event' => 'confirmedUserRetrieving', 'confirmButtonText' => 'Validé', 'cancelButtonText' => 'Annulé', 'data' => ['role_id' => $role->id, 'user_id' => $user_id]];
 
             $this->confirm($html, $noback, $options);
             
@@ -395,7 +395,6 @@ class Dashboard extends Component
     #[On('confirmedUserRetrieving')]
     public function onConfirmationUserRetrieving($data)
     {
-
         DB::beginTransaction();
 
         try {
@@ -403,19 +402,23 @@ class Dashboard extends Component
 
                 $role_id = $data['role_id'];
 
+                $user_id = $data['user_id'];
+
                 $role = Role::find($role_id);
 
-                if($role){
+                $user = findUser($user_id);
 
-                    $retrieved = $this->user->removeRole($role);
+                if($role && $user){
+
+                    $retrieved = $user->removeRole($role);
 
                     if($retrieved){
 
-                        UserRole::where('user_id', $this->user->id)->where('role_id', $role->id)->delete();
+                        UserRole::where('user_id', $user->id)->where('role_id', $role->id)->delete();
 
                         $role_name = __translateRoleName($role->name);
 
-                        $name = $this->user->getFullName(true);
+                        $name = $user->getFullName(true);
 
                         RoleUsersWasUpdatedEvent::dispatch();
 

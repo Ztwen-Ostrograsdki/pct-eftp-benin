@@ -8,6 +8,9 @@ use App\Helpers\Tools\ModelsRobots;
 use App\Helpers\Tools\SpatieManager;
 use App\Models\ENotification;
 use App\Models\SupportFile;
+use App\Notifications\RealTimeNotificationGetToUser;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -86,6 +89,8 @@ class SupportFilesListPage extends Component
 
             $query->where('support_files.contents_titles', 'like', $find);
 
+            $query->whereAny(['support_files.contents_titles', 'support_files.name', 'support_files.uuid', 'support_files.school_year', 'support_files.description'], 'like', $find);
+
         }
 
         if($this->authorized !== 'all'){
@@ -109,11 +114,11 @@ class SupportFilesListPage extends Component
         $this->reset();
     }
 
-    public function validateSupportFile($fiche_id)
+    public function validateSupportFile($support_file_id)
     {
         SpatieManager::ensureThatUserCan(['epreuves-manager']);
-
-        $fiche = SupportFile::find($fiche_id);
+        
+        $fiche = SupportFile::find($support_file_id);
 
         if($fiche){
 
@@ -121,34 +126,132 @@ class SupportFilesListPage extends Component
 
                 $user = $fiche->user;
 
-                $make = $fiche->update(['authorized' => true]);
+                $make = $fiche->update(['authorized' => true, 'hidden' => false]);
 
                 if($make){
 
-                    $auth = auth_user();
-
-                    $this->toast("La fiche de cours $fiche->name a été publié avec succès et est désormais visible sur la plateforme");
+                    $this->toast("La fiche $fiche->name a été approuvée et publiée avec succès!", "success");
 
                     $since = $fiche->__getDateAsString($fiche->created_at, 3, true);
 
-                    $object = "Validation de votre fiche de cours publiée sur la plateforme";
-
-                    $content = "Votre fiche de cours $fiche->name publiée le " . $since . " a été approuvée par les administrateurs";
+                    $message = "Votre épreuve $fiche->name publiée le " . $since . " a été approuvée par les administrateurs";
                     
-                    $title = "Validation d'une fiche de cours publié";
-                
-                    $data = [
-                        'user_id' => $auth->id,
-                        'content' => $content,
-                        'title' => $title,
-                        'object' => $object,
-                        'receivers' => [$user->id],
-
-                    ];
-
-                    $enotif = ENotification::create($data);
+                    Notification::sendNow([$user], new RealTimeNotificationGetToUser($message));
+                    
                 }
 
+            }
+
+        }
+    }
+
+    public function hidde($support_file_id)
+    {
+
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $fiche = SupportFile::find($support_file_id);
+
+        if($fiche){
+
+            $uuid = $fiche->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de masquer le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Le fichier ne sera plus accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedHidden', 'confirmButtonText' => 'Masqué', 'cancelButtonText' => 'Annulé', 'data' => ['support_file_id' => $fiche->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedHidden')]
+    public function onConfirmationToHidde($data)
+    {
+        if($data){
+
+            $support_file_id = $data['support_file_id'];
+
+            $fiche = SupportFile::find($support_file_id);
+
+            if($fiche){
+
+                $updated = $fiche->update(['hidden' => true]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été masqué avec succès et ne sera plus accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été masqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+
+        }
+    }
+
+    public function unHidde($support_file_id)
+    {
+
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $fiche = SupportFile::find($support_file_id);
+
+        if($fiche){
+
+            $uuid = $fiche->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de rendre accessible le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'>Cette fiche sera de nouveau accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedUnHidden', 'confirmButtonText' => 'Rendre accessible', 'cancelButtonText' => 'Annulé', 'data' => ['support_file_id' => $fiche->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedUnHidden')]
+    public function onConfirmationToUnHidde($data)
+    {
+        if($data){
+
+            $support_file_id = $data['support_file_id'];
+
+            $fiche = SupportFile::find($support_file_id);
+
+            if($fiche){
+
+                $updated = $fiche->update(['hidden' => false]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été rendu accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été démasqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
             }
 
         }
@@ -178,15 +281,27 @@ class SupportFilesListPage extends Component
 
     public function downloadTheFile($id)
     {
-        $this->toast("Le téléchargement lancé... patientez", 'success');
+        $this->toast("Téléchargement lancé... patientez", 'success');
 
         $support_file = SupportFile::find($id);
 
-        $support_file->downloadManager();
+        if($support_file){
 
-        $path = storage_path().'/app/public/' . $support_file->path;
+            $path = storage_path().'/app/public/' . $support_file->path;
 
-        return response()->download($path);
+            if(File::exists($path)){
+
+                $support_file->downloadManager();
+
+                return response()->download($path);
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
     }
 
     public function deleteFile($id)

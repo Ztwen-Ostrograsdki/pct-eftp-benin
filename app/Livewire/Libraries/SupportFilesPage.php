@@ -80,7 +80,7 @@ class SupportFilesPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('support_files.contents_titles', 'like', $find);
+            $query->whereAny(['support_files.contents_titles', 'support_files.name', 'support_files.uuid', 'support_files.school_year', 'support_files.description'], 'like', $find);
 
         }
 

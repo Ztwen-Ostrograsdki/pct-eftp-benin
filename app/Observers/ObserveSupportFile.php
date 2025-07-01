@@ -18,7 +18,7 @@ class ObserveSupportFile
 
         if($user->isAdminsOrMaster() || $user->hasRole('epreuves-manager')){
 
-            $supportFile->update(['authorized' => true]);
+            $supportFile->update(['authorized' => true, 'hidden' => false]);
 
             $admins = ModelsRobots::getUserAdmins(null, $user->id);
 

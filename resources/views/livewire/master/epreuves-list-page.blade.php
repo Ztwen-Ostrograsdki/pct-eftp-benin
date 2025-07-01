@@ -112,39 +112,49 @@
               </form>
             </div>
             @if(count($epreuves))
-            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
+            <div class="grid grid-cols-6 gap-2 lg:text-base xl:text-base md:text-xs sm:text-xs xs:text-xs">
               
               @foreach($epreuves as $epreuve)
-              <div wire:key="epreuve-admin-{{$epreuve->id}}" class="epreuve-card px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
-                <div class="border transition-opacity rounded-lg  @if($epreuve->authorized) shadow-gray-300 shadow-3 @else shadow-red-500 shadow-2 opacity-75 p-1 @endif border-gray-700">
+              <div @if(!$epreuve->authorized || $epreuve->hidden) title="Cette épreuve n'est pas accessible sur la plateforme parqu'elle est soit masquée soit non approuvée" @endif  wire:key="epreuve-admin-{{$epreuve->id}}" class="epreuve-card px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2">
+                <div class="border shadow-md @if(!$epreuve->authorized || $epreuve->hidden) shadow-red-600 @endif border-gray-700">
                   <div class="p-3 pb-8">
-                    <div class="flex m-0 p-0 justify-between">
+                    <div class="flex m-0 p-0 justify-between items-center">
                         <span>
                           @if(in_array(auth_user()->id, (array)$epreuve->downloaded_by))
                             <span title="Vous avez déjà télécharger ce fichier" class="text-green-500 fa fa-check-double cursor-pointer animate-pulse"></span>
                           @endif
                         </span>
-                        <span class="gap-x-2 flex text-xs">
-
+                        <span class="gap-x-2 flex text-xs items-center">
                           @if(auth_user()->isAdminsOrMaster() || auth_user()->hasRole('epreuves-manager'))
-                            <span wire:loading.remove wire:target='deleteFile({{$epreuve->id}})' wire:click="deleteFile({{$epreuve->id}})"   title="Supprimer cette épreuve " class="text-red-500 p-2 rounded-full cursor-pointer bg-red-300 border-red-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
-                                <span class="fas fa-trash"></span> 
-                                <span>Suppr.</span>
+                            @if ($epreuve->hidden)
+                              <span title="Cette épreuve n'est pas accessible sur la plateforme car elle est masquée" class="text-gray-900 p-2 rounded-full cursor-pointer bg-red-400 border-white border">
+                                <span  class="fas fa-eye-slash font-semibold cursor-pointer"></span>
+                              </span>
+                            @endif
+                            <span wire:click="deleteFile({{$epreuve->id}})"   title="Supprimer cette épreuve " class="text-red-500 p-2 rounded-full cursor-pointer bg-red-300 border-red-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                <span  wire:loading.remove wire:target='deleteFile({{$epreuve->id}})'>
+                                  <span class="fas fa-trash"></span> 
+                                  <span>Suppr.</span>
+                                </span>
+                                <span wire:loading wire:target='deleteFile({{$epreuve->id}})'>
+                                  <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                  <span>Suppression en cours...</span>
+                              </span>
                             </span>
-                            <span wire:loading wire:target='deleteFile({{$epreuve->id}})' class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
-                                <span class="fas fa-rotate animate-spin mr-2"></span> 
-                                <span>Suppression en cours...</span>
-                            </span>
+                            
                           
                             @if(!$epreuve->authorized)
-                                <span wire:loading.remove wire:target='validateEpreuve({{$epreuve->id}})' wire:click="validateEpreuve({{$epreuve->id}})"   title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
-                                    <span class="fas fa-check"></span> 
-                                    <span>Valider</span>
+                                <span wire:click="validateEpreuve({{$epreuve->id}})"   title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                    <span wire:loading.remove wire:target='validateEpreuve({{$epreuve->id}})'>
+                                      <span class="fas fa-check"></span> 
+                                      <span>Valider</span>
+                                    </span>
+                                    <span wire:loading wire:target='validateEpreuve({{$epreuve->id}})'>
+                                      <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                      <span>Validation en cours...</span>
+                                  </span>
                                 </span>
-                                <span wire:loading wire:target='validateEpreuve({{$epreuve->id}})' class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
-                                    <span class="fas fa-rotate animate-spin mr-2"></span> 
-                                    <span>Validation en cours...</span>
-                                </span>
+                                
                             @endif
                           @endif
                           <a href="{{route("library.epreuve.profil", ['uuid' => $epreuve->uuid])}}" title="Lire ou proposer des éléments de réponses à cette épreuve" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border">
@@ -167,11 +177,11 @@
                     <div class=" items-center justify-between mt-2 gap-2 mb-2">
                       <div class="flex items-center">
                         <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
-                        <span class="text-gray-400 letter-spacing-2 mr-3">
+                        <span class="text-gray-400 letter-spacing-1 mr-3">
                           Fichier
                         </span> 
-                        <span style="font-size: 2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
-                        <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
+                        <span style="font-size: 1.2rem;" class="{{$epreuve->getExtensionIcon()}}"></span>
+                        <h5 class="gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$epreuve->name}}</span>
                         </h5>
                       </div>
@@ -198,7 +208,7 @@
                       </div>
                     </div>
                     <p class=" w-full">
-                      <span class="text-green-600 text-base dark:text-green-600">
+                      <span class="text-green-600 dark:text-green-600">
                         Taille : {{ $epreuve->file_size ? $epreuve->file_size : 'inconnue' }}
                       </span>
                       <span class="text-xs ml-3 text-sky-600">
@@ -206,21 +216,22 @@
                       </span>
                       @if($epreuve->lycee_id)
                       <br>
-                      <small class="text-gray-600 text-right text-sm">Lycée ou Centre :  
+                      <small class="text-gray-600 text-right text-xs">Lycée ou Centre :  
                          {{$epreuve->getLycee() ? $epreuve->getLycee()->name : 'Inconnu'}}
                       </small>
                       @endif
                       <br>
-                      <small class="text-gray-400 text-right text-sm">Publié le 
+                      <small class="text-gray-400 text-right text-xs">Publié le 
                          {{$epreuve->__getDateAsString($epreuve->created_at)}}
                       </small>
                       <br>
-                      <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-sm">Par 
+                      <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-xs">Par 
                         {{$epreuve->user ? $epreuve->user->getFullName() : 'Inconnu'}}
                       </small>
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">
+                    @auth
                     <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block"  wire:loading.class='bg-green-400' wire:click='downloadTheFile({{$epreuve->id}})' wire:target='downloadTheFile({{$epreuve->id}})' >
                       <span wire:loading wire:target='downloadTheFile({{$epreuve->id}})'>
                           <span class="fa animate-spin fa-rotate float-end mt-2"></span>
@@ -231,6 +242,13 @@
                           <span class="fa fa-download mx-2"></span>
                       </span>
                     </span>
+                    @else
+                    <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block">
+                      <span>
+                        Vous ne pouvez pas télécharger ce fichier
+                      </span>
+                    </span>
+                    @endauth
                   </div>
                 </div>
               </div>

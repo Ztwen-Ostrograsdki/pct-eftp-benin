@@ -36,7 +36,11 @@ class EpreuvesPage extends Component
     {
         $search = $this->search;
 
-        $query = Epreuve::query()->where('epreuves.authorized', true)->where('epreuves.exam_type', null)->where('epreuves.is_exam', false);
+        $query = Epreuve::query()
+                         ->where('epreuves.authorized', true)
+                         ->where('epreuves.exam_type', null)
+                         ->where('epreuves.is_exam', false)
+                         ->where('epreuves.hidden', false);
 
         $lycees = Lycee::all();
 
@@ -87,8 +91,8 @@ class EpreuvesPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find)
-                  ->orWhere('epreuves.school_year', 'like', $find);
+            $query->whereAny(['epreuves.contents_titles', 'epreuves.name', 'epreuves.uuid', 'epreuves.school_year', 'epreuves.description'], 'like', $find);
+
 
 
         }

@@ -21,7 +21,7 @@ class ObserveEpreuveResponse
 
         if($user->isAdminsOrMaster() || $user->hasRole('epreuves-manager')){
 
-            $epreuveResponse->update(['authorized' => true]);
+            $epreuveResponse->update(['authorized' => true, 'hidden' => false]);
 
             $admins = ModelsRobots::getUserAdmins(null, $user->id);
 
@@ -69,7 +69,7 @@ class ObserveEpreuveResponse
      */
     public function deleted(EpreuveResponse $epreuveResponse): void
     {
-        //
+        NewEpreuveResponseHasBeenPublishedEvent::dispatch();
     }
 
     /**

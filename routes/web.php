@@ -68,16 +68,6 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 
     Route::get('chat/forum/', ForumChatBox::class)->name('forum.chat');
 
-    Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
-
-    Route::get('bibliotheque/tag=les-epreuves', EpreuvesPage::class)->name('library.epreuves');
-
-    Route::get('bibliotheque/details-epreuves/epreuve={uuid}', EpreuveProfil::class)->name('library.epreuve.profil');
-
-    Route::get('bibliotheque/examens/tag=les-epreuves', EpreuvesExamensPage::class)->name('library.epreuves.examens');
-    
-    Route::get('bibliotheque/tag=les-fiches-de-cours', SupportFilesPage::class)->name('library.fiches');
-
     Route::get('bibliotheque/publication/tag=les-epreuves/type={type}', EpreuvesUploader::class)->name('library.epreuves.uplaoder');
 
     Route::get('bibliotheque/publication/tag=les-fiches-de-cours', SupportFilesUploader::class)->name('library.fiches.uplaoder');
@@ -100,6 +90,15 @@ Route::middleware(['auth', 'user.confirmed.by.admin', 'user.not.blocked'])->grou
 
 Route::get('/a-propos/de-aesp-eftp-benin/', AboutUs::class)->name('about.us');
 
+Route::get('bibliotheque/', LibraryHomePage::class)->name('library.home');
+
+Route::get('bibliotheque/tag=les-epreuves', EpreuvesPage::class)->name('library.epreuves');
+
+Route::get('bibliotheque/details-epreuves/epreuve={uuid}', EpreuveProfil::class)->name('library.epreuve.profil');
+
+Route::get('bibliotheque/examens/tag=les-epreuves', EpreuvesExamensPage::class)->name('library.epreuves.examens');
+
+Route::get('bibliotheque/tag=les-fiches-de-cours', SupportFilesPage::class)->name('library.fiches');
 
 Route::get('/403', function () {
     abort(403, "Vous n'êtes pas authorisé à acceder à une telle page ou effectuer une telle action!");

@@ -39,9 +39,9 @@ class JobCreateNewSupportFile implements ShouldQueue
 
         if($path){
 
-            $epreuve = SupportFile::create($data);
+            $fiche = SupportFile::create($data);
 
-            if(!$epreuve){
+            if(!$fiche){
 
                 ModelsRobots::deleteFileFromStorageManager($path);
 

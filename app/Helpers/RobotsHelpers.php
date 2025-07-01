@@ -52,6 +52,39 @@ if(!function_exists('generateRandomNumber')){
     }
 
 }
+if(!function_exists('__isAdminsOrMasterOrHasRoles')){
+
+    function __isAdminsOrMasterOrHasRoles($user_id = null, ...$roles)
+    {
+        if(!auth_user()){
+
+            if($user_id) $user = findUser($user_id);
+
+            else return false;
+
+            if(($user->isAdminsOrMaster() || $user->hasRole($roles)))
+
+                return true;
+
+            else
+                return false;
+        }
+        else{
+
+            if($user_id) $user = findUser($user_id);
+
+            else $user = findUser(auth_user_id());
+
+            if(($user->isAdminsOrMaster() || $user->hasRole($roles)))
+
+                return true;
+
+            else
+                return false;
+        }
+    }
+
+}
 if(!function_exists('getCurrentMonth')){
 
     function getCurrentMonth()
@@ -798,7 +831,7 @@ if(!function_exists('auth_user_id')){
 
     function auth_user_id()
     {
-        return Auth::user()->id;
+        return Auth::user() ? Auth::user()->id : null;
     }
 
 }
@@ -849,7 +882,7 @@ if(!function_exists('auth_user_fullName')){
             return $user->getFullName($reverse);
 
         }
-        return User::find(Auth::user()->id)->getFullName($reverse);
+        return Auth::user() ? User::find(Auth::user()->id)->getFullName($reverse) : null;
     }
 
 }

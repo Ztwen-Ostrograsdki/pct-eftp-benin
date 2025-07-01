@@ -57,6 +57,37 @@ class EpreuveProfil extends Component
         session()->put('epreuve-profil-section', $this->uplaod_new_file);
     }
 
+    public function approveEpreuve()
+    {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $epreuve = Epreuve::where('uuid', $this->uuid)->with('answers')->first();
+
+        if($epreuve){
+
+            if(!$epreuve->authorized){
+
+                $user = $epreuve->user;
+
+                $make = $epreuve->update(['authorized' => true, 'hidden' => false]);
+
+                if($make){
+
+                    $this->toast("L'épreuve $epreuve->name a été approuvée et publiée avec succès!", "success");
+
+                    $since = $epreuve->__getDateAsString($epreuve->created_at, 3, true);
+
+                    $message = "Votre épreuve $epreuve->name publiée le " . $since . " a été approuvée par les administrateurs";
+                    
+                    Notification::sendNow([$user], new RealTimeNotificationGetToUser($message));
+                    
+                }
+
+            }
+
+        }
+    }
+
     public function approvedResponse($response_id)
     {
         SpatieManager::ensureThatUserCan(['epreuves-manager']);
@@ -69,7 +100,7 @@ class EpreuveProfil extends Component
 
                 $user = $epreuve_response->user;
 
-                $make = $epreuve_response->update(['authorized' => true]);
+                $make = $epreuve_response->update(['authorized' => true, 'hidden' => false]);
 
                 if($make){
 
@@ -85,6 +116,9 @@ class EpreuveProfil extends Component
 
             }
 
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
         }
     }
 
@@ -106,7 +140,7 @@ class EpreuveProfil extends Component
 
                         $user = $epreuve_response->user;
         
-                        $make = $epreuve_response->update(['authorized' => true]);
+                        $make = $epreuve_response->update(['authorized' => true, 'hidden' => false]);
         
                         if($make){
         
@@ -125,6 +159,9 @@ class EpreuveProfil extends Component
             }
 
         }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
     }
 
     public function downloadTheFile($id)
@@ -133,17 +170,19 @@ class EpreuveProfil extends Component
 
         $epreuve = Epreuve::find($id);
 
-        $epreuve->downloadManager();
-
         $path = storage_path().'/app/public/' . $epreuve->path;
 
-        if($epreuve && File::exists($path)) 
+        if($epreuve && File::exists($path)){
+
+            $epreuve->downloadManager();
 
             return response()->download($path);
 
-        else 
-            return $this->toast("Le fichier est introuvable ou a été supprimé!", 'error');
+        }
+        else{
 
+            return $this->toast("Le fichier est introuvable ou a été supprimé!", 'error');
+        }
     }
 
     public function downloadTheAnswer($id)
@@ -152,16 +191,131 @@ class EpreuveProfil extends Component
 
         $epreuve_response = EpreuveResponse::find($id);
 
-        $epreuve_response->downloadManager();
-
         $path = storage_path().'/app/public/' . $epreuve_response->path;
 
-        if($epreuve_response && File::exists($path)) 
+        if($epreuve_response && File::exists($path)){
+
+            $epreuve_response->downloadManager();
 
             return response()->download($path);
-
-        else 
+        } 
+        else{
+            
             return $this->toast("Le fichier est introuvable ou a été supprimé!", 'error');
+        }
+
+    }
+
+    public function hidde()
+    {
+
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $epreuve = Epreuve::where('uuid', $this->uuid)->first();
+
+        if($epreuve){
+
+            $uuid = $epreuve->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de masquer le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> L'épreuve ne sera plus accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedHidden', 'confirmButtonText' => 'Masqué', 'cancelButtonText' => 'Annulé', 'data' => ['epreuve_id' => $epreuve->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedHidden')]
+    public function onConfirmationToHidde($data)
+    {
+        if($data){
+
+            $epreuve_id = $data['epreuve_id'];
+
+            $epreuve = Epreuve::find($epreuve_id);
+
+            if($epreuve){
+
+                $updated = $epreuve->update(['hidden' => true]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été masqué avec succès et ne sera plus accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été masqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+
+        }
+    }
+
+    public function unHidde()
+    {
+
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $epreuve = Epreuve::where('uuid', $this->uuid)->first();
+
+        if($epreuve){
+
+            $uuid = $epreuve->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de rendre accessible le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'>L'épreuve sera de nouveau accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedUnHidden', 'confirmButtonText' => 'Rendre accessible', 'cancelButtonText' => 'Annulé', 'data' => ['epreuve_id' => $epreuve->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedUnHidden')]
+    public function onConfirmationToUnHidde($data)
+    {
+        if($data){
+
+            $epreuve_id = $data['epreuve_id'];
+
+            $epreuve = Epreuve::find($epreuve_id);
+
+            if($epreuve){
+
+                $updated = $epreuve->update(['hidden' => false]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été rendu accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été démasqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+
+        }
     }
 
     public function deleteFile($id)
@@ -187,6 +341,9 @@ class EpreuveProfil extends Component
             $this->confirm($html, $noback, $options);
             
         }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
     }
 
     #[On('confirmedFileDeletion')]
@@ -211,6 +368,9 @@ class EpreuveProfil extends Component
                     return $this->toast("Une erreure s'est produite: le fichier n'a pas été supprimé!", 'error');
                 }
             }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
 
         }
     }
@@ -233,10 +393,13 @@ class EpreuveProfil extends Component
 
             $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> Cette action est irréversible! </p>";
 
-            $options = ['event' => 'confirmedFilesDeletion', 'confirmButtonText' => 'Supprimé', 'cancelButtonText' => 'Annulé', 'data' => ['epreuve_id' => $epreuve->id]];
+            $options = ['event' => 'confirmedFilesDeletion', 'confirmButtonText' => 'Tout Supprimé', 'cancelButtonText' => 'Annulé', 'data' => ['epreuve_id' => $epreuve->id]];
 
             $this->confirm($html, $noback, $options);
             
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
         }
     }
 
@@ -271,9 +434,124 @@ class EpreuveProfil extends Component
                     DB::rollBack();
                 }
             }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
 
         }
 
+    }
+
+
+    public function hiddeResponse($response_id)
+    {
+
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $epreuve_response = EpreuveResponse::find($response_id);
+
+        if($epreuve_response){
+
+            $uuid = $epreuve_response->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de masquer le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'> L'épreuve ne sera plus accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedResponseHidden', 'confirmButtonText' => 'Masquer', 'cancelButtonText' => 'Annulé', 'data' => ['response_id' => $epreuve_response->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedResponseHidden')]
+    public function onConfirmationToHiddeResponse($data)
+    {
+        if($data){
+
+            $response_id = $data['response_id'];
+
+            $epreuve_response = EpreuveResponse::find($response_id);
+
+            if($epreuve_response){
+
+                $updated = $epreuve_response->update(['hidden' => true]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été masqué avec succès et ne sera plus accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été masqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+
+        }
+    }
+
+    public function unHiddeResponse($response_id)
+    {
+        SpatieManager::ensureThatUserCan(['epreuves-manager']);
+        
+        $epreuve_response = EpreuveResponse::find($response_id);
+
+        if($epreuve_response){
+
+            $uuid = $epreuve_response->uuid;
+
+            $html = "<h6 class='font-semibold text-base text-sky-400 py-0 my-0'>
+                            <p>Vous êtes sur le point de rendre accessible le fichier {$uuid}  </p>
+                            
+                    </h6>";
+            $noback = "<p class='text-orange-600 letter-spacing-2 py-0 my-0 font-semibold'>L'épreuve sera de nouveau accessible sur le plateforme! </p>";
+
+            $options = ['event' => 'confirmedUnHiddenResponse', 'confirmButtonText' => 'Rendre accessible', 'cancelButtonText' => 'Annulé', 'data' => ['response_id' => $epreuve_response->id]];
+
+            $this->confirm($html, $noback, $options);
+            
+        }
+        else{
+            return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+        }
+    }
+
+    #[On('confirmedUnHiddenResponse')]
+    public function onConfirmationToUnHiddeResponse($data)
+    {
+        if($data){
+
+            $response_id = $data['response_id'];
+
+            $epreuve_response = EpreuveResponse::find($response_id);
+
+            if($epreuve_response){
+
+                $updated = $epreuve_response->update(['hidden' => false]);
+
+                if($updated){
+
+                    return $this->toast("Le fichier a été rendu accessible sur la plateforme!", 'success');
+                }
+                else{
+
+                    return $this->toast("Une erreure s'est produite: le fichier n'a pas été démasqué!", 'error');
+                }
+            }
+            else{
+                return $this->toast("Une erreure s'est produite: le fichier est introuvable ou été supprimé!", 'error');
+            }
+
+        }
     }
 
     #[On("LiveNewEpreuveResponseHasBeenPublishedEvent")]

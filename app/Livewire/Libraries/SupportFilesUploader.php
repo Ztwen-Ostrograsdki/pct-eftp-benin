@@ -24,6 +24,8 @@ class SupportFilesUploader extends Component
     
     public $counter = 0;
 
+    public $uploaded_completed = false;
+
     #[Validate('string|max:60')]
     public $name;
 
@@ -54,8 +56,8 @@ class SupportFilesUploader extends Component
 
     public function mount()
     {
-        if(auth_user()) 
-            $this->author = auth_user_fullName();
+
+        if(auth_user()) $this->author = auth_user_fullName();
 
     }
 
@@ -77,8 +79,6 @@ class SupportFilesUploader extends Component
 
     public function pushIntoSelecteds($id)
     {
-        $tables = [];
-
         $selecteds = $this->selecteds;
 
         if(!in_array($id, $selecteds)){
@@ -91,8 +91,6 @@ class SupportFilesUploader extends Component
 
     public function retrieveFromSelecteds($id)
     {
-        $tables = [];
-
         $selecteds = $this->selecteds;
 
         if(in_array($id, $selecteds)){
@@ -190,9 +188,12 @@ class SupportFilesUploader extends Component
 
         if($save){
 
+            $this->uploaded_completed = true;
+
             InitSupportFileCreationEvent::dispatch($data, $save);
 
-            $this->reset();
+            $this->reset('name', 'selecteds', 'description', 'support_file', 'path', 'contents_titles', 'filiars_ids', 'promotion_id');
+
         }
         else{
 
@@ -207,6 +208,13 @@ class SupportFilesUploader extends Component
     public function newSupportFileCreated()
     {
         $message = "Votre fiche de cours a été publiée avec succès. Elle sera analysée et validée par les administrateurs avant d'être visible par tous!";
+
+        $user = User::find(auth_user_id());
+
+        if($user->isAdminsOrMaster() || $user->hasRole(['epreuves-manager'])){
+            
+            $message = "Votre fiche de cours a été publiée avec succès.";
+        }
 
         $this->toast($message, 'success');
 

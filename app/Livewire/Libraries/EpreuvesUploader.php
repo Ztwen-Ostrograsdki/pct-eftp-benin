@@ -59,7 +59,7 @@ class EpreuvesUploader extends Component
 
     public $is_exam = false;
 
-    public $exam_department = null;
+    public $exam_department = null; 
 
     public $exam_session = 'normal';
 
@@ -221,12 +221,6 @@ class EpreuvesUploader extends Component
 
             $extension = $this->file_epreuve->extension();
 
-            $str = '';
-
-            if($this->name){
-                $str = str_replace(' ', '-', $this->name);
-            }
-
            if($this->epreuve_type == 'simple'){
 
                 $file_name = 'epreuve-' . getdate()['year'] . '-' . Str::uuid();
@@ -329,7 +323,7 @@ class EpreuvesUploader extends Component
 
             InitEpreuveCreationEvent::dispatch($data, $file_epreuve_saved_path);
 
-            $this->reset();
+            $this->reset('exam_department', 'lycee_id', 'name', 'selecteds', 'description', 'file_epreuve', 'path', 'year', 'contents_titles', 'filiars_ids', 'promotion_id');
 
             $this->uploaded_completed = true;
         }

@@ -94,7 +94,7 @@ class EpreuvesListPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find);
+            $query->whereAny(['epreuves.contents_titles', 'epreuves.name', 'epreuves.uuid', 'epreuves.school_year', 'epreuves.exam_department', 'epreuves.description'], 'like', $find);
 
         }
 
@@ -133,7 +133,7 @@ class EpreuvesListPage extends Component
 
                 $user = $epreuve->user;
 
-                $make = $epreuve->update(['authorized' => true]);
+                $make = $epreuve->update(['authorized' => true, 'hidden' => false]);
 
                 if($make){
 

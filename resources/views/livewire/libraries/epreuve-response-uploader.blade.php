@@ -95,7 +95,7 @@
                     </div>
                     @else
                     <label for="the_file" wire:loading.remove wire:target='the_file' class="p-3 m-0 mx-auto flex justify-center w-full font-semibold letter-spacing-1">
-                        <span  class="text-gray-600 w-full border h6 border-warning-500 rounded bg-gray-400 text-center cursor-pointer py-2 px-3 ">Veuillez sélectionner votre épreuve</span>
+                        <span  class="text-gray-600 w-full border h6 border-warning-500 rounded bg-gray-400 text-center cursor-pointer py-2 px-3 ">Veuillez sélectionner votre fichier</span>
                     </label>
                     @endif
                 </div>

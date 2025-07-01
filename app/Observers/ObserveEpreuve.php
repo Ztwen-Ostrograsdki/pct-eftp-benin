@@ -19,7 +19,7 @@ class ObserveEpreuve
 
         if($user->isAdminsOrMaster() || $user->hasRole('epreuves-manager')){
 
-            $epreuve->update(['authorized' => true]);
+            $epreuve->update(['authorized' => true, 'hidden' => false]);
 
             $admins = ModelsRobots::getUserAdmins(null, $user->id);
 

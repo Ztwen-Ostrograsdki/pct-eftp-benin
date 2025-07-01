@@ -1,14 +1,15 @@
-<div class="w-full p-5 sm:text-xs mx-auto pb-14">
+<div class="w-full max-w-[85rem] p-5 sm:text-xs mx-auto  @if(!$uploaded_completed) shadow-3 shadow-sky-500 @endif rounded-lg mt-5">
+    @if(!$uploaded_completed)
     <div class="z-bg-secondary-light rounded-xl mx-auto pt-2 pb-8">
-        <div class="sm:w-4/5 xs:w-4/5 lg:w-3/5 xl:w-3/5 mx-auto px-3 mt-9 z-bg-secondary-light shadow-3 shadow-sky-500 rounded-lg border border-sky-600" >
+        <div class="sm:w-4/5 xs:w-4/5 lg:w-3/5 xl:w-3/5 mx-auto px-3 mt-9 z-bg-secondary-light shadow-3 shadow-sky-500 rounded-lg border border-sky-600 py-3" >
             @if($errors->any())
-                <h4 class="w-full letter-spacing-2 p-2 text-xl mb-4 shadow rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
-                    <strong>
+                <h4 class="w-full letter-spacing-2 p-2 text-xl mb-4 shadow-sm rounded-full  shadow-red-600 bg-red-300 text-red-800 text-center mx-auto">
+                    <span class="font-semibold letter-spacing-1">
                         Le formulaire est incorrect
-                    </strong>
+                    </span>
                 </h4>
             @endif
-            <div class="z-bg-secondary-light w-full xs:text-xs lg:text-base pb-3 @if($errors->any()) shadow-3-strong shadow-red-500 @endif ">
+            <div class="z-bg-secondary-light w-full xs:text-xs lg:text-base pb-3 @if($errors->any()) shadow-sm shadow-red-500 @endif ">
                 <div class="w-full">
                     <div class="m-0 my-2 p-2 border-b flex justify-between items-center">
                         <h6 class="py-3 text-gray-400">Gestionnaire d'envoi des fiches de cours</h6>
@@ -70,18 +71,6 @@
                                     <small class="text-orange-600 float-right ml-6 letter-spacing-2 xs:hidden lg:inline">(Veuillez séparer chaque notion par un tiret)</small>
                                 </label>
                                 @error('contents_titles')
-                                    <span class="text-red-600">{{$message}}</span>
-                                @enderror
-                            </div>
-                        </div>
-    
-                        <div class="grid md:gap-6">
-                            <div class="relative z-0 w-full mb-5 group">
-                                <textarea name="description" wire:model.live='description' placeholder="Renseignez ce que vous voulez faire savoir sur ce document..." class="block ucfirst py-2.5 px-0 w-full text-base opacity-60 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-green-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  id="support-description" type="text">
-                                
-                                </textarea>
-                                <label for="support-description" class=" peer-focus:font-medium absolute text-base text-blue-500 dark:text-blue-600 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-focus:scale-75 peer-focus:-translate-y-6">Décrivez votre fiche</label>
-                                @error('description')
                                     <span class="text-red-600">{{$message}}</span>
                                 @enderror
                             </div>
@@ -203,5 +192,22 @@
             </div>
         </div>
     </div>
+    @else
+        <div class="my-2 mt-10 px-3 font-semibold letter-spacing-1
+        flex flex-col justify-center gap-y-3 items-center text-sm text-center lg:w-3/5 xl:w-4/5 md:w-4/5 mx-auto ">
+
+            <h4 wire:click="$set('uploaded_completed', false)" class="font-semibold uppercase bg-success-500 text-gray-900 py-6 flex flex-col text-center rounded-lg px-8 cursor-pointer border border-green-700 mb-6">
+                Bravo, votre fiche de cours a été envoyée avec succès!
+
+                <span class="text-orange-600 mt-5"> Cliquer pour Envoyer une autre fiche </span>
+            </h4>
+
+            <h4 wire:click="$set('uploaded_completed', false)"  class="font-semibold uppercase hover:bg-blue-900 hover:text-gray-300 bg-blue-500 cursor-pointer text-gray-900 py-6 text-center rounded-lg px-8 border mt-20 border-green-700">
+                Publier une autre fiche
+            </h4>
+
+        </div>
+
+    @endif
 </div>
 

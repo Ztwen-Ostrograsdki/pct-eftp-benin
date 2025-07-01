@@ -100,11 +100,11 @@
               </form>
             </div>
             @if(count($support_files))
-            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
+            <div class="grid grid-cols-6 gap-2">
               
               @foreach($support_files as $fiche)
-              <div wire:key="support-admin-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2 epreuve-card">
-                <div class="border transition-opacity rounded-lg  @if($fiche->authorized) shadow-gray-300 shadow-3 @else shadow-red-500 shadow-2 opacity-75 p-1 @endif border-gray-700">
+              <div wire:key="support-admin-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 lg:text-sm xl:text-sm md:text-sm sm:text-xs xs:text-xs">
+                <div class="border  @if(!$fiche->authorized || $fiche->hidden) shadow-red-600 @endif border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
                         <span>
@@ -113,17 +113,53 @@
                           @endif
                         </span>
                         <span class="gap-x-2 flex">
-                        
+                          @if(__isAdminsOrMasterOrHasRoles(null, 'epreuves.manager'))
+                            @if($fiche->hidden)
+                              <span wire:click="unHidde({{$fiche->id}})"   title="Rendre cette fiche accessible sur la plateforme" class="text-gray-900 p-2 rounded-full cursor-pointer bg-sky-400 hover:bg-sky-600 border-gray-900 border animate-pulse ">
+                                <span wire:loading.remove wire:target='unHidde({{$fiche->id}})'>
+                                  <span class="fas fa-eye"></span> 
+                                  <span>Visible</span>
+                                </span>
+                                <span wire:loading wire:target='unHidde({{$fiche->id}})'>
+                                  <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                  <span>Opération en cours...</span>
+                                </span>
+                              </span>
+                            @else
+                              <span wire:click="hidde({{$fiche->id}})"   title="Masquer cette fiche et la rendre inaccessible sur la plateforme" class="text-gray-900 p-2 rounded-full cursor-pointer bg-orange-400 hover:bg-orange-600 border-gray-900 border animate-pulse ">
+                                <span wire:loading.remove wire:target='hidde({{$fiche->id}})'>
+                                  <span class="fas fa-eye-slash"></span> 
+                                  <span>Masquer</span>
+                                </span>
+                                <span wire:loading wire:target='hidde({{$fiche->id}})'>
+                                  <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                  <span>Opération en cours...</span>
+                                </span>
+                              </span>
+                            @endif
+                            <span wire:click="deleteFile({{$fiche->id}})"   title="Supprimer cette fiche " class="text-red-500 p-2 rounded-full cursor-pointer bg-red-300 border-red-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                <span  wire:loading.remove wire:target='deleteFile({{$fiche->id}})'>
+                                  <span class="fas fa-trash"></span> 
+                                  <span>Suppr.</span>
+                                </span>
+                                <span wire:loading wire:target='deleteFile({{$fiche->id}})'>
+                                  <span class="fas fa-rotate animate-spin mr-2"></span> 
+                                  <span>Suppression en cours...</span>
+                              </span>
+                            </span>
                             @if(!$fiche->authorized)
-                                <span wire:loading.remove wire:target='validateSupportFile({{$fiche->id}})' wire:click="validateSupportFile({{$fiche->id}})"   title="Valider cette épreuve et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                              <span wire:click="validateSupportFile({{$fiche->id}})" title="Valider cette fiche et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 hover:bg-green-600 border-gray-900 border animate-pulse">
+                                  <span wire:loading.remove wire:target='validateSupportFile({{$fiche->id}})'>
                                     <span class="fas fa-check"></span> 
                                     <span>Valider</span>
-                                </span>
-                                <span wire:loading wire:target='validateSupportFile({{$fiche->id}})'  title="Valider cette fiche de cours et la rendre accessible par tous" class="text-gray-900 p-2 rounded-full cursor-pointer bg-green-400 border-gray-900 border animate-pulse hover:shadow-3 hover:shadow-sky-600">
+                                  </span>
+                                  <span wire:loading wire:target='validateSupportFile({{$fiche->id}})'>
                                     <span class="fas fa-rotate animate-spin mr-2"></span> 
                                     <span>Validation en cours...</span>
                                 </span>
+                              </span>
                             @endif
+                          @endif
                          
                           <a target="_blank" href="{{url('storage', $fiche->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border hover:shadow-3 hover:shadow-sky-600">
                             <span class="fas fa-eye"></span> 
@@ -137,12 +173,11 @@
                     </div>
                     <div class=" items-center justify-between mt-2 gap-2 mb-2">
                       <div class="flex items-center">
-                        <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
-                        <span class="text-gray-400 letter-spacing-2 mr-3">
+                        <span class="text-gray-400 letter-spacing-1 mr-3">
                           Fichier
                         </span> 
-                        <span style="font-size: 2rem;" class="{{$fiche->getExtensionIcon()}}"></span>
-                        <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
+                        <span style="font-size: 1.2rem;" class="{{$fiche->getExtensionIcon()}}"></span>
+                        <h5 class="gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$fiche->name}}</span>
                         </h5>
                       </div>
@@ -169,20 +204,21 @@
                       </div>
                     </div>
                     <p class=" w-full">
-                      <span class="text-green-600 text-base dark:text-green-600">
+                      <span class="text-green-600 dark:text-green-600">
                         Taille : {{ $fiche->file_size ? $fiche->file_size : 'inconnue' }}
                       </span>
                       <br>
-                      <small class="text-gray-400 text-right text-sm">Publié le 
+                      <small class="text-gray-400 text-right">Publié le 
                          {{$fiche->__getDateAsString($fiche->created_at)}}
                       </small>
                       <br>
-                      <small class="text-sky-400 pt-2 opacity-60 text-right float-right text-sm">Par 
+                      <small class="text-sky-400 pt-2 opacity-60 text-right float-right">Par 
                          {{$fiche->user ? $fiche->user->getFullName() : 'Inconnu'}}
                       </small>
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">
+                    @auth
                     <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block"  wire:loading.class='bg-green-400' wire:click='downloadTheFile({{$fiche->id}})' wire:target='downloadTheFile({{$fiche->id}})' >
                       <span wire:loading wire:target='downloadTheFile({{$fiche->id}})'>
                           <span class="fa animate-spin fa-rotate float-end mt-2"></span>
@@ -193,6 +229,13 @@
                           <span class="fa fa-download mx-2"></span>
                       </span>
                     </span>
+                    @else
+                    <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block">
+                      <span>
+                        Vous ne pouvez pas télécharger ce fichier
+                      </span>
+                    </span>
+                    @endauth
                   </div>
                 </div>
               </div>

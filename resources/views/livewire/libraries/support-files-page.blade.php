@@ -13,12 +13,20 @@
         </div>
     </div>
     <div class="w-full p-0 m-0">
-      <div class="w-full m-0 p-0 mb-2 ">
-        <a class="bg-sky-500 shadow-1 shadow-sky-400 border border-sky-700 rounded-lg px-2 py-3 w-full hover:bg-sky-600 text-gray-900 hover:border-gray-100 inline-block" href="{{route('library.fiches.uplaoder')}}">
-          <span class="fa fa-send"></span>
-          <span>Publier des fiches</span>
-          <span class="fa fa-book"></span>
-      </a>
+      <div class="w-full m-0 p-0 mb-2 flex justify-start gap-x-2">
+        
+        <a class="bg-purple-500 rounded-lg px-4 py-3 hover:bg-purple-600 text-gray-900 hover:text-white" href="{{route('library.home')}}">
+            <span class="fa fa-send"></span>
+            <span>La bibliothèque</span>
+            <span class="fa fa-book"></span>
+        </a>
+        @auth
+        <a class="bg-sky-500 rounded-lg px-4 py-3 hover:bg-sky-600 text-gray-900 hover:text-white" href="{{route('library.fiches.uplaoder')}}">
+            <span class="fa fa-send"></span>
+            <span>Publier des fiches</span>
+            <span class="fa fa-book"></span>
+        </a>
+        @endauth
       </div>
     </div>
     @if(__hasFiles('SupportFile'))
@@ -81,21 +89,22 @@
               </form>
             </div>
             @if(count($support_files))
-            <div class="grid xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2">
+            <div class="grid grid-cols-6 gap-2">
               
               @foreach($support_files as $fiche)
-              <div wire:key="support-page-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-4 sm:col-span-4 md:col-span-2 lg:col-span-2">
+              <div wire:key="support-page-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 lg:text-sm xl:text-sm md:text-sm sm:text-xs xs:text-xs">
                 <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
                   <div class="p-3 pb-8">
-                    <div class="flex m-0 p-0 justify-between">
-                        <span>
-                          @if(in_array(auth_user()->id, (array)$fiche->downloaded_by))
-                            <span title="Vous avez déjà télécharger ce fichier" class="text-green-500 fa fa-check-double cursor-pointer animate-pulse"></span>
-                          @endif
-                        </span>
+                    <div class="flex m-0 p-0 justify-end">
+                        @auth
+                          <span>
+                            @if(in_array(auth_user()->id, (array)$fiche->downloaded_by))
+                              <span title="Vous avez déjà télécharger ce fichier" class="text-green-500 fa fa-check-double cursor-pointer animate-pulse"></span>
+                            @endif
+                          </span>
+                        @endauth
                         <span class="gap-x-2 flex">
-                          
-                          <a target="_blank" href="{{url('storage', $fiche->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
+                          <a href="#" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 
                             <span>Lire</span>
                           </a>
@@ -107,12 +116,11 @@
                     </div>
                     <div class=" items-center justify-between gap-2 mb-2">
                       <div class="flex items-center">
-                        <img class="hidden" width="50" src="{{asset('images/icons/dark-file.png') }}" alt="">
-                        <span class="text-gray-400 letter-spacing-2 mr-3">
+                        <span class="text-gray-400 letter-spacing-1 mr-3">
                           Fichier
                         </span> 
-                        <span style="font-size: 2rem;" class="{{$fiche->getExtensionIcon()}}"></span>
-                        <h5 class="text-base gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
+                        <span style="font-size: 1.2rem;" class="{{$fiche->getExtensionIcon()}}"></span>
+                        <h5 class=" gap-3 w-full float-right text-right justify-between font-medium text-gray-400">
                           <span>{{$fiche->name}}</span>
                         </h5>
                       </div>
@@ -139,20 +147,26 @@
                       </div>
                     </div>
                     <p class=" w-full">
-                      <span class="text-green-600 text-base dark:text-green-600">
+                      <span class="text-green-600 dark:text-green-600">
                         Taille : {{ $fiche->file_size ? $fiche->file_size : 'inconnue' }}
                       </span>
                       <br>
-                      <small class="text-gray-400 text-right text-sm">Publié le 
+                      <small class="text-gray-400 text-right">Publié le 
                          {{$fiche->__getDateAsString($fiche->created_at)}}
                       </small>
                       <br>
-                      <small class="text-sky-200 pt-2 opacity-60 text-right float-right text-sm">Par 
-                         {{$fiche->user->getFullName()}}
-                      </small>
+                      @auth
+                        @if (auth_user() && __isAdminsOrMasterOrHasRoles(null, 'epreuves.manager'))
+                          <small class="text-sky-200 pt-2 opacity-60 text-right float-right">Par 
+                            {{ $fiche->user ? $fiche->user->getFullName() : ' Non renseigné'}}
+                          </small>
+                        @endif
+                      @endauth
+                      
                     </p>
                   </div>
                   <div class="m-0 p-0 justify-center w-full mt-2">
+                    @auth
                     <span class="text-center w-full bg-blue-600 text-gray-950 hover:bg-blue-800 cursor-pointer py-2 px-3 inline-block"  wire:loading.class='bg-green-400' wire:click='downloadTheFile({{$fiche->id}})' wire:target='downloadTheFile({{$fiche->id}})' >
                       <span wire:loading wire:target='downloadTheFile({{$fiche->id}})'>
                           <span class="fa animate-spin fa-rotate float-end mt-2"></span>
@@ -163,6 +177,13 @@
                           <span class="fa fa-download mx-2"></span>
                       </span>
                     </span>
+                    @else
+                    <span class="text-center w-full bg-orange-300 text-gray-950 py-2 px-3 inline-block">
+                      <span>
+                        Vous ne pouvez pas télécharger ce fichier
+                      </span>
+                    </span>
+                    @endauth
                   </div>
                 </div>
               </div>

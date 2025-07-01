@@ -41,7 +41,18 @@ class EpreuvesExamensPage extends Component
     {
         $search = $this->search;
 
-        $query = Epreuve::query()->where('epreuves.authorized', true)->where('epreuves.is_exam', true);
+        if(__isAdminsOrMasterOrHasRoles(null, 'epreuves.manager')){
+
+            $query = Epreuve::query()->where('epreuves.is_exam', true);
+        }
+        else{
+
+            $query = Epreuve::query()->where('epreuves.authorized', true)->where('epreuves.is_exam', true)->where('epreuves.hidden', false);
+
+        }
+
+
+        
 
         $types = config('app.examen_types');
 
@@ -113,8 +124,8 @@ class EpreuvesExamensPage extends Component
 
             $find = '%' . $search . '%';
 
-            $query->where('epreuves.contents_titles', 'like', $find)
-                  ->orWhere('epreuves.school_year', 'like', $find);
+            $query->whereAny(['epreuves.contents_titles', 'epreuves.name', 'epreuves.uuid', 'epreuves.school_year', 'epreuves.exam_department', 'epreuves.description'], 'like', $find);
+
 
 
         }

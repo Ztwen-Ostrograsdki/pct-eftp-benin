@@ -66,28 +66,16 @@ class Epreuve extends Model
 
         static::deleting(function($db_file){
 
-            $path = storage_path().'/app/public/' . $db_file->path;
+            $path =  storage_path('app/') . $db_file->path;
 
-            if(File::exists($path)){
+            if (Storage::disk('local')->exists($path)) {
 
-                File::delete($path);
-
+                Storage::disk('local')->delete($path);
             }
-
         });
     }
 
-    public function baseName($with_extension = false)
-    {
-        $path = storage_path().'/app/public/' . $this->path;
-
-        if(File::exists($path)){
-
-            return $with_extension ? basename($path) : pathinfo($path)['filename'];
-        }
-
-        return "Fichier inconnu";
-    }
+    
 
     public function assetAllResponsesHasBeenApproved()
     {
@@ -179,13 +167,27 @@ class Epreuve extends Model
 
     }
 
+    public function baseName($with_extension = false)
+    {
+        $path =  $this->path;
+
+        if(Storage::disk('local')->exists($this->path)){
+
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
+        }
+
+        return "Fichier inconnu";
+    }
+
     public function getEpreuveSize()
     {
         $file_size = $this->file_size;
 
         if(!$file_size){
+
+            $path = $this->path;
             
-            $size = Storage::disk('public')->size($this->path);
+            $size = Storage::disk('local')->size($path);
 
             if($size >= 1048580){
 
@@ -214,25 +216,18 @@ class Epreuve extends Model
 
         }
 
-        $file_size = $this->file_size;
+        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders]);
+    }
 
-        if(!$file_size){
-            
-            $size = Storage::disk('public')->size($this->path);
+    public function getTotalPages()
+    {
+        $path = storage_path('app/' . $this->path);
 
-            if($size >= 1048580){
+        $gets = file_get_contents($path);
 
-                $file_size = number_format($size / 1048576, 2) . ' Mo';
+        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
 
-            }
-            else{
-
-                $file_size = number_format($size / 1000, 2) . ' Ko';
-
-            }
-        }
-
-        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders, 'file_size' => $file_size]);
+        return $pages;
     }
 
     public function isForThisFiliar($filiar_id)
@@ -277,14 +272,5 @@ class Epreuve extends Model
     }
 
 
-    public function getTotalPages()
-    {
-        $path = storage_path().'/app/public/' . $this->path;
-
-        $gets = file_get_contents($path);
-
-        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
-
-        return $pages;
-    }
+    
 }

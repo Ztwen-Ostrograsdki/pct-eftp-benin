@@ -93,7 +93,7 @@
               
               @foreach($support_files as $fiche)
               <div wire:key="support-page-{{$fiche->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 lg:text-sm xl:text-sm md:text-sm sm:text-xs xs:text-xs">
-                <div class="border transition-opacity rounded-lg shadow-3 shadow-gray-300 border-gray-700">
+                <div class="border border-gray-700">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-end">
                         @auth

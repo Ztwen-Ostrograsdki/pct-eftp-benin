@@ -164,25 +164,27 @@ class EpreuveProfil extends Component
         }
     }
 
+
     public function downloadTheFile($id)
     {
         $this->toast("Le téléchargement lancé... patientez", 'success');
 
         $epreuve = Epreuve::find($id);
 
-        $path = storage_path().'/app/public/' . $epreuve->path;
+        $path = storage_path('app/' . $epreuve->path);
 
-        if($epreuve && File::exists($path)){
+        $name = str_replace('epreuves/', '', $epreuve->path);
 
-            $epreuve->downloadManager();
+        if (!file_exists($path)) {
 
-            return response()->download($path);
-
+            return abort(404, 'Fichier introuvable');
         }
-        else{
 
-            return $this->toast("Le fichier est introuvable ou a été supprimé!", 'error');
-        }
+        $epreuve->downloadManager();
+
+
+        return response()->download($path, $name);
+
     }
 
     public function downloadTheAnswer($id)
@@ -191,19 +193,18 @@ class EpreuveProfil extends Component
 
         $epreuve_response = EpreuveResponse::find($id);
 
-        $path = storage_path().'/app/public/' . $epreuve_response->path;
+        $path = storage_path('app/' . $epreuve_response->path);
 
-        if($epreuve_response && File::exists($path)){
+        $name = str_replace('epreuves/', '', $epreuve_response->path);
 
-            $epreuve_response->downloadManager();
+        if (!file_exists($path)) {
 
-            return response()->download($path);
-        } 
-        else{
-            
-            return $this->toast("Le fichier est introuvable ou a été supprimé!", 'error');
+            return abort(404, 'Fichier introuvable');
         }
 
+        $epreuve_response->downloadManager();
+
+        return response()->download($path, $name);
     }
 
     public function hidde()

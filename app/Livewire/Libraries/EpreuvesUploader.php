@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -166,6 +167,7 @@ class EpreuvesUploader extends Component
 
     public function uploadEpreuve()
     {
+        
         $this->resetErrorBag();
 
         $this->filiars_ids = $this->selecteds;
@@ -295,21 +297,12 @@ class EpreuvesUploader extends Component
             'authorized' => $authorized,
         ];
 
-        $root = storage_path("app/public/epreuves");
+        if (!Storage::disk('local')->exists('epreuves')) {
 
-        $directory_make = false;
-
-        if(!File::isDirectory($root)){
-
-            $directory_make = File::makeDirectory($root, 0777, true, true);
-
-        }
-        else{
-            
-            $directory_make = true;
+           Storage::disk('local')->makeDirectory('epreuves');
         }
 
-        if(!File::isDirectory($root) || !$directory_make){
+        if(!Storage::disk('local')->exists('epreuves')){
 
             $this->toast("Erreure stockage: La destination de sauvegarde est introuvable", 'error');
 
@@ -317,7 +310,7 @@ class EpreuvesUploader extends Component
 
         }
 
-        $file_epreuve_saved_path = $this->file_epreuve->storeAs("epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
+        $file_epreuve_saved_path = $this->file_epreuve->storeAs("epreuves", $file_name . '.' . $extension);
 
         if($file_epreuve_saved_path){
 

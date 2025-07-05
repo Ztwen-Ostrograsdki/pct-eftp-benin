@@ -122,7 +122,7 @@
               
               @foreach($epreuves as $epreuve)
               <div wire:key="epreuve-page-{{$epreuve->id}}" class="px-3 mb-6 xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-2 epreuve-card">
-                <div class="border  border-gray-700 text-xs font-semibold letter-spacing-1">
+                <div class="border border-gray-400 text-xs font-semibold letter-spacing-1">
                   <div class="p-3 pb-8">
                     <div class="flex m-0 p-0 justify-between">
                         @auth
@@ -140,7 +140,7 @@
                               @endif
                             </span>
                           </a>
-                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
+                          <a href="{{ route('epreuve.viewer', ['uuid' => $epreuve->uuid]) }}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 
                             <span>Lire</span>
                           </a>
@@ -244,7 +244,7 @@
                       </span>
                     </span>
                     @else
-                    <span class="text-center w-full bg-gray-500 text-gray-950 cursor-pointer py-2 px-3 inline-block">
+                    <span class="text-center w-full bg-orange-300 text-gray-950 cursor-pointer py-2 px-3 inline-block border border-gray-900">
                       <span>
                         Vous ne pouvez pas télécharger ce fichier
                       </span>

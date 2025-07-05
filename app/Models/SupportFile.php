@@ -61,28 +61,16 @@ class SupportFile extends Model
 
         static::deleting(function($db_file){
 
-            $path = storage_path().'/app/public/' . $db_file->path;
+            $path =  storage_path('app/') . $db_file->path;
 
-            if(File::exists($path)){
+            if (Storage::disk('local')->exists($path)) {
 
-                File::delete($path);
-
+                Storage::disk('local')->delete($path);
             }
-
         });
     }
 
-    public function baseName($with_extension = false)
-    {
-        $path = storage_path().'/app/public/' . $this->path;
-
-        if(File::exists($path)){
-
-            return $with_extension ? basename($path) : pathinfo($path)['filename'];
-        }
-
-        return "Fichier inconnu";
-    }
+    
 
     public function user()
     {
@@ -114,13 +102,27 @@ class SupportFile extends Model
 
     }
 
+    public function baseName($with_extension = false)
+    {
+        $path = $this->path;
+
+        if(Storage::disk('local')->exists($path)){
+
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
+        }
+
+        return "Fichier inconnu";
+    }
+
     public function getFileSize()
     {
         $file_size = $this->file_size;
 
         if(!$file_size){
+
+            $path =  $this->path;
             
-            $size = Storage::disk('public')->size($this->path);
+            $size = Storage::disk('local')->size($path);
 
             if($size >= 1048580){
 
@@ -149,38 +151,18 @@ class SupportFile extends Model
 
         }
 
-        $file_size = $this->file_size;
-
-        if(!$file_size){
-            
-            $size = Storage::disk('public')->size($this->path);
-
-            if($size >= 1048580){
-
-                $file_size = number_format($size / 1048576, 2) . ' Mo';
-
-            }
-            else{
-
-                $file_size = number_format($size / 1000, 2) . ' Ko';
-
-            }
-        }
-
-        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders, 'file_size' => $file_size]);
+        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders]);
     }
 
-    public function isForThisFiliar($filiar_id)
+    public function getTotalPages()
     {
-        $filiars = $this->getFiliars();
+        $path = storage_path('app/' . $this->path);
 
-        foreach($filiars as $filiar){
+        $gets = file_get_contents($path);
 
-            if($filiar->id == $filiar_id) return true;
+        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
 
-        }
-
-        return false;
+        return $pages;
     }
 
     public function getExtensionIcon()

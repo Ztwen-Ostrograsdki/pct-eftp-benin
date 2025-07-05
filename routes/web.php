@@ -13,6 +13,7 @@ use App\Livewire\Libraries\EpreuvesExamensPage;
 use App\Livewire\Libraries\EpreuvesPage;
 use App\Livewire\Libraries\EpreuvesUploader;
 use App\Livewire\Libraries\LibraryHomePage;
+use App\Livewire\Libraries\PdfReader;
 use App\Livewire\Libraries\SupportFilesPage;
 use App\Livewire\Libraries\SupportFilesUploader;
 use App\Livewire\Master\CommuniqueComponent;
@@ -32,7 +33,9 @@ use App\Livewire\User\MyNotificationsPage;
 use App\Livewire\User\MyQuotes;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
+use App\Models\Epreuve;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Spatie\PdfToImage\Pdf;
 
 Route::get('/', HomePage::class)->name('home');
@@ -99,6 +102,21 @@ Route::get('bibliotheque/details-epreuves/epreuve={uuid}', EpreuveProfil::class)
 Route::get('bibliotheque/examens/tag=les-epreuves', EpreuvesExamensPage::class)->name('library.epreuves.examens');
 
 Route::get('bibliotheque/tag=les-fiches-de-cours', SupportFilesPage::class)->name('library.fiches');
+
+Route::get('/lecture/secure-pdf/{uuid}', function ($uuid) {
+
+    $epreuve = Epreuve::where('uuid', $uuid)->firstOrFail();
+
+    $path = storage_path('app/' . $epreuve->path);
+
+    return response()->file($path, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="' . $epreuve->path . '"'
+    ]);
+
+})->name('epreuve.secure');
+
+Route::get('/epreuve/lecture/{uuid}', PdfReader::class)->name('epreuve.viewer');
 
 Route::get('/403', function () {
     abort(403, "Vous n'êtes pas authorisé à acceder à une telle page ou effectuer une telle action!");

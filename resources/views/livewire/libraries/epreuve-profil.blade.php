@@ -356,7 +356,7 @@
                             {{ numberZeroFormattor($epreuve_response->downloaded) }}
                         </td>
                         <td class="px-3 py-4">
-                            {{ $epreuve_response->user ? $epreuve_response->user->getFullName() 'Non renseigné' }}
+                            {{ $epreuve_response->user ? $epreuve_response->user->getFullName() : 'Non renseigné' }}
                         </td>
                         
                         @auth

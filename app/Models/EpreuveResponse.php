@@ -49,27 +49,13 @@ class EpreuveResponse extends Model
 
         static::deleting(function($db_file){
 
-            $path = storage_path().'/app/public/' . $db_file->path;
+            $path = $db_file->path;
 
-            if(File::exists($path)){
+            if (Storage::disk('local')->exists($path)) {
 
-                File::delete($path);
-
+                Storage::disk('local')->delete($path);
             }
-
         });
-    }
-
-    public function baseName($with_extension = false)
-    {
-        $path = storage_path().'/app/public/' . $this->path;
-
-        if(File::exists($path)){
-
-            return $with_extension ? basename($path) : pathinfo($path)['filename'];
-        }
-
-        return "Fichier inconnu";
     }
 
     public function epreuve()
@@ -92,23 +78,27 @@ class EpreuveResponse extends Model
         
     }
 
-    public function downloadManager()
+    public function baseName($with_extension = false)
     {
-        $occurence = (int)$this->downloaded + 1;
+        $path = $this->path;
 
-        $downloaders = (array)$this->downloaded_by;
+        if(File::exists($path)){
 
-        if(!in_array(auth_user()->id, $downloaders)){
-
-            $downloaders[] = auth_user()->id;
-
+            return $with_extension ? basename($path) : pathinfo($path)['filename'];
         }
 
+        return "Fichier inconnu";
+    }
+
+    public function getFileSize()
+    {
         $file_size = $this->file_size;
 
         if(!$file_size){
+
+            $path =  $this->path;
             
-            $size = Storage::disk('public')->size($this->path);
+            $size = Storage::disk('local')->size($path);
 
             if($size >= 1048580){
 
@@ -122,7 +112,34 @@ class EpreuveResponse extends Model
             }
         }
 
-        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders, 'file_size' => $file_size]);
+        return $file_size;
+    }
+
+    public function downloadManager()
+    {
+        $occurence = (int)$this->downloaded + 1;
+
+        $downloaders = (array)$this->downloaded_by;
+
+        if(!in_array(auth_user()->id, $downloaders)){
+
+            $downloaders[] = auth_user()->id;
+
+        }
+
+        
+        $this->update(['downloaded' => $occurence, 'downloaded_by' => $downloaders]);
+    }
+
+    public function getTotalPages()
+    {
+        $path = storage_path('app/' . $this->path);
+
+        $gets = file_get_contents($path);
+
+        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
+
+        return $pages;
     }
 
     public function getExtensionIcon()
@@ -154,43 +171,6 @@ class EpreuveResponse extends Model
     }
 
 
-    public function getTotalPages()
-    {
-        $path = storage_path().'/app/public/' . $this->path;
-
-        $gets = file_get_contents($path);
-
-        $pages = preg_match_all("/\/Page\W/", $gets, $returned);
-
-        return $pages;
-    }
-
-    public function getFileSize()
-    {
-        $file_size = $this->file_size;
-
-        $path = storage_path().'/app/public/' . $this->path;
-
-        if(File::exists($path)){
-
-            if(!$file_size){
-                
-                $size = Storage::disk('public')->size($this->path);
-
-                if($size >= 1048580){
-
-                    $file_size = number_format($size / 1048576, 2) . ' Mo';
-
-                }
-                else{
-
-                    $file_size = number_format($size / 1000, 2) . ' Ko';
-
-                }
-            }
-
-            return $file_size;
-        }
-        return "Inconnue";
-    }
+   
+   
 }

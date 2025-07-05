@@ -11,6 +11,7 @@ use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -51,9 +52,11 @@ class EpreuveResponseUploader extends Component
         if($epreuve){
 
             $this->name = "Elements-de-réponse-de-" . $epreuve->baseName();
+
+            $this->epreuve = $epreuve;
         }
 
-        $this->epreuve = $epreuve;
+        
 
         return view('livewire.libraries.epreuve-response-uploader');
     }
@@ -118,21 +121,13 @@ class EpreuveResponseUploader extends Component
             'authorized' => $authorized,
         ];
 
-        $root = storage_path("app/public/corriges_epreuves");
-
-        $directory_make = false;
-
-        if(!File::isDirectory($root)){
-
-            $directory_make = File::makeDirectory($root, 0777, true, true);
-
-        }
-        else{
-
-            $directory_make = true;
+        if (!Storage::disk('local')->exists('corriges_epreuves')) {
+            
+            Storage::disk('local')->makeDirectory('corriges_epreuves');
         }
 
-        if(!File::isDirectory($root) || !$directory_make){
+
+        if(!Storage::disk('local')->exists('corriges_epreuves')){
 
             $this->toast("Erreure stockage: La destination de sauvegarde est introuvable", 'error');
 
@@ -141,7 +136,7 @@ class EpreuveResponseUploader extends Component
 
         }
 
-        $file_saved_path = $this->the_file->storeAs("corriges_epreuves/", $file_name . '.' . $extension, ['disk' => 'public']);
+        $file_saved_path = $this->the_file->storeAs("corriges_epreuves", $file_name . '.' . $extension);
 
         if($file_saved_path){
 

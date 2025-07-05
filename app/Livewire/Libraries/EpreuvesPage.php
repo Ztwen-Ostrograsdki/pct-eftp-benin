@@ -151,11 +151,20 @@ class EpreuvesPage extends Component
 
         $epreuve = Epreuve::find($id);
 
+        $path = storage_path('app/' . $epreuve->path);
+
+        $name = str_replace('epreuves/', '', $epreuve->path);
+
+        if (!file_exists($path)) {
+
+            return abort(404, 'Fichier introuvable');
+        }
+
         $epreuve->downloadManager();
 
-        $path = storage_path().'/app/public/' . $epreuve->path;
 
-        return response()->download($path);
+        return response()->download($path, $name);
+
     }
 
     public function deleteFile($id)

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\RealTimeNotificationGetToUser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -161,21 +162,13 @@ class SupportFilesUploader extends Component
             'authorized' => $authorized,
         ];
 
-        $root = storage_path("app/public/fiches");
-
-        $directory_make = false;
-
-        if(!File::isDirectory($root)){
-
-            $directory_make = File::makeDirectory($root, 0777, true, true);
-
-        }
-        else{
+        if (!Storage::disk('local')->exists('fiches')) {
             
-            $directory_make = true;
+            Storage::disk('local')->makeDirectory('fiches');
         }
 
-        if(!File::isDirectory($root) || !$directory_make){
+
+        if(!Storage::disk('local')->exists('fiches')){
 
             $this->toast("Erreure stockage: La destination de sauvegarde est introuvable", 'error');
 
@@ -184,13 +177,13 @@ class SupportFilesUploader extends Component
 
         }
 
-        $save = $this->support_file->storeAs("fiches/", $file_name . '.' . $extension, ['disk' => 'public']);
+        $saved = $this->the_file->storeAs("fiches", $file_name . '.' . $extension);
 
-        if($save){
+        if($saved){
 
             $this->uploaded_completed = true;
 
-            InitSupportFileCreationEvent::dispatch($data, $save);
+            InitSupportFileCreationEvent::dispatch($data, $saved);
 
             $this->reset('name', 'selecteds', 'description', 'support_file', 'path', 'contents_titles', 'filiars_ids', 'promotion_id');
 

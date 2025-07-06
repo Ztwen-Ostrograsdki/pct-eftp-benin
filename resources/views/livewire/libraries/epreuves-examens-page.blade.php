@@ -155,10 +155,12 @@
                               @endif
                             </span>
                           </a>
-                          <a target="_blank" href="{{url('storage', $epreuve->path)}}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
+                          @if($epreuve->extension == ".pdf")
+                          <a href="{{ $epreuve->readerRoute() }}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 
                             <span>Lire</span>
                           </a>
+                          @endif
                           <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full animate-pulse cursor-pointer bg-gray-900 border-gray-400 border">
                             {{ $epreuve->downloaded }}
                             <span class="fas fa-download"></span> 

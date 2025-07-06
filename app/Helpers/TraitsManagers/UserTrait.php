@@ -228,31 +228,28 @@ trait UserTrait{
 
             $s = '%' . $search . '%';
 
-            $senders = User::where('firstname', 'like', $s)
-                         ->orWhere('lastname', 'like', $s)
-                         ->orWhere('email', 'like', $s)
-                         ->orWhere('contacts', 'like', $s)
-                         ->orWhere('school', 'like', $s)
-                         ->orWhere('grade', 'like', $s)
-                         ->orWhere('graduate', 'like', $s)
-                         ->orWhere('pseudo', 'like', $s)
-                         ->orWhere('address', 'like', $s)
-                         ->orWhere('job_city', 'like', $s)
-                         ->orWhere('status', 'like', $s)
-                         ->orWhere('birth_city', 'like', $s)
-                         ->orWhere('gender', 'like', $s)
-                         ->orWhere('current_function', 'like', $s)
-                         ->orWhere('matricule', 'like', $s)
-                         ->orWhere('ability', 'like', $s)
-                         ->orWhere('graduate', 'like', $s)
-                         ->orWhere('graduate_type', 'like', $s)
-                         ->orWhere('graduate_deliver', 'like', $s)
-                         ->orWhere('marital_status', 'like', $s)
-                         ->pluck('id')->toArray();
-
-            
-            
-            
+            $senders = User::whereAny(
+                        [
+                            'firstname', 
+                            'lastname',
+                            'email',
+                            'contacts',
+                            'school',
+                            'grade',
+                            'graduate',
+                            'pseudo',
+                            'address',
+                            'job_city',
+                            'status',
+                            'birth_city',
+                            'gender', 
+                            'current_function', 
+                            'matricule',
+                            'ability',
+                            'graduate_type',
+                            'graduate_deliver',
+                            'marital_status',
+                        ], 'like', $s)->pluck('id')->toArray();
             
             $notifs1 = ENotification::whereIn('user_id', $senders)->orderBy('created_at', 'desc')->get();
 

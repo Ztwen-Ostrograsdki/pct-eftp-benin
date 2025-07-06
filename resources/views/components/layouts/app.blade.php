@@ -28,7 +28,10 @@
             .swiper {
                 padding: 2rem;
             }
+           
         </style>
+
+
         
     </head>
     <body class="bg-slate-200 min-h-screen dark:bg-blue-300">

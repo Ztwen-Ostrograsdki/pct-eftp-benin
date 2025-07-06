@@ -155,7 +155,7 @@
                                 </span>
                             </a>
                         @endif
-                        <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full cursor-pointer bg-gray-900 border-gray-400 border">
+                        <span title="Ce fichier a été téléchargé {{$epreuve->downloaded}} fois" class="text-orange-300 p-2 rounded-full cursor-pointer float-right text-right bg-gray-900 border-gray-400 border">
                             {{ $epreuve->downloaded }}
                             <span class="fas fa-download"></span> 
                         </span>
@@ -198,6 +198,12 @@
                 </div>
             </div>
             <div class="flex justify-end gap-x-2 w-full mt-2 lg:text-base md:text-lg sm:text-xs xs:text-xs">
+                @if($epreuve->extension == ".pdf")
+                    <a href="{{ $epreuve->readerRoute() }}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border mr-2">
+                        <span class="fas fa-eye"></span> 
+                        <span>Lire ce fichier</span>
+                    </a>
+                @endif
                 @auth
                     <div class="flex items-center">
                         @if(count($epreuve->answers) < env('EPREUVE_MAX_ANSWERS'))
@@ -289,7 +295,14 @@
                 @endauth
             </div>
         </div>
+        @guest
+            <span class="text-orange-600 font-semibold letter-spacing-1 animate-pulse px-2 flex items-center my-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
+                <span class="fas fa-triangle-exclamation"></span>
+                <span>Veuillez vous connecter si vous souhaitez proposer des éléments de réponses!</span>
+            </span>
+        @endguest
         <hr class="border-sky-600 mb-2">
+
 
         @if(!$uplaod_new_file)
         <div class="relative w-full overflow-x-auto p-2 shadow-md border sm:rounded-lg">

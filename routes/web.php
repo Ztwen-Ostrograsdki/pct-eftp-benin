@@ -34,6 +34,8 @@ use App\Livewire\User\MyQuotes;
 use App\Livewire\User\UserEditionPage;
 use App\Livewire\User\UserProfil;
 use App\Models\Epreuve;
+use App\Models\EpreuveResponse;
+use App\Models\SupportFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Spatie\PdfToImage\Pdf;
@@ -103,24 +105,70 @@ Route::get('bibliotheque/examens/tag=les-epreuves', EpreuvesExamensPage::class)-
 
 Route::get('bibliotheque/tag=les-fiches-de-cours', SupportFilesPage::class)->name('library.fiches');
 
-Route::get('/lecture/secure-pdf/{uuid}', function ($uuid) {
+Route::get('/lecture/secure-pdf/{uuid}/{type}', function ($uuid, $type) {
 
-    $epreuve = Epreuve::where('uuid', $uuid)->firstOrFail();
+    if($type){
 
-    $path = storage_path('app/' . $epreuve->path);
+        if($type == 'e'){
+
+            $the_file = Epreuve::where('uuid', $uuid)->first();
+
+            $path = storage_path('app/' . $the_file->path);
+
+            if(!$the_file || !Storage::disk('local')->exists($the_file->path)){
+
+                return abort(404);
+
+            }
+        }
+        elseif($type == 'f'){
+
+            $the_file = SupportFile::where('uuid', $uuid)->first();
+
+            $path = storage_path('app/' . $the_file->path);
+
+            if(!$the_file || !Storage::disk('local')->exists($the_file->path)){
+
+                return abort(404);
+
+            }
+        }
+        elseif($type == 'er'){
+
+            $the_file = EpreuveResponse::where('uuid', $uuid)->first();
+
+            $path = storage_path('app/' . $the_file->path);
+
+            if(!$the_file || !Storage::disk('local')->exists($the_file->path)){
+
+                return abort(404);
+
+            }
+        }
+
+
+    }
 
     return response()->file($path, [
         'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="' . $epreuve->path . '"'
+        'Content-Disposition' => 'inline; filename="' . $the_file->path . '"'
     ]);
 
-})->name('epreuve.secure');
+})->name('file.reader.secure');
 
-Route::get('/epreuve/lecture/{uuid}', PdfReader::class)->name('epreuve.viewer');
+Route::get('/epreuve/lecture/{uuid}/t={type}', PdfReader::class)->name('file.reader.viewer')->middleware('signed');
 
 Route::get('/403', function () {
-    abort(403, "Vous n'êtes pas authorisé à acceder à une telle page ou effectuer une telle action!");
+    abort(403);
 })->name('error.403');
+
+Route::get('/419', function () {
+    abort(419);
+})->name('error.419');
+
+Route::get('/410', function () {
+    abort(410);
+})->name('error.410');
 
 
 Route::middleware(['guest'])->group(function(){

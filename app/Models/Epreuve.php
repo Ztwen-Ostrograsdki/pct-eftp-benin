@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 #[ObservedBy(ObserveEpreuve::class)]
@@ -165,6 +166,11 @@ class Epreuve extends Model
 
         return 'non renseignée';
 
+    }
+
+    public function readerRoute()
+    {
+        return URL::temporarySignedRoute('file.reader.viewer',now()->addMinutes(1.5), ['uuid' => $this->uuid, 'type' => 'e']);
     }
 
     public function baseName($with_extension = false)

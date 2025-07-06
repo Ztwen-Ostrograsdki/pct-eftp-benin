@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 #[ObservedBy(ObserveEpreuveResponse::class)]
@@ -76,6 +77,11 @@ class EpreuveResponse extends Model
     public function filiars()
     {
         
+    }
+
+    public function readerRoute()
+    {
+        return URL::temporarySignedRoute('file.reader.viewer',now()->addMinutes(1.5), ['uuid' => $this->uuid, 'type' => 'er']);
     }
 
     public function baseName($with_extension = false)

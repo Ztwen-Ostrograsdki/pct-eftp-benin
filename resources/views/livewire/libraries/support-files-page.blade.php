@@ -104,10 +104,12 @@
                           </span>
                         @endauth
                         <span class="gap-x-2 flex">
-                          <a href="#" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
+                          @if($fiche->extension == ".pdf")
+                          <a href="{{ $fiche->readerRoute() }}" title="Lire le fichier" class="text-gray-300 p-2 rounded-full cursor-pointer bg-gray-950 border-gray-400 border">
                             <span class="fas fa-eye"></span> 
                             <span>Lire</span>
                           </a>
+                          @endif
                           <span title="Ce fichier a été téléchargé {{$fiche->downloaded}} fois" class="text-orange-300 p-2 rounded-full animate-pulse cursor-pointer bg-gray-900 border-gray-400 border">
                             {{ $fiche->downloaded }}
                             <span class="fas fa-download"></span> 
